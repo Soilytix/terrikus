@@ -1,0 +1,29 @@
+/*
+  World register (art-direction §2, §3.2): illustration pigments only.
+  Never used for UI text or UI fills; never Lime. The TS twin `scene.ts` feeds
+  the painter and must hold the same values (tests/tokens.test.ts).
+*/
+:root {
+  /* Bound to design-system primitives */
+  --w-humus: #36250f; /* scale-gold-1 */
+  --w-topsoil: #423c2d; /* primary-soil */
+  --w-loam: #64461e; /* scale-gold-2 */
+  --w-subsoil: #95692d; /* scale-gold-3 */
+  --w-sand: #bd975f; /* scale-gold-4 desaturated 25 % */
+  --w-pale: #f4ece2; /* primary-light-gold */
+  --w-stone-1: #6d7471; /* neutral-dark-green */
+  --w-stone-2: #47504b; /* neutral-darker-green */
+  --w-dark: #161c19; /* surface-hero-dark */
+  --w-film: #d1edf3; /* functional-light-blue */
+  --w-water: #44a6bd; /* functional-blue */
+  --w-deep: #07262d; /* functional-dark-blue */
+
+  /* New hexes: PENDING CTO sign-off (spec OD-1). Plates only. */
+  --w-gley: #5f7470;
+  --w-oxide: #a4572f;
+  --w-clay: #8a6a55;
+  --w-foliage: #4f6b3a; /* muted so it never reads as Lime */
+  --w-sky-high: #dce3e0;
+  --w-sky-low: #f1e7d6;
+  /* Water pigment: functional blue, not cat-azure (OD-2, pending). */
+}
