@@ -1,0 +1,457 @@
+/*
+  Soilytix Soil Health Suite design tokens.
+
+  Three layers, one direction of reference, and the components read only the names:
+
+    primitive   the allowed values, named for what they are: one name per Figma variable,
+                kebab-cased with its group as prefix (`Primary/Green` is
+                `--color-primary-green`, `spacing/md` is `--spacing-md`), plus the values
+                the frames carry that Figma never made a variable for, marked "measured"
+    semantic    a primitive given a job, named as the Figma fill style in DESIGN.md:
+                `--color-ink-muted`, `--color-brand-primary`, `--color-status-warning`.
+                Declared with `@theme inline` so a utility resolves to the primitive it
+                points at, which is how Tailwind wants aliases written.
+    component   a value scoped to one part: `--radius-card`, `--spacing-topbar`.
+
+  Every block is a Tailwind v4 `@theme`, so every token is also a utility: `bg-brand`,
+  `text-h1`, `rounded-card`, `shadow-lg`, `p-md`, `font-mono`. `static` makes every
+  variable emit on :root even when no utility uses it, which the token sheet and the map
+  (which reads colours at runtime, see `lib/tokenColour.ts`) rely on.
+
+  Components read the semantic layer. `functional-*` is a primitive only: a status is
+  `status-*`, its label `status-*-ink` (the guard test enforces it).
+
+  The `measured-*` names in the line-height, tracking and radius groups are the values the
+  components carry that DESIGN.md does not name yet. They are named by value on purpose:
+  they are not roles. `grep measured-` is the normalisation list.
+*/
+@theme static {
+  /* ---- reset Tailwind's own palette, type scale, radii and shadows ---- */
+  --color-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --font-*: initial;
+  --breakpoint-*: initial;
+
+  /* ---- color / Primary ---- */
+  --color-primary-dark-green: #29332e;
+  --color-primary-slate: #3e4742;
+  --color-primary-soil: #423c2d;
+  --color-primary-gold: #b48240;
+  --color-primary-green: #8ede3d; /* the brand green; the swatch label #86EB21 appears nowhere as a fill */
+  --color-primary-light-green: #edfcde;
+  --color-primary-light-gold: #f4ece2;
+  --color-primary-light-dark-green: #dfe0e0;
+  --color-button-hover: #52792a; /* observed: Primary Button State=Hover */
+  --color-button-pressed: #21360b; /* observed: Primary Button State=Clicked */
+
+  /* ---- color / Neutral ---- */
+  --color-neutral-white: #ffffff;
+  --color-neutral-black: #000000; /* measured: washes over imagery, black/20, black/30, black/55 */
+  --color-neutral-lightest-green: #f5f6f6;
+  --color-neutral-lighter-green: #ced0cf;
+  --color-neutral-light-green: #a5a9a7;
+  --color-neutral-dark-green: #6d7471;
+  --color-neutral-darker-green: #47504b;
+  --color-neutral-darkest-green: #29332e;
+
+  /* ---- color / Shades ---- */
+  --color-shades-dark-50: rgb(0 0 0 / 0.05);
+  --color-shades-dark-100: rgb(0 0 0 / 0.1);
+  --color-shades-dark-200: rgb(0 0 0 / 0.2);
+  --color-shades-dark-300: rgb(0 0 0 / 0.3);
+  --color-shades-dark-400: rgb(0 0 0 / 0.4);
+  --color-shades-dark-500: rgb(0 0 0 / 0.5);
+  --color-shades-dark-600: rgb(0 0 0 / 0.6);
+  --color-shades-dark-700: rgb(0 0 0 / 0.7);
+  --color-shades-dark-800: rgb(0 0 0 / 0.8);
+  --color-shades-dark-900: rgb(0 0 0 / 0.9);
+  --color-shades-light-50: rgb(255 255 255 / 0.05); /* the map label's glass fill */
+  --color-shades-light-100: rgb(255 255 255 / 0.1);
+  --color-shades-light-200: rgb(255 255 255 / 0.2);
+  --color-shades-light-300: rgb(255 255 255 / 0.3);
+  --color-shades-light-400: rgb(255 255 255 / 0.4);
+  --color-shades-light-500: rgb(255 255 255 / 0.5);
+  --color-shades-light-600: rgb(255 255 255 / 0.6);
+  --color-shades-light-700: rgb(255 255 255 / 0.7);
+  --color-shades-light-800: rgb(255 255 255 / 0.8);
+  --color-shades-light-900: rgb(255 255 255 / 0.9);
+
+  /* ---- color / Functional (tag pairs: Light = subtle bg, Dark = subtle text, base = solid bg) ---- */
+  --color-functional-green: #779e29;
+  --color-functional-light-green: #e3e9d8;
+  --color-functional-dark-green: #384c10;
+  --color-functional-red: #d23628;
+  --color-functional-light-red: #f5e6e4;
+  --color-functional-dark-red: #71150e;
+  --color-functional-yellow: #e59d2a;
+  --color-functional-light-yellow: #f0eee1;
+  --color-functional-dark-yellow: #785e09;
+  --color-functional-blue: #44a6bd;
+  --color-functional-light-blue: #d1edf3;
+  --color-functional-dark-blue: #07262d;
+
+  /* ---- color / observed primitives: no Figma variable, adopted in DESIGN.md ---- */
+  --color-functional-green-bright: #22a91e; /* Step Progress Bar dot and status text */
+  --color-text-on-dark-warm: #f0eee1; /* text on dark; same hex as functional-light-yellow, a different role */
+  --color-surface-page-alt: #eaecea; /* the drawer-header chevron button, the disabled checkbox edge */
+  --color-route-satellite: #e2a549; /* the scouting radius over imagery; on the pale map it is Primary/Gold */
+  --color-table-rule: #e5e5e0; /* the one light hairline: table rows and chart gridlines */
+  --color-glass-fill: #ffffff; /* opaque; opacity set per component */
+
+  /* ---- color / data register A, categorical: peer series only, no green slot ---- */
+  --color-cat-ember: #ea6b65;
+  --color-cat-gold: #ca8407;
+  --color-cat-teal: #00aa8e;
+  --color-cat-azure: #2998ed;
+  --color-cat-rose: #d76eb9;
+  --color-cat-ember-ink: #a14844;
+  --color-cat-gold-ink: #8c5a01;
+  --color-cat-teal-ink: #007460;
+  --color-cat-azure-ink: #1a67a3;
+  --color-cat-rose-ink: #934a7f;
+  --color-cat-ember-soft: #fff0ee;
+  --color-cat-gold-soft: #fbf2e7;
+  --color-cat-teal-soft: #e6f7f3;
+  --color-cat-azure-soft: #eaf5ff;
+  --color-cat-rose-soft: #fef0f9;
+
+  /* ---- color / data register B, sequential, dark to light; scale-green-5 is Lime ---- */
+  --color-scale-green-1: #1f2f0b;
+  --color-scale-green-2: #3b5616;
+  --color-scale-green-3: #598221;
+  --color-scale-green-4: #79b02c;
+  --color-scale-green-5: #8ede3d;
+  --color-scale-green-6: #ecfbdf;
+  --color-scale-gold-1: #36250f;
+  --color-scale-gold-2: #64461e;
+  --color-scale-gold-3: #95692d;
+  --color-scale-gold-4: #cb8f3d;
+  --color-scale-gold-5: #ffb859;
+  --color-scale-gold-6: #fff3e5;
+
+  /* ---- color / fill styles DESIGN.md gives a value but no primitive ---- */
+  --color-surface-hero-dark: #161c19; /* Surface/Hero Dark: covers, hero panels, the dark panel, chart cards */
+  --color-chart-grid-dark: #4a544d; /* gridlines on a dark chart card */
+  --color-chart-card-inner: #1a211d; /* the inset panel inside a dark chart card */
+
+  /* ---- type / families ---- */
+  --font-sans: "Inter Variable", "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* ---- type / weights (the Text "Bold" styles are Semi Bold 600; only headings are 700) ---- */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ---- type / headings: Inter, line-height 1.2, letter-spacing 0 ---- */
+  --text-display: 72px;
+  --text-display--line-height: 1.2;
+  --text-h1: 64px;
+  --text-h1--line-height: 1.2;
+  --text-h2: 56px;
+  --text-h2--line-height: 1.2;
+  --text-h3: 48px;
+  --text-h3--line-height: 1.2;
+  --text-h4: 36px;
+  --text-h4--line-height: 1.2;
+  --text-h5: 24px;
+  --text-h5--line-height: 1.2;
+  --text-h6: 18px;
+  --text-h6--line-height: 1.2;
+
+  /* ---- type / text: Inter, line-height 1.5, letter-spacing 1.5% ---- */
+  --text-lg: 20px;
+  --text-lg--line-height: 1.5;
+  --text-lg--letter-spacing: 0.015em;
+  --text-md: 18px;
+  --text-md--line-height: 1.5;
+  --text-md--letter-spacing: 0.015em;
+  --text-base: 16px;
+  --text-base--line-height: 1.5;
+  --text-base--letter-spacing: 0.015em;
+  --text-sm: 14px;
+  --text-sm--line-height: 1.5;
+  --text-sm--letter-spacing: 0.015em;
+  --text-xs: 12px;
+  --text-xs--line-height: 1.5;
+  --text-xs--letter-spacing: 0.015em;
+
+  /* ---- type / labels: Inter, line-height 1.5, letter-spacing 2.5% ---- */
+  --text-label-lg: 14px;
+  --text-label-lg--line-height: 1.5;
+  --text-label-lg--letter-spacing: 0.025em;
+  --text-label-md: 12px;
+  --text-label-md--line-height: 1.5;
+  --text-label-md--letter-spacing: 0.025em;
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 1.5;
+  --text-label-sm--letter-spacing: 0.025em;
+
+  /* ---- type / numbers: IBM Plex Mono, every data value ---- */
+  --text-mono-lg: 16px;
+  --text-mono-lg--line-height: 1;
+  --text-mono-md: 14px;
+  --text-mono-md--line-height: 1;
+  --text-mono-sm: 12px;
+  --text-mono-sm--line-height: 1;
+
+  /* ---- type / intermediates: observed in components, no Figma text style (DESIGN.md) ---- */
+  --text-15: 15px;
+  --text-15--line-height: 1.5;
+  --text-15--letter-spacing: 0.015em;
+  --text-13: 13px;
+  --text-13--line-height: 1.5;
+  --text-13--letter-spacing: 0.015em;
+  --text-11: 11px;
+  --text-11--line-height: 1.5;
+  --text-11--letter-spacing: 0.015em;
+
+  /* ---- type / measured line heights ---- */
+  --leading-native: normal; /* the browser's own line height, where the frame set none */
+  --leading-measured-11: 11px;
+  --leading-measured-12: 12px;
+  --leading-measured-13: 13px;
+  --leading-measured-14: 14px;
+  --leading-measured-14-5: 14.5px;
+  --leading-measured-15: 15px;
+  --leading-measured-16: 16px;
+  --leading-measured-17: 17px;
+  --leading-measured-18: 18px;
+  --leading-measured-18-2: 18.2px;
+  --leading-measured-19: 19px;
+  --leading-measured-21: 21px;
+  --leading-measured-22: 22px;
+  --leading-measured-23: 23px;
+  --leading-measured-26: 26px;
+  --leading-measured-27: 27px;
+  --leading-measured-28: 28px;
+  --leading-measured-29: 29px;
+  --leading-measured-34: 34px;
+  --leading-measured-39: 39px;
+  --leading-measured-42: 42px;
+  --leading-measured-48: 48px;
+  --leading-measured-56: 56px;
+  --leading-measured-57: 57px;
+  --leading-measured-58: 58px;
+  --leading-measured-1-3: 1.3;
+  --leading-measured-1-45: 1.45;
+
+  /* ---- type / measured letter spacings ---- */
+  --tracking-measured-0-12: 0.12px;
+  --tracking-measured-0-15: 0.15px;
+  --tracking-measured-0-18: 0.18px;
+  --tracking-measured-0-2: 0.2px;
+  --tracking-measured-0-21: 0.21px;
+  --tracking-measured-0-24: 0.24px;
+  --tracking-measured-0-25: 0.25px;
+  --tracking-measured-0-3: 0.3px;
+  --tracking-measured-0-35: 0.35px;
+  --tracking-measured-0-4: 0.4px;
+  --tracking-measured-0-44: 0.44px;
+  --tracking-measured-0-5: 0.5px;
+  --tracking-measured-0-6: 0.6px;
+  --tracking-measured-0-05em: 0.05em;
+  --tracking-measured-0-08em: 0.08em;
+
+  /* ---- spacing: Tailwind's quarter-rem scale IS Louis's scale; these are the Figma names ---- */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 40px;
+  --spacing-3xl: 48px;
+  --spacing-4xl: 56px;
+  --spacing-5xl: 64px;
+  --spacing-6xl: 72px;
+  --spacing-7xl: 80px;
+  --spacing-8xl: 88px;
+  --spacing-9xl: 96px;
+  --spacing-10xl: 104px;
+  --spacing-11xl: 112px;
+  --spacing-12xl: 120px;
+
+  /* ---- radius: the Figma radius collection (inferred split) + measured aliases ---- */
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-pill: 999px;
+  --radius-card: 16px; /* cards, tables, progress bars, map bands */
+  --radius-tile: 12px; /* stat tiles, numbered steps, sidebar, topbar, CTA band */
+  --radius-button: 8px; /* desktop buttons */
+  --radius-nav: 6px; /* nav items (measured, no variable) */
+  --radius-button-mobile: 4px;
+  --radius-micro: 2px; /* measured, no variable */
+  --radius-band: 24px; /* large media bands */
+  --radius-measured-1: 1px; /* the indicator detail block's hairline bar */
+  --radius-measured-1-5: 1.5px; /* the property row's marker */
+  --radius-measured-3: 3px; /* the accuracy bars */
+  --radius-chart-card: 20px; /* chart cards on surface-hero-dark (observed, outside the set) */
+
+  /* ---- elevation: Elevation/xs|sm|md|lg drop shadows; every level also carries a 20px backdrop blur ---- */
+  --shadow-xs: 0 1px 0 rgb(0 0 0 / 0.08);
+  --shadow-sm: 0 10px 20px rgb(0 0 0 / 0.04);
+  --shadow-md: 0 12.52px 10.02px rgb(43 44 48 / 0.024), 0 100px 80px rgb(43 44 48 / 0.05);
+  --shadow-lg:
+    0 6.65px 5.32px rgb(43 44 48 / 0.032), 0 22.34px 17.87px rgb(43 44 48 / 0.048),
+    0 100px 80px rgb(43 44 48 / 0.08);
+  --shadow-focus: 0 0 0 3px rgb(142 222 61 / 0.2); /* the focus halo, Lime at 20%; `focus-ring` adds the ink outline */
+  --shadow-focus-strong: 0 0 0 3px rgb(142 222 61 / 0.3); /* the checked control's halo, at 30% */
+  --blur-elevation: 20px; /* backdrop-blur-elevation, paired with every shadow level */
+  --blur-glass: 24px; /* the separate Glass/Blur style */
+  --blur-map-glass: 12px; /* the cards, rail and labels that float on the map */
+
+  /* ---- gradients (measured): the composite washes, read with bg-(image:--gradient-*) ---- */
+  --gradient-vignette: radial-gradient(
+    ellipse at center,
+    transparent 40%,
+    rgb(0 0 0 / 0.85) 100%
+  ); /* the map's darkened edge */
+  --gradient-glass-vignette:
+    radial-gradient(ellipse 100% 100% at 50% 50%, rgb(0 0 0 / 0) 58.65%, rgb(0 0 0 / 0.4) 99%),
+    rgb(0 0 0 / 0.2); /* the monitor glass card over imagery */
+  --gradient-bar-brand: linear-gradient(
+    180deg,
+    rgb(142 222 61 / 0.6),
+    rgb(142 222 61 / 0.05)
+  ); /* Primary/Green fading down a duration bar */
+
+  /* ---- motion: DESIGN.md durations and easings; the hero glows are marketing-only and live there ---- */
+  --ease-drawer: ease-out;
+  --duration-drawer: 350ms;
+  --duration-instant: 120ms; /* buttons, tab hover, tooltip fade */
+  --duration-tab: 200ms; /* the tab underline sliding */
+  --duration-reveal: 500ms; /* ScrollReveal: fade and rise 12px */
+  --duration-chart: 600ms; /* every chart entering: needle sweep, bar growth, ring fill, line draw */
+  --duration-stagger: 40ms; /* between elements of one group */
+  --duration-pulse: 1800ms; /* the in-progress dot's breathing */
+  --duration-marker: 160ms; /* a map marker growing under the pointer */
+  --ease-chart: cubic-bezier(0.22, 1, 0.36, 1); /* ease-out, settles without overshoot */
+  --ease-control: cubic-bezier(0.2, 0, 0, 1); /* buttons, tabs, tooltips */
+  --ease-pulse: ease-in-out;
+  --animate-pulse-dot: pulse-dot var(--duration-pulse) var(--ease-pulse) infinite;
+  --animate-tooltip-in: tooltip-in var(--duration-instant) var(--ease-control) both;
+  @keyframes tooltip-in {
+    from {
+      opacity: 0;
+      transform: translateY(2px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgb(34 169 30 / 0.45);
+    }
+    50% {
+      transform: scale(1.25);
+      box-shadow: 0 0 0 5px rgb(34 169 30 / 0);
+    }
+  }
+
+  /* ---- layout: the three published grids ---- */
+  --breakpoint-mobile: 390px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1440px;
+  --container-content: 1100px; /* wide cards and tables; max-w-content */
+  --container-screen: 1440px; /* every screen is 1440 wide; max-w-screen */
+
+  /* ---- component constants (measured), in the spacing namespace so h-topbar / w-sidebar work ---- */
+  --spacing-topbar: 64px;
+  --spacing-sidebar: 240px;
+  --spacing-nav-item: 36px;
+  --spacing-progress-bar: 56px;
+  --spacing-button: 40px;
+  --spacing-button-mobile: 32px;
+  --spacing-tag: 20px;
+  --spacing-ai-pill: 36px;
+}
+
+/* ---- semantic: the DESIGN.md fill-style roles. `inline`, so `bg-ink` compiles to the primitive. ---- */
+@theme inline static {
+  --color-surface-page: var(--color-neutral-lightest-green);
+  --color-surface-card: var(--color-neutral-white);
+  --color-ink: var(--color-primary-dark-green);
+  --color-ink-muted: var(--color-neutral-dark-green);
+  --color-ink-faint: var(--color-neutral-light-green); /* disabled and non-text marks only */
+  --color-ink-deep: var(--color-neutral-darker-green); /* not a DESIGN.md role yet */
+  --color-border-default: var(--color-neutral-lighter-green);
+  --color-brand-primary: var(--color-primary-green); /* Lime: fills and marks, never text on light */
+  --color-brand-primary-deep: var(--color-functional-green); /* the legible green */
+  --color-text-on-dark: var(--color-text-on-dark-warm);
+  --color-text-on-dark-muted: var(--color-shades-light-600);
+  --color-white: var(--color-neutral-white);
+  --color-black: var(--color-neutral-black);
+  --color-route-light: var(--color-primary-gold); /* the scouting radius on the pale map */
+
+  /* status: the fill, its field, and the label on that field (`-ink`, the dark tier) */
+  --color-status-positive: var(--color-functional-green);
+  --color-status-positive-bg: var(--color-functional-light-green);
+  --color-status-positive-ink: var(--color-functional-dark-green); /* also green text on light */
+  --color-status-warning: var(--color-functional-yellow); /* fills, dots, bands; never text */
+  --color-status-warning-bg: var(--color-functional-light-yellow);
+  --color-status-warning-ink: var(--color-functional-dark-yellow);
+  --color-status-negative: var(--color-functional-red);
+  --color-status-negative-bg: var(--color-functional-light-red);
+  --color-status-negative-ink: var(--color-functional-dark-red);
+  --color-status-info: var(--color-functional-blue);
+  --color-status-info-bg: var(--color-functional-light-blue);
+  --color-status-info-ink: var(--color-functional-dark-blue);
+  --color-status-active: var(
+    --color-functional-green-bright
+  ); /* the Step Progress Bar's active dot and status */
+
+  /* charts: Lime is the subject only; peers take register A */
+  --color-chart-subject: var(--color-primary-green);
+  --color-chart-comparison: var(--color-primary-gold);
+  --color-chart-context: var(--color-neutral-dark-green);
+  --color-chart-grid: var(--color-table-rule);
+  --color-chart-phase-1: var(--color-scale-green-6); /* Chart / Phase Timeline, earliest first */
+  --color-chart-phase-2: var(--color-scale-green-4);
+  --color-chart-phase-3: var(--color-scale-green-3);
+  --color-chart-phase-4: var(--color-scale-green-2);
+}
+
+/* ---- responsive type: the Tablet and Mobile modes of the Typography variable set ---- */
+@media (max-width: 768px) {
+  :root {
+    --text-display: 56px;
+    --text-h1: 48px;
+    --text-h2: 40px;
+    --text-h3: 36px;
+    --text-h4: 28px;
+    --text-lg: 18px;
+    --text-md: 16px;
+  }
+}
+@media (max-width: 390px) {
+  :root {
+    --text-display: 40px;
+    --text-h1: 36px;
+    --text-h2: 32px;
+    --text-h3: 28px;
+    --text-h4: 24px;
+    --text-h5: 20px;
+    --text-h6: 16px;
+  }
+}
+
+/* ---- focus: a 3px Lime halo at 20% and a 2px ink outline at 2px offset, on every control ---- */
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+    box-shadow: var(--shadow-focus);
+  }
+}

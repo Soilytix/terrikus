@@ -1,0 +1,58 @@
+# The prek hook config IS the lint gate: per-file at commit, tests at push, and
+# whole-repo in CI (`prek run --all-files`). Never add a CI lint step that differs.
+default_stages: [pre-commit]
+
+repos:
+  # Generic file hygiene only. Anything version-sensitive is a local hook so
+  # tool versions live in mise.toml and are never duplicated here.
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        # Trailing spaces are a hard line break in Markdown.
+        exclude: \.md$
+      - id: end-of-file-fixer
+      - id: check-json
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        # The 1024px icon and the stipple specimen art are the largest files.
+        args: [--maxkb=1024]
+
+  - repo: local
+    hooks:
+      - id: gitleaks
+        name: gitleaks (staged)
+        # Scan what is actually being committed, not the whole tree.
+        entry: gitleaks git --staged --redact --verbose
+        language: system
+        pass_filenames: false
+
+      - id: prettier
+        name: prettier
+        entry: pnpm exec prettier --check --ignore-unknown
+        language: system
+        types_or: [ts, tsx, javascript, css, json, yaml, html]
+
+      - id: eslint
+        name: eslint
+        entry: pnpm exec eslint --cache
+        language: system
+        types_or: [ts, tsx, javascript]
+
+      - id: typecheck
+        name: typecheck
+        # Whole-project: a type error can surface in a file the commit did not touch.
+        entry: mise run typecheck
+        language: system
+        pass_filenames: false
+        types_or: [ts, tsx]
+
+      - id: test
+        name: unit tests
+        entry: mise run test
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]

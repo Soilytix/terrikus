@@ -1,0 +1,5 @@
+# The default rule set, with no exemptions. The app has no secrets: it is a
+# static build with no network calls. Anything the scan reports is a finding:
+# fix the file, do not add an allowlist here.
+[extend]
+useDefault = true

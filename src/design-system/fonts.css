@@ -1,0 +1,11 @@
+/* Self-hosted type. Inter (variable) for everything, IBM Plex Mono for every data value.
+   Provenance: the Figma typography styles and font-family variables.
+
+   The `opsz` build, not the default `wght` one. Figma sets Inter 4 with its optical size
+   axis, so a 40px heading is drawn in the Display cut and a 14px label in the Text cut; the
+   weight-only file has no such axis and renders every size in the Text cut, which measures
+   six percent wider at 40px and wraps headings a word early. Browsers apply the axis by
+   themselves (`font-optical-sizing: auto`), so nothing else changes. */
+@import "@fontsource-variable/inter/opsz.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";

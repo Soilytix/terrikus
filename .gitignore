@@ -1,0 +1,17 @@
+.DS_Store
+
+# Secrets: loaded by mise, never committed. See .env.example.
+.env
+.env.local
+
+# Tool caches
+.mise/
+node_modules/
+.eslintcache
+*.tsbuildinfo
+
+# Build and test output
+dist/
+coverage/
+test-results/
+playwright-report/

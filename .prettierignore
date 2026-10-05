@@ -1,0 +1,9 @@
+dist/
+node_modules/
+pnpm-lock.yaml
+mise.lock
+docs/
+coverage/
+test-results/
+playwright-report/
+src/assets/

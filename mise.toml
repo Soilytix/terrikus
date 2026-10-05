@@ -1,0 +1,88 @@
+# mise is the single source of truth for the toolchain.
+# Exact resolved versions are recorded in mise.lock (committed).
+min_version = "2026.7.18"
+
+[settings]
+lockfile = true                # write mise.lock for reproducibility
+
+[tools]
+node = "22"                    # Vite 7 build; spec §3.1
+pnpm = "10"                    # lockfile is pnpm-lock.yaml
+gitleaks = "8"                 # secret scanning (hook + CI + on demand)
+prek = "latest"                # pre-commit runner; pre-1.0, churn expected
+
+[env]
+# SW_PROFILE and friends; see .env.example.
+_.file = [".env", ".env.local"]
+
+[tasks.setup]
+description = "Cold start: tools, deps, hooks, then the full check"
+run = [
+  "mise install",
+  "pnpm install --frozen-lockfile",
+  "prek install && prek install -t pre-push",
+  "mise run check",
+]
+
+[tasks.install]
+description = "Install dependencies and git hooks (no verify)"
+run = ["pnpm install --frozen-lockfile", "prek install && prek install -t pre-push"]
+
+[tasks.dev]
+description = "Vite dev server with hot reload"
+run = "pnpm exec vite"
+
+[tasks.lint]
+description = "ESLint over src, tests and tools"
+run = "pnpm exec eslint --cache ."
+
+[tasks.fmt]
+description = "Format everything Prettier owns"
+run = "pnpm exec prettier --write ."
+
+[tasks.fmt-check]
+description = "Fail on unformatted files"
+run = "pnpm exec prettier --check ."
+
+[tasks.typecheck]
+description = "TypeScript, strict, no emit"
+run = "pnpm exec tsc -p tsconfig.json --noEmit"
+
+[tasks.test]
+description = "Unit tests: simulation, content lint, save, tokens, denylist"
+run = "pnpm exec vitest run"
+
+[tasks.build]
+description = "Static build into dist/, then the bundle scan and the size budget"
+run = [
+  "pnpm exec vite build",
+  "pnpm exec tsx tools/bundle-scan.ts",
+  "pnpm exec tsx tools/budget.ts",
+]
+
+[tasks.serve]
+description = "Serve the built dist/ (what ships)"
+run = "pnpm exec vite preview --port 4173"
+
+[tasks.e2e]
+description = "Playwright smoke over the built app; writes docs/screens/"
+depends = ["build"]
+run = "pnpm exec playwright test"
+
+[tasks.hooks]
+description = "Every hook over every file"
+run = "prek run --all-files"
+
+[tasks.secrets]
+description = "Secret scan of the working tree"
+run = "gitleaks dir . --redact --verbose"
+
+[tasks.check]
+description = "Everything CI runs: the definition of done"
+run = [
+  "mise run lint",
+  "mise run fmt-check",
+  "mise run typecheck",
+  "mise run test",
+  "mise run build",
+]

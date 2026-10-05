@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# One gate. `mise run check` is the definition of done (lint, format, types,
+# unit tests, build, bundle scan, size budget); the prek step re-runs the
+# hygiene hooks over the whole tree. No deploy here: the host is open (spec OD-4).
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Installs the exact toolchain from mise.toml/mise.lock — same as local.
+      - uses: jdx/mise-action@v2
+        with:
+          cache: true
+
+      - run: pnpm install --frozen-lockfile
+
+      # The prek hooks ARE the lint gate — one definition, run identically here.
+      - run: prek run --all-files --show-diff-on-failure
+
+      - run: mise run check
+
+      # The public profile must build only approved content. Until a reviewer
+      # approves a chapter it is expected to fail, so it is visible, not blocking.
+      - run: SW_PROFILE=public pnpm exec vitest run tests/profile.test.ts
+        continue-on-error: true
+
+      # Backstop to the commit hook, over the whole checked-out tree.
+      - run: gitleaks dir . --redact --verbose
