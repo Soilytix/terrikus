@@ -1,0 +1,82 @@
+/** Save schema (spec §7). Plain JSON; versioned; migrated forward one step at a time. */
+import type { Connector, Verdict } from "../content/schema";
+import type { LeverSettings } from "../sim/benches/leaf-jar";
+
+export const SAVE_KEY = "soilworlds:v1";
+export const SCHEMA_VERSION = 1;
+export const LAB_BOOK_CAP = 200;
+
+export type Motion = "system" | "reduced" | "full";
+
+export interface LabEntry {
+  id: string;
+  at: string;
+  bench: "leaf-jar";
+  ruleset: string;
+  mission?: string;
+  prediction?: string;
+  a: LeverSettings;
+  b?: LeverSettings;
+  /** Plain summary of what was observed, e.g. litter left at day 365. */
+  result: string;
+  tier: "observed" | "derived" | "interpreted" | "would-do";
+  confidence?: 1 | 2 | 3;
+}
+
+export interface ChainAnswer {
+  cards: string[];
+  connectors: Connector[];
+  confidence: 1 | 2 | 3;
+  verdict?: Verdict;
+}
+
+export interface SaveV1 {
+  schemaVersion: 1;
+  createdAt: string;
+  settings: { motion: Motion; lens: boolean };
+  chaptersUnlocked: string[];
+  chaptersComplete: string[];
+  rumors: Record<string, "glimpsed" | "investigated" | "explained">;
+  cards: Record<string, "partial" | "full">;
+  codex: string[];
+  discoveries: string[];
+  stamps: string[];
+  labBook: LabEntry[];
+  chains: Record<string, ChainAnswer>;
+  predictions: Record<string, string | number | string[]>;
+  missions: Record<string, { step: number; done: boolean }>;
+  /** Scene objects scanned, as `sceneId/objectId`. */
+  scanned: string[];
+  flags: string[];
+  lastSession: { route: string; at: string } | null;
+}
+
+export type Save = SaveV1;
+
+export function freshSave(now = new Date().toISOString()): Save {
+  return {
+    schemaVersion: 1,
+    createdAt: now,
+    settings: { motion: "system", lens: false },
+    chaptersUnlocked: ["prologue"],
+    chaptersComplete: [],
+    rumors: {},
+    cards: {},
+    codex: [],
+    discoveries: [],
+    stamps: [],
+    labBook: [],
+    chains: {},
+    predictions: {},
+    missions: {},
+    scanned: [],
+    flags: [],
+    lastSession: null,
+  };
+}
+
+/** Append to the lab book, dropping the oldest beyond the cap. */
+export function appendLab(labBook: LabEntry[], entry: LabEntry): LabEntry[] {
+  const next = [...labBook, entry];
+  return next.length > LAB_BOOK_CAP ? next.slice(next.length - LAB_BOOK_CAP) : next;
+}

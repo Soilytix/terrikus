@@ -103,7 +103,7 @@ export const prologueScenes: Scene[] = [
     scale: "field",
     recipe: "handful",
     seed: 23,
-    scaleBar: { metres: 0.05, label: "5 cm" },
+    scaleBar: { metres: 0.01, label: "1 cm" },
     description:
       "A cupped handful of dark, crumbly loam held over the field. Crumbs of different sizes, a pale root thread, a fleck of old leaf.",
     truth: {
