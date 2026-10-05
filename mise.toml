@@ -55,6 +55,7 @@ run = "pnpm exec vitest run"
 [tasks.build]
 description = "Static build into dist/, then the bundle scan and the size budget"
 run = [
+  "pnpm exec tsx tools/profile.ts",
   "pnpm exec vite build",
   "pnpm exec tsx tools/bundle-scan.ts",
   "pnpm exec tsx tools/budget.ts",
