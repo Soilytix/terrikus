@@ -2,7 +2,7 @@
 
 Status: design research, draft 1 (2026-10-06). Written autonomously while the founder was unavailable; every decision below is marked **Decision** and is reversible. Scientific review of mission content is still pending. Nothing here claims a validated learning effect: the pilot plan in section 12 exists to find out.
 
-Prior art read: the single-file prototype `[customer]/eng/soil-worlds/index.html` (protist player, spinach world, three expeditions, notebook), its proposal (2026-10-04) and the project relevance map (2026-10-05). This document keeps their best ideas (notice → predict → change → observe → explain → retry; no health score; schematic scale marking; scientist lens) and adds structure for a much larger world.
+Prior art read: the internal single-file prototype (protist player, spinach world, three expeditions, notebook), its proposal (2026-10-04) and the project relevance map (2026-10-05). This document keeps their best ideas (notice → predict → change → observe → explain → retry; no health score; schematic scale marking; scientist lens) and adds structure for a much larger world.
 
 ---
 

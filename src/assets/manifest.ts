@@ -5,9 +5,9 @@
 import type { Asset } from "../content/schema";
 
 const STIPPLE =
-  "Soilytix 2025 organism stipple drawing ([customer]/marketing/assets/2025 *.png), resized to 640 px WebP on 2026-10-06. Lime dot-stipple on transparent ground.";
+  "Soilytix 2025 organism stipple drawing (team vault, marketing assets, 2025 *.png), resized to 640 px WebP on 2026-10-06. Lime dot-stipple on transparent ground.";
 const BIOME =
-  "Soilytix 2025 brand scene element ([customer]/marketing/assets/2025 *.svg), copied unchanged on 2026-10-06.";
+  "Soilytix 2025 brand scene element (team vault, marketing assets, 2025 *.svg), copied unchanged on 2026-10-06.";
 
 export const ASSETS: Asset[] = [
   {

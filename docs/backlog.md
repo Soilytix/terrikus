@@ -98,7 +98,7 @@ Recorded here because the founder was unavailable; each can be reversed in one P
 
 | Id | Decision | Why |
 | --- | --- | --- |
-| D-R1 | The home world is plain "Spinach", not "Spinach for seed production". | The seed-production framing came from customer work (`docs/research/internal-assets.md`) and adds nothing to the teaching. |
+| D-R1 | The home world is plain "Spinach", not "Spinach for seed production". | The seed-production framing adds nothing to the teaching. |
 | D-R2 | Chain connectors are each link's own causal sign. A chain is contradicted when the product of its signs is opposite to the direction the run observed (`ChainTemplate.observed`). | One consistent meaning removes the "growth decreases decomposition" inversion. |
 | D-R3 | A chain whose mechanism the bench cannot show (`ChainTemplate.untested`) caps at "plausible", with the reason shown. | The run observed slower mass loss; C:N is interpretation until T18. |
 | D-R4 | Literature values the learner is shown carry the `reference` tier, not `observed` or `measured`. Teaching-model outputs (ledger, heat) are `derived`. | Golden rule 4. |
@@ -188,12 +188,12 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** each claim cites a source whose text states it; `docs/sources.md` rows `doi-checked`; `mise run check` green.
 - **Depends on:** a named reviewer for the approval part.
 
-### R12 — Public-repo hygiene of `docs/research/` (S L14)
+### R12 — Public-repo hygiene of `docs/research/` (S L14) · **done**
 
-- **Problem:** `docs/research/internal-assets.md` contains internal vault paths, `hub.<base_domain>`, a `gs://` bucket and notes on customer-derived material.
-- **Direction:** move the file to the internal vault and leave a stub pointing to it, or redact paths, hosts and customer notes; extend `tests/denylist.test.ts` with hashes for the bucket and vault path prefixes.
-- **Acceptance:** `grep -rn "gs://\|hub.soilytix\|customer" docs/` finds nothing sensitive; denylist test covers the new hashes; `mise run check` green.
-- **Depends on:** —. **Blocks:** making the GitHub repo public and OD-5.
+- **Problem:** `docs/research/internal-assets.md` contained internal vault paths, the internal hub host, bucket names and notes on which items came from customer material.
+- **Direction:** redacted in place (no move): paths, hosts, buckets and customer-derived notes removed, licence conclusions kept; `tests/denylist-hashes.json` gains hashes for the bucket names and vault path prefixes.
+- **Acceptance:** a grep of `docs/` for bucket URLs, the internal hub host and the share bucket finds nothing; denylist test covers the new hashes; `mise run check` green.
+- **Depends on:** —. **Blocks:** making the GitHub repo public. No longer blocks OD-5, which stays open.
 
 ---
 
