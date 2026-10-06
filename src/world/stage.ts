@@ -10,6 +10,7 @@ import { UI } from "../styles/ui";
 import { fbm, rngFor } from "./painter/noise";
 import { paint, type Plate, type ParticleSpec, type PlateLayer, type SpriteSpec } from "./painter";
 import { HOME, clampView, easeChart, logLerp, viewTransform, type View } from "./camera";
+import { govern, initialGovernor } from "./governor";
 
 export interface ScreenView {
   s: number;
@@ -31,6 +32,8 @@ export interface StageOptions {
   onView: (v: ScreenView) => void;
   onGround: (colour: string) => void;
   onBusy: (busy: boolean) => void;
+  /** The governor's last step: frames stayed too slow even without shaders and particles. */
+  onTooSlow: () => void;
 }
 
 const SOFT = new Set(["sky", "far", "air", "grain", "mist", "deep", "water", "back", "light", "vignette"]);
@@ -154,8 +157,7 @@ export class Stage {
   private reduced: boolean;
   private dimmed = false;
   private pointer = { x: 0, y: 0, sx: 0, sy: 0 };
-  private slowFrames = 0;
-  private quality = 2;
+  private gov = initialGovernor();
   private resizeTimer = 0;
   private observer: ResizeObserver | null = null;
   private transition: {
@@ -350,7 +352,7 @@ export class Stage {
         const x = (spec.region.x0 + (spec.region.x1 - spec.region.x0) * rng()) * w;
         const y = (spec.region.y0 + (spec.region.y1 - spec.region.y0) * rng()) * h;
         sprite.position.set(x, y);
-        sprite.visible = this.quality >= 1;
+        sprite.visible = this.gov.level < 2;
         parts.addChild(sprite);
         view.particles.push({
           sprite,
@@ -466,14 +468,15 @@ export class Stage {
 
   private frame(): void {
     const dt = Math.min(this.app.ticker.deltaMS, 100) / 1000;
-    this.govern(this.app.ticker.deltaMS);
+    // Raw frame time: deltaMS is capped at 100 ms, which would slow the governor's clock.
+    this.govern(this.app.ticker.elapsedMS);
     const speed = this.reduced ? 0 : this.dimmed ? 0.25 : 1;
     this.t += dt * speed;
     const { w, h } = this.size;
     const u = Math.min(w, h);
 
     // Ambient displacement maps scroll slowly; frozen under reduced motion.
-    const amp = this.reduced || this.quality < 2 ? 0 : 1;
+    const amp = this.reduced || this.gov.level >= 1 ? 0 : 1;
     this.sway.sprite.position.set(this.t * 9, this.t * 4);
     this.sway.filter.scale.set(u * 0.007 * amp, u * 0.004 * amp);
     this.shimmer.sprite.position.set(-this.t * 14, this.t * 6);
@@ -556,7 +559,7 @@ export class Stage {
       const m = l.spec.motion;
       const want = m === "sway" ? [this.sway.filter] : m === "shimmer" ? [this.shimmer.filter] : null;
       const has = l.sprite.filters && (l.sprite.filters as unknown[]).length > 0;
-      if (want && this.quality >= 2 && !this.reduced) {
+      if (want && this.gov.level < 1 && !this.reduced) {
         if (!has) l.sprite.filters = want;
       } else if (has) {
         l.sprite.filters = [];
@@ -603,7 +606,7 @@ export class Stage {
           break;
       }
     }
-    if (this.quality < 1) return;
+    if (this.gov.level >= 2) return;
     for (const p of v.particles) {
       const { spec } = p;
       const r = spec.region;
@@ -644,15 +647,13 @@ export class Stage {
     }
   }
 
-  /** Quality governor (spec §8): drop shaders, then particles; never labels. */
+  /** Quality governor (spec §8, `./governor`): shaders, then particles, then static; never labels. */
   private govern(ms: number): void {
-    if (ms > 30) this.slowFrames++;
-    else this.slowFrames = Math.max(0, this.slowFrames - 1);
-    if (this.slowFrames > 90 && this.quality > 0) {
-      this.quality--;
-      this.slowFrames = 0;
-      if (this.quality < 1) for (const p of this.current?.particles ?? []) p.sprite.visible = false;
-    }
+    const was = this.gov.level;
+    this.gov = govern(this.gov, ms);
+    if (this.gov.level === was) return;
+    if (this.gov.level === 2) for (const p of this.current?.particles ?? []) p.sprite.visible = false;
+    if (this.gov.level === 3) this.opts.onTooSlow();
   }
 }
 

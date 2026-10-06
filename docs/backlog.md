@@ -125,7 +125,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** the canvas differs before and after "Separate the handful" and between slider extremes (pixel diff in a Playwright check); reduced motion has no tween; no text in the canvas; `mise run check` green.
 - **Depends on:** —.
 
-### R03 — Quality governor that actually steps down (P perf, E11 rest)
+### R03 — Quality governor that actually steps down (P perf, E11 rest) · **done**
 
 - **Problem:** on software GL (≈116 ms/frame) the governor in `src/world/stage.ts` (`govern`) needs 90 slow frames (~10 s) per step and never falls back to the static plate.
 - **Direction:** time-based governor: median frame time over a 2 s window; above 33 ms drop ambient shaders, then particles, then switch `World` to static mode (`mode = "static"`) with a one-line note in Settings. Never touches labels or hotspots.

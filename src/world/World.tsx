@@ -21,6 +21,8 @@ interface Props {
   children: ReactNode;
   ref?: Ref<WorldHandle>;
   onReady?: () => void;
+  /** The stage fell back to the static plate because it drew too slowly. */
+  onTooSlow?: () => void;
 }
 
 function arrival(prev: string | null, next: string): Arrival {
@@ -43,7 +45,7 @@ function webglAvailable(): boolean {
   }
 }
 
-export function World({ sceneId, reduced, forceStatic, dim, children, ref, onReady }: Props) {
+export function World({ sceneId, reduced, forceStatic, dim, children, ref, onReady, onTooSlow }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const stage = useRef<Stage | null>(null);
   const prev = useRef<string | null>(null);
@@ -56,6 +58,8 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
   const [stageReady, setStageReady] = useState(0);
   const readyRef = useRef(onReady);
   readyRef.current = onReady;
+  const slowRef = useRef(onTooSlow);
+  slowRef.current = onTooSlow;
 
   useImperativeHandle(ref, () => ({
     zoom: (f) => stage.current?.nudge(0, 0, f),
@@ -99,6 +103,10 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
           onView: applyView,
           onGround: setGround,
           onBusy: setBusy,
+          onTooSlow: () => {
+            setMode("static");
+            slowRef.current?.();
+          },
         }),
       )
       .then((s) => {

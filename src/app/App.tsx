@@ -71,6 +71,7 @@ export function App() {
   const reduced = useReducedMotion(save.settings.motion);
   const forceStatic = useMemo(() => new URLSearchParams(window.location.search).has("static"), []);
   const world = useRef<WorldHandle>(null);
+  const [tooSlow, setTooSlow] = useState(false);
   const [scanned, setScanned] = useState<SceneObject | null>(null);
   const [panel, setPanel] = useState<"truth" | "settings" | "help" | null>(null);
   const [focusCard, setFocusCard] = useState<string | undefined>(undefined);
@@ -243,6 +244,7 @@ export function App() {
         reduced={reduced}
         forceStatic={forceStatic}
         dim={notebookOpen || !!panel}
+        onTooSlow={() => setTooSlow(true)}
       >
         {route.name !== "title" && (
           <Hotspots
@@ -314,6 +316,7 @@ export function App() {
         <Settings
           save={save}
           persistent={persistent}
+          tooSlow={tooSlow}
           onMotion={(m) => update((s) => ({ ...s, settings: { ...s.settings, motion: m } }))}
           onReplace={replace}
           onReset={reset}

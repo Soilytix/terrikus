@@ -83,6 +83,7 @@ export function Help({ onClose }: { onClose: () => void }) {
 export function Settings({
   save,
   persistent,
+  tooSlow,
   onMotion,
   onReplace,
   onReset,
@@ -90,6 +91,7 @@ export function Settings({
 }: {
   save: Save;
   persistent: boolean;
+  tooSlow: boolean;
   onMotion: (m: Motion) => void;
   onReplace: (s: Save) => void;
   onReset: () => void;
@@ -128,6 +130,11 @@ export function Settings({
           </label>
         ))}
       </fieldset>
+      {tooSlow && (
+        <p className="small muted">
+          Still pictures were chosen because this device drew the moving world too slowly.
+        </p>
+      )}
       <h3>Your notebook</h3>
       <p className="small">
         {persistent
