@@ -1,0 +1,611 @@
+{
+ "plates": {
+  "valley:7": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "sky",
+      "file": "valley-7/1440x900/0-sky.avif",
+      "sha": "1c193ab9cf7ed2aaa37f0db7d9dc3e494469b36e53ae248808884931a3960552"
+     },
+     {
+      "id": "far",
+      "file": "valley-7/1440x900/1-far.avif",
+      "sha": "b141af919df6c827dbf74c63d38f6ebaea5b61a48b55e42af285a88fe5b79b69"
+     },
+     {
+      "id": "hill",
+      "file": "valley-7/1440x900/2-hill.avif",
+      "sha": "a337cb9b15fb76eb8edc4c1695fa0334b61410b1ce0ae413eebf086c6a1bc18b"
+     },
+     {
+      "id": "fields",
+      "file": "valley-7/1440x900/3-fields.avif",
+      "sha": "2e053a35d8d0c75728e06cd1c18ea0e947c4474a8d3e82dc59b338fca56ff4d2"
+     },
+     {
+      "id": "river",
+      "file": "valley-7/1440x900/4-river.avif",
+      "sha": "47af6c488cc2898e1370a67ea410358b7be60c2d8c1ef7769627165d7126d0cb"
+     },
+     {
+      "id": "fore",
+      "file": "valley-7/1440x900/5-fore.avif",
+      "sha": "8042b8e831488e6f691635ef43917c3f2dc4d6f4601c5553b553ec0825055012"
+     },
+     {
+      "id": "air",
+      "file": "valley-7/1440x900/6-air.avif",
+      "sha": "c648cf0797fa78b426531ab93d0da82a8d8dc36d89c045e24a18137a364628f4"
+     },
+     {
+      "id": "grain",
+      "file": "valley-7/1440x900/7-grain.avif",
+      "sha": "4062f1c1520e3d4a429f6c80e89ebd9ddc9d6b80da21e92d1ff8d37ac0f1c964"
+     }
+    ],
+    "flat": "valley-7/1440x900/flat.avif",
+    "ground": "#f1e7d6"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "sky",
+      "file": "valley-7/390x844/0-sky.avif",
+      "sha": "8c70d79f6d9b79e6b96a37d3a52e0c79f6246290c991df80d99c031f788c525e"
+     },
+     {
+      "id": "far",
+      "file": "valley-7/390x844/1-far.avif",
+      "sha": "a68a6663061fa2ceb051c47d7cb306c523153bbddae3ac90d7eae57dfc0da263"
+     },
+     {
+      "id": "hill",
+      "file": "valley-7/390x844/2-hill.avif",
+      "sha": "43ab0f2a1a75e19377edd370f7ae250b01c217cb05625e7992560d7e1a48ace6"
+     },
+     {
+      "id": "fields",
+      "file": "valley-7/390x844/3-fields.avif",
+      "sha": "47deee549463e019706669a96de4dea0e0f00891be71442a0c17e8e444b2b61e"
+     },
+     {
+      "id": "river",
+      "file": "valley-7/390x844/4-river.avif",
+      "sha": "c174285b35406cf4c7807be51dcb5b0de7affac0b6cf6fb8c593ce445144ba4a"
+     },
+     {
+      "id": "fore",
+      "file": "valley-7/390x844/5-fore.avif",
+      "sha": "462daf2dec4179167e4c5008838842d5ede1d674baa69064421d923c544e6b0d"
+     },
+     {
+      "id": "air",
+      "file": "valley-7/390x844/6-air.avif",
+      "sha": "f39b1996bb0ec6bd27864d4764253a7859ef7ec31d2a46d008cf9a4d9f924d7d"
+     },
+     {
+      "id": "grain",
+      "file": "valley-7/390x844/7-grain.avif",
+      "sha": "4eadd36926121d9e70c75c83377cbd650ae92fbdb92f5c6d5e333009a7fe7b88"
+     }
+    ],
+    "flat": "valley-7/390x844/flat.avif",
+    "ground": "#f1e7d6"
+   }
+  ],
+  "field-dawn:11": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "sky",
+      "file": "field-dawn-11/1440x900/0-sky.avif",
+      "sha": "fafceec0f34c25d027d532db2bd6c0a55349a1b1b9d75a44929c5dad5509fcda"
+     },
+     {
+      "id": "far",
+      "file": "field-dawn-11/1440x900/1-far.avif",
+      "sha": "e539c13eb900a7a148d58e0f9a8ec0ee1a7e4898f334bab35d927506d94ce97b"
+     },
+     {
+      "id": "hedge",
+      "file": "field-dawn-11/1440x900/2-hedge.avif",
+      "sha": "b576d8815b4291cea7cf51f1dacb52bd96029f01b868168f9b641c907805b222"
+     },
+     {
+      "id": "field",
+      "file": "field-dawn-11/1440x900/3-field.avif",
+      "sha": "3b5192dcff728e69a1a1458a0d4cad00a68de65a5b8d5d0f4a4da79bc1da0ec3"
+     },
+     {
+      "id": "mist",
+      "file": "field-dawn-11/1440x900/4-mist.avif",
+      "sha": "112e6cab51cd5cab0f9f8a18427fdd1879be1f38df13c0553e8c189b087d73e1"
+     },
+     {
+      "id": "plants",
+      "file": "field-dawn-11/1440x900/5-plants.avif",
+      "sha": "cb22effbf788146152534ce1994a18d384dd3d9d587f29828f8217c9d4402692"
+     },
+     {
+      "id": "crumbs",
+      "file": "field-dawn-11/1440x900/6-crumbs.avif",
+      "sha": "baab8d067554d18ec58ff6100018955f1d077c3ccd760cadd17927c155335b1b"
+     },
+     {
+      "id": "air",
+      "file": "field-dawn-11/1440x900/7-air.avif",
+      "sha": "339a6857b10c2dd4b6b1538a10f24d31ce0945ad45c21baf5c2516bcf3b3985f"
+     },
+     {
+      "id": "grain",
+      "file": "field-dawn-11/1440x900/8-grain.avif",
+      "sha": "ad360a7bb1b48af3d4e3ca495f5e28c8e2eadc6f10eb83a9903475d3f89e298e"
+     }
+    ],
+    "flat": "field-dawn-11/1440x900/flat.avif",
+    "ground": "#f1e7d6"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "sky",
+      "file": "field-dawn-11/390x844/0-sky.avif",
+      "sha": "b1b75e1f1d6d7fe0617d9d0afe12c5fa60541e253cec8629d0c008dee9f04677"
+     },
+     {
+      "id": "far",
+      "file": "field-dawn-11/390x844/1-far.avif",
+      "sha": "b2fc5cc5fd7fa6ef9c8d45dc32f6b0cac63ced4bf151314608e8120273e213fa"
+     },
+     {
+      "id": "hedge",
+      "file": "field-dawn-11/390x844/2-hedge.avif",
+      "sha": "4728f4f02db2c2b5f31350ee1387d51e74b3948d46563587cbaad5b4df812c9b"
+     },
+     {
+      "id": "field",
+      "file": "field-dawn-11/390x844/3-field.avif",
+      "sha": "fab801d552f49c355041b918deafc73755b4aee891e0d610adc3fc7f96574c80"
+     },
+     {
+      "id": "mist",
+      "file": "field-dawn-11/390x844/4-mist.avif",
+      "sha": "fa7af562295b39945e9665120760e9050bf129e275415da48f5f47dacc362295"
+     },
+     {
+      "id": "plants",
+      "file": "field-dawn-11/390x844/5-plants.avif",
+      "sha": "59b291ed178bb503dbe897c0fbe97865d263e7d9d38c8b1978397f867f559b0d"
+     },
+     {
+      "id": "crumbs",
+      "file": "field-dawn-11/390x844/6-crumbs.avif",
+      "sha": "1e7f3809361f283982625cc28b87376781f7b49e71484fb5eb6471856efcbe28"
+     },
+     {
+      "id": "air",
+      "file": "field-dawn-11/390x844/7-air.avif",
+      "sha": "fbb2ff384b85052381b0149c6794504f299570c4b57059afd93d17db6ad83f09"
+     },
+     {
+      "id": "grain",
+      "file": "field-dawn-11/390x844/8-grain.avif",
+      "sha": "a9554ed4ffa87afe5b077d0458fe6f2d9e6b34c542866d3987a83220a25d12e9"
+     }
+    ],
+    "flat": "field-dawn-11/390x844/flat.avif",
+    "ground": "#f1e7d6"
+   }
+  ],
+  "handful:23": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "handful-23/1440x900/0-back.avif",
+      "sha": "06c2aad3b5b6c7020bda49bdf7fd9a2202ab012eae0b01b9129ea7a0d30f09ca"
+     },
+     {
+      "id": "heap",
+      "file": "handful-23/1440x900/1-heap.avif",
+      "sha": "3cb9b55f6ab12d7060fd4ca13979bb374f14b5ba1c3218deb12cc608c3df386c"
+     },
+     {
+      "id": "detail",
+      "file": "handful-23/1440x900/2-detail.avif",
+      "sha": "c0892db0af8ec06565394d22eb01078e17a3f6557f6df91711eaaf096bdb6681"
+     },
+     {
+      "id": "vignette",
+      "file": "handful-23/1440x900/3-vignette.avif",
+      "sha": "75bff82fb0aae5edc0d4219fe31340b5355241fe9f7bb0be3b0b81da28545017"
+     },
+     {
+      "id": "grain",
+      "file": "handful-23/1440x900/4-grain.avif",
+      "sha": "64c508cd07bdd0a1d5ed2880be5d427fb90d49633f13750bc3d94bcf82135ac5"
+     }
+    ],
+    "flat": "handful-23/1440x900/flat.avif",
+    "ground": "#423c2d"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "handful-23/390x844/0-back.avif",
+      "sha": "7397e60a6aa7cbbf60128ba21fa1697767b725745f96b6e07a98248707398099"
+     },
+     {
+      "id": "heap",
+      "file": "handful-23/390x844/1-heap.avif",
+      "sha": "c108fc73eaf1de6830bf0853e67f65c2dae06f8ab8e0c5de33392a8549d9da1c"
+     },
+     {
+      "id": "detail",
+      "file": "handful-23/390x844/2-detail.avif",
+      "sha": "56fb72d89941f47256b3ee0f01b292ebb0524b952ea8d84f774c761e77e71b82"
+     },
+     {
+      "id": "vignette",
+      "file": "handful-23/390x844/3-vignette.avif",
+      "sha": "2d4339baf47b9aee2a3108e36fa51a03847e0473a7608614f2bd69a3808192a6"
+     },
+     {
+      "id": "grain",
+      "file": "handful-23/390x844/4-grain.avif",
+      "sha": "a250aac34dbaea340450d40fb9c228821c231ecd0e4fd588f47196b1402c19da"
+     }
+    ],
+    "flat": "handful-23/390x844/flat.avif",
+    "ground": "#423c2d"
+   }
+  ],
+  "pore:37": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "deep",
+      "file": "pore-37/1440x900/0-deep.avif",
+      "sha": "fe8016c1a8ff649a026de8b57bcbdbbcaa30e177d72b55221f14b77af76bf3b5"
+     },
+     {
+      "id": "film",
+      "file": "pore-37/1440x900/1-film.avif",
+      "sha": "39e4fcaca1ee51f97e8a86057495494ce2db7b1c3b2dcb7882e8c40e41a20a7e"
+     },
+     {
+      "id": "grains",
+      "file": "pore-37/1440x900/2-grains.avif",
+      "sha": "b5bd5a47fa23f20bb6fd0559651c2452c6ba430f012c47d1c41feded33ee8907"
+     },
+     {
+      "id": "light",
+      "file": "pore-37/1440x900/3-light.avif",
+      "sha": "33dae8df1a6bd09f1da3362ab7e8978a1accabb440b4206a091fc580dc6e6160"
+     },
+     {
+      "id": "grain",
+      "file": "pore-37/1440x900/4-grain.avif",
+      "sha": "d49e27dadbdcec3345b33765a37c24b2ff2871365484c2a714443d01f537910d"
+     }
+    ],
+    "flat": "pore-37/1440x900/flat.avif",
+    "ground": "#161c19"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "deep",
+      "file": "pore-37/390x844/0-deep.avif",
+      "sha": "2227e3c582642dce3ca104879a2b0a8749a833683d68ac9988347599b25a923f"
+     },
+     {
+      "id": "film",
+      "file": "pore-37/390x844/1-film.avif",
+      "sha": "d4b2bfd0a0e223c9f12b245f261e43968055a2ff00006ba8f76e777d1a4296a6"
+     },
+     {
+      "id": "grains",
+      "file": "pore-37/390x844/2-grains.avif",
+      "sha": "08477ed74244707281211636cab2a4edc2b54b5b9b8e043031f69ecc71a31b8c"
+     },
+     {
+      "id": "light",
+      "file": "pore-37/390x844/3-light.avif",
+      "sha": "1fdd0dd1c6ae74b928cf35d754263c5317e2ac600b4e5a9f42dc680759d4b907"
+     },
+     {
+      "id": "grain",
+      "file": "pore-37/390x844/4-grain.avif",
+      "sha": "c064737ee5c9c93e8f78090bbac3d538f32bd426ed6179abb4742f463267b14b"
+     }
+    ],
+    "flat": "pore-37/390x844/flat.avif",
+    "ground": "#161c19"
+   }
+  ],
+  "hedge-edge:53": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "sky",
+      "file": "hedge-edge-53/1440x900/0-sky.avif",
+      "sha": "b469d75a5679b4381a2f260a64d7563f18e051489f93a81618b82d0f78c923c0"
+     },
+     {
+      "id": "far",
+      "file": "hedge-edge-53/1440x900/1-far.avif",
+      "sha": "4d53c16f56f00f97b9cbdca4e12577797f57271cbb9441a14a6eba449082e079"
+     },
+     {
+      "id": "hedge",
+      "file": "hedge-edge-53/1440x900/2-hedge.avif",
+      "sha": "4247b0d1203dedb71bab101ea9a79dbbf141a9fa4f787cbbac5051447fa73d2a"
+     },
+     {
+      "id": "ground",
+      "file": "hedge-edge-53/1440x900/3-ground.avif",
+      "sha": "b02ed2dd57f6afa8eb5a1660cf3454df4a9050fde03ea82011231cb2e6bbd0f1"
+     },
+     {
+      "id": "crown",
+      "file": "hedge-edge-53/1440x900/4-crown.avif",
+      "sha": "21633d22e00832c074338db61e1fe94e288058b0e7b83315ec28e82faf1da397"
+     },
+     {
+      "id": "hero",
+      "file": "hedge-edge-53/1440x900/5-hero.avif",
+      "sha": "895bb6df796c0fcb74cba6d3053a07e0f1604483298faa3b5ea7e635a59c6fab"
+     },
+     {
+      "id": "air",
+      "file": "hedge-edge-53/1440x900/6-air.avif",
+      "sha": "e92b184972d2c45274d68a7602c89446895fad2098202d0dbc2e5aaa1ab4f163"
+     },
+     {
+      "id": "grain",
+      "file": "hedge-edge-53/1440x900/7-grain.avif",
+      "sha": "be0665e2c7320184d1dfe8b5c42673998c64a264a2bc98cd19fe4b9b3db71945"
+     }
+    ],
+    "flat": "hedge-edge-53/1440x900/flat.avif",
+    "ground": "#f1e7d6"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "sky",
+      "file": "hedge-edge-53/390x844/0-sky.avif",
+      "sha": "ad9ce9c146b63f2f29e90f1b6591c5b0c97907ca86ce045a1fd8160bf382aded"
+     },
+     {
+      "id": "far",
+      "file": "hedge-edge-53/390x844/1-far.avif",
+      "sha": "d89518578767ad2845e03f72337614bd2e438ffe577c71e40f444a82ba4dfd7e"
+     },
+     {
+      "id": "hedge",
+      "file": "hedge-edge-53/390x844/2-hedge.avif",
+      "sha": "098eb3071afa80fb51bba8f1d66f483a2606f4fd645a657b7b9d1036c2da947c"
+     },
+     {
+      "id": "ground",
+      "file": "hedge-edge-53/390x844/3-ground.avif",
+      "sha": "8d627e8051c77ca374511a164a4e2d23d306a38fc495b0632a5a972e47f8c715"
+     },
+     {
+      "id": "crown",
+      "file": "hedge-edge-53/390x844/4-crown.avif",
+      "sha": "a195210b314d54feaaf98edb8d93377036fbfbd61cec20ccf524be54eae54561"
+     },
+     {
+      "id": "hero",
+      "file": "hedge-edge-53/390x844/5-hero.avif",
+      "sha": "fa77f96bda806822f38b1b480a3b78320fce12ae52765197afba24e14a3f9524"
+     },
+     {
+      "id": "air",
+      "file": "hedge-edge-53/390x844/6-air.avif",
+      "sha": "92b07ff992712abdf99252d72f9521eb307e1684c95b509f138f9b8b50b989fa"
+     },
+     {
+      "id": "grain",
+      "file": "hedge-edge-53/390x844/7-grain.avif",
+      "sha": "c9e89fcaff6efae98b87912c434becda1d9100c121868d332bd8e3048f2d8d4e"
+     }
+    ],
+    "flat": "hedge-edge-53/390x844/flat.avif",
+    "ground": "#f1e7d6"
+   }
+  ],
+  "litter:71": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "litter-71/1440x900/0-back.avif",
+      "sha": "4435c34bd32c6c09f030145a82f3555fe71416345765a49d27efe44904bd50ff"
+     },
+     {
+      "id": "face",
+      "file": "litter-71/1440x900/1-face.avif",
+      "sha": "882facec5e64574ad840442295299110ef2b98b70ae2c82ded84230e1a872e36"
+     },
+     {
+      "id": "soil",
+      "file": "litter-71/1440x900/2-soil.avif",
+      "sha": "92e2599f45825c3e92ac4f3c9cc5ac820177497fd64422ede3d3278c17c2fe06"
+     },
+     {
+      "id": "litter",
+      "file": "litter-71/1440x900/3-litter.avif",
+      "sha": "34a91ca73b326262dd3ac4088e0d193f9fd961c804eac1aa8b76ccb54756d0c2"
+     },
+     {
+      "id": "web",
+      "file": "litter-71/1440x900/4-web.avif",
+      "sha": "1a94419018dd7ed12ae2120af6ece7630e482e2412a1e6db1d93290f7cce5339"
+     },
+     {
+      "id": "light",
+      "file": "litter-71/1440x900/5-light.avif",
+      "sha": "bba996d1bb685321e3a9140dc621eb8ede898ef87b0391c72acab8094a42b5a0"
+     },
+     {
+      "id": "grain",
+      "file": "litter-71/1440x900/6-grain.avif",
+      "sha": "bf0a45943c96e02696c45d394195bba713e56552be4d2d9854f41b3f71b8a823"
+     }
+    ],
+    "flat": "litter-71/1440x900/flat.avif",
+    "ground": "#161c19"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "litter-71/390x844/0-back.avif",
+      "sha": "6342eb8f632d05345e5ade127adbcb6be456481557b5f3b8a7274f5a121dd246"
+     },
+     {
+      "id": "face",
+      "file": "litter-71/390x844/1-face.avif",
+      "sha": "d08544cb9d0ef861c10eabc44c5f1d9564d1f6464f767fd9603128cff72e3932"
+     },
+     {
+      "id": "soil",
+      "file": "litter-71/390x844/2-soil.avif",
+      "sha": "ce0f862dba508960c4d1ff41684fdb338c881de25dd0a5864f6a14519ca28a35"
+     },
+     {
+      "id": "litter",
+      "file": "litter-71/390x844/3-litter.avif",
+      "sha": "e01f5691d30c06070407884e6d5ac51b8a915368cfb7944bc130812ff7674d2c"
+     },
+     {
+      "id": "web",
+      "file": "litter-71/390x844/4-web.avif",
+      "sha": "b4f84d79ee4d58e34310b79222bcf3953cceab8f726bfef69cf48ca56a5101c8"
+     },
+     {
+      "id": "light",
+      "file": "litter-71/390x844/5-light.avif",
+      "sha": "4336742fd6a97fdc53d4cd5e3234e53f082f45bd11930b3463d3e7c6cbac6d38"
+     },
+     {
+      "id": "grain",
+      "file": "litter-71/390x844/6-grain.avif",
+      "sha": "b93a1e1d3d0c260607d255639f2f5f9b983f6fb207c1efe68c0d31a3505cb8d1"
+     }
+    ],
+    "flat": "litter-71/390x844/flat.avif",
+    "ground": "#161c19"
+   }
+  ],
+  "pore-leaf:89": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "water",
+      "file": "pore-leaf-89/1440x900/0-water.avif",
+      "sha": "c6d87e819cca1530aaa64d6faa877d9f3b3df4901dd07fb3462ccc6cfaf5a0f6"
+     },
+     {
+      "id": "clay",
+      "file": "pore-leaf-89/1440x900/1-clay.avif",
+      "sha": "2eff0f258b6463ccf48d2ba528ce4bd1dea5764c52bd0fc61661da8a66ccc679"
+     },
+     {
+      "id": "film",
+      "file": "pore-leaf-89/1440x900/2-film.avif",
+      "sha": "2ca9e434a09e9ee6a63e2c9107b9425c93ae1415bcfbdb3453b82bd499b4abab"
+     },
+     {
+      "id": "grains",
+      "file": "pore-leaf-89/1440x900/3-grains.avif",
+      "sha": "2edae0f1a800e83c7724aa9cf3aa2a032e996057f82779fa1f45f5a445cc2f5f"
+     },
+     {
+      "id": "fragment",
+      "file": "pore-leaf-89/1440x900/4-fragment.avif",
+      "sha": "188cc23ec76cfec7f488b59772aa781212b06fe59e9b2b30eefd34562a949400"
+     },
+     {
+      "id": "grain",
+      "file": "pore-leaf-89/1440x900/5-grain.avif",
+      "sha": "8827581bfcf581c1e50fbb7b7c19c362e5a84767f28e0838dd355ce08866306f"
+     }
+    ],
+    "flat": "pore-leaf-89/1440x900/flat.avif",
+    "ground": "#07262d"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "water",
+      "file": "pore-leaf-89/390x844/0-water.avif",
+      "sha": "5767e8a4e301fe2099a0b37f38f16c93bf9753e8dd395e6a6c75d5546f88793e"
+     },
+     {
+      "id": "clay",
+      "file": "pore-leaf-89/390x844/1-clay.avif",
+      "sha": "9a5c962ece2a27734602cc39f7c50860fa01037fb674880b712575a53f549360"
+     },
+     {
+      "id": "film",
+      "file": "pore-leaf-89/390x844/2-film.avif",
+      "sha": "1ba8942da54457a40e835d775331864dd05e92ab5bd66f8f730d4a90a90468ef"
+     },
+     {
+      "id": "grains",
+      "file": "pore-leaf-89/390x844/3-grains.avif",
+      "sha": "b3f18a227ed7c5b36123b41a3f65c70f31742527b53fa85154f0e025aa2af7b5"
+     },
+     {
+      "id": "fragment",
+      "file": "pore-leaf-89/390x844/4-fragment.avif",
+      "sha": "bcf568454f7bfd146af4f194688ba4012c7a47ae2c894cc96d9036eeef9bd4ab"
+     },
+     {
+      "id": "grain",
+      "file": "pore-leaf-89/390x844/5-grain.avif",
+      "sha": "a1ba7bf0fa2ec14c6e24c902853db2a83287f6b93d438bfb581cb5097b8f2cfc"
+     }
+    ],
+    "flat": "pore-leaf-89/390x844/flat.avif",
+    "ground": "#07262d"
+   }
+  ]
+ },
+ "timelapses": {}
+}

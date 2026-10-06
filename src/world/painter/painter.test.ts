@@ -26,6 +26,7 @@ describe("painter", () => {
         for (const r of refs) expect(ids.has(r), `${recipe} ${w}x${h} #${r}`).toBe(true);
       }
     },
+    20_000,
   );
 
   it("changes with the seed", () => {

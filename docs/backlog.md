@@ -229,7 +229,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** missions `c1-m1`–`c1-m4` playable; film connectivity tests; amoeba moves only along connected films; OD-10 respected (guided movement unless decided otherwise).
 - **Depends on:** T10, T12
 
-### T14 — Offline plate baker and time-lapse
+### T14 — Offline plate baker and time-lapse · **done**
 
 - **Goal:** higher-quality AVIF plates and stillwet-style time-lapses.
 - **Scope:** `tools/bake-plates.ts` using the T07 painter in Node; AVIF output; time-lapse frame sets; plate budget check.

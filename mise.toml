@@ -59,7 +59,12 @@ run = [
   "pnpm exec vite build",
   "pnpm exec tsx tools/bundle-scan.ts",
   "pnpm exec tsx tools/budget.ts",
+  "pnpm exec tsx tools/plate-budget.ts",
 ]
+
+[tasks.bake]
+description = "Bake AVIF plates and time-lapse frames into public/plates/ (slow; after a recipe changes)"
+run = "pnpm exec tsx tools/bake-plates.ts"
 
 [tasks.serve]
 description = "Serve the built dist/ (what ships)"

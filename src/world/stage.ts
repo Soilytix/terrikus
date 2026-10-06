@@ -33,11 +33,13 @@ export interface StageOptions {
   onView: (v: ScreenView) => void;
   onGround: (colour: string) => void;
   onBusy: (busy: boolean) => void;
+  /** Where the scene's layers came from: a baked plate or the painter. */
+  onPlate: (source: "baked" | "painted") => void;
   /** The governor's last step: frames stayed too slow even without shaders and particles. */
   onTooSlow: () => void;
 }
 
-const SOFT = new Set(["sky", "far", "air", "grain", "mist", "deep", "water", "back", "light", "vignette"]);
+import { SOFT, loadManifest, pickBaked, plateUrl, sameLayers } from "./baked";
 const PARALLAX_PX = 9;
 const ZOOM_MS = 1100;
 const FADE_MS = 200;
@@ -86,14 +88,18 @@ class SceneView {
   }
 }
 
+async function imageTexture(src: string): Promise<Texture> {
+  const img = new Image();
+  img.decoding = "async";
+  img.src = src;
+  await img.decode();
+  return Texture.from(img);
+}
+
 async function svgTexture(svg: string): Promise<Texture> {
   const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
   try {
-    const img = new Image();
-    img.decoding = "async";
-    img.src = url;
-    await img.decode();
-    return Texture.from(img);
+    return await imageTexture(url);
   } finally {
     URL.revokeObjectURL(url);
   }
@@ -304,9 +310,19 @@ export class Stage {
     // Scale only sets the raster size, so soft layers are rastered at 1× by rewriting it, not repainted.
     const soft = (svg: string) =>
       svg.replace(/^(<svg [^>]*?)width="\d+" height="\d+"/, `$1width="${crisp.w}" height="${crisp.h}"`);
-    const textures = await Promise.all(
-      crisp.layers.map((l) => svgTexture(SOFT.has(l.id) ? soft(l.svg) : l.svg)),
-    );
+    const painted = () =>
+      Promise.all(crisp.layers.map((l) => svgTexture(SOFT.has(l.id) ? soft(l.svg) : l.svg)));
+    // A baked plate of about this shape stands in for the layer rasters; a missing file falls back to painting.
+    const manifest = await loadManifest();
+    const baked = manifest ? pickBaked(manifest, recipe, seed, w, h) : undefined;
+    let textures: Texture[] | null = null;
+    if (baked && sameLayers(baked, crisp)) {
+      const loaded = await Promise.allSettled(baked.layers.map((l) => imageTexture(plateUrl(l.file))));
+      if (loaded.every((r) => r.status === "fulfilled")) textures = loaded.map((r) => r.value);
+      else for (const r of loaded) if (r.status === "fulfilled") r.value.destroy(true);
+    }
+    this.opts.onPlate(textures ? "baked" : "painted");
+    textures ??= await painted();
     const spriteTextures = await Promise.all(crisp.sprites.map((s) => svgTexture(s.svg)));
     textures.forEach((texture, i) => {
       const spec = crisp.layers[i]!;

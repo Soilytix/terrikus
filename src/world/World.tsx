@@ -5,6 +5,7 @@
  */
 import { useEffect, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from "react";
 import { scene as sceneById } from "../content";
+import { loadManifest, pickBaked, plateUrl as bakedUrl } from "./baked";
 import type { Arrival, Stage, ScreenView } from "./stage";
 
 export interface WorldHandle {
@@ -55,6 +56,7 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
   const [busy, setBusy] = useState(true);
   const [ground, setGround] = useState<string | undefined>(undefined);
   const [plateUrl, setPlateUrl] = useState<string | null>(null);
+  const [plateSource, setPlateSource] = useState<"baked" | "painted" | undefined>(undefined);
   const [stageReady, setStageReady] = useState(0);
   const readyRef = useRef(onReady);
   readyRef.current = onReady;
@@ -103,6 +105,7 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
           onView: applyView,
           onGround: setGround,
           onBusy: setBusy,
+          onPlate: setPlateSource,
           onTooSlow: () => {
             setMode("static");
             slowRef.current?.();
@@ -145,14 +148,34 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
       });
       return;
     }
-    // Static plate: painted once per size, no motion.
+    // Static plate: baked when one fits the viewport, else painted once per size; no motion.
     let alive = true;
     let url: string | null = null;
-    const paintNow = () => {
+    const paintNow = async () => {
       const el = host.current;
       if (!el) return;
       const w = el.clientWidth || 1;
       const h = el.clientHeight || 1;
+      const manifest = await loadManifest();
+      const baked = manifest ? pickBaked(manifest, s.recipe, s.seed, w, h) : undefined;
+      if (baked) {
+        const img = new Image();
+        img.src = bakedUrl(baked.flat);
+        const ok = await img.decode().then(
+          () => true,
+          () => false,
+        );
+        if (!alive) return;
+        if (ok) {
+          setGround(baked.ground);
+          setPlateUrl(img.src);
+          setPlateSource("baked");
+          applyView({ s: 1, tx: 0, ty: 0, w, h });
+          setBusy(false);
+          readyRef.current?.();
+          return;
+        }
+      }
       void import("./painter/remote")
         .then(({ paintStaticOff }) => paintStaticOff(s.recipe, s.seed, w, h, 1))
         .then(({ plate, svg }) => {
@@ -161,16 +184,17 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
           url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
           setGround(plate.ground);
           setPlateUrl(url);
+          setPlateSource("painted");
           applyView({ s: 1, tx: 0, ty: 0, w, h });
           setBusy(false);
           readyRef.current?.();
         });
     };
-    paintNow();
+    void paintNow();
     let t = 0;
     const ro = new ResizeObserver(() => {
       window.clearTimeout(t);
-      t = window.setTimeout(paintNow, 250);
+      t = window.setTimeout(() => void paintNow(), 250);
     });
     if (host.current) ro.observe(host.current);
     return () => {
@@ -182,7 +206,12 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
   }, [sceneId, mode, stageReady]);
 
   return (
-    <div className="world" style={ground ? { background: ground } : undefined} data-mode={mode}>
+    <div
+      className="world"
+      style={ground ? { background: ground } : undefined}
+      data-mode={mode}
+      data-plate={plateSource}
+    >
       <div ref={host} className="world-canvas" aria-hidden="true">
         {mode === "static" && plateUrl && <img src={plateUrl} alt="" className="world-plate" />}
       </div>
