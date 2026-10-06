@@ -222,12 +222,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** every organism in WB§4 has an SVG with manifest entry, reference URL and truth tag; atlas loads in ≤ 1 draw call per scene layer.
 - **Depends on:** T06, T11
 
-### T13 — Chapter 1: The Pore Labyrinth
+### T13 — Chapter 1: The Pore Labyrinth · **done**
 
 - **Goal:** texture, structure, pores; the amoeba avatar.
 - **Scope:** port the prototype water-film graph (BFS) into `src/sim/films.ts`; chapter content `c1-*`; feel-test flow diagram; slake test.
 - **Acceptance:** missions `c1-m1`–`c1-m4` playable; film connectivity tests; amoeba moves only along connected films; OD-10 respected (guided movement unless decided otherwise).
 - **Depends on:** T10, T12
+- **Done:** `src/sim/films.ts` (film graph, BFS `route`, `hop` refuses broken films and too-narrow pores, `grazerWeek`) and `src/sim/aggregates.ts` (slake, binding agents under tillage); content in `src/content/chapters/c1/`; recipes `c1-grain-ruler`, `c1-aggregate-cut`, `c1-labyrinth`; e2e `e2e/c1.spec.ts`. Movement is guided (OD-10 still pending). Open: the scientist-lens porosity payoff and the two expected chains; the texture triangle is not vendored; the aggregate plate budget is at 2.49 / 2.5 MB.
 
 ### T14 — Offline plate baker and time-lapse · **done**
 

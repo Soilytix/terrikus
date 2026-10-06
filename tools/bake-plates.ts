@@ -52,7 +52,7 @@ export function layerSvg(l: PlateLayer, w: number, h: number): string {
 const avif = (svg: string, density = 72) =>
   sharp(Buffer.from(svg), { density }).avif({ quality: QUALITY, effort: 6 }).toBuffer();
 
-async function bakePlate(recipe: string, seed: number, w: number, h: number): Promise<BakedPlate> {
+export async function bakePlate(recipe: string, seed: number, w: number, h: number): Promise<BakedPlate> {
   const plate = paint(recipe, seed, w, h, BAKE_SCALE);
   const dir = `${recipe}-${seed}/${w}x${h}`;
   mkdirSync(join(OUT, dir), { recursive: true });

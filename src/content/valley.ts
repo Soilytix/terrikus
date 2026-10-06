@@ -28,7 +28,6 @@ const later = (
 
 /** Hooks verbatim from the world-bible chapter map. */
 const LATER_CHAPTERS: Chapter[] = [
-  later("c1", "1", "The Pore Labyrinth", "Why is this bacterium starving next to food?", "spinach"),
   later("c3", "3", "Water Roads", "After the dry spell, the soil breathed out a burst.", "spinach"),
   later("c4", "4", "Breath and Rust", "The flooded field smells of eggs, and the rice is fine.", "rice"),
   later("c5", "5", "Charged Surfaces", "The fertiliser stayed exactly where the clay was.", "spinach"),
@@ -95,6 +94,14 @@ export const valleyScene: Scene = {
       to: "p-field-dawn",
     },
     {
+      id: "crumb",
+      label: "A crumb of the spinach field",
+      kind: "portal",
+      anchor: { x: 0.36, y: 0.74 },
+      to: "c1-grain-ruler",
+      requires: "chapter:c1",
+    },
+    {
       id: "hedge",
       label: "The hedge at the field edge",
       kind: "portal",
@@ -125,6 +132,22 @@ export const DISCOVERIES: Discovery[] = [
   },
   { id: "d-p-scale-100", statement: "One step down the ladder: ×100.", evidenceTier: "observed" },
   { id: "d-p-sleepers", statement: "Most microbes here are dormant.", evidenceTier: "derived" },
+  {
+    id: "d-c1-texture",
+    statement: "Texture is what it's made of; structure is how it's built.",
+    evidenceTier: "interpreted",
+  },
+  { id: "d-c1-refuge", statement: "Small pores are refuges.", evidenceTier: "derived" },
+  {
+    id: "d-c1-slake",
+    statement: "A crumb from long-ploughed soil fell apart in water faster than one from grassland.",
+    evidenceTier: "observed",
+  },
+  {
+    id: "d-c1-string",
+    statement: "Hyphae are string: roots and fungi tie crumbs together.",
+    evidenceTier: "derived",
+  },
   {
     id: "d-c2-conserved",
     statement: "Carbon is never destroyed; I traced it into air, biomass and minerals.",

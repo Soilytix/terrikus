@@ -2418,3 +2418,124 @@ input[type="range"] {
   font-size: 14px;
   margin-bottom: 4px;
 }
+
+/* Chapter 1 (T13): labyrinth map, run table, feel-test diagram, slake beakers, crumb */
+.labyrinth-map {
+  width: 100%;
+  height: auto;
+  background: var(--w-dark);
+  border-radius: var(--radius-md);
+}
+.labyrinth-map .film {
+  stroke: var(--w-water);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+.labyrinth-map .film[data-held="false"] {
+  stroke: var(--w-stone-1);
+  stroke-width: 0.8;
+  stroke-dasharray: 1.5 2;
+}
+.labyrinth-map .pore {
+  fill: var(--w-deep);
+  stroke: var(--w-film);
+  stroke-width: 0.5;
+}
+.labyrinth-map .pore[data-colony="true"] {
+  fill: var(--w-clay);
+}
+.labyrinth-map .pore-label {
+  font-size: 3px;
+  fill: var(--w-film);
+  font-family: var(--font-mono);
+}
+.labyrinth-map .amoeba-dot {
+  fill: var(--color-brand-primary);
+  stroke: var(--color-ink);
+  stroke-width: 0.6;
+  transition:
+    cx 0.3s var(--ease-chart),
+    cy 0.3s var(--ease-chart);
+}
+.run-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  margin: 8px 0;
+}
+.run-table th,
+.run-table td {
+  text-align: left;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+.flow-diagram {
+  font-size: 13px;
+  margin-top: 8px;
+}
+.flow-diagram li[data-on="true"] {
+  font-weight: 600;
+}
+.flow-diagram li li {
+  font-weight: 400;
+}
+.flow-diagram li[data-taken="true"] {
+  text-decoration: underline;
+  text-decoration-color: var(--color-brand-primary);
+  text-decoration-thickness: 3px;
+}
+.slake-row {
+  display: flex;
+  gap: 12px;
+}
+.slake {
+  margin: 0;
+  flex: 1;
+  font-size: 13px;
+}
+.beaker {
+  width: 100%;
+  max-width: 120px;
+  display: block;
+}
+.beaker-water {
+  fill: var(--w-film);
+}
+.beaker-heap {
+  fill: var(--w-subsoil);
+}
+.beaker-crumb {
+  fill: var(--w-loam);
+  transition: r 0.5s var(--ease-chart);
+}
+.beaker-glass {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.5;
+}
+.crumb-agents {
+  border: 0;
+  padding: 0;
+  margin: 0 0 8px;
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+.crumb-state {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  font-size: 14px;
+}
+.crumb-state dd {
+  margin: 0;
+}
+.crumb-state dd[data-ok="true"] {
+  font-weight: 600;
+}
+@media (prefers-reduced-motion: reduce) {
+  .labyrinth-map .amoeba-dot,
+  .beaker-crumb {
+    transition: none;
+  }
+}

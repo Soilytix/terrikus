@@ -10,9 +10,12 @@ import { advance, currentStep, isScanned, setFlag, stepIndex, visibleObjects } f
 import { appendLab } from "../save/schema";
 import { RULESET_VERSION, DEFAULT_LEVERS } from "../sim/benches/leaf-jar";
 import { href, targetHref } from "../app/router";
+import { BuildCrumb, Slake } from "./Aggregates";
 import { ChainBuilder } from "./ChainBuilder";
 import { Composition } from "./Composition";
+import { FeelTest } from "./FeelTest";
 import { HandDecompose } from "./HandDecompose";
+import { GrazerWeek, Labyrinth } from "./Labyrinth";
 import { WaterAir } from "./WaterAir";
 import { Facts } from "./common";
 
@@ -24,6 +27,7 @@ interface Props {
   update: (fn: (s: Save) => Save) => void;
   go: (href: string) => void;
   narrate: (text: string) => void;
+  reduced: boolean;
 }
 
 function Choices({
@@ -108,6 +112,7 @@ function StepBody({
   go,
   narrate,
   sceneId,
+  reduced,
 }: Props & { mission: Mission; step: Step }) {
   const next = () => update((s) => advance(s, m.id));
   const [picked, setPicked] = useState<string[]>([]);
@@ -440,6 +445,47 @@ function StepBody({
         </>
       );
     }
+    case "feel-test":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <FeelTest diagram={step.diagram} sample={step.sample} onClass={next} />
+          <Facts facts={step.facts} />
+        </>
+      );
+    case "labyrinth":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <Labyrinth goals={step.goals} reduced={reduced} onDone={next} />
+        </>
+      );
+    case "grazer-week":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <GrazerWeek
+            moisture={step.moisture}
+            resultText={step.resultText}
+            facts={step.facts}
+            onDone={next}
+          />
+        </>
+      );
+    case "slake":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <Slake reduced={reduced} resultText={step.resultText} facts={step.facts} onDone={next} />
+        </>
+      );
+    case "build-crumb":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <BuildCrumb resultText={step.resultText} facts={step.facts} onDone={next} />
+        </>
+      );
     case "rumor":
       return (
         <>

@@ -45,7 +45,7 @@ describe("progress", () => {
     expect(currentStep(s, activeMission("prologue", s)!)?.kind).toBe("discover");
   });
 
-  it("unlocks chapter 2 when the prologue is complete, with its rumor", () => {
+  it("unlocks chapters 1 and 2 when the prologue is complete, with their rumors", () => {
     let s = finish(freshSave(), "p-m1");
     s = finish(s, "p-m2");
     expect(s.chaptersComplete).toContain("prologue");
@@ -53,8 +53,11 @@ describe("progress", () => {
     expect(s.rumors["r-c2-leaf"]).toBe("glimpsed");
     expect(s.rumors["r-p-starving"]).toBe("glimpsed");
     expect(visibleObjects(scene("valley")!, s).map((o) => o.id)).toContain("hedge");
+    expect(s.chaptersUnlocked).toContain("c1");
+    expect(s.rumors["r-c1"]).toBe("glimpsed");
+    expect(visibleObjects(scene("valley")!, s).map((o) => o.id)).toContain("crumb");
     // Later chapters are not playable, so they stay locked.
-    expect(s.chaptersUnlocked).not.toContain("c1");
+    expect(s.chaptersUnlocked).not.toContain("c3");
   });
 
   it("opens the bench when a bench step becomes current", () => {

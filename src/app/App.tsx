@@ -297,6 +297,7 @@ export function App() {
             update={update}
             go={go}
             narrate={narrate}
+            reduced={reduced || forceStatic}
           />
           {scanned && (
             <ScanCard

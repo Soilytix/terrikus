@@ -88,4 +88,14 @@ export const MISCONCEPTIONS: Misconception[] = [
     misconception: "45/5/25/25 is a constant",
     correctIdea: "An idealised moist loam; real soils range widely",
   },
+  {
+    id: "M29",
+    misconception: "Clay is bad soil, sand is good soil",
+    correctIdea: "Each texture trades off: clay holds water and nutrients, sand drains and warms",
+  },
+  {
+    id: "M30",
+    misconception: "Bigger pores are better",
+    correctIdea: "Wide pores drain and let air in; narrow pores hold water and shelter microbes",
+  },
 ];

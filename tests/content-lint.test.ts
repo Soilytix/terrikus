@@ -23,6 +23,7 @@ import { MISCONCEPTIONS } from "../src/content/misconceptions";
 import { WORLDS } from "../src/content/worlds";
 import { ASSETS, INTERNAL_ASSETS } from "../src/assets/manifest";
 import { BENCHES, isBenchId } from "../src/sim/benches";
+import { LABYRINTH, blockedBy } from "../src/sim/films";
 import { NO_GOOD_BAD, NO_SCORES, lintReview, lintSources, strings } from "./lib/content-lint";
 
 const ALL = { CHAPTERS, SCENES, MISSIONS, CODEX, ORGANISMS, PROCESSES, MATERIALS, WORLDS, ASSETS, RUMORS };
@@ -109,6 +110,12 @@ describe("references resolve", () => {
           for (const c of step.cards ?? []) expect(fieldCard(c), c).toBeDefined();
         }
         if (step.kind === "go") expect(scene(step.scene), step.scene).toBeDefined();
+        // Every labyrinth goal is reachable or blocked exactly as it says, from the entrance.
+        if (step.kind === "labyrinth")
+          for (const g of step.goals)
+            expect(blockedBy(LABYRINTH, "entry", g.site, g.moisture) ?? "reach", `${m.id} ${g.site}`).toBe(
+              g.outcome,
+            );
         if (step.kind === "bench") {
           expect(isBenchId(step.bench), `${m.id} bench ${step.bench}`).toBe(true);
           const levers: Record<string, string[]> = BENCHES[step.bench]?.levers ?? {};

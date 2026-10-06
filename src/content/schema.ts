@@ -5,6 +5,7 @@
  */
 import type { SourceId } from "./sources";
 import type { BenchId } from "../sim/benches";
+import type { Moisture } from "../sim/films";
 
 export type { SourceId };
 export type Confidence = "firm" | "estimate" | "contested";
@@ -204,6 +205,15 @@ export interface Choice {
   misconception?: MisconceptionId;
 }
 
+/** One question of a flow diagram (the feel test, thien-1979). `to` is the next node, or `=Class` to finish. */
+export interface FlowNode {
+  id: string;
+  question: string;
+  /** What the player's fingers do to find out. */
+  action: string;
+  branches: { id: string; label: string; to: string }[];
+}
+
 /** What finishing a step or mission writes into the save, besides its own record. */
 export interface OnComplete {
   flags?: string[];
@@ -262,6 +272,23 @@ export type Step = (
       recall?: { prediction: string; unit: string; observed: string };
     }
   | { kind: "rumor"; rumor: string; text: string }
+  | {
+      kind: "feel-test";
+      text: string;
+      diagram: FlowNode[];
+      /** What the sample does at each node: the branch it takes and what the fingers feel. */
+      sample: Record<string, { branch: string; felt: string }>;
+      facts: Fact[];
+    }
+  /** Guided amoeba movement on the `LABYRINTH` film graph (OD-10). Each goal: try this pore at this moisture. */
+  | {
+      kind: "labyrinth";
+      text: string;
+      goals: { site: string; moisture: Moisture; outcome: "reach" | "no-film" | "too-narrow" }[];
+    }
+  | { kind: "grazer-week"; text: string; moisture: Moisture; resultText: string; facts: Fact[] }
+  | { kind: "slake"; text: string; resultText: string; facts: Fact[] }
+  | { kind: "build-crumb"; text: string; resultText: string; facts: Fact[] }
 ) & { onComplete?: OnComplete };
 
 export interface Mission extends Reviewed {
