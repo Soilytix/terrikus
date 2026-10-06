@@ -153,7 +153,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** e2e asserts a visible label on first visit to `p-field-dawn`; keyboard and screen-reader names unchanged; `mise run check` green.
 - **Depends on:** —.
 
-### R07 — Readable citations (P5)
+### R07 — Readable citations (P5) · **done**
 
 - **Problem:** facts show raw source slugs (`soils4teachers-basics`) in monospace.
 - **Direction:** derive a short label ("Weil & Brady 2017") in `tools/gen-sources.ts` from the citation and emit it as `short` in `src/content/sources.ts`; `FactItem` in `src/ui/common.tsx` shows it, with the full citation as tooltip and link.

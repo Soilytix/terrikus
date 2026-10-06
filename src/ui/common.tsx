@@ -16,7 +16,7 @@ export function SourceRef({ id }: { id: SourceId }) {
   const s = SOURCES[id];
   return (
     <a className="source" href={s.link} target="_blank" rel="noreferrer" title={plain(s.citation)}>
-      {id}
+      {s.short}
     </a>
   );
 }

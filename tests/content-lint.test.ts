@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { parseSourcesDoc } from "../tools/gen-sources";
+import { parseSourcesDoc, shortLabel } from "../tools/gen-sources";
 import { SOURCES } from "../src/content/sources";
 import {
   CHAPTERS,
@@ -32,7 +32,23 @@ describe("sources", () => {
   it("every registry id has a row in docs/sources.md, and the registry is current", () => {
     const docIds = new Set(docRows.map((r) => r.id));
     expect(Object.keys(SOURCES).filter((id) => !docIds.has(id))).toEqual([]);
-    for (const r of docRows) expect(SOURCES[r.id as keyof typeof SOURCES]?.citation, r.id).toBe(r.citation);
+    for (const r of docRows)
+      expect(SOURCES[r.id as keyof typeof SOURCES], r.id).toEqual({
+        short: shortLabel(r.id, r.citation),
+        citation: r.citation,
+        link: r.link,
+        status: r.status,
+      });
+  });
+
+  it("derives a short label from the citation", () => {
+    expect(shortLabel("x", "Weil, R. R. & Brady, N. C. (2017). *Soils*.")).toBe("Weil & Brady 2017");
+    expect(shortLabel("x", "Moyano, F. E., Manzoni, S. & Chenu, C. (2013). Title.")).toBe(
+      "Moyano et al. 2013",
+    );
+    expect(shortLabel("x", "Six, J. et al. (2004). Title.")).toBe("Six et al. 2004");
+    expect(shortLabel("x", "Soil Science Society of America (2012). *Know Soil*.")).toBe("SSSA 2012");
+    expect(shortLabel("x", "USDA NRCS / SWCS. *Soil Biology Primer*.")).toBe("USDA NRCS");
   });
 
   it("every fact is sourced and every cited id exists", () => {
