@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32" width="48" height="32">
+<title>Dormant bacterium</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M12,16L36,16" stroke="#29332e" stroke-width="15"/>
+<path d="M12,16L36,16" stroke="#d1edf3" stroke-width="12"/>
+<path d="M14,16L34,16" stroke="#29332e" stroke-width="1" stroke-dasharray="2 2"/>
+</g>
+</svg>

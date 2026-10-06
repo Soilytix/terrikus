@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 112" width="64" height="112">
+<title>Legume root with nodules</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M32,4C30,40 34,70 32,108" stroke="#29332e" stroke-width="9"/>
+<path d="M31,40C24,48 18,56 10,62M33,70C40,78 46,84 54,90" stroke="#29332e" stroke-width="6"/>
+<path d="M35,30a5,5 0 1,0 10,0a5,5 0 1,0 -10,0ZM18.5,50a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0ZM10,60a4,4 0 1,0 8,0a4,4 0 1,0 -8,0ZM37.5,80a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0ZM20,92a4,4 0 1,0 8,0a4,4 0 1,0 -8,0Z" fill="#29332e" stroke="#29332e" stroke-width="3"/>
+<path d="M32,4C30,40 34,70 32,108" stroke="#f4ece2" stroke-width="6"/>
+<path d="M31,40C24,48 18,56 10,62M33,70C40,78 46,84 54,90" stroke="#f4ece2" stroke-width="3"/>
+<path d="M35,30a5,5 0 1,0 10,0a5,5 0 1,0 -10,0ZM18.5,50a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0ZM10,60a4,4 0 1,0 8,0a4,4 0 1,0 -8,0ZM37.5,80a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0ZM20,92a4,4 0 1,0 8,0a4,4 0 1,0 -8,0Z" fill="#f4ece2"/>
+</g>
+</svg>

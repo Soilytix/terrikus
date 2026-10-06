@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 72" width="56" height="72">
+<title>Testate amoeba (shell)</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M28,4C42,4 48,18 48,32S42,54 36,58H20C14,54 8,46 8,32S14,4 28,4Z" fill="#29332e" stroke="#29332e" stroke-width="3"/>
+<path d="M28,4C42,4 48,18 48,32S42,54 36,58H20C14,54 8,46 8,32S14,4 28,4Z" fill="#95692d"/>
+<path d="M20,58L36,58M24,58C22,64 18,66 16,70M30,58C31,64 34,66 36,70" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

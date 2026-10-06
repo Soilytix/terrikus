@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+<title>Arbuscular mycorrhizal fungus: arbuscule in a cortex cell</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M2,70L16,70L40,58M40,58L40,40M40,40L28,28M40,40L52,26M28,28L22,18M28,28L34,16M52,26L46,14M52,26L60,16M40,48L56,44M56,44L62,36M40,50L26,44M26,44L20,36" stroke="#29332e" stroke-width="6"/>
+<path d="M2,70L16,70L40,58M40,58L40,40M40,40L28,28M40,40L52,26M28,28L22,18M28,28L34,16M52,26L46,14M52,26L60,16M40,48L56,44M56,44L62,36M40,50L26,44M26,44L20,36" stroke="#f4ece2" stroke-width="3"/>
+<path d="M12,8H68Q74,8 74,14V60Q74,66 68,66H12Q6,66 6,60V14Q6,8 12,8Z" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

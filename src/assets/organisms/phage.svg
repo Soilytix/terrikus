@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 64" width="48" height="64">
+<title>Bacteriophage</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M24,4L34.4,10L34.4,22L26.5,26.6L26.5,46L31,46L31,49L17,49L17,46L21.5,46L21.5,26.6L13.6,22L13.6,10Z" fill="#29332e" stroke="#29332e" stroke-width="3"/>
+<path d="M24,4L34.4,10L34.4,22L26.5,26.6L26.5,46L31,46L31,49L17,49L17,46L21.5,46L21.5,26.6L13.6,22L13.6,10Z" fill="#6d7471"/>
+<path d="M18,49L10,59M30,49L38,59M21,49L17,60M27,49L31,60" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

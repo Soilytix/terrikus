@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 56" width="88" height="56">
+<title>Ectomycorrhizal mantle on a root tip</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M4,16H62C78,16 84,22 84,28S78,40 62,40H4Z" fill="#29332e" stroke="#29332e" stroke-width="3"/>
+<path d="M4,16H62C78,16 84,22 84,28S78,40 62,40H4Z" fill="#95692d"/>
+<path d="M4,21H60C72,21 78,24 78,28S72,35 60,35H4M30,16L28,8M46,16L50,7M40,40L38,50M64,40L70,50" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

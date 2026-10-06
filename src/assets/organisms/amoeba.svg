@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 64" width="80" height="64">
+<title>Naked amoeba (the player's micro avatar)</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M20,30C14,22 18,10 30,14S40,4 48,10 58,8 60,18 76,22 70,32 74,44 60,46 52,58 40,50 26,60 20,48 4,44 10,36 20,30Z" fill="#29332e" stroke="#29332e" stroke-width="3"/>
+<path d="M20,30C14,22 18,10 30,14S40,4 48,10 58,8 60,18 76,22 70,32 74,44 60,46 52,58 40,50 26,60 20,48 4,44 10,36 20,30Z" fill="#f4ece2"/>
+<path d="M37.3,33.7A5,2.6 -20 1,0 46.7,30.3A5,2.6 -20 1,0 37.3,33.7Z" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

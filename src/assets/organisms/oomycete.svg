@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 64" width="88" height="64">
+<title>Oomycete: hypha, oospore and zoospore</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M4,44L30,40L52,44M30,40L40,24" stroke="#29332e" stroke-width="8"/>
+<path d="M52,44a10,10 0 1,0 20,0a10,10 0 1,0 -20,0ZM12.3,16.1A8,5 -15 1,0 27.7,11.9A8,5 -15 1,0 12.3,16.1Z" fill="#29332e" stroke="#29332e" stroke-width="3"/>
+<path d="M4,44L30,40L52,44M30,40L40,24" stroke="#d1edf3" stroke-width="5"/>
+<path d="M52,44a10,10 0 1,0 20,0a10,10 0 1,0 -20,0ZM12.3,16.1A8,5 -15 1,0 27.7,11.9A8,5 -15 1,0 12.3,16.1Z" fill="#d1edf3"/>
+<path d="M56,44a6,6 0 1,0 12,0a6,6 0 1,0 -12,0ZM27,10C33,4 38,8 42,3M26,16C32,22 38,20 44,26" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

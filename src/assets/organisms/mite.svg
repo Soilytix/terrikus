@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 56" width="64" height="56">
+<title>Oribatid mite</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M18,28A18,14 0 1,0 54,28A18,14 0 1,0 18,28ZM10,28A5,4.5 0 1,0 20,28A5,4.5 0 1,0 10,28Z" fill="#29332e" stroke="#29332e" stroke-width="3"/>
+<path d="M18,28A18,14 0 1,0 54,28A18,14 0 1,0 18,28ZM10,28A5,4.5 0 1,0 20,28A5,4.5 0 1,0 10,28Z" fill="#64461e"/>
+<path d="M24,18L16,8L10,10M30,15L28,4L22,2M24,38L16,48L10,46M30,41L28,52L22,54M42,15L48,4L54,4M42,41L48,52L54,52M48,19L58,12L62,14M48,37L58,44L62,42" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

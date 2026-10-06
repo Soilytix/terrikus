@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { bundledAssets } from "../src/assets/manifest";
 
 const shot = (page: Page, name: string, project: string) =>
   page.screenshot({ path: `docs/screens/${project}-${name}.jpg`, type: "jpeg", quality: 82 });
@@ -141,7 +142,7 @@ test("settings credit every bundled asset", async ({ page }, info) => {
   await page.getByRole("button", { name: "Settings" }).click();
   const credits = page.getByRole("region", { name: "Credits" });
   await credits.scrollIntoViewIfNeeded();
-  await expect(credits.getByRole("row")).toHaveCount(13); // 11 assets + 2 fonts
+  await expect(credits.getByRole("row")).toHaveCount(bundledAssets("internal").length + 2); // assets + 2 fonts
   await shot(page, "15-credits", info.project.name);
 });
 

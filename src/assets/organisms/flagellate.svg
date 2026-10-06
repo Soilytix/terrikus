@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 40" width="64" height="40">
+<title>Flagellate</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M8,20C8,12 18,8 26,12C32,15 34,18 34,20S32,25 26,28C18,32 8,28 8,20Z" fill="#29332e" stroke="#29332e" stroke-width="3"/>
+<path d="M8,20C8,12 18,8 26,12C32,15 34,18 34,20S32,25 26,28C18,32 8,28 8,20Z" fill="#d1edf3"/>
+<path d="M33,18C40,10 46,14 52,8S60,6 62,4M33,22C42,26 48,30 56,34" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

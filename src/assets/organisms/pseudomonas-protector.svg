@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 36" width="80" height="36">
+<title>Pseudomonas biofilm on a root surface</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M4,30C6,18 14,12 24,14S38,8 48,12 64,10 76,20L76,30Z" fill="#29332e" stroke="#29332e" stroke-width="3"/>
+<path d="M4,30C6,18 14,12 24,14S38,8 48,12 64,10 76,20L76,30Z" fill="#bd975f"/>
+<path d="M14,24L22,21M30,20L38,18M46,22L54,19M60,18L68,22M24,27L32,26" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

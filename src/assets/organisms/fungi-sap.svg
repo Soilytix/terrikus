@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" width="96" height="64">
+<title>Saprotrophic fungal hyphae</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M4,48L22,40L44,36L66,24L90,18M22,40L30,58M44,36L52,10M66,24L84,40" stroke="#29332e" stroke-width="8"/>
+<path d="M4,48L22,40L44,36L66,24L90,18M22,40L30,58M44,36L52,10M66,24L84,40" stroke="#f4ece2" stroke-width="5"/>
+<path d="M14.4,47.2L11.6,40.8M56.7,33.1L53.3,26.9M81.2,23.8L79.6,17" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

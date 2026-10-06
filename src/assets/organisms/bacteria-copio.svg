@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 48" width="72" height="48">
+<title>Fast-growing bacteria (microcolony)</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M10,14L30,10M38,12L62,16M14,32L34,36M42,34L60,28" stroke="#29332e" stroke-width="12"/>
+<path d="M10,14L30,10M38,12L62,16M14,32L34,36M42,34L60,28" stroke="#bd975f" stroke-width="9"/>
+<path d="M48.2,11.7L48.8,17.7" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

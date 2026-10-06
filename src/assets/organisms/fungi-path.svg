@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 64" width="88" height="64">
+<title>Fungal root pathogen: hyphae and a sclerotium</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M4,40L34,40L34,14M34,40L60,40L60,58M60,40L78,40" stroke="#29332e" stroke-width="7"/>
+<path d="M66,14C66,6 80,4 82,12S80,26 72,24 66,20 66,14Z" fill="#29332e" stroke="#29332e" stroke-width="3"/>
+<path d="M4,40L34,40L34,14M34,40L60,40L60,58M60,40L78,40" stroke="#64461e" stroke-width="4"/>
+<path d="M66,14C66,6 80,4 82,12S80,26 72,24 66,20 66,14Z" fill="#64461e"/>
+<path d="M37,35.3L31,35.3" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>

@@ -214,7 +214,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Depends on:** T03
 - **Done:** every manifest entry carries an attribution; `INTERNAL_ASSETS` (empty) and `bundledAssets(profile)` split out `designer-infographics/`, which a Vite plugin loads as nothing in the public profile and the public bundle scan forbids; `cc-by-sa/` holds CC BY-SA files only (content lint); `src/ui/Credits.tsx` in Settings lists every bundled asset plus the two fonts. Open: OD-6 decides when designer infographics may leave internal.
 
-### T12 — In-house organism sprite library and atlas
+### T12 — In-house organism sprite library and atlas · **done**
 
 - **Goal:** all §4 cast drawn to AD§6.2.
 - **Scope:** `src/assets/organisms/*.svg`, atlas build, group-badge shapes, true-size data.

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 44" width="64" height="44">
+<title>Rhizobia (free rod and branched bacteroid)</title>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M8,12L26,8" stroke="#29332e" stroke-width="12"/>
+<path d="M36,38L44,26M44,26L40,10M44,26L56,16" stroke="#29332e" stroke-width="11"/>
+<path d="M8,12L26,8" stroke="#bd975f" stroke-width="9"/>
+<path d="M36,38L44,26M44,26L40,10M44,26L56,16" stroke="#bd975f" stroke-width="8"/>
+<path d="M27.5,8C32,4 34,14 39,6" stroke="#29332e" stroke-width="1"/>
+</g>
+</svg>
