@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { scene } from "../content";
-import { freshSave, type Save } from "../save/schema";
-import { activeMission, advance, begin, currentStep, scan, visibleObjects, visit } from "./progress";
+import { scene } from "../src/content";
+import { freshSave, type Save } from "../src/save/schema";
+import { activeMission, advance, begin, currentStep, scan, visibleObjects, visit } from "../src/app/progress";
 
 const finish = (save: Save, id: string): Save => {
   let s = begin(save, id);

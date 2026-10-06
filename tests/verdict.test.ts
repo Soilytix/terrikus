@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { chainTemplate } from "../content/chains";
-import { freshSave, type LabEntry, type Save } from "../save/schema";
-import { judge, observed } from "./verdict";
+import { chainTemplate } from "../src/content/chains";
+import { freshSave, type LabEntry, type Save } from "../src/save/schema";
+import { judge, observed } from "../src/app/verdict";
 
 const run = (a: Partial<LabEntry["a"]>, b: Partial<LabEntry["a"]>): LabEntry => ({
   id: "x",

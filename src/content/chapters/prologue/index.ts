@@ -4,7 +4,7 @@
  * separates in place as a drawn figure over `p-handful` (observe step), so the
  * player never loses the thing they predicted about.
  */
-import type { Chapter, CodexEntry, Mission, Rumor, Scene } from "../../schema";
+import type { Chapter, ChapterBundle, CodexEntry, Mission, Rumor, Scene } from "../../schema";
 
 const POREFACT = {
   id: "p-composition-range",
@@ -15,7 +15,7 @@ const POREFACT = {
     "45 % mineral, 5 % organic, 25 % water, 25 % air is an idealised moist loam, not a constant.",
 };
 
-export const prologue: Chapter = {
+const prologue: Chapter = {
   id: "prologue",
   number: "P",
   title: "A Handful of Soil",
@@ -49,7 +49,7 @@ const truthField = {
   notSimulated: ["Plant growth", "Weather"],
 };
 
-export const prologueScenes: Scene[] = [
+const prologueScenes: Scene[] = [
   {
     id: "p-field-dawn",
     chapter: "prologue",
@@ -195,7 +195,7 @@ export const prologueScenes: Scene[] = [
   },
 ];
 
-export const prologueMissions: Mission[] = [
+const prologueMissions: Mission[] = [
   {
     id: "p-m1",
     chapter: "prologue",
@@ -255,6 +255,7 @@ export const prologueMissions: Mission[] = [
       },
       {
         kind: "reactive-water-air",
+        flag: "p-m1-slider",
         text: "If this soil is wetter, water takes space from air. Drag the water share and watch what happens. The solids stay fixed.",
       },
       {
@@ -319,7 +320,7 @@ export const prologueMissions: Mission[] = [
   },
 ];
 
-export const prologueCodex: CodexEntry[] = [
+const prologueCodex: CodexEntry[] = [
   {
     id: "cx-p-handful",
     title: "What a handful is made of",
@@ -402,7 +403,7 @@ export const prologueCodex: CodexEntry[] = [
   },
 ];
 
-export const prologueRumors: Rumor[] = [
+const prologueRumors: Rumor[] = [
   {
     id: "r-p-starving",
     text: "This bacterium is next to food but not eating. Why?",
@@ -410,3 +411,11 @@ export const prologueRumors: Rumor[] = [
     hintsAt: ["c1"],
   },
 ];
+
+export const prologueBundle: ChapterBundle = {
+  chapter: prologue,
+  scenes: prologueScenes,
+  missions: prologueMissions,
+  codex: prologueCodex,
+  rumors: prologueRumors,
+};

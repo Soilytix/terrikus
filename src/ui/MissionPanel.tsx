@@ -3,13 +3,13 @@
  * is an observation or a question, never a score.
  */
 import { useEffect, useRef, useState } from "react";
-import { DISCOVERIES, chapter, scene as sceneById, SCENES } from "../content";
+import { CHAPTERS, DISCOVERIES, chapter, scene as sceneById, SCENES } from "../content";
 import type { Choice, Mission, Step } from "../content/schema";
 import type { Save } from "../save/schema";
 import { advance, currentStep, isScanned, setFlag, stepIndex } from "../app/progress";
 import { appendLab } from "../save/schema";
 import { RULESET_VERSION, DEFAULT_LEVERS } from "../sim/benches/leaf-jar";
-import { targetHref } from "../app/router";
+import { href, targetHref } from "../app/router";
 import { ChainBuilder } from "./ChainBuilder";
 import { Composition } from "./Composition";
 import { HandDecompose } from "./HandDecompose";
@@ -281,11 +281,11 @@ function StepBody({
       );
     }
     case "reactive-water-air": {
-      const moved = save.flags.includes("p-m1-slider");
+      const moved = save.flags.includes(step.flag);
       return (
         <>
           <p className="step-text">{step.text}</p>
-          <WaterAir onMoved={() => !moved && update((s) => setFlag(s, "p-m1-slider"))} />
+          <WaterAir onMoved={() => !moved && update((s) => setFlag(s, step.flag))} />
           {!moved && <p className="muted small">Move the slider to continue.</p>}
           <button type="button" className="btn btn-primary" disabled={!moved} onClick={next}>
             Continue
@@ -314,7 +314,11 @@ function StepBody({
       return (
         <>
           <p className="step-text">{step.text}</p>
-          <button type="button" className="btn btn-primary" onClick={() => go("#/bench/leaf-jar")}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => go(href({ name: "bench", bench: step.bench }))}
+          >
             Open the lab bench
           </button>
         </>
@@ -481,7 +485,8 @@ export function MissionPanel(props: Props) {
   if (!ch) return null;
 
   if (!m) {
-    const next = ch.id === "prologue" && save.chaptersUnlocked.includes("leaf");
+    const next = CHAPTERS.find((c) => c.after.includes(ch.id) && save.chaptersUnlocked.includes(c.id));
+    const entry = next && sceneById(next.entry);
     return (
       <aside className="mission" aria-label="Chapter" data-open={open}>
         <header className="mission-head">
@@ -489,11 +494,10 @@ export function MissionPanel(props: Props) {
           <h2>{ch.title}</h2>
         </header>
         <div className="mission-body">
-          {next ? (
+          {next && entry ? (
             <>
               <p className="step-text">
-                A new question waits in the valley: “The leaf vanished, but the soil barely got heavier.” Find
-                the hedge at the field edge.
+                A new question waits in the valley: “{next.hook}” Find {entry.title.toLowerCase()}.
               </p>
               <button type="button" className="btn btn-primary" onClick={() => go(targetHref("valley"))}>
                 Back to the valley

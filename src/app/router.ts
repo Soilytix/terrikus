@@ -1,5 +1,6 @@
 /** Hash routes (spec §3): shareable, no server needed, work from any path prefix. */
 import { scene } from "../content";
+import { isBenchId, type BenchId } from "../sim/benches";
 
 export type NotebookTab = "rumors" | "cards" | "lab" | "codex" | "contents";
 export const NOTEBOOK_TABS: NotebookTab[] = ["rumors", "cards", "lab", "codex", "contents"];
@@ -7,7 +8,7 @@ export const NOTEBOOK_TABS: NotebookTab[] = ["rumors", "cards", "lab", "codex", 
 export type Route =
   | { name: "title" }
   | { name: "scene"; scene: string }
-  | { name: "bench" }
+  | { name: "bench"; bench: BenchId }
   | { name: "notebook"; tab: NotebookTab };
 
 export function parse(hash: string): Route {
@@ -15,7 +16,7 @@ export function parse(hash: string): Route {
   const [head, a, b] = parts;
   if (head === "ch" && b && scene(b)) return { name: "scene", scene: b };
   if (head === "ch" && a === "valley") return { name: "scene", scene: "valley" };
-  if (head === "bench") return { name: "bench" };
+  if (head === "bench" && a && isBenchId(a)) return { name: "bench", bench: a };
   if (head === "notebook") {
     const tab = NOTEBOOK_TABS.find((t) => t === a) ?? "rumors";
     return { name: "notebook", tab };
@@ -32,7 +33,7 @@ export function href(r: Route): string {
       return s?.chapter === "valley" || !s ? "#/ch/valley" : `#/ch/${s.chapter}/${s.id}`;
     }
     case "bench":
-      return "#/bench/leaf-jar";
+      return `#/bench/${r.bench}`;
     case "notebook":
       return `#/notebook/${r.tab}`;
   }

@@ -1,5 +1,5 @@
 /**
- * Be the decomposer (c2-m1): eat the leaf parcel by parcel and send each into
+ * Be the decomposer (chapter 2, first mission): eat the leaf parcel by parcel and send each into
  * your body or out as breath. Body is capped at round(CUE × eaten): building
  * a body costs energy, and the energy comes from burning food.
  */

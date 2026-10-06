@@ -110,12 +110,13 @@ Recorded here because the founder was unavailable; each can be reversed in one P
 
 Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` and the screenshots are looked at. Source reviews: science (S), play/visual (P), engineering (E), all at `919f9eb`.
 
-### R01 — Content model: chapter bundles and a bench registry (E5)
+### R01 — Content model: chapter bundles and a bench registry (E5) · **done**
 
 - **Problem:** adding a chapter or bench means editing engine and UI code. The `bench` step is typed against the leaf-jar levers (`src/content/schema.ts`), the router has one `#/bench/leaf-jar` route (`src/app/router.ts`), and chapter ids are hard-coded in `src/app/progress.ts` (`c2-bench-open`, `d-c2-conserved` → `r-c2-leaf`, `c.id === "leaf"`), `src/ui/Bench.tsx`, `src/ui/MissionPanel.tsx` and `src/app/App.tsx`. `src/content/index.ts` registers each chapter in five arrays.
 - **Direction:** a `ChapterBundle { chapter, scenes, missions, codex, rumors }` exported per chapter, with `index.ts` building the lists from an array of bundles; bench step `{ bench: BenchId; a: Record<string,string>; b?: …; predict? }` with a `BENCHES` registry filled by each bench module and a `#/bench/:id` route; flag/rumor side effects moved into data (`onComplete: { flags, rumors }` on missions or steps). Behaviour is unchanged.
 - **Acceptance:** `grep -rn '"leaf"\|c2-' src/app src/ui` finds no chapter ids outside content; the e2e smoke passes unchanged; content lint resolves bench ids; `mise run check` green.
 - **Depends on:** —. **Blocks:** T13 and every later chapter.
+- **Done:** chapters export a `ChapterBundle`; bench steps name a bench from `BENCHES` (`src/sim/benches/index.ts`) and open `#/bench/:id`; flags and rumors come from `onComplete`, `Chapter.rumor` and `Chapter.lens`; the water/air step names its flag. Progress and verdict tests moved to `tests/` since they read chapter content. Open: `src/app/verdict.ts` still ties the evidence "your water/air slider" to the flag `p-m1-slider` by name.
 
 ### R02 — The world reacts to the experiment (P1, P2 rest)
 

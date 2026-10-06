@@ -11,7 +11,16 @@ import { Notebook } from "../ui/Notebook";
 import { Help, Settings, Truth } from "../ui/Panels";
 import { ScanCard } from "../ui/ScanCard";
 import { Title } from "../ui/Title";
-import { activeMission, begin, currentStep, scan, stepIndex, visibleObjects, visit } from "./progress";
+import {
+  activeMission,
+  begin,
+  currentStep,
+  lensAvailable,
+  scan,
+  stepIndex,
+  visibleObjects,
+  visit,
+} from "./progress";
 import { href, parse, targetHref, type NotebookTab } from "./router";
 import { prefersReduced, useGame } from "./store";
 
@@ -51,6 +60,10 @@ function towards(fromId: string, to: string, visible: SceneObject[]): string | u
   return undefined;
 }
 
+/** The scene whose portal opens this bench route: where the bench returns to without a session. */
+const benchScene = (route: string) =>
+  SCENES.find((s) => s.objects.some((o) => o.to === route))?.id ?? "valley";
+
 export function App() {
   const hash = useSyncExternalStore(subscribeHash, getHash);
   const route = parse(hash);
@@ -80,7 +93,7 @@ export function App() {
       ? scene.chapter
       : (CHAPTERS.find(
           (c) => c.playable && save.chaptersUnlocked.includes(c.id) && !save.chaptersComplete.includes(c.id),
-        )?.id ?? "leaf");
+        )?.id ?? CHAPTERS.findLast((c) => c.playable)!.id);
   const mission = activeMission(chapterId, save);
 
   // Arrivals: stamps, `go` steps, and where to resume.
@@ -115,7 +128,12 @@ export function App() {
       if (via) highlight.add(via);
     }
   }
-  if (!mission && chapterId === "leaf" && scene.id === "valley") highlight.add("hedge");
+  // Nothing left to do: the valley still points at the chapter's way in.
+  if (!mission && scene.id === "valley") {
+    const entry = chapter(chapterId)?.entry;
+    const way = visible.find((o) => o.kind === "portal" && o.to === entry);
+    if (way) highlight.add(way.id);
+  }
 
   const activate = (o: SceneObject) => {
     if (o.kind === "portal" && o.to) {
@@ -163,7 +181,7 @@ export function App() {
     if (document.querySelector("dialog[open]")) return;
     if (k === "n" || k === "N") return void (notebookOpen ? closeNotebook() : openNotebook());
     if (k === "?") return setPanel("help");
-    if ((k === "l" || k === "L") && save.chaptersUnlocked.includes("leaf"))
+    if ((k === "l" || k === "L") && lensAvailable(save))
       return update((s) => ({ ...s, settings: { ...s.settings, lens: !s.settings.lens } }));
     if (route.name !== "scene") return;
     if (k === "Escape") {
@@ -202,11 +220,12 @@ export function App() {
     return (
       <div className="app app-bench">
         <Bench
+          bench={route.bench}
           save={save}
           update={update}
           go={go}
           reduced={reduced}
-          backHref={save.lastSession?.route ?? targetHref("c2-hedge-edge")}
+          backHref={save.lastSession?.route ?? targetHref(benchScene(href(route)))}
         />
       </div>
     );

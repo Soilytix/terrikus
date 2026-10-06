@@ -1,32 +1,25 @@
 /** One place to look content up. */
-import { leaf, leafCodex, leafMissions, leafRumors, leafScenes } from "./chapters/leaf";
-import {
-  prologue,
-  prologueCodex,
-  prologueMissions,
-  prologueRumors,
-  prologueScenes,
-} from "./chapters/prologue";
+import { leafBundle } from "./chapters/leaf";
+import { prologueBundle } from "./chapters/prologue";
 import { MATERIALS, PROCESSES } from "./processes";
 import { ORGANISMS } from "./organisms";
-import type { Chapter, CodexEntry, Mission, Rumor, Scene } from "./schema";
-import { LATER_CHAPTERS, valleyScene } from "./valley";
+import type { Chapter, ChapterBundle, CodexEntry, Mission, Rumor, Scene } from "./schema";
+import { LATER_BUNDLES, valleyScene } from "./valley";
 
-export const CHAPTERS: Chapter[] = [prologue, leaf, ...LATER_CHAPTERS].sort(
+/** Every chapter, once. A new chapter is one more bundle here. */
+const BUNDLES: ChapterBundle[] = [prologueBundle, leafBundle, ...LATER_BUNDLES];
+
+export const CHAPTERS: Chapter[] = BUNDLES.map((b) => b.chapter).sort(
   (a, b) => order(a.number) - order(b.number),
 );
 function order(n: string) {
   return n === "P" ? 0 : Number(n);
 }
 
-export const SCENES: Scene[] = [valleyScene, ...prologueScenes, ...leafScenes];
-export const MISSIONS: Mission[] = [...prologueMissions, ...leafMissions];
-export const CODEX: CodexEntry[] = [...prologueCodex, ...leafCodex];
-export const RUMORS: Rumor[] = [
-  ...prologueRumors,
-  ...leafRumors,
-  ...LATER_CHAPTERS.map((c) => ({ id: `r-${c.id}`, text: c.hook, chapter: c.id, hintsAt: [c.id] })),
-];
+export const SCENES: Scene[] = [valleyScene, ...BUNDLES.flatMap((b) => b.scenes)];
+export const MISSIONS: Mission[] = BUNDLES.flatMap((b) => b.missions);
+export const CODEX: CodexEntry[] = BUNDLES.flatMap((b) => b.codex);
+export const RUMORS: Rumor[] = BUNDLES.flatMap((b) => b.rumors);
 
 export const scene = (id: string) => SCENES.find((s) => s.id === id);
 export const chapter = (id: string) => CHAPTERS.find((c) => c.id === id);

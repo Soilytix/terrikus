@@ -22,6 +22,7 @@ import { CHAINS, CARDS } from "../src/content/chains";
 import { MISCONCEPTIONS } from "../src/content/misconceptions";
 import { WORLDS } from "../src/content/worlds";
 import { ASSETS } from "../src/assets/manifest";
+import { BENCHES, isBenchId } from "../src/sim/benches";
 import { NO_GOOD_BAD, NO_SCORES, lintReview, lintSources, strings } from "./lib/content-lint";
 
 const ALL = { CHAPTERS, SCENES, MISSIONS, CODEX, ORGANISMS, PROCESSES, MATERIALS, WORLDS, ASSETS, RUMORS };
@@ -72,6 +73,8 @@ describe("references resolve", () => {
       for (const o of s.objects) {
         if (o.kind === "portal")
           expect(o.to?.startsWith("#/") || sceneIds.has(o.to ?? ""), `${s.id}/${o.id}`).toBe(true);
+        const bench = o.to?.match(/^#\/bench\/(.+)$/)?.[1];
+        if (bench !== undefined) expect(isBenchId(bench), `${s.id}/${o.id} bench`).toBe(true);
         if (o.kind === "glimpse") expect(chapterIds.has(o.to as never), `${s.id}/${o.id}`).toBe(true);
         if (o.card) expect(fieldCard(o.card), `${s.id}/${o.id} card`).toBeDefined();
       }
@@ -90,6 +93,12 @@ describe("references resolve", () => {
           for (const c of step.cards ?? []) expect(fieldCard(c), c).toBeDefined();
         }
         if (step.kind === "go") expect(scene(step.scene), step.scene).toBeDefined();
+        if (step.kind === "bench") {
+          expect(isBenchId(step.bench), `${m.id} bench ${step.bench}`).toBe(true);
+          const levers: Record<string, string[]> = BENCHES[step.bench]?.levers ?? {};
+          for (const [k, v] of Object.entries({ ...step.a, ...step.b }))
+            expect(levers[k], `${m.id} lever ${k}`).toContain(v);
+        }
       }
       for (const c of strings(m).filter((x) => /^M\d+$/.test(x))) expect(mcIds.has(c as never), c).toBe(true);
     }
@@ -133,12 +142,12 @@ describe("references resolve", () => {
   });
 
   it("requires and hiddenBy name flags something can set", () => {
+    const steps = MISSIONS.flatMap((m) => m.steps);
     const settable = new Set([
       ...MISSIONS.map((m) => `${m.id}-done`),
       ...CHAPTERS.map((c) => `chapter:${c.id}`),
-      // Set by code: the bench step (progress.ts) and the water/air slider (MissionPanel.tsx).
-      "c2-bench-open",
-      "p-m1-slider",
+      ...[...MISSIONS, ...steps].flatMap((x) => x.onComplete?.flags ?? []),
+      ...steps.flatMap((st) => (st.kind === "reactive-water-air" ? [st.flag] : [])),
     ]);
     for (const s of SCENES)
       for (const o of s.objects)
@@ -147,6 +156,12 @@ describe("references resolve", () => {
   });
 
   it("rumors and chain evidence resolve", () => {
+    const rumorIds = new Set(RUMORS.map((r) => r.id));
+    for (const m of MISSIONS)
+      for (const x of [m, ...m.steps])
+        for (const id of Object.keys(x.onComplete?.rumors ?? {}))
+          expect(rumorIds.has(id), `${m.id} ${id}`).toBe(true);
+    for (const c of CHAPTERS) if (c.rumor) expect(rumorIds.has(c.rumor), `${c.id}.rumor`).toBe(true);
     for (const r of RUMORS) {
       for (const h of r.hintsAt) expect(chapterIds.has(h as never), `${r.id} hintsAt ${h}`).toBe(true);
       if (r.explainedBy) expect(discoveryIds.has(r.explainedBy), `${r.id} explainedBy`).toBe(true);

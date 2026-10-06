@@ -1,9 +1,9 @@
 /**
  * Chapter 2 — Where Did the Leaf Go? (world-bible §6, the first experiment chapter).
  */
-import type { Chapter, Choice, CodexEntry, Mission, Rumor, Scene } from "../../schema";
+import type { Chapter, ChapterBundle, Choice, CodexEntry, Mission, Rumor, Scene } from "../../schema";
 
-export const leaf: Chapter = {
+const leaf: Chapter = {
   id: "leaf",
   number: "2",
   title: "Where Did the Leaf Go?",
@@ -38,10 +38,12 @@ export const leaf: Chapter = {
   ],
   after: ["prologue"],
   playable: true,
+  rumor: "r-c2-leaf",
+  lens: true,
   reviewStatus: "draft",
 };
 
-export const leafScenes: Scene[] = [
+const leafScenes: Scene[] = [
   {
     id: "c2-hedge-edge",
     chapter: "leaf",
@@ -215,7 +217,7 @@ const whichFaster = (a: string, b: string, aFaster: string, bFaster: string, m?:
   { id: "same", label: "About the same", ok: true, feedback: "Run it and see whether they part ways." },
 ];
 
-export const leafMissions: Mission[] = [
+const leafMissions: Mission[] = [
   {
     id: "c2-m1",
     chapter: "leaf",
@@ -254,9 +256,11 @@ export const leafMissions: Mission[] = [
         text: "Be the decomposer for three turns. Eat the leaf one parcel at a time and decide where each parcel goes: into your body, or out as breath.",
         turns: 3,
         cue: 0.4,
+        onComplete: { flags: ["c2-bench-open"] },
       },
       {
         kind: "bench",
+        bench: "leaf-jar",
         text: "Now the world does it: one leaf in a jar of moist soil, one compressed year. Run it and watch the ledger.",
         a: { water: "moist", temperature: "mild", residue: "leaf" },
       },
@@ -295,6 +299,7 @@ export const leafMissions: Mission[] = [
         discoveries: ["d-c2-conserved", "d-c2-heat"],
         cards: ["depolymerisation", "uptake-cue", "leaf-litter"],
         codex: ["cx-c2-decomposition", "cx-c2-cue"],
+        onComplete: { rumors: { "r-c2-leaf": "explained" } },
       },
     ],
     sources: ["schmidt-2011", "liang-2017"],
@@ -312,6 +317,7 @@ export const leafMissions: Mission[] = [
     steps: [
       {
         kind: "bench",
+        bench: "leaf-jar",
         text: "Two jars, one change. Jar A is moist, jar B is dry. Everything else is the same.",
         a: { water: "moist", temperature: "mild", residue: "leaf" },
         b: { water: "dry", temperature: "mild", residue: "leaf" },
@@ -348,6 +354,7 @@ export const leafMissions: Mission[] = [
     steps: [
       {
         kind: "bench",
+        bench: "leaf-jar",
         text: "A week of rain. Jar A is moist, jar B is waterlogged.",
         a: { water: "moist", temperature: "mild", residue: "leaf" },
         b: { water: "waterlogged", temperature: "mild", residue: "leaf" },
@@ -419,6 +426,7 @@ export const leafMissions: Mission[] = [
     steps: [
       {
         kind: "bench",
+        bench: "leaf-jar",
         text: "Same soil, same weather, different residue. Jar A gets a green leaf, jar B cereal straw. Try the woody twig too.",
         a: { water: "moist", temperature: "mild", residue: "leaf" },
         b: { water: "moist", temperature: "mild", residue: "straw" },
@@ -534,7 +542,7 @@ export const leafMissions: Mission[] = [
   },
 ];
 
-export const leafCodex: CodexEntry[] = [
+const leafCodex: CodexEntry[] = [
   {
     id: "cx-c2-decomposition",
     title: "Decomposition",
@@ -709,7 +717,7 @@ export const leafCodex: CodexEntry[] = [
   },
 ];
 
-export const leafRumors: Rumor[] = [
+const leafRumors: Rumor[] = [
   {
     id: "r-c2-leaf",
     text: "The leaf vanished, but the soil barely got heavier.",
@@ -718,3 +726,11 @@ export const leafRumors: Rumor[] = [
     explainedBy: "d-c2-conserved",
   },
 ];
+
+export const leafBundle: ChapterBundle = {
+  chapter: leaf,
+  scenes: leafScenes,
+  missions: leafMissions,
+  codex: leafCodex,
+  rumors: leafRumors,
+};

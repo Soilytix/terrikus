@@ -4,7 +4,7 @@
  * so every rule has a direct test.
  */
 import { CHAPTERS, mission, scene as sceneById } from "../content";
-import type { Mission, Scene, SceneObject, Step } from "../content/schema";
+import type { Mission, OnComplete, Scene, SceneObject, Step } from "../content/schema";
 import type { Save } from "../save/schema";
 
 const add = (list: string[], ...items: string[]) => [...new Set([...list, ...items])];
@@ -37,10 +37,10 @@ export function currentStep(save: Save, m: Mission): Step | undefined {
   return m.steps[stepIndex(save, m.id)];
 }
 
-/** Side effects of a step becoming current. */
-function enter(save: Save, step: Step | undefined): Save {
-  if (step?.kind === "bench") return { ...save, flags: add(save.flags, "c2-bench-open") };
-  return save;
+/** The flags and rumors a step or mission names in its `onComplete`. */
+function apply(save: Save, on: OnComplete | undefined): Save {
+  if (!on) return save;
+  return { ...save, flags: add(save.flags, ...(on.flags ?? [])), rumors: { ...save.rumors, ...on.rumors } };
 }
 
 /** Side effects of finishing a step. */
@@ -48,24 +48,21 @@ function complete(save: Save, step: Step): Save {
   if (step.kind === "discover") {
     const cards = { ...save.cards };
     for (const c of step.cards ?? []) cards[c] = "full";
-    const rumors = { ...save.rumors };
-    if (step.discoveries.includes("d-c2-conserved")) rumors["r-c2-leaf"] = "explained";
-    return {
+    save = {
       ...save,
       discoveries: add(save.discoveries, ...step.discoveries),
       codex: add(save.codex, ...(step.codex ?? [])),
       cards,
-      rumors,
     };
   }
   if (step.kind === "rumor") {
-    return { ...save, rumors: { ...save.rumors, [step.rumor]: save.rumors[step.rumor] ?? "glimpsed" } };
+    save = { ...save, rumors: { ...save.rumors, [step.rumor]: save.rumors[step.rumor] ?? "glimpsed" } };
   }
-  return save;
+  return apply(save, step.onComplete);
 }
 
 function finishMission(save: Save, m: Mission): Save {
-  let next: Save = { ...save, flags: add(save.flags, `${m.id}-done`) };
+  let next: Save = apply({ ...save, flags: add(save.flags, `${m.id}-done`) }, m.onComplete);
   const ch = CHAPTERS.find((c) => c.id === m.chapter);
   if (ch && ch.missions.every((id) => next.missions[id]?.done)) {
     next = { ...next, chaptersComplete: add(next.chaptersComplete, ch.id) };
@@ -73,9 +70,8 @@ function finishMission(save: Save, m: Mission): Save {
       if (!c.playable || next.chaptersUnlocked.includes(c.id)) continue;
       if (c.after.every((a) => next.chaptersComplete.includes(a))) {
         next = { ...next, chaptersUnlocked: add(next.chaptersUnlocked, c.id) };
-        const hook = `r-${c.id}`;
         // A newly opened chapter arrives as the rumor it starts from.
-        const rumor = c.id === "leaf" ? "r-c2-leaf" : hook;
+        const rumor = c.rumor ?? `r-${c.id}`;
         next = { ...next, rumors: { [rumor]: "glimpsed", ...next.rumors } };
       }
     }
@@ -93,18 +89,13 @@ export function advance(save: Save, missionId: string): Save {
   let next = complete(save, step);
   const done = i + 1 >= m.steps.length;
   next = { ...next, missions: { ...next.missions, [missionId]: { step: done ? i : i + 1, done } } };
-  if (done) return finishMission(next, m);
-  return enter(next, m.steps[i + 1]);
+  return done ? finishMission(next, m) : next;
 }
 
-/** Make sure the first step of a mission has had its entry effects. */
+/** Start a mission's record at its first step. */
 export function begin(save: Save, missionId: string): Save {
-  const m = mission(missionId);
-  if (!m || save.missions[missionId]) return save;
-  return enter(
-    { ...save, missions: { ...save.missions, [missionId]: { step: 0, done: false } } },
-    m.steps[0],
-  );
+  if (!mission(missionId) || save.missions[missionId]) return save;
+  return { ...save, missions: { ...save.missions, [missionId]: { step: 0, done: false } } };
 }
 
 /** Arriving in a scene: a scale stamp, and any `go` step that pointed here. */
@@ -140,6 +131,19 @@ export function scan(save: Save, sceneId: string, objectId: string): Save {
       next = advance(next, m.id);
   }
   return next;
+}
+
+/** The first active mission in a chapter that uses this bench: the bench runs on its behalf. */
+export function benchMission(bench: string, save: Save): Mission | undefined {
+  const uses = (id: string) => mission(id)?.steps.some((s) => s.kind === "bench" && s.bench === bench);
+  return CHAPTERS.filter((c) => c.missions.some(uses))
+    .map((c) => activeMission(c.id, save))
+    .find((m) => !!m);
+}
+
+/** The scientist lens is open once a chapter that brings it is unlocked. */
+export function lensAvailable(save: Save): boolean {
+  return CHAPTERS.some((c) => c.lens && save.chaptersUnlocked.includes(c.id));
 }
 
 export function setFlag(save: Save, flag: string): Save {

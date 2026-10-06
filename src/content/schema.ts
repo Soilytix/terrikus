@@ -4,7 +4,7 @@
  * confidence; every node carries a review status (world-bible §9).
  */
 import type { SourceId } from "./sources";
-import type { LeverSettings } from "../sim/benches/leaf-jar";
+import type { BenchId } from "../sim/benches";
 
 export type { SourceId };
 export type Confidence = "firm" | "estimate" | "contested";
@@ -202,7 +202,13 @@ export interface Choice {
   misconception?: MisconceptionId;
 }
 
-export type Step =
+/** What finishing a step or mission writes into the save, besides its own record. */
+export interface OnComplete {
+  flags?: string[];
+  rumors?: Record<string, "glimpsed" | "investigated" | "explained">;
+}
+
+export type Step = (
   | { kind: "notice"; text: string; cta?: string; goto?: string }
   | { kind: "go"; text: string; scene: string; object?: string }
   | { kind: "scan"; text: string; objects: string[] }
@@ -216,15 +222,17 @@ export type Step =
     }
   | { kind: "predict-choice"; id: string; question: string; choices: Choice[]; multi?: boolean }
   | { kind: "observe-composition"; text: string; resultText: string; facts: Fact[] }
-  | { kind: "reactive-water-air"; text: string }
+  /** `flag` is set the first time the slider moves. */
+  | { kind: "reactive-water-air"; text: string; flag: string }
   | { kind: "explain-choice"; id: string; question: string; choices: Choice[] }
   | { kind: "hand-decompose"; text: string; turns: number; cue: number }
   | {
       kind: "bench";
       text: string;
-      /** Required comparison: jar A and jar B settings. */
-      a: Partial<LeverSettings>;
-      b?: Partial<LeverSettings>;
+      bench: BenchId;
+      /** Required comparison: jar A and jar B lever settings, by the bench's lever names. */
+      a: Record<string, string>;
+      b?: Record<string, string>;
       predict?: { id: string; question: string; choices: Choice[] };
     }
   | {
@@ -251,9 +259,8 @@ export type Step =
       /** Closes the loop: the learner's saved prediction set beside what was observed. */
       recall?: { prediction: string; unit: string; observed: string };
     }
-  | { kind: "rumor"; rumor: string; text: string };
-
-export type { LeverSettings };
+  | { kind: "rumor"; rumor: string; text: string }
+) & { onComplete?: OnComplete };
 
 export interface Mission extends Reviewed {
   id: string;
@@ -265,6 +272,7 @@ export interface Mission extends Reviewed {
   /** Scene the mission panel belongs to. */
   scene: string;
   steps: Step[];
+  onComplete?: OnComplete;
   sources: SourceId[];
   simplificationNotes: string[];
 }
@@ -283,6 +291,19 @@ export interface Chapter extends Reviewed {
   /** Chapters that must be complete first; empty means open from the start. */
   after: ChapterId[];
   playable: boolean;
+  /** The rumor the chapter arrives as when it opens; `r-<id>` if unset. */
+  rumor?: string;
+  /** Unlocking this chapter makes the scientist lens available. */
+  lens?: boolean;
+}
+
+/** Everything one chapter contributes; `src/content/index.ts` builds the lists from these. */
+export interface ChapterBundle {
+  chapter: Chapter;
+  scenes: Scene[];
+  missions: Mission[];
+  codex: CodexEntry[];
+  rumors: Rumor[];
 }
 
 export type WorldId = "spinach" | "pea" | "bean" | "sugarbeet" | "rice" | "forest" | "bare";

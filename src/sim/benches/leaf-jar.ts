@@ -5,6 +5,7 @@
  */
 import { emptyLedger, transfer, type Ledger, type PoolOf, type Transfer } from "../ledger";
 import type { BenchModel } from "../engine";
+import type { BenchDef } from ".";
 import { fO2, fT, fW, RESIDUE, TEMPERATURE, WATER } from "../modifiers";
 
 export interface LeverSettings {
@@ -12,6 +13,11 @@ export interface LeverSettings {
   temperature: keyof typeof TEMPERATURE;
   residue: keyof typeof RESIDUE;
 }
+
+/** Registry entry (benches/index.ts): the levers a content step may set. */
+export const LEAF_JAR: BenchDef = {
+  levers: { water: Object.keys(WATER), temperature: Object.keys(TEMPERATURE), residue: Object.keys(RESIDUE) },
+};
 
 export const DEFAULT_LEVERS: LeverSettings = { water: "moist", temperature: "mild", residue: "leaf" };
 export const INITIAL_LITTER = 10_000;

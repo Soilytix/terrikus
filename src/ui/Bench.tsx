@@ -4,12 +4,20 @@
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { mission as missionById } from "../content";
-import type { Choice, LeverSettings, Step } from "../content/schema";
-import { activeMission, advance, currentStep } from "../app/progress";
+import type { Choice, Step } from "../content/schema";
+import { advance, benchMission, currentStep, lensAvailable } from "../app/progress";
 import { appendLab, type Save } from "../save/schema";
 import { run, type Snapshot } from "../sim/engine";
 import { ConservationError } from "../sim/ledger";
-import { DAYS, DEFAULT_LEVERS, INITIAL_LITTER, RULESET_VERSION, leafJar } from "../sim/benches/leaf-jar";
+import type { BenchId } from "../sim/benches";
+import {
+  DAYS,
+  DEFAULT_LEVERS,
+  INITIAL_LITTER,
+  RULESET_VERSION,
+  leafJar,
+  type LeverSettings,
+} from "../sim/benches/leaf-jar";
 import { decompositionRate, measureCo2Flux } from "../sim/measure";
 import { RESIDUE, TEMPERATURE, WATER } from "../sim/modifiers";
 import { Kbd } from "./common";
@@ -31,7 +39,8 @@ const POOLS = [
   { key: "co2Out", label: "CO₂ out", cls: "pool-co2", note: "left the jar" },
 ] as const;
 
-const full = (l: Partial<LeverSettings>): LeverSettings => ({ ...DEFAULT_LEVERS, ...l });
+// Content lint checks a step's settings against the bench's levers (tests/content-lint.test.ts).
+const full = (l: Record<string, string>) => ({ ...DEFAULT_LEVERS, ...l }) as LeverSettings;
 const same = (a: LeverSettings, b: LeverSettings) =>
   a.water === b.water && a.temperature === b.temperature && a.residue === b.residue;
 const pct = (n: number) => (n / INITIAL_LITTER) * 100;
@@ -243,6 +252,7 @@ function Readout({
 }
 
 interface Props {
+  bench: BenchId;
   save: Save;
   update: (fn: (s: Save) => Save) => void;
   go: (href: string) => void;
@@ -260,8 +270,8 @@ function safeRun(l: LeverSettings): Snapshot[] | ConservationError {
   }
 }
 
-export function Bench({ save, update, go, reduced, backHref }: Props) {
-  const m = activeMission("leaf", save);
+export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
+  const m = benchMission(bench, save);
   const st = m && currentStep(save, m);
   const step: BenchStep | undefined = st?.kind === "bench" ? st : undefined;
   const [a, setA] = useState<LeverSettings>(full(step?.a ?? {}));
@@ -273,7 +283,8 @@ export function Bench({ save, update, go, reduced, backHref }: Props) {
   const [day, setDay] = useState(0);
   const [running, setRunning] = useState(false);
   const [logged, setLogged] = useState(false);
-  const lensOn = save.settings.lens && save.chaptersUnlocked.includes("leaf");
+  const lens = lensAvailable(save);
+  const lensOn = save.settings.lens && lens;
   const resA = useMemo(() => safeRun(a), [a]);
   const resB = useMemo(() => (b ? safeRun(b) : null), [b]);
   const halted = resA instanceof ConservationError ? resA : resB instanceof ConservationError ? resB : null;
@@ -325,7 +336,7 @@ export function Bench({ save, update, go, reduced, backHref }: Props) {
       labBook: appendLab(s.labBook, {
         id: `run-${s.labBook.length + 1}`,
         at: new Date().toISOString(),
-        bench: "leaf-jar",
+        bench,
         ruleset: RULESET_VERSION,
         ...(matches && m ? { mission: m.id } : {}),
         ...(choice ? { prediction: choice.label } : {}),
@@ -337,7 +348,7 @@ export function Bench({ save, update, go, reduced, backHref }: Props) {
         tier: "observed",
       }),
     }));
-  }, [finished, logged, halted, a, b, snapsA, snapsB, update, matches, m, picked, step]);
+  }, [finished, logged, halted, a, b, snapsA, snapsB, update, matches, m, picked, step, bench]);
 
   const start = () => {
     setDay(0);
@@ -504,7 +515,7 @@ export function Bench({ save, update, go, reduced, backHref }: Props) {
             {b ? "Use one jar" : "Add a comparison jar"}
           </button>
         )}
-        {save.chaptersUnlocked.includes("leaf") && (
+        {lens && (
           <button
             type="button"
             className="btn"

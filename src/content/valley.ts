@@ -2,7 +2,7 @@
  * The valley (landscape scale): the title vista and the map of chapters.
  * Later chapters are glimpsed here with their opening rumor, never their content.
  */
-import type { Chapter, Discovery, Scene } from "./schema";
+import type { Chapter, ChapterBundle, Discovery, Scene } from "./schema";
 
 const later = (
   id: Chapter["id"],
@@ -27,7 +27,7 @@ const later = (
 });
 
 /** Hooks verbatim from the world-bible chapter map. */
-export const LATER_CHAPTERS: Chapter[] = [
+const LATER_CHAPTERS: Chapter[] = [
   later("c1", "1", "The Pore Labyrinth", "Why is this bacterium starving next to food?", "spinach"),
   later("c3", "3", "Water Roads", "After the dry spell, the soil breathed out a burst.", "spinach"),
   later("c4", "4", "Breath and Rust", "The flooded field smells of eggs, and the rice is fine.", "rice"),
@@ -60,6 +60,15 @@ export const LATER_CHAPTERS: Chapter[] = [
   later("c13", "13", "Hillslope and River", "Where does the soil from the hill go?", "rice"),
   later("c14", "14", "What Does the Sample Tell Us?", "Two reports about the same field disagree.", "bare"),
 ];
+
+/** A later chapter brings only its opening rumor. */
+export const LATER_BUNDLES: ChapterBundle[] = LATER_CHAPTERS.map((c) => ({
+  chapter: c,
+  scenes: [],
+  missions: [],
+  codex: [],
+  rumors: [{ id: `r-${c.id}`, text: c.hook, chapter: c.id, hintsAt: [c.id] }],
+}));
 
 export const valleyScene: Scene = {
   id: "valley",
