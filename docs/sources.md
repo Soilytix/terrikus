@@ -187,6 +187,15 @@ These DOIs come from `docs/research/curriculum.md`, which checked them on 2026-1
 | `zhang-2008` | Zhang, D. et al. (2008). Rates of litter decomposition in terrestrial ecosystems: global patterns and controlling factors. *J. Plant Ecol.* 1, 85–93. | https://doi.org/10.1093/jpe/rtn002 | ref | doi-checked | 2 |
 | `vandeputte-2017` | Vandeputte, D. et al. (2017). Quantitative microbiome profiling links gut community variation to microbial load. *Nature* 551, 507–511. | https://doi.org/10.1038/nature24460 | ref | doi-checked | 7, 14 |
 
+### Full-text checks (R11)
+
+Where a claim was checked against the source's full text, the location of the stating passage. Checked 2026-10-06.
+
+- `anthony-2023` (Europe PMC PMC10437432): Results, the paragraph after the virus estimates, and Fig. 2: the soil share averaged over the lower, central and upper estimates is 58.5 ± 14.7 %, excluding phage; including phage it is 20.8 ± 11 %. The 59 % is a mean of per-group shares, so it is not "dominated by microbial taxa".
+- `raynaud-nunan-2014` (Europe PMC PMC3905020): Introduction, "a single gram of soil can harbour up to 10¹⁰ bacterial cells"; Results and Table 1, epifluorescence counts in thin sections give ca. 1.09 × 10⁷ to 1.16 × 10¹⁰ cells g⁻¹ (topsoil 0–30 cm mean 1.03 × 10⁹).
+- `young-crawford-2004`, `young-ritz-2000`: no open full text found (Unpaywall, Semantic Scholar, Europe PMC, Glasgow Enlighten, UNE RUNE). The pore-occupancy figure is not yet verified.
+- `torsvik-ovreas-2002` (not registered): Crossref confirms DOI 10.1016/S1369-5274(02)00324-7 (*Curr. Opin. Microbiol.* 5, 240–245), but no open full text was found, so it is not cited yet.
+
 ## 3. Learning-science sources
 
 These are cited in `spec.md` and `world-bible.md` for **design rationale** only. They never appear in player-facing content.

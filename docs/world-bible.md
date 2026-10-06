@@ -271,12 +271,12 @@ Mission steps follow the core loop: notice → predict → change → observe �
 
 **Striking facts on cards**
 
-- 10⁸–10⁹ bacterial cells per gram (`nrcs-soil-biology-primer`, firm, order of magnitude).
+- 10⁸–10¹⁰ bacterial cells per gram, depending on the counting method (`nrcs-soil-biology-primer`, `raynaud-nunan-2014`, estimate, order of magnitude).
 - Thousands to tens of thousands of bacterial taxa per gram (`torsvik-1990`, `roesch-2007`, estimate).
 - Cells occupy only a small fraction of the pore space, a few percent at most (`young-crawford-2004`, `young-ritz-2000`, estimate).
-- Soil may host about 59 % ± 15 % of species (`anthony-2023`, estimate; contested register).
+- Soil may host about 59 % ± 15 % of species, excluding phages; about 21 % with them (`anthony-2023`, estimate; contested register).
 
-**Contested items shown:** the 59 % species estimate carries its ± and an "estimate, dominated by microbial taxa" tag.
+**Contested items shown:** the 59 % species estimate carries its ± and the phage caveat (the 59 % is a mean of per-group shares excluding phages; `anthony-2023`).
 
 **Scientist-lens payoff:** none yet. The lens is introduced in chapter 2.
 
