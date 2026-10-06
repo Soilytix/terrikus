@@ -369,7 +369,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** nothing leaves the browser without user action; thresholds left configurable pending OD-13.
 - **Depends on:** T10
 
-### T34 — Playwright smoke and performance measurement
+### T34 — Playwright smoke and performance measurement · **done**
 
 - **Goal:** end-to-end safety net.
 - **Scope:** Playwright runs of prologue and ch. 2 (normal, reduced motion, static, keyboard-only); first-interactive timing.
