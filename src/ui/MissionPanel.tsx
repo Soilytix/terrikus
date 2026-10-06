@@ -1,0 +1,505 @@
+/**
+ * The mission panel: one step at a time, predict → observe → explain. Feedback
+ * is an observation or a question, never a score.
+ */
+import { useEffect, useState } from "react";
+import { DISCOVERIES, chapter, scene as sceneById, SCENES } from "../content";
+import type { Choice, Mission, Step } from "../content/schema";
+import type { Save } from "../save/schema";
+import { advance, currentStep, isScanned, setFlag, stepIndex } from "../app/progress";
+import { appendLab } from "../save/schema";
+import { RULESET_VERSION, DEFAULT_LEVERS } from "../sim/benches/leaf-jar";
+import { targetHref } from "../app/router";
+import { ChainBuilder } from "./ChainBuilder";
+import { Composition } from "./Composition";
+import { HandDecompose } from "./HandDecompose";
+import { WaterAir } from "./WaterAir";
+import { Facts } from "./common";
+
+interface Props {
+  mission: Mission | undefined;
+  chapterId: string;
+  sceneId: string;
+  save: Save;
+  update: (fn: (s: Save) => Save) => void;
+  go: (href: string) => void;
+  narrate: (text: string) => void;
+}
+
+function Choices({
+  choices,
+  multi,
+  picked,
+  setPicked,
+  locked,
+}: {
+  choices: Choice[];
+  multi?: boolean | undefined;
+  picked: string[];
+  setPicked: (p: string[]) => void;
+  locked?: boolean | undefined;
+}) {
+  return (
+    <div className="choices" role={multi ? "group" : "radiogroup"}>
+      {choices.map((c) => {
+        const on = picked.includes(c.id);
+        return (
+          <button
+            key={c.id}
+            type="button"
+            className="choice"
+            role={multi ? "checkbox" : "radio"}
+            aria-checked={on}
+            disabled={locked}
+            onClick={() =>
+              setPicked(multi ? (on ? picked.filter((x) => x !== c.id) : [...picked, c.id]) : [c.id])
+            }
+          >
+            <span className="choice-box" aria-hidden="true" />
+            {c.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function Feedback({ choices, picked }: { choices: Choice[]; picked: string[] }) {
+  return (
+    <ul className="feedback" aria-live="polite">
+      {choices
+        .filter((c) => picked.includes(c.id))
+        .map((c) => (
+          <li key={c.id} data-ok={c.ok}>
+            <b>{c.label}.</b> {c.feedback}
+          </li>
+        ))}
+    </ul>
+  );
+}
+
+/** Where a `go` step's portal lives. */
+function portalScene(step: Extract<Step, { kind: "go" }>) {
+  return SCENES.find((s) =>
+    s.objects.some((o) => o.to === step.scene && (!step.object || o.id === step.object)),
+  );
+}
+
+function StepBody({
+  mission: m,
+  step,
+  save,
+  update,
+  go,
+  narrate,
+  sceneId,
+}: Props & { mission: Mission; step: Step }) {
+  const next = () => update((s) => advance(s, m.id));
+  const [picked, setPicked] = useState<string[]>([]);
+  const [committed, setCommitted] = useState(false);
+  const [value, setValue] = useState(50);
+  const [overlay, setOverlay] = useState(false);
+  const [measure, setMeasure] = useState<string[]>([]);
+  const key = `${m.id}:${stepIndex(save, m.id)}`;
+  useEffect(() => {
+    setPicked([]);
+    setCommitted(false);
+    setOverlay(false);
+    setMeasure([]);
+  }, [key]);
+
+  switch (step.kind) {
+    case "notice":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <button type="button" className="btn btn-primary" onClick={next}>
+            {step.cta ?? "Continue"}
+          </button>
+        </>
+      );
+    case "go": {
+      const at = portalScene(step);
+      const here = at?.id === sceneId;
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          {here ? (
+            <p className="hint">The portal is pulsing in the scene.</p>
+          ) : (
+            at && (
+              <button type="button" className="btn" onClick={() => go(targetHref(at.id))}>
+                Go to {at.title}
+              </button>
+            )
+          )}
+        </>
+      );
+    }
+    case "scan":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <ul className="checklist">
+            {step.objects.map((id) => {
+              const o = sceneById(m.scene)?.objects.find((x) => x.id === id);
+              const done = isScanned(save, m.scene, id);
+              return (
+                <li key={id} data-done={done}>
+                  <span className="check" aria-hidden="true" />
+                  {o?.label ?? id}
+                  <span className="sr-only">{done ? " (done)" : " (not yet)"}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      );
+    case "predict-slider":
+      return (
+        <>
+          <p className="step-text">{step.question}</p>
+          <p className="prediction-tag">Your prediction</p>
+          <label className="slider-row big">
+            <input
+              type="range"
+              min={step.min}
+              max={step.max}
+              value={value}
+              onChange={(e) => setValue(Number(e.target.value))}
+              aria-label={step.question}
+              aria-valuetext={`${value} ${step.unit}`}
+            />
+            <output className="mono">
+              {value} {step.unit}
+            </output>
+          </label>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => {
+              update((s) => advance({ ...s, predictions: { ...s.predictions, [step.id]: value } }, m.id));
+              narrate(`Prediction committed: ${value} ${step.unit}.`);
+            }}
+          >
+            Commit my prediction
+          </button>
+        </>
+      );
+    case "predict-choice":
+      return (
+        <>
+          <p className="step-text">{step.question}</p>
+          <p className="prediction-tag">Your prediction</p>
+          <Choices
+            choices={step.choices}
+            multi={step.multi}
+            picked={picked}
+            setPicked={setPicked}
+            locked={committed}
+          />
+          {committed && <Feedback choices={step.choices} picked={picked} />}
+          {!committed ? (
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={!picked.length}
+              onClick={() => {
+                setCommitted(true);
+                update((s) => ({ ...s, predictions: { ...s.predictions, [step.id]: picked } }));
+              }}
+            >
+              Commit my prediction
+            </button>
+          ) : (
+            <button type="button" className="btn btn-primary" onClick={next}>
+              Continue
+            </button>
+          )}
+        </>
+      );
+    case "observe-composition": {
+      const guess = Object.entries(save.predictions).find(([k]) => k === "p-m1-solid")?.[1];
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          {!overlay ? (
+            <button type="button" className="btn btn-primary" onClick={() => setOverlay(true)}>
+              Separate the handful
+            </button>
+          ) : (
+            <>
+              <Composition guess={typeof guess === "number" ? guess : undefined} reveal />
+              <p className="observation">
+                <span className="tier" data-tier="measured">
+                  observed
+                </span>{" "}
+                {step.resultText}
+              </p>
+              <Facts facts={step.facts} />
+              <button type="button" className="btn btn-primary" onClick={next}>
+                Continue
+              </button>
+            </>
+          )}
+        </>
+      );
+    }
+    case "explain-choice": {
+      const pick = step.choices.find((c) => c.id === picked[0]);
+      return (
+        <>
+          <p className="step-text">{step.question}</p>
+          <Choices choices={step.choices} picked={picked} setPicked={(p) => setPicked(p)} locked={pick?.ok} />
+          {pick && <Feedback choices={step.choices} picked={picked} />}
+          {pick?.ok && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() =>
+                update((s) => advance({ ...s, predictions: { ...s.predictions, [step.id]: pick.id } }, m.id))
+              }
+            >
+              Continue
+            </button>
+          )}
+          {pick && !pick.ok && <p className="hint">Look again, then choose another.</p>}
+        </>
+      );
+    }
+    case "reactive-water-air": {
+      const moved = save.flags.includes("p-m1-slider");
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <WaterAir onMoved={() => !moved && update((s) => setFlag(s, "p-m1-slider"))} />
+          <button type="button" className="btn btn-primary" disabled={!moved} onClick={next}>
+            Continue
+          </button>
+        </>
+      );
+    }
+    case "hand-decompose":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <button type="button" className="btn btn-primary" onClick={() => setOverlay(true)}>
+            Start eating
+          </button>
+          {overlay && (
+            <HandDecompose
+              turns={step.turns}
+              cue={step.cue}
+              onClose={() => setOverlay(false)}
+              onDone={next}
+            />
+          )}
+        </>
+      );
+    case "bench":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <button type="button" className="btn btn-primary" onClick={() => go("#/bench/leaf-jar")}>
+            Open the lab bench
+          </button>
+        </>
+      );
+    case "chains": {
+      const done = step.chains.filter((id) => save.chains[id]).length;
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <button type="button" className="btn btn-primary" onClick={() => setOverlay(true)}>
+            {done ? "Revisit the chain" : step.chains.length > 1 ? "Open your chains" : "Build the chain"}
+          </button>
+          {overlay && (
+            <ChainBuilder
+              chains={step.chains}
+              save={save}
+              onClose={() => setOverlay(false)}
+              onSave={(answers) => update((s) => ({ ...s, chains: { ...s.chains, ...answers } }))}
+              onDone={() => {
+                setOverlay(false);
+                next();
+              }}
+            />
+          )}
+        </>
+      );
+    }
+    case "transfer": {
+      const ok = picked.length === 1 && measure.length > 0;
+      return (
+        <>
+          <p className="scenario">{step.scenario}</p>
+          <p className="step-text">{step.question}</p>
+          <Choices choices={step.choices} picked={picked} setPicked={setPicked} locked={committed} />
+          <p className="step-text">What would you measure to find out?</p>
+          <Choices choices={step.measure} multi picked={measure} setPicked={setMeasure} locked={committed} />
+          {committed && (
+            <>
+              <Feedback choices={step.choices} picked={picked} />
+              <Feedback choices={step.measure} picked={measure} />
+            </>
+          )}
+          {!committed ? (
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={!ok}
+              onClick={() => {
+                setCommitted(true);
+                const choice = step.choices.find((c) => c.id === picked[0]);
+                update((s) => ({
+                  ...s,
+                  predictions: { ...s.predictions, [step.id]: picked, [`${step.id}-measure`]: measure },
+                  labBook: appendLab(s.labBook, {
+                    id: `${step.id}-${s.labBook.length + 1}`,
+                    at: new Date().toISOString(),
+                    bench: "leaf-jar",
+                    ruleset: RULESET_VERSION,
+                    mission: m.id,
+                    prediction: choice?.label ?? "",
+                    a: DEFAULT_LEVERS,
+                    result: `If I measured ${measure
+                      .map((id) => step.measure.find((c) => c.id === id)?.label.toLowerCase())
+                      .join(
+                        " and ",
+                      )}, then I could tell whether the woody residue follows the leaf's chain, because each brake shows up in how fast mass and CO₂ change.`,
+                    tier: "would-do",
+                  }),
+                }));
+              }}
+            >
+              Commit my reasoning
+            </button>
+          ) : (
+            <button type="button" className="btn btn-primary" onClick={next}>
+              Continue
+            </button>
+          )}
+        </>
+      );
+    }
+    case "discover":
+      return (
+        <>
+          <ul className="discoveries">
+            {step.discoveries.map((id) => {
+              const d = DISCOVERIES.find((x) => x.id === id);
+              return (
+                <li key={id}>
+                  <span className="tier" data-tier={d?.evidenceTier}>
+                    {d?.evidenceTier}
+                  </span>
+                  {d?.statement}
+                </li>
+              );
+            })}
+          </ul>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => {
+              next();
+              narrate("Added to your notebook.");
+            }}
+          >
+            Add to my notebook
+          </button>
+        </>
+      );
+    case "rumor":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <button type="button" className="btn btn-primary" onClick={next}>
+            Keep the question
+          </button>
+        </>
+      );
+  }
+}
+
+export function MissionPanel(props: Props) {
+  const { mission: m, save, chapterId, sceneId, go } = props;
+  const pending = m && currentStep(save, m);
+  // On a phone the sheet would cover the scene: steps played in the world start folded.
+  const [open, setOpen] = useState(
+    () =>
+      !(
+        window.matchMedia("(max-width: 760px)").matches &&
+        (!pending || pending.kind === "go" || pending.kind === "scan" || (m && m.scene !== sceneId))
+      ),
+  );
+  const ch = chapter(chapterId);
+  if (!ch) return null;
+
+  if (!m) {
+    const next = ch.id === "prologue" && save.chaptersUnlocked.includes("leaf");
+    return (
+      <aside className="mission" aria-label="Chapter" data-open={open}>
+        <header className="mission-head">
+          <p className="eyebrow">Chapter {ch.number} · complete</p>
+          <h2>{ch.title}</h2>
+        </header>
+        <div className="mission-body">
+          {next ? (
+            <>
+              <p className="step-text">
+                A new question waits in the valley: “The leaf vanished, but the soil barely got heavier.” Find
+                the hedge at the field edge.
+              </p>
+              <button type="button" className="btn btn-primary" onClick={() => go(targetHref("valley"))}>
+                Back to the valley
+              </button>
+            </>
+          ) : (
+            <p className="step-text">
+              Everything in this chapter is in your notebook. The rest of the valley is still being written:
+              its questions wait as rumors.
+            </p>
+          )}
+        </div>
+      </aside>
+    );
+  }
+
+  const step = currentStep(save, m);
+  const i = stepIndex(save, m.id);
+  const away = m.scene !== sceneId && step && step.kind !== "go" && step.kind !== "bench" && i === 0;
+  const where = sceneById(m.scene);
+  return (
+    <aside className="mission" aria-label={`Mission: ${m.title}`} data-open={open}>
+      <header className="mission-head">
+        <button type="button" className="mission-toggle" aria-expanded={open} onClick={() => setOpen(!open)}>
+          <span className="eyebrow">
+            Chapter {ch.number} · {m.tier}
+          </span>
+          <h2>{m.title}</h2>
+          <span className="chev" aria-hidden="true" />
+        </button>
+        <ol className="steps-dots" aria-label={`Step ${i + 1} of ${m.steps.length}`}>
+          {m.steps.map((s, k) => (
+            <li key={k} data-state={k < i ? "done" : k === i ? "now" : "todo"} title={s.kind} />
+          ))}
+        </ol>
+      </header>
+      {open && (
+        <div className="mission-body">
+          {away && where ? (
+            <>
+              <p className="step-text">This mission starts at {where.title.toLowerCase()}.</p>
+              <button type="button" className="btn btn-primary" onClick={() => go(targetHref(where.id))}>
+                Go there
+              </button>
+            </>
+          ) : (
+            step && <StepBody {...props} mission={m} step={step} />
+          )}
+        </div>
+      )}
+    </aside>
+  );
+}

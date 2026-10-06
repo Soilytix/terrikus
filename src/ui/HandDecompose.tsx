@@ -1,0 +1,154 @@
+/**
+ * Be the decomposer (c2-m1): eat the leaf parcel by parcel and send each into
+ * your body or out as breath. Body is capped at round(CUE × eaten): building
+ * a body costs energy, and the energy comes from burning food.
+ */
+import { useMemo, useState } from "react";
+import { Dialog } from "./common";
+
+const PARCELS = 10;
+
+export function splitTurns(turns: number, total = PARCELS): number[] {
+  const base = Math.floor(total / turns);
+  return Array.from({ length: turns }, (_, i) => (i === turns - 1 ? total - base * (turns - 1) : base));
+}
+
+export function HandDecompose({
+  turns,
+  cue,
+  onDone,
+  onClose,
+}: {
+  turns: number;
+  cue: number;
+  onDone: () => void;
+  onClose: () => void;
+}) {
+  const plan = useMemo(() => splitTurns(turns), [turns]);
+  const [choices, setChoices] = useState<("body" | "breath")[]>([]);
+  const [note, setNote] = useState<string>("Turn 1. Take the first parcel of leaf.");
+  const eaten = choices.length;
+  const body = choices.filter((c) => c === "body").length;
+  const breath = eaten - body;
+  const finished = eaten >= PARCELS;
+  const ends = plan.reduce<number[]>((a, p) => [...a, (a.at(-1) ?? 0) + p], []);
+  const at = ends.findIndex((e) => eaten < e);
+  const turn = at < 0 ? plan.length - 1 : at;
+
+  const choose = (c: "body" | "breath") => {
+    if (finished) return;
+    const cap = Math.round(cue * (eaten + 1));
+    if (c === "body" && body + 1 > cap) {
+      setNote(
+        eaten === 0
+          ? "Not yet. Building a body costs energy, and the energy comes from burning food. Breathe this one out first."
+          : `Your cells cannot keep more: so far only ${cap} of ${eaten + 1} parcels can become body. The rest must be burned for energy.`,
+      );
+      return;
+    }
+    const next = [...choices, c];
+    setChoices(next);
+    const n = next.length;
+    const t = ends.findIndex((e) => e === n);
+    if (n >= PARCELS) setNote("The leaf is gone. Look at where it went.");
+    else if (t >= 0) setNote(`Turn ${t + 2}. ${plan[t + 1]} more parcels.`);
+    else
+      setNote(
+        c === "body"
+          ? "Into your body: carbon kept, as you."
+          : "Breathed out: carbon leaves as CO₂, its energy as heat.",
+      );
+  };
+
+  return (
+    <Dialog title="Be the decomposer" onClose={onClose} wide className="decompose">
+      <p className="lede">
+        You are a microbe at the edge of a leaf. Each parcel you take up goes one of two ways. Turn{" "}
+        {Math.min(turn + 1, plan.length)} of {plan.length}.
+      </p>
+      <div className="dc-stage">
+        <svg
+          viewBox="0 0 520 220"
+          className="dc-svg"
+          role="img"
+          aria-label={`Leaf: ${PARCELS - eaten} parcels left. Your body: ${body}. Breathed out: ${breath}.`}
+        >
+          <g transform="translate(20 30)">
+            {Array.from({ length: PARCELS }, (_, i) => {
+              const col = i % 5;
+              const row = Math.floor(i / 5);
+              const gone = i < eaten;
+              return (
+                <path
+                  key={i}
+                  className="dc-parcel"
+                  data-gone={gone}
+                  data-next={i === eaten}
+                  d={`M${col * 34 + 4} ${row * 64 + 34} q 13 -32 28 -30 q 4 26 -28 30 z`}
+                  transform={`rotate(${((i * 37) % 24) - 12} ${col * 34 + 18} ${row * 64 + 24})`}
+                />
+              );
+            })}
+            <text x={86} y={160} className="dc-cap" textAnchor="middle">
+              Leaf · {PARCELS - eaten} left
+            </text>
+          </g>
+          <g transform="translate(250 40)">
+            <circle cx={60} cy={60} r={18 + body * 7} className="dc-cell" />
+            <circle cx={60 - 6} cy={60 - 4} r={5 + body} className="dc-nucleus" />
+            <text x={60} y={170} className="dc-cap" textAnchor="middle">
+              Your body · {body}
+            </text>
+          </g>
+          <g transform="translate(400 30)">
+            {Array.from({ length: breath }, (_, i) => (
+              <circle
+                key={i}
+                className="dc-bubble"
+                cx={30 + (i % 3) * 26}
+                cy={130 - Math.floor(i / 3) * 30}
+                r={10}
+              />
+            ))}
+            <text x={56} y={180} className="dc-cap" textAnchor="middle">
+              Breathed out · {breath}
+            </text>
+          </g>
+        </svg>
+        <div className="dc-heat" aria-label={`Heat released: ${breath} units`}>
+          <span>Heat released</span>
+          <div className="meter">
+            <i style={{ width: `${(breath / PARCELS) * 100}%` }} />
+          </div>
+        </div>
+      </div>
+      <p className="dc-note" aria-live="polite">
+        {note}
+      </p>
+      {!finished ? (
+        <div className="btn-row">
+          <button type="button" className="btn btn-primary" onClick={() => choose("body")}>
+            Into my body
+          </button>
+          <button type="button" className="btn" onClick={() => choose("breath")}>
+            Breathe it out
+          </button>
+        </div>
+      ) : (
+        <div className="dc-result">
+          <p>
+            <b className="mono">{body}</b> of {PARCELS} parcels became you; <b className="mono">{breath}</b>{" "}
+            left as CO₂.{" "}
+            {body === Math.round(cue * PARCELS)
+              ? `That is the most a decomposer with a carbon-use efficiency of ${cue} can keep.`
+              : `A decomposer with a carbon-use efficiency of ${cue} could have kept ${Math.round(cue * PARCELS)}.`}{" "}
+            Every parcel is still somewhere: none was destroyed.
+          </p>
+          <button type="button" className="btn btn-primary" onClick={onDone}>
+            Now let the world do it
+          </button>
+        </div>
+      )}
+    </Dialog>
+  );
+}

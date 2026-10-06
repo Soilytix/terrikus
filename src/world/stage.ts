@@ -6,6 +6,7 @@
  */
 import { Application, Container, DisplacementFilter, Graphics, Sprite, Texture } from "pixi.js";
 import { num } from "./painter/color";
+import { UI } from "../styles/ui";
 import { fbm, rngFor } from "./painter/noise";
 import { paint, type Plate, type ParticleSpec, type PlateLayer, type SpriteSpec } from "./painter";
 import { HOME, clampView, easeChart, logLerp, viewTransform, type View } from "./camera";
@@ -74,6 +75,9 @@ class SceneView {
   ) {}
 
   destroy() {
+    // Particles share one dot texture across scenes: free them without it.
+    for (const p of this.particles) p.sprite.destroy({ texture: false });
+    this.particles = [];
     this.root.destroy({ children: true, texture: true, textureSource: true });
   }
 }
@@ -466,7 +470,7 @@ export class Stage {
     }
 
     this.dim.clear();
-    if (this.dimmed) this.dim.rect(0, 0, w, h).fill({ color: 0x161c19, alpha: 0.4 });
+    if (this.dimmed) this.dim.rect(0, 0, w, h).fill({ color: num(UI.heroDark), alpha: 0.4 });
 
     const tr = this.transition;
     if (tr) {
