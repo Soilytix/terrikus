@@ -1667,6 +1667,13 @@ input[type="range"] {
   font-weight: 400;
   white-space: nowrap;
 }
+.credits {
+  width: 100%;
+}
+.credits th {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .segmented {
   display: flex;
   flex-wrap: wrap;

@@ -10,7 +10,20 @@ const profile = process.env.SW_PROFILE === "public" ? "public" : "internal";
 export default defineConfig({
   // Relative base: dist/ works from any path prefix while the host is open (spec OD-4).
   base: "./",
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    {
+      // Designer infographics are internal-only (spec OD-6): in the public profile
+      // their files load as nothing, so none is emitted into dist/.
+      name: "internal-only-assets",
+      enforce: "pre",
+      load: (id) =>
+        profile === "public" && id.includes("/src/assets/designer-infographics/")
+          ? "export default undefined;"
+          : null,
+    },
+  ],
   define: {
     __SW_PROFILE__: JSON.stringify(profile),
   },

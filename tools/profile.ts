@@ -3,7 +3,7 @@
  * assets; `internal` ships everything and badges what is not approved.
  */
 import { CHAPTERS, CODEX, MISSIONS, ORGANISMS, PROCESSES, MATERIALS, SCENES } from "../src/content";
-import { ASSETS } from "../src/assets/manifest";
+import { bundledAssets } from "../src/assets/manifest";
 
 export type Profile = "internal" | "public";
 
@@ -38,12 +38,13 @@ export const allNodes = (): Node[] => [
 
 if (process.argv[1]?.endsWith("profile.ts")) {
   const profile: Profile = process.env.SW_PROFILE === "public" ? "public" : "internal";
-  const v = profileViolations(profile, allNodes(), ASSETS);
+  const assets = bundledAssets(profile);
+  const v = profileViolations(profile, allNodes(), assets);
   if (v.length > 0) {
     console.error(
       `FAIL profile "${profile}": ${v.length} node(s) not shippable\n  ${v.slice(0, 20).join("\n  ")}`,
     );
     process.exit(1);
   }
-  console.log(`ok   profile "${profile}": ${allNodes().length} nodes, ${ASSETS.length} assets`);
+  console.log(`ok   profile "${profile}": ${allNodes().length} nodes, ${assets.length} assets`);
 }

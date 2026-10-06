@@ -135,3 +135,12 @@ test("static plates work without WebGL motion", async ({ page }, info) => {
   await shot(page, "14-static-pore", info.project.name);
   expect(errors).toEqual([]);
 });
+
+test("settings credit every bundled asset", async ({ page }, info) => {
+  await page.goto("./?static=1#/ch/prologue/p-pore");
+  await page.getByRole("button", { name: "Settings" }).click();
+  const credits = page.getByRole("region", { name: "Credits" });
+  await credits.scrollIntoViewIfNeeded();
+  await expect(credits.getByRole("row")).toHaveCount(13); // 11 assets + 2 fonts
+  await shot(page, "15-credits", info.project.name);
+});

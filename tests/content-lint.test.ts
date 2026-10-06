@@ -21,7 +21,7 @@ import {
 import { CHAINS, CARDS } from "../src/content/chains";
 import { MISCONCEPTIONS } from "../src/content/misconceptions";
 import { WORLDS } from "../src/content/worlds";
-import { ASSETS } from "../src/assets/manifest";
+import { ASSETS, INTERNAL_ASSETS } from "../src/assets/manifest";
 import { BENCHES, isBenchId } from "../src/sim/benches";
 import { NO_GOOD_BAD, NO_SCORES, lintReview, lintSources, strings } from "./lib/content-lint";
 
@@ -213,15 +213,32 @@ describe("assets", () => {
   }
   it("every file in src/assets has a manifest entry, and every entry a file", () => {
     const files = walk("src/assets")
-      .filter((p) => !p.endsWith(".ts"))
+      .filter((p) => !p.endsWith(".ts") && !p.endsWith(".md"))
       .map((p) => p.replace("src/assets/", ""));
-    const listed = new Set(ASSETS.map((a) => a.path));
+    const all = [...ASSETS, ...INTERNAL_ASSETS];
+    const listed = new Set(all.map((a) => a.path));
     expect(files.filter((f) => !listed.has(f))).toEqual([]);
-    for (const a of ASSETS) expect(existsSync(join("src/assets", a.path)), a.path).toBe(true);
+    for (const a of all) expect(existsSync(join("src/assets", a.path)), a.path).toBe(true);
+    expect(new Set(all.map((a) => a.id)).size).toBe(all.length);
   });
 
-  it("cc-by assets carry attribution", () => {
-    for (const a of ASSETS) if (a.licence.startsWith("cc-by")) expect(a.attribution, a.id).toBeTruthy();
+  it("every asset carries an attribution for the credits", () => {
+    for (const a of [...ASSETS, ...INTERNAL_ASSETS]) expect(a.attribution, a.id).toBeTruthy();
+  });
+
+  it("CC BY-SA assets live in cc-by-sa/ and only there", () => {
+    for (const a of [...ASSETS, ...INTERNAL_ASSETS])
+      expect(a.licence === "cc-by-sa", a.id).toBe(a.path.startsWith("cc-by-sa/"));
+  });
+
+  it("designer infographics are internal-only and never in the public list", () => {
+    for (const a of ASSETS) expect(a.path.startsWith("designer-infographics/"), a.id).toBe(false);
+    for (const a of INTERNAL_ASSETS) {
+      expect(a.path.startsWith("designer-infographics/"), a.id).toBe(true);
+      expect(a.source, a.id).toBe("img-designer-infographics");
+      expect(a.licence, a.id).toBe("internal-only");
+      expect(a.publicOk, a.id).toBe(false);
+    }
   });
 });
 

@@ -4,6 +4,7 @@ import type { Scene } from "../content/schema";
 import { exportSave, importSave } from "../save/storage";
 import type { Motion, Save } from "../save/schema";
 import { Dialog, Kbd } from "./common";
+import { Credits } from "./Credits";
 
 export function Truth({ scene, onClose }: { scene: Scene; onClose: () => void }) {
   const rows: [string, string[]][] = [
@@ -194,6 +195,7 @@ export function Settings({
           </button>
         </div>
       )}
+      <Credits />
     </Dialog>
   );
 }

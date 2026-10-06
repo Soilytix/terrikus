@@ -199,12 +199,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 
 ## Later (T11–T35, ordered)
 
-### T11 — Asset manifest, build profiles and credits panel
+### T11 — Asset manifest, build profiles and credits panel · **done**
 
 - **Goal:** every bundled asset is accounted for and creditable.
 - **Scope:** populate `src/assets/manifest.ts`; credits panel in settings; `cc-by-sa/` isolation folder; designer-infographics import path for the internal profile only.
 - **Acceptance:** public build fails on `publicOk: false`; credits list every bundled asset with attribution; bundle scan still clean.
 - **Depends on:** T03
+- **Done:** every manifest entry carries an attribution; `INTERNAL_ASSETS` (empty) and `bundledAssets(profile)` split out `designer-infographics/`, which a Vite plugin loads as nothing in the public profile and the public bundle scan forbids; `cc-by-sa/` holds CC BY-SA files only (content lint); `src/ui/Credits.tsx` in Settings lists every bundled asset plus the two fonts. Open: OD-6 decides when designer infographics may leave internal.
 
 ### T12 — In-house organism sprite library and atlas
 
