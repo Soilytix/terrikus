@@ -179,6 +179,13 @@ These DOIs come from `docs/research/curriculum.md`, which checked them on 2026-1
 | `gloor-2017` | Gloor, G. B. et al. (2017). Microbiome datasets are compositional: and this is not optional. *Front. Microbiol.* 8, 2224. | https://doi.org/10.3389/fmicb.2017.02224 | cc-by | doi-checked | 6, 14 |
 | `morton-2019` | Morton, J. T. et al. (2019). Establishing microbial composition measurement standards with reference frames. *Nat. Commun.* 10, 2719. | https://doi.org/10.1038/s41467-019-10656-5 | cc-by | doi-checked | 14 |
 | `smets-2016` | Smets, W. et al. (2016). A method for simultaneous measurement of soil bacterial abundances and community composition via 16S rRNA gene sequencing. *Soil Biol. Biochem.* 96, 145–151. | https://doi.org/10.1016/j.soilbio.2016.02.003 | ref | doi-checked | 14 |
+| `manzoni-2012` | Manzoni, S. et al. (2012). Environmental and stoichiometric controls on microbial carbon-use efficiency in soils. *New Phytol.* 196, 79–91. | https://doi.org/10.1111/j.1469-8137.2012.04225.x | ref | doi-checked | 2 |
+| `sinsabaugh-2013` | Sinsabaugh, R. L. et al. (2013). Carbon use efficiency of microbial communities: stoichiometry, methodology and modelling. *Ecol. Lett.* 16, 930–939. | https://doi.org/10.1111/ele.12113 | ref | doi-checked | 2 |
+| `schimel-bennett-2004` | Schimel, J. P. & Bennett, J. (2004). Nitrogen mineralization: challenges of a changing paradigm. *Ecology* 85, 591–602. | https://doi.org/10.1890/03-8002 | ref | doi-checked | 2, 9 |
+| `tecon-or-2017` | Tecon, R. & Or, D. (2017). Biophysical processes supporting the diversity of microbial life in soil. *FEMS Microbiol. Rev.* 41, 599–623. | https://doi.org/10.1093/femsre/fux039 | ref | doi-checked | P, 1, 3 |
+| `young-ritz-2000` | Young, I. M. & Ritz, K. (2000). Tillage, habitat space and function of soil microbes. *Soil Tillage Res.* 53, 201–213. | https://doi.org/10.1016/S0167-1987(99)00106-3 | ref | doi-checked | P, 1 |
+| `zhang-2008` | Zhang, D. et al. (2008). Rates of litter decomposition in terrestrial ecosystems: global patterns and controlling factors. *J. Plant Ecol.* 1, 85–93. | https://doi.org/10.1093/jpe/rtn002 | ref | doi-checked | 2 |
+| `vandeputte-2017` | Vandeputte, D. et al. (2017). Quantitative microbiome profiling links gut community variation to microbial load. *Nature* 551, 507–511. | https://doi.org/10.1038/nature24460 | ref | doi-checked | 7, 14 |
 
 ## 3. Learning-science sources
 

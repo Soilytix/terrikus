@@ -106,6 +106,66 @@ describe("references resolve", () => {
     }
   });
 
+  it("chapters, scenes and missions point at each other", () => {
+    const missionIds = new Set(MISSIONS.map((m) => m.id));
+    for (const c of CHAPTERS.filter((x) => x.playable)) {
+      for (const id of c.scenes) expect(sceneIds.has(id), `${c.id} scene ${id}`).toBe(true);
+      for (const id of c.missions) expect(missionIds.has(id), `${c.id} mission ${id}`).toBe(true);
+      expect(sceneIds.has(c.entry), `${c.id} entry`).toBe(true);
+    }
+    for (const s of SCENES)
+      expect(s.chapter === "valley" || chapterIds.has(s.chapter as never), `${s.id}.chapter`).toBe(true);
+    for (const m of MISSIONS) expect(chapterIds.has(m.chapter), `${m.id}.chapter`).toBe(true);
+  });
+
+  it("scan steps name objects in their scene; go steps name a portal to theirs", () => {
+    for (const m of MISSIONS)
+      for (const step of m.steps) {
+        const objectsOf = (id: string) => new Set(scene(id)?.objects.map((o) => o.id));
+        if (step.kind === "scan")
+          for (const o of step.objects) expect(objectsOf(m.scene).has(o), `${m.id} scan ${o}`).toBe(true);
+        // A go step's object is the portal (in any scene) that leads to its scene.
+        if (step.kind === "go" && step.object) {
+          const portal = SCENES.flatMap((x) => x.objects).find((o) => o.id === step.object);
+          expect(portal?.to, `${m.id} go ${step.object}`).toBe(step.scene);
+        }
+      }
+  });
+
+  it("requires and hiddenBy name flags something can set", () => {
+    const settable = new Set([
+      ...MISSIONS.map((m) => `${m.id}-done`),
+      ...CHAPTERS.map((c) => `chapter:${c.id}`),
+      // Set by code: the bench step (progress.ts) and the water/air slider (MissionPanel.tsx).
+      "c2-bench-open",
+      "p-m1-slider",
+    ]);
+    for (const s of SCENES)
+      for (const o of s.objects)
+        for (const f of [o.requires, o.hiddenBy].filter((x): x is string => !!x))
+          expect(settable.has(f), `${s.id}/${o.id} flag ${f}`).toBe(true);
+  });
+
+  it("rumors and chain evidence resolve", () => {
+    for (const r of RUMORS) {
+      for (const h of r.hintsAt) expect(chapterIds.has(h as never), `${r.id} hintsAt ${h}`).toBe(true);
+      if (r.explainedBy) expect(discoveryIds.has(r.explainedBy), `${r.id} explainedBy`).toBe(true);
+    }
+    const evidence =
+      /^your water\/air slider$|^(dry|moist|waterlogged|cool|mild|warm|leaf|straw|wood) vs \w+$/;
+    for (const ch of CHAINS) expect(ch.evidence, ch.id).toMatch(evidence);
+  });
+
+  it("ids are unique, including the step ids that key the save", () => {
+    const dupes = (ids: string[]) => ids.filter((id, i) => ids.indexOf(id) !== i);
+    expect(dupes(SCENES.map((s) => s.id))).toEqual([]);
+    expect(dupes(MISSIONS.map((m) => m.id))).toEqual([]);
+    expect(dupes(CODEX.map((c) => c.id))).toEqual([]);
+    expect(dupes(CHAINS.map((c) => c.id))).toEqual([]);
+    const stepIds = MISSIONS.flatMap((m) => m.steps.flatMap((st) => ("id" in st && st.id ? [st.id] : [])));
+    expect(dupes(stepIds)).toEqual([]);
+  });
+
   it("organism art and every field card exist", () => {
     const assetIds = new Set(ASSETS.map((a) => a.id));
     for (const o of ORGANISMS) if (o.art) expect(assetIds.has(o.art), o.id).toBe(true);

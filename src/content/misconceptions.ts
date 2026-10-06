@@ -10,7 +10,7 @@ export const MISCONCEPTIONS: Misconception[] = [
   {
     id: "M2",
     misconception: "Topsoil regenerates quickly",
-    correctIdea: "Centuries per few cm; plough erosion is 10–100× faster",
+    correctIdea: "Centuries to a millennium per cm; conventional farming erodes it 10–100× faster",
   },
   {
     id: "M3",
@@ -39,7 +39,11 @@ export const MISCONCEPTIONS: Misconception[] = [
     misconception: "Trees talk through the wood wide web",
     correctIdea: "Largely unsupported in popular form",
   },
-  { id: "M14", misconception: "All crops are mycorrhizal", correctIdea: "Spinach and sugar beet are not" },
+  {
+    id: "M14",
+    misconception: "All crops are mycorrhizal",
+    correctIdea: "Spinach and sugar beet typically are not",
+  },
   {
     id: "M15",
     misconception: "Adding carbon always stores carbon",
@@ -51,7 +55,7 @@ export const MISCONCEPTIONS: Misconception[] = [
     misconception: "Legumes fertilise the next crop by default",
     correctIdea: "Much N leaves with seed",
   },
-  { id: "M18", misconception: "P leaches like nitrate", correctIdea: "P moves with eroded particles" },
+  { id: "M18", misconception: "P leaches like nitrate", correctIdea: "P moves mostly with eroded particles" },
   { id: "M19", misconception: "Pathogen detected = disease", correctIdea: "Triangle; detection is a lead" },
   { id: "M20", misconception: "Antibiotics evolved only to kill", correctIdea: "Possible signalling roles" },
   { id: "M21", misconception: "No-till sequesters lots of carbon", correctIdea: "Often redistribution" },

@@ -34,7 +34,7 @@ export interface Reviewed {
 export type GroupBadge =
   "decomposer" | "grazer" | "transformer" | "mutualist" | "pathogen" | "engineer" | "shredder";
 
-export type HowWeKnow = "microscopy" | "culture" | "dna" | "process";
+export type HowWeKnow = "microscopy" | "culture" | "dna" | "process" | "hand-sorting";
 
 export interface Organism extends Reviewed {
   id: string;
@@ -128,7 +128,8 @@ export interface Rumor {
 export interface Discovery {
   id: string;
   statement: string;
-  evidenceTier: "observed" | "derived" | "interpreted" | "would-do";
+  /** reference: a literature value the learner was shown, not something they measured. */
+  evidenceTier: "observed" | "derived" | "interpreted" | "reference" | "would-do";
 }
 
 export interface CodexEntry extends Reviewed {
@@ -172,6 +173,14 @@ export interface ChainTemplate {
   sequencingOnly?: boolean;
   /** Which bench runs back this chain (so a verdict can point at a run). */
   evidence: string;
+  /**
+   * Each connector is the link's own causal sign. This is the net direction
+   * the run observed from first card to last; an answer whose signs multiply
+   * to the opposite contradicts the run.
+   */
+  observed: 1 | -1;
+  /** The run shows the direction but cannot show this mechanism; an accepted answer stays plausible. */
+  untested?: string;
 }
 
 export interface ChainDiagnostic {
@@ -218,7 +227,13 @@ export type Step =
       b?: Partial<LeverSettings>;
       predict?: { id: string; question: string; choices: Choice[] };
     }
-  | { kind: "chains"; text: string; chains: string[] }
+  | {
+      kind: "chains";
+      text: string;
+      chains: string[];
+      /** Judge at once (the evidence is already in hand) instead of keeping the chain for a later batch. */
+      judgeNow?: boolean;
+    }
   | {
       kind: "transfer";
       id: string;
@@ -227,7 +242,15 @@ export type Step =
       choices: Choice[];
       measure: Choice[];
     }
-  | { kind: "discover"; text: string; discoveries: string[]; codex?: string[]; cards?: string[] }
+  | {
+      kind: "discover";
+      text: string;
+      discoveries: string[];
+      codex?: string[];
+      cards?: string[];
+      /** Closes the loop: the learner's saved prediction set beside what was observed. */
+      recall?: { prediction: string; unit: string; observed: string };
+    }
   | { kind: "rumor"; rumor: string; text: string };
 
 export type { LeverSettings };

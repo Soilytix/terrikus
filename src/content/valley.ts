@@ -44,7 +44,7 @@ export const LATER_CHAPTERS: Chapter[] = [
     "c8",
     "8",
     "Partners and Traders",
-    "This plant grows without nitrogen fertiliser, and that one has no fungal partner at all.",
+    "This plant grows without nitrogen fertiliser, and that one typically forms no partnership with root fungi.",
     "pea",
   ),
   later(
@@ -109,15 +109,19 @@ export const valleyScene: Scene = {
 };
 
 export const DISCOVERIES: Discovery[] = [
-  { id: "d-p-half-space", statement: "Half of soil is space.", evidenceTier: "observed" },
+  {
+    id: "d-p-half-space",
+    statement: "Roughly half of soil is space: about 40–60 % of topsoil is solid.",
+    evidenceTier: "reference",
+  },
   { id: "d-p-scale-100", statement: "One step down the ladder: ×100.", evidenceTier: "observed" },
   { id: "d-p-sleepers", statement: "Most microbes here are dormant.", evidenceTier: "derived" },
   {
     id: "d-c2-conserved",
     statement: "Carbon is never destroyed; I traced it into air, biomass and minerals.",
-    evidenceTier: "observed",
+    evidenceTier: "derived",
   },
-  { id: "d-c2-heat", statement: "Energy left as heat and did not come back.", evidenceTier: "observed" },
+  { id: "d-c2-heat", statement: "Energy left as heat and did not come back.", evidenceTier: "derived" },
   {
     id: "d-c2-moisture",
     statement: "Moisture speeds decomposition, up to the point where it shuts out air.",

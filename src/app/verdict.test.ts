@@ -47,4 +47,31 @@ describe("verdicts", () => {
     expect(judge(t, a, freshSave()).verdict).toBe("plausible");
     expect(judge(t, a, { ...freshSave(), flags: ["p-m1-slider"] }).verdict).toBe("supported");
   });
+
+  it("reads connectors as causal signs, so a correct link is never contradicted", () => {
+    const t = chainTemplate("c2-chain-waterlogged")!;
+    const cards = ["c-waterlogging", "c-o2", "a-microbial-activity", "p-decomposition"];
+    const save = withRun(run({}, { water: "waterlogged" }));
+    expect(judge(t, { cards, connectors: ["limits", "enables", "increases"] }, save).verdict).toBe(
+      "supported",
+    );
+    expect(judge(t, { cards, connectors: ["limits", "limits", "decreases"] }, save).verdict).not.toBe(
+      "supported",
+    );
+    expect(judge(t, { cards, connectors: ["limits", "limits", "increases"] }, save).verdict).toBe(
+      "contradicted",
+    );
+  });
+
+  it("keeps a mechanism the run cannot show at plausible", () => {
+    const t = chainTemplate("c2-chain-quality")!;
+    const cards = ["c-cn-high", "a-microbial-growth", "p-decomposition-rate"];
+    const j = judge(
+      t,
+      { cards, connectors: ["limits", "increases"] },
+      withRun(run({}, { residue: "straw" })),
+    );
+    expect(j.verdict).toBe("plausible");
+    expect(j.messages.join(" ")).toMatch(/interpretation/);
+  });
 });

@@ -52,7 +52,7 @@ Contents:
 | 4 | **Breath and Rust** | profile + aggregate | Rice paddy | "The flooded field smells of eggs, and the rice is fine." | Later |
 | 5 | **Charged Surfaces** | cell & molecule | Spinach field / acid woodland edge | "The fertiliser stayed exactly where the clay was." | Later |
 | 6 | **Who Eats Whom** | aggregate + rhizosphere | Spinach field + forest reference | "Bacteria near the root multiply, then crash." | Later |
-| 7 | **The Root's Neighbourhood** | rhizosphere | Spinach (seed crop) | "The soil touching the root is a different country." | Later |
+| 7 | **The Root's Neighbourhood** | rhizosphere | Spinach | "The soil touching the root is a different country." | Later |
 | 8 | **Partners and Traders** | rhizosphere + cell | Pea and bush bean; spinach and sugar beet as contrast | "This plant grows without nitrogen fertiliser, and that one has no fungal partner at all." | Later |
 | 9 | **The Nitrogen Relay** | rhizosphere + field | Sugar beet | "Straw was ploughed in and the next crop turned yellow." | Later |
 | 10 | **Disease and Defence** | rhizosphere + field | Pea / bush bean rotation; sugar beet suppressive soil | "The pathogen is here, but the plants are healthy." | Later |
@@ -97,7 +97,7 @@ All worlds are **generic**. No customer, variety, field, trial, dataset or resul
 
 | id | World | What it uniquely teaches | Anchor chapters | Key facts (sources) |
 |---|---|---|---|---|
-| `spinach` | **Spinach for seed production** (home world) | A **non-mycorrhizal** crop, which surprises players who learned "all crops have fungal partners". Shallow roots, sensitivity to waterlogging, and a seed phase: flowering, seed set and harvest happen at field scale. | P, 1, 2, 3, 6, 7, 8 | Amaranthaceae are non-mycorrhizal (`brundrett-tedersoo-2018`) |
+| `spinach` | **Spinach** (home world; generic crop, decision recorded in `docs/backlog.md` D-R1) | A **typically non-mycorrhizal** crop, which surprises players who learned "all crops have fungal partners". Shallow roots and sensitivity to waterlogging. | P, 1, 2, 3, 6, 7, 8 | Amaranthaceae are typically non-mycorrhizal; low or occasional AM colonisation is reported (`brundrett-tedersoo-2018`) |
 | `pea` | **Pea** | Nodules with *Rhizobium leguminosarum* bv. *viciae*; host-specific root-rot carry-over in short rotations (oomycete *Aphanomyces* as a textbook example, not a field score) | 8, 10, 12 | `oldroyd-2013`, `bennett-2012` |
 | `bean` | **Bush bean** | A *different* rhizobial partner from pea, so pea and bean are never interchangeable skins; bacterial and fungal root diseases as generic examples | 8, 10 | `oldroyd-2013` |
 | `sugarbeet` | **Sugar beet** | Non-mycorrhizal; high-C:N straw from the preceding cereal versus low-C:N beet tops for immobilisation; the published *Rhizoctonia*-suppressive soil story | 9, 10 | `nrcs-cn-ratios`, `mendes-2011` |
@@ -228,7 +228,7 @@ Mission steps follow the core loop: notice → predict → change → observe �
 
 1. Soil is a habitat. By volume it is roughly half solids and half pore space, and the pore space is shared between water and air. Life is a tiny fraction by volume but is everywhere.
 2. Things change dramatically with scale. Scale bars are part of reading any picture.
-3. Most microbes in a handful are dormant. Active cells occupy far less than 1 % of the pore surface.
+3. Most microbes in a handful are dormant (about 0.1–2 % of biomass is active). Separately, cells occupy only a small fraction of the pore space, by common estimates a few percent at most (`young-crawford-2004`, `young-ritz-2000`; exact figure to confirm in full text).
 
 **Scenes**
 
@@ -273,7 +273,7 @@ Mission steps follow the core loop: notice → predict → change → observe �
 
 - 10⁸–10⁹ bacterial cells per gram (`nrcs-soil-biology-primer`, firm, order of magnitude).
 - Thousands to tens of thousands of bacterial taxa per gram (`torsvik-1990`, `roesch-2007`, estimate).
-- Cells cover well under 1 % of pore surface (`young-crawford-2004`, `raynaud-nunan-2014`, estimate).
+- Cells occupy only a small fraction of the pore space, a few percent at most (`young-crawford-2004`, `young-ritz-2000`, estimate).
 - Soil may host about 59 % ± 15 % of species (`anthony-2023`, estimate; contested register).
 
 **Contested items shown:** the 59 % species estimate carries its ± and an "estimate, dominated by microbial taxa" tag.
@@ -358,7 +358,7 @@ The founder's proposal names this mission as the first prototype. It is the chap
 - **Graph:** stacked area of carbon pools over compressed days (litter, dissolved, microbial biomass, mineral-associated, CO₂-out). Peers follow chart roles: subject Lime and comparison gold, with pools distinguished by pattern plus label.
 - **Number:** "Carbon accounted for: 100.0 %". Always 100 %. That is the point.
 - **Energy trail:** a second slim bar, "chemical energy left in organic matter" versus "released as heat", which only grows toward heat.
-- **Time:** scrubber 0–365 compressed days with an always-visible label: "Teaching model: 1 s ≈ 10 days. Direction, not prediction."
+- **Time:** scrubber 0–365 compressed days with an always-visible label: "Teaching model: 1 s ≈ 60 days. Direction, not prediction."
 
 **Missions**
 
@@ -654,13 +654,13 @@ Accepted variants are listed per chain in the content file. Diagnostics:
 
 - `c7-root-tip` (rhizosphere): a spinach root tip grows through the pore network (shader S8). It trails an exudate plume that diffuses, is eaten and fades. Concentric gradients by solute: sugars narrow, organic acids wider, volatiles widest.
 - `c7-home-away`: a split view of the community near the root and in bulk soil.
-- `c7-season` (field): the spinach seed crop through bolting, flowering and seed set. The root input rate changes with stage. Plant-stage art comes from the in-house sprite set.
+- `c7-season` (field): the spinach crop from seedling to bolting. The root input rate changes with stage. Plant-stage art comes from the in-house sprite set.
 
 **Missions**
 
 - `c7-m1` **"Follow the root inputs"** (T1, a prototype mission rebuilt): exudate → bacterial bloom → amoeba grazing → NH₄⁺ → root uptake. The ledger conserves C and N.
 - `c7-m2` **"Bare versus planted"** (T2): the same soil with no plant (the `bare` world) against a spinach plant. Compare the active-microbe index and the dissolved C.
-- `c7-m3` **"Home or away"** (T3): relative abundance near the root changes because one group grew, not because another declined. This bridges to chapter 14.
+- `c7-m3` **"Home or away"** (T3): a rise in relative abundance near the root could mean one group grew or that others declined. Only absolute quantification (qPCR, spike-in, cell counts) separates the two (`gloor-2017`, `vandeputte-2017`). This bridges to chapter 14.
 - `c7-m4` **"Signal and answer"** (T2): releasing a flavonoid or a strigolactone calls rhizobia or AMF. A preview of chapter 8; spinach answers neither.
 
 **Expected chains**
@@ -684,7 +684,7 @@ Accepted variants are listed per chain in the content file. Diagnostics:
 **Learning objectives**
 
 1. Mycorrhizas trade plant carbon for nutrients, especially P. The relationship runs from mutualism to parasitism depending on context.
-2. Spinach and sugar beet have no mycorrhizal partner.
+2. Spinach and sugar beet belong to a family that typically forms no mycorrhiza.
 3. Symbiotic N fixation happens in nodules. Nitrogenase is costly and destroyed by O₂; leghaemoglobin makes active nodules pink.
 4. Partners are specific: pea and bean need different rhizobia.
 5. P is immobile. Roots must reach for it (hairs, hyphae) or release it (acids, enzymes).
@@ -788,7 +788,7 @@ Accepted variants are listed per chain in the content file. Diagnostics:
 1. Disease needs a susceptible host, a virulent pathogen and a conducive environment. The microbiome is often added as a fourth vertex.
 2. Pathogens span kingdoms, and oomycetes are protists.
 3. Pathogens persist as resting structures. Short rotations of the same host build up inoculum.
-4. Suppressive soils come in two kinds: general (broad, not transferable) and specific (transferable, lost on sterilisation).
+4. Suppressive soils come in two kinds: general (broad, related to total microbial activity, not transferable) and specific (transferable with small amounts of soil). Both are biological, so sterilisation reduces both.
 5. **Pathogen DNA detected is not disease.** Each claim on the evidence ladder needs its own evidence.
 
 **Scenes**
@@ -803,7 +803,7 @@ Accepted variants are listed per chain in the content file. Diagnostics:
 
 - `c10-m1` **"The disease triangle"** (T1): disease appears only when all three vertices align (`scholthof-2007`).
 - `c10-m2` **"What lived here last season?"** (T2, generic pea/bean): inoculum builds up across short versus long rotations (`bennett-2012`). Cover crops can host particular pathogens or reduce particular pressures; "all cover crops are risky" is marked wrong.
-- `c10-m3` **"Transfer the shield"** (T3): mix about 10 % suppressive soil into a conducive one, sterilise, compare. The player reconstructs the classic experiment (`weller-2002`, `schlatter-2017`; the 1–10 % w/w range is an estimate).
+- `c10-m3` **"Transfer the shield"** (T3): two arms. (a) Add 1–10 % untreated suppressive soil to a conducive soil: suppression transfers. (b) Sterilise or pasteurise the suppressive soil on its own: suppression is lost. The player reconstructs the classic experiment (`weller-2002`, `schlatter-2017`; the 1–10 % w/w range is an estimate).
 - `c10-m4` **"Detection to proof"** (T4): climb the evidence ladder:
   1. observed disease outcome
   2. suppression hypothesis
@@ -903,7 +903,7 @@ Accepted variants are listed per chain in the content file. Diagnostics:
   - Cover-crop SOC is shown as a contested pair: `poeplau-don-2015` about 0.32 against `chaplot-smith-2023` much smaller.
 - `c12-m4` **"Heavy wheels"** (T2): machinery on wet versus dry soil; macropores vanish and the next rain ponds (`keller-2019`, `hamza-anderson-2005`).
 - `c12-m5` **"Same seed, two fields"** (T3, G×E×M):
-  - Generic spinach seed crop. One variety, two fields that differ in drainage and history.
+  - Generic spinach crop. One variety, two fields that differ in drainage and history.
   - The player must separate an environment effect from a management effect. A confounder (drainage) drives both a microbial signal and yield.
   - Teaches "correlation in a field map is not cause". **No customer framing.**
 
@@ -987,7 +987,7 @@ This is the Soilytix chapter. It turns the whole world into a lesson about **wha
   - some cells resist lysis;
   - primers miss a clade;
   - 16S copy number varies from about 1 to 15+ (`louca-2018`).
-- `c14-jar`: **the squeezing jar**, a fixed-size jar of reads that always fills to the brim. A spike-in reveals absolute counts (`gloor-2017`, `smets-2016`, `morton-2019`).
+- `c14-jar`: **the squeezing jar**, a fixed-size jar of reads that always fills to the brim. A spike-in estimates absolute counts (with its own extraction and amplification bias) (`gloor-2017`, `smets-2016`, `morton-2019`).
 - `c14-report`: the player assembles a **small honest report**. Each block is typed (measured / derived / interpreted / would-do) and must carry a benchmark, a confidence and a provenance before it can be placed. It is clearly labelled as a teaching mock-up, not a Soilytix product.
 
 **Missions**

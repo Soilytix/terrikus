@@ -67,10 +67,10 @@ export const ORGANISMS: Organism[] = [
       },
       {
         id: "pore-cover",
-        text: "Cells cover well under 1 % of the pore surface: most of the habitat is empty.",
+        text: "Cells occupy only a small fraction of the pore space, by common estimates a few percent at most: most of the habitat is empty.",
         confidence: "estimate",
         evidence: "inferred",
-        sources: ["young-crawford-2004", "raynaud-nunan-2014"],
+        sources: ["young-crawford-2004", "young-ritz-2000"],
       },
     ],
     art: "specimen-bacterium",
@@ -131,7 +131,7 @@ export const ORGANISMS: Organism[] = [
       },
       {
         id: "fungi-global",
-        text: "Soil fungal diversity is vast and varies with climate more than with any single local factor.",
+        text: "Soil fungal diversity is vast; at global scale it is best predicted by climate, with soil pH and calcium next.",
         confidence: "estimate",
         sources: ["tedersoo-2014"],
       },
@@ -155,8 +155,8 @@ export const ORGANISMS: Organism[] = [
     facts: [
       {
         id: "springtail-smell",
-        text: "Springtails are attracted to geosmin, the earthy smell made by Streptomyces, and help spread its spores.",
-        confidence: "firm",
+        text: "In lab tests, springtails can be attracted to geosmin, the earthy smell made by Streptomyces, and can help spread its spores.",
+        confidence: "estimate",
         sources: ["becher-2020"],
       },
     ],
@@ -176,7 +176,7 @@ export const ORGANISMS: Organism[] = [
     eatenBy: ["birds", "moles", "beetles"],
     transforms: ["litter → casts rich in partly digested matter"],
     needs: ["moist litter"],
-    howWeKnow: ["microscopy", "process"],
+    howWeKnow: ["hand-sorting", "process"],
     facts: [
       {
         id: "worm-types",

@@ -820,6 +820,48 @@ export const SOURCES = {
     link: "https://doi.org/10.1016/j.soilbio.2016.02.003",
     status: "doi-checked",
   },
+  "manzoni-2012": {
+    citation:
+      "Manzoni, S. et al. (2012). Environmental and stoichiometric controls on microbial carbon-use efficiency in soils. *New Phytol.* 196, 79–91.",
+    link: "https://doi.org/10.1111/j.1469-8137.2012.04225.x",
+    status: "doi-checked",
+  },
+  "sinsabaugh-2013": {
+    citation:
+      "Sinsabaugh, R. L. et al. (2013). Carbon use efficiency of microbial communities: stoichiometry, methodology and modelling. *Ecol. Lett.* 16, 930–939.",
+    link: "https://doi.org/10.1111/ele.12113",
+    status: "doi-checked",
+  },
+  "schimel-bennett-2004": {
+    citation:
+      "Schimel, J. P. & Bennett, J. (2004). Nitrogen mineralization: challenges of a changing paradigm. *Ecology* 85, 591–602.",
+    link: "https://doi.org/10.1890/03-8002",
+    status: "doi-checked",
+  },
+  "tecon-or-2017": {
+    citation:
+      "Tecon, R. & Or, D. (2017). Biophysical processes supporting the diversity of microbial life in soil. *FEMS Microbiol. Rev.* 41, 599–623.",
+    link: "https://doi.org/10.1093/femsre/fux039",
+    status: "doi-checked",
+  },
+  "young-ritz-2000": {
+    citation:
+      "Young, I. M. & Ritz, K. (2000). Tillage, habitat space and function of soil microbes. *Soil Tillage Res.* 53, 201–213.",
+    link: "https://doi.org/10.1016/S0167-1987(99)00106-3",
+    status: "doi-checked",
+  },
+  "zhang-2008": {
+    citation:
+      "Zhang, D. et al. (2008). Rates of litter decomposition in terrestrial ecosystems: global patterns and controlling factors. *J. Plant Ecol.* 1, 85–93.",
+    link: "https://doi.org/10.1093/jpe/rtn002",
+    status: "doi-checked",
+  },
+  "vandeputte-2017": {
+    citation:
+      "Vandeputte, D. et al. (2017). Quantitative microbiome profiling links gut community variation to microbial load. *Nature* 551, 507–511.",
+    link: "https://doi.org/10.1038/nature24460",
+    status: "doi-checked",
+  },
   "ls-white-gunstone-1992": {
     citation: "White, R. & Gunstone, R. (1992). *Probing Understanding*. Falmer.",
     link: "—",

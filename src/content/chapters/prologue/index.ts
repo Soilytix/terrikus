@@ -10,8 +10,7 @@ const POREFACT = {
   id: "p-composition-range",
   text: "About 40–60 % of a typical arable topsoil's volume is solid; the rest is pores shared by water and air.",
   confidence: "firm" as const,
-  evidence: "measured" as const,
-  sources: ["soils4teachers-basics" as const, "hamza-anderson-2005" as const],
+  sources: ["soils4teachers-basics" as const, "weil-brady-2017" as const],
   simplification:
     "45 % mineral, 5 % organic, 25 % water, 25 % air is an idealised moist loam, not a constant.",
 };
@@ -28,14 +27,14 @@ export const prologue: Chapter = {
   entry: "p-field-dawn",
   sources: [
     "soils4teachers-basics",
-    "hamza-anderson-2005",
     "blagodatskaya-kuzyakov-2013",
     "lennon-jones-2011",
     "nrcs-soil-biology-primer",
     "torsvik-1990",
     "roesch-2007",
     "young-crawford-2004",
-    "raynaud-nunan-2014",
+    "young-ritz-2000",
+    "tecon-or-2017",
     "anthony-2023",
   ],
   after: [],
@@ -44,7 +43,7 @@ export const prologue: Chapter = {
 };
 
 const truthField = {
-  drawnFrom: ["Spinach rosettes and row spacing: generic seed-crop field"],
+  drawnFrom: ["Spinach rosettes and row spacing: generic spinach field"],
   schematic: ["Light, hills and hedges are painted mood, not a real site"],
   invented: ["The field, its geometry and the weather"],
   notSimulated: ["Plant growth", "Weather"],
@@ -60,7 +59,7 @@ export const prologueScenes: Scene[] = [
     seed: 11,
     scaleBar: { metres: 1, label: "1 m" },
     description:
-      "A spinach seed field at first light. Rows of low green rosettes run toward a hedge; mist lies in the furrows and the sky is pale gold. In the foreground, a patch of bare, crumbly soil between two rows.",
+      "A spinach field at first light. Rows of low green rosettes run toward a hedge; mist lies in the furrows and the sky is pale gold. In the foreground, a patch of bare, crumbly soil between two rows.",
     truth: truthField,
     up: "valley",
     objects: [
@@ -76,7 +75,7 @@ export const prologueScenes: Scene[] = [
         label: "Spinach rosette",
         kind: "scan",
         anchor: { x: 0.27, y: 0.6 },
-        scan: "Spinach grows here for seed. Its roots have no fungal partner at all: spinach belongs to a plant family that does not form mycorrhiza. Keep that in mind for later.",
+        scan: "Spinach grows here. It belongs to a plant family that typically forms no mycorrhiza, the root-fungus partnership most crops share. Keep that in mind for later.",
         facts: [
           {
             id: "spinach-nonmyc",
@@ -161,7 +160,7 @@ export const prologueScenes: Scene[] = [
       },
       {
         id: "amoeba",
-        label: "Amoeba",
+        label: "Naked amoeba",
         kind: "scan",
         anchor: { x: 0.7, y: 0.42 },
         card: "amoeba",
@@ -189,7 +188,7 @@ export const prologueScenes: Scene[] = [
         kind: "scan",
         anchor: { x: 0.58, y: 0.75 },
         card: "water-film",
-        scan: "A film of water a few micrometres thick. Swimmers and dissolved food move only where it is continuous.",
+        scan: "A film of water, often much thinner than a bacterium. Swimmers and dissolved food move only where it is thick and continuous.",
       },
     ],
     reviewStatus: "draft",
@@ -222,8 +221,7 @@ export const prologueMissions: Mission[] = [
       {
         kind: "observe-composition",
         text: "The handful separates by volume.",
-        resultText:
-          "About 40–60 % solid in a typical arable topsoil. The drawing shows an idealised moist loam: 45 % mineral, 5 % organic, 25 % water, 25 % air. An idealisation, not a constant.",
+        resultText: "Typical arable topsoil is about 40–60 % solid by volume; the rest is pore space.",
         facts: [POREFACT],
       },
       {
@@ -261,18 +259,24 @@ export const prologueMissions: Mission[] = [
       },
       {
         kind: "chains",
-        text: "Here is your first cause chain, fully worked. Read it and confirm it if your slider showed the same thing.",
+        text: "Your first cause chain. Pick the link your slider showed, and say how sure you are.",
         chains: ["p-water-air"],
+        judgeNow: true,
       },
       {
         kind: "discover",
-        text: "Half of soil is space.",
+        text: "Roughly half of soil is space.",
         discoveries: ["d-p-half-space"],
+        recall: {
+          prediction: "p-m1-solid",
+          unit: "% solid",
+          observed: "typical topsoil is about 40–60 % solid",
+        },
         cards: ["pore-space", "mineral-grains"],
         codex: ["cx-p-handful"],
       },
     ],
-    sources: ["soils4teachers-basics", "hamza-anderson-2005"],
+    sources: ["soils4teachers-basics", "weil-brady-2017"],
     simplificationNotes: ["45/5/25/25 is shown as an idealised loam with the range beside it."],
     reviewStatus: "draft",
   },
@@ -328,8 +332,8 @@ export const prologueCodex: CodexEntry[] = [
       POREFACT,
       {
         id: "p-bact-gram",
-        text: "10⁸–10⁹ bacterial cells per gram of fertile topsoil.",
-        confidence: "firm",
+        text: "About 10⁸–10¹⁰ bacterial cells per gram of fertile topsoil, depending on the counting method.",
+        confidence: "estimate",
         evidence: "measured",
         sources: ["nrcs-soil-biology-primer"],
         simplification: "Order of magnitude.",
@@ -338,7 +342,7 @@ export const prologueCodex: CodexEntry[] = [
     realWorld: [
       {
         id: "p-species",
-        text: "Soil may be home to about 59 % ± 15 % of all species on Earth, an estimate dominated by microbial taxa.",
+        text: "Soil may be home to about 59 % ± 15 % of all species on Earth.",
         confidence: "contested",
         sources: ["anthony-2023"],
       },
@@ -371,9 +375,9 @@ export const prologueCodex: CodexEntry[] = [
       },
       {
         id: "p-cover",
-        text: "Cells cover well under 1 % of pore surface.",
+        text: "Cells occupy only a small fraction of the pore space, by common estimates a few percent at most.",
         confidence: "estimate",
-        sources: ["young-crawford-2004", "raynaud-nunan-2014"],
+        sources: ["young-crawford-2004", "young-ritz-2000"],
       },
     ],
     reviewStatus: "draft",
@@ -383,7 +387,7 @@ export const prologueCodex: CodexEntry[] = [
     title: "The ladder of scales",
     chapter: "prologue",
     body: [
-      "Soil science spans ten orders of magnitude: a valley kilometres wide, a field, a pit two metres deep, a crumb, a pore, a cell, a molecule. Things that matter at one rung are invisible at the next.",
+      "Soil science spans about twelve orders of magnitude: a valley kilometres wide, a field, a pit two metres deep, a crumb, a pore, a cell, a molecule. Things that matter at one rung are invisible at the next.",
       "Every picture in this book carries a scale bar. When something is drawn bigger than it really is, a badge says by how much.",
     ],
     facts: [

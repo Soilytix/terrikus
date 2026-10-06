@@ -2,7 +2,6 @@
  * Verdicts on a cause chain (world-bible §7.2): supported by the player's own
  * run, plausible but untested, or contradicted by the run. Never "wrong".
  */
-import { CONTRADICTS } from "../content/chains";
 import type { ChainTemplate, Connector, Verdict } from "../content/schema";
 import type { LabEntry, Save } from "../save/schema";
 import { RESIDUE, WATER } from "../sim/modifiers";
@@ -41,10 +40,15 @@ export function observed(evidence: string, save: Save): boolean {
   return save.labBook.some((e) => compared(e, x, y));
 }
 
+const SIGN: Partial<Record<Connector, 1 | -1>> = { increases: 1, enables: 1, decreases: -1, limits: -1 };
+
+/** Net sign of a chain whose connectors are each a causal sign; 0 when a link has no sign. */
+export function netSign(connectors: Connector[]): number {
+  return connectors.reduce((n, c) => n * (SIGN[c] ?? 0), 1);
+}
+
 export function judge(t: ChainTemplate, answer: Answer, save: Save): Judgement {
-  const contradicted = (CONTRADICTS[t.id] ?? []).some((p) =>
-    p.connector.every(([i, c]) => answer.connectors[i] === c),
-  );
+  const contradicted = netSign(answer.connectors) === -t.observed;
   const messages = t.diagnostics
     .filter((d) =>
       d.when.every(
@@ -57,7 +61,10 @@ export function judge(t: ChainTemplate, answer: Answer, save: Save): Judgement {
   const seen = observed(t.evidence, save);
   let verdict: Verdict = "plausible";
   if (contradicted && seen) verdict = "contradicted";
-  else if (seen && t.accepted.some((a) => same(a, answer))) verdict = "supported";
+  else if (seen && t.accepted.some((a) => same(a, answer))) {
+    if (t.untested) messages.push(t.untested);
+    else verdict = "supported";
+  }
   return { verdict, messages, evidence: t.evidence };
 }
 

@@ -135,7 +135,7 @@ Shader ids S1–S9 are specified in `visual-direction.md` §5. Each has a qualit
 - A scale bar in Plex Mono with true units (km, m, cm, mm, µm, nm), always visible.
 - A *not to scale ×N* badge when any actor is enlarged; N is in the scene data.
 - Depth rail on profile scenes (cm).
-- Compressed-time label whenever time runs ("1 s ≈ 10 days").
+- Compressed-time label whenever time runs ("1 s ≈ 60 days").
 
 ---
 

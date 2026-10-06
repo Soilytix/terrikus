@@ -4,8 +4,8 @@ import type { World } from "./schema";
 export const WORLDS: World[] = [
   {
     id: "spinach",
-    name: "Spinach for seed production",
-    teaches: "A non-mycorrhizal crop: not every crop has a fungal partner.",
+    name: "Spinach",
+    teaches: "A typically non-mycorrhizal crop: not every crop has a fungal partner.",
     rootArchitecture: "tap",
     mycorrhizal: "none",
     sources: ["brundrett-tedersoo-2018"],

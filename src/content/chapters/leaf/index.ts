@@ -15,6 +15,10 @@ export const leaf: Chapter = {
   entry: "c2-hedge-edge",
   sources: [
     "schmidt-2011",
+    "schimel-bennett-2004",
+    "manzoni-2012",
+    "sinsabaugh-2013",
+    "zhang-2008",
     "lehmann-kleber-2015",
     "lavallee-2020",
     "georgiou-2022",
@@ -62,7 +66,7 @@ export const leafScenes: Scene[] = [
         kind: "scan",
         anchor: { x: 0.52, y: 0.74 },
         card: "leaf-litter",
-        scan: "A green-gold hedge leaf, freshly fallen. In a year it will be gone from here. The question is where it goes.",
+        scan: "A green-gold hedge leaf, freshly fallen. In a year or two most of it will be gone from here. The question is where it goes.",
       },
       {
         id: "crown",
@@ -544,7 +548,7 @@ export const leafCodex: CodexEntry[] = [
         id: "cx-depoly",
         text: "Depolymerisation by extracellular enzymes is often the rate-limiting step of decomposition.",
         confidence: "firm",
-        sources: ["schmidt-2011"],
+        sources: ["schimel-bennett-2004"],
       },
     ],
     simplification:
@@ -561,9 +565,9 @@ export const leafCodex: CodexEntry[] = [
     facts: [
       {
         id: "cx-cue-range",
-        text: "Soil microbial CUE is commonly reported around 0.3–0.6 and shifts with temperature and substrate.",
+        text: "Soil microbial CUE is reported at about 0.3–0.6 depending on the method, and shifts with temperature and substrate.",
         confidence: "estimate",
-        sources: ["liang-2017"],
+        sources: ["manzoni-2012", "sinsabaugh-2013"],
       },
     ],
     reviewStatus: "draft",
@@ -579,8 +583,8 @@ export const leafCodex: CodexEntry[] = [
     facts: [
       {
         id: "cx-anaerobic-microsites",
-        text: "Anaerobic microsites inside aggregates slow decomposition and protect carbon even in upland soils.",
-        confidence: "firm",
+        text: "Anaerobic microsites inside aggregates can slow decomposition and protect carbon even in upland soils.",
+        confidence: "estimate",
         sources: ["keiluweit-2017"],
       },
       {

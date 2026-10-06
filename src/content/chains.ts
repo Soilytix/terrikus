@@ -15,7 +15,7 @@ export const CARDS: CauseCard[] = [
   { id: "c-waterlogging", kind: "condition", label: "Waterlogging" },
   { id: "c-o2", kind: "condition", label: "O₂ in pores" },
   { id: "c-water-in-pores", kind: "condition", label: "Water in pores" },
-  { id: "c-cn-high", kind: "condition", label: "Residue C:N high (straw)" },
+  { id: "c-cn-high", kind: "condition", label: "Straw instead of leaf (high C:N)" },
   { id: "a-microbial-growth", kind: "actor", label: "Microbial growth" },
   { id: "c-more-carbon", kind: "condition", label: "More carbon to eat" },
   { id: "p-decomposition-rate", kind: "process", label: "Decomposition rate" },
@@ -28,10 +28,11 @@ export const CHAINS: ChainTemplate[] = [
     id: "p-water-air",
     title: "Water and air",
     cards: [["c-more-water"], ["o-air"]],
-    connectors: [["decreases"]],
+    connectors: [["increases", "decreases"]],
     accepted: [{ cards: ["c-more-water", "o-air"], connectors: ["decreases"] }],
     diagnostics: [],
     evidence: "your water/air slider",
+    observed: -1,
   },
   {
     id: "c2-chain-moisture",
@@ -65,6 +66,7 @@ export const CHAINS: ChainTemplate[] = [
       },
     ],
     evidence: "dry vs moist",
+    observed: 1,
   },
   {
     id: "c2-chain-waterlogged",
@@ -78,11 +80,11 @@ export const CHAINS: ChainTemplate[] = [
     accepted: [
       {
         cards: ["c-waterlogging", "c-o2", "a-microbial-activity", "p-decomposition"],
-        connectors: ["limits", "limits", "decreases"],
+        connectors: ["limits", "enables", "increases"],
       },
       {
         cards: ["c-waterlogging", "c-o2", "a-microbial-activity", "p-decomposition"],
-        connectors: ["limits", "enables", "increases"],
+        connectors: ["limits", "increases", "increases"],
       },
     ],
     diagnostics: [
@@ -92,12 +94,20 @@ export const CHAINS: ChainTemplate[] = [
         misconception: "M4",
       },
       {
-        when: [{ connector: [2, "increases"] }, { connector: [1, "limits"] }],
-        message: "Less activity cannot speed decomposition up. Look at the litter curve of jar B.",
+        when: [{ connector: [1, "limits"] }],
+        message:
+          "If oxygen held microbes back, losing it would speed decay up. Look at the litter curve of jar B.",
+        misconception: "M4",
+      },
+      {
+        when: [{ connector: [2, "decreases"] }],
+        message:
+          "Read each link on its own: when microbes are more active, does a leaf decay faster or slower?",
         misconception: "M4",
       },
     ],
     evidence: "moist vs waterlogged",
+    observed: -1,
   },
   {
     id: "c2-chain-quality",
@@ -110,7 +120,7 @@ export const CHAINS: ChainTemplate[] = [
     accepted: [
       {
         cards: ["c-cn-high", "a-microbial-growth", "p-decomposition-rate"],
-        connectors: ["limits", "decreases"],
+        connectors: ["limits", "increases"],
       },
     ],
     diagnostics: [
@@ -122,19 +132,21 @@ export const CHAINS: ChainTemplate[] = [
       },
       {
         when: [{ connector: [0, "increases"] }],
-        message: "Same mass, slower loss. A high C:N residue held microbes back in your run.",
+        message:
+          "Same mass, slower loss in your run. Something about straw held the decomposers back. What do microbes need besides carbon?",
+        misconception: "M15",
+      },
+      {
+        when: [{ connector: [1, "decreases"] }],
+        message: "Read each link on its own: when microbes grow more, does a residue decay faster or slower?",
         misconception: "M15",
       },
     ],
     evidence: "leaf vs straw",
+    observed: -1,
+    untested:
+      "Your run shows straw losing mass more slowly than leaf. Why (too little nitrogen for microbes to grow) is an interpretation: this teaching model has no nitrogen yet, so the run cannot test it.",
   },
 ];
-
-/** Observed directions each chain is tested against: a connector that inverts one contradicts the run. */
-export const CONTRADICTS: Record<string, { connector: [number, string][] }[]> = {
-  "c2-chain-moisture": [{ connector: [[0, "limits"]] }, { connector: [[0, "decreases"]] }],
-  "c2-chain-waterlogged": [{ connector: [[0, "increases"]] }, { connector: [[0, "enables"]] }],
-  "c2-chain-quality": [{ connector: [[1, "increases"]] }],
-};
 
 export const chainTemplate = (id: string) => CHAINS.find((c) => c.id === id);
