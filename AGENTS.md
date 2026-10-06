@@ -57,6 +57,7 @@ and agents changing it. `CLAUDE.md` is a symlink to it. The plan lives in
 | `src/world/`   | Pixi renderer, camera, seeded painter, particles, static fallback                   |
 | `src/ui/`      | Notebook, bench, chains, HUD, mission panel                                         |
 | `src/save/`    | Save schema, storage with fallback, migrations, export/import                       |
+| `src/pilot/`   | Opt-in pilot instrument (T33): local-only log, explicit export, thresholds (OD-13)  |
 | `src/styles/`  | World register and app CSS                                                          |
 | `src/assets/`  | Bundled art; every file listed in `src/assets/manifest.ts`                          |
 | `tools/`       | Budget check, bundle scan, denylist hashing, source registry generator              |

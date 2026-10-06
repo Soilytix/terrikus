@@ -158,3 +158,27 @@ test("the lab bench keeps reads at 100 % and needs a spike-in for amounts", asyn
   await shot(page, "16-lab-bench", info.project.name);
   expect(errors).toEqual([]);
 });
+
+test("the learning study is opt-in and its answers never leave the page", async ({ page }, info) => {
+  const offsite: string[] = [];
+  page.on("request", (r) => {
+    if (!/^(https?:\/\/(localhost|127\.0\.0\.1)[:/]|data:|blob:)/.test(r.url())) offsite.push(r.url());
+  });
+  await page.goto("./?static=1#/ch/prologue/p-pore");
+  await page.getByRole("button", { name: "Settings" }).click();
+  const study = page.getByRole("region", { name: "Learning study" });
+  await expect(study.getByRole("button", { name: "Answer the opening questions" })).toHaveCount(0);
+  await study.getByRole("checkbox", { name: /Take part/ }).check();
+  await study.getByRole("button", { name: "Answer the opening questions" }).click();
+  for (const item of await study.locator(".pilot-item").all()) {
+    await item.getByRole("radio", { name: "Not sure" }).check();
+    await item.getByRole("radio", { name: "Guess" }).check();
+  }
+  await study.locator(".pilot-item").first().scrollIntoViewIfNeeded();
+  await shot(page, "17-study", info.project.name);
+  await study.getByRole("button", { name: "Keep my answers" }).click();
+  const download = page.waitForEvent("download");
+  await study.getByRole("button", { name: "Export study answers" }).click();
+  expect((await download).suggestedFilename()).toBe("soil-worlds-study-answers.json");
+  expect(offsite).toEqual([]);
+});

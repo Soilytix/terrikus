@@ -2376,3 +2376,28 @@ input[type="range"] {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* Learning study (T33) */
+.pilot-toggle {
+  accent-color: var(--color-ink);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+}
+.pilot-questions {
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+}
+.pilot-item {
+  display: grid;
+  gap: 6px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.pilot-item legend {
+  font-size: 14px;
+  margin-bottom: 4px;
+}

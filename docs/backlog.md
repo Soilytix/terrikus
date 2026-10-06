@@ -362,11 +362,12 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** off by default; every sound has a text equivalent; no autoplay.
 - **Depends on:** T15
 
-### T33 — Pilot instrumentation
+### T33 — Pilot instrumentation · **done**
 
 - **Goal:** measure learning in a pilot (OD-13).
 - **Scope:** opt-in pre/post questions keyed to misconceptions; local-only log; explicit export.
 - **Acceptance:** nothing leaves the browser without user action; thresholds left configurable pending OD-13.
+- **Done:** `src/pilot/` (draft instrument, null thresholds, own storage key) and the Settings section in `src/ui/Pilot.tsx`; instrument and thresholds still wait on OD-13.
 - **Depends on:** T10
 
 ### T34 — Playwright smoke and performance measurement · **done**

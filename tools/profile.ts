@@ -4,6 +4,7 @@
  */
 import { CHAPTERS, CODEX, MISSIONS, ORGANISMS, PROCESSES, MATERIALS, SCENES } from "../src/content";
 import { bundledAssets } from "../src/assets/manifest";
+import { PILOT } from "../src/pilot/config";
 
 export type Profile = "internal" | "public";
 
@@ -34,6 +35,7 @@ export const allNodes = (): Node[] => [
   ...ORGANISMS,
   ...PROCESSES,
   ...MATERIALS,
+  PILOT,
 ];
 
 if (process.argv[1]?.endsWith("profile.ts")) {
