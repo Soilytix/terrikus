@@ -105,7 +105,7 @@ export const prologueScenes: Scene[] = [
     seed: 23,
     scaleBar: { metres: 0.01, label: "1 cm" },
     description:
-      "A cupped handful of dark, crumbly loam held over the field. Crumbs of different sizes, a pale root thread, a fleck of old leaf.",
+      "A handful of dark, crumbly loam, close up over the field. Crumbs of different sizes, a pale root thread, a fleck of old leaf.",
     truth: {
       drawnFrom: ["Crumb structure of an arable loam"],
       schematic: ["The composition figure: volumes drawn as stacked layers"],
