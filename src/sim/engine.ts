@@ -3,7 +3,7 @@
  * the engine runs it day by day, asserts conservation after every tick and
  * keeps one snapshot per day so the UI can scrub without re-running.
  */
-import { assertConserved, cloneLedger, total, type Ledger, type Transfer } from "./ledger";
+import { assertConserved, cloneLedger, ConservationError, total, type Ledger, type Transfer } from "./ledger";
 
 export interface Snapshot {
   day: number;
@@ -32,9 +32,23 @@ export function run<S>(model: BenchModel<S>, days: number): Snapshot[] {
     { day: 0, ledger: cloneLedger(ledger), transfers: [], energy: model.energy(ledger) },
   ];
   for (let day = 1; day <= days; day++) {
+    const start = cloneLedger(ledger);
     const transfers = model.step(ledger, state, day);
     assertConserved(ledger, expected);
+    assertNoOverdraw(start, transfers);
     snapshots.push({ day, ledger: cloneLedger(ledger), transfers, energy: model.energy(ledger) });
   }
   return snapshots;
+}
+
+/** `transfer` clamps silently, so a pool asked for more than it held would lose intended flux unseen. */
+function assertNoOverdraw(start: Ledger, transfers: Transfer[]): void {
+  const out = new Map<string, number>();
+  for (const t of transfers) {
+    const key = `${t.element}.${t.from}`;
+    const sum = (out.get(key) ?? 0) + t.amount;
+    out.set(key, sum);
+    const held = (start[t.element] as Record<string, number>)[t.from] ?? 0;
+    if (sum > held) throw new ConservationError(`${key} outflow ${sum} > start-of-tick ${held}`);
+  }
 }

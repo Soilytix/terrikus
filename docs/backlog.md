@@ -166,7 +166,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** CI green; axe reports zero serious/critical issues on the three routes; the keyboard-only run completes `p-m1`.
 - **Depends on:** —. Supersedes the CI part of T34.
 
-### R09 — Ledger transfer assertions (E9)
+### R09 — Ledger transfer assertions (E9) · **done**
 
 - **Problem:** `transfer` in `src/sim/ledger.ts` clamps silently; a future bench with outflows larger than a pool would pass conservation tests while losing intended flux.
 - **Direction:** `run` in `src/sim/engine.ts` (dev/test only) checks that each pool's total outflow in a tick does not exceed its start-of-tick value and throws `ConservationError` otherwise; a fixture bench in the test proves it fires.
