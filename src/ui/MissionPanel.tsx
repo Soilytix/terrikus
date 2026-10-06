@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { CHAPTERS, DISCOVERIES, chapter, scene as sceneById, SCENES } from "../content";
 import type { Choice, Mission, Step } from "../content/schema";
 import type { Save } from "../save/schema";
-import { advance, currentStep, isScanned, setFlag, stepIndex } from "../app/progress";
+import { advance, currentStep, isScanned, setFlag, stepIndex, visibleObjects } from "../app/progress";
 import { appendLab } from "../save/schema";
 import { RULESET_VERSION, DEFAULT_LEVERS } from "../sim/benches/leaf-jar";
 import { href, targetHref } from "../app/router";
@@ -518,6 +518,9 @@ export function MissionPanel(props: Props) {
   const i = stepIndex(save, m.id);
   const away = m.scene !== sceneId && step && step.kind !== "go" && step.kind !== "bench" && i === 0;
   const where = sceneById(m.scene);
+  const here = sceneById(sceneId);
+  const portalInView =
+    !!here && visibleObjects(here, save).some((o) => o.kind === "portal" && o.to === m.scene);
   return (
     <aside className="mission" aria-label={`Mission: ${m.title}`} data-open={open}>
       <header className="mission-head">
@@ -539,9 +542,13 @@ export function MissionPanel(props: Props) {
           {away && where ? (
             <>
               <p className="step-text">This mission starts at {where.title.toLowerCase()}.</p>
-              <button type="button" className="btn btn-primary" onClick={() => go(targetHref(where.id))}>
-                Go there
-              </button>
+              {portalInView ? (
+                <p className="hint">The portal is pulsing in the scene.</p>
+              ) : (
+                <button type="button" className="btn btn-primary" onClick={() => go(targetHref(where.id))}>
+                  Go there
+                </button>
+              )}
             </>
           ) : (
             step && <StepBody {...props} mission={m} step={step} />

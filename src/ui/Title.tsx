@@ -40,7 +40,7 @@ export function Title({
                   : "locked"
             }
           >
-            <span className="mono">{c.number}</span>
+            <span className="mono">{c.number === "P" ? "Prologue" : `Chapter ${c.number}`}</span>
             <span>
               {c.title}
               <small>“{c.hook}”</small>
@@ -48,9 +48,9 @@ export function Title({
           </li>
         ))}
         <li data-state="planned">
-          <span className="mono">1–14</span>
+          <span className="mono">Twelve more</span>
           <span>
-            Twelve more chapters
+            Coming
             <small>glimpsed in the valley, still being written</small>
           </span>
         </li>

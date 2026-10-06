@@ -260,6 +260,8 @@ export function App() {
             scanned={(id) => save.scanned.includes(`${scene.id}/${id}`)}
             highlight={highlight}
             onActivate={activate}
+            fresh={!save.scanned.some((k) => k.startsWith(`${scene.id}/`))}
+            reduced={reduced}
           />
         )}
       </World>

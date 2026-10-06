@@ -146,7 +146,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** before/after screenshots in the PR; painter determinism tests still pass; `tests/tokens.test.ts` passes; `mise run check` green.
 - **Depends on:** R04 (same recipes).
 
-### R06 — Curiosity cues and small UX fixes (P8, P9, P10)
+### R06 — Curiosity cues and small UX fixes (P8, P9, P10) · **done**
 
 - **Problem:** hotspots show names only on hover/focus, so the field gives no reason to click; the field has both "Go there" and "Pick up a handful"; the title chapter list reads "P / 2 / 1–14 Twelve more chapters".
 - **Direction:** labels visible on a scene's first visit (until first scan) and a gentle pulse after 6 s idle (off in reduced motion); hide the panel's "Go there" when the target portal is visible in the scene; title list shows "Prologue · Chapter 2 · twelve more coming".
