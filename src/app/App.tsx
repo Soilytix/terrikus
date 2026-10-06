@@ -9,7 +9,9 @@ import { Hotspots } from "../ui/Hotspots";
 import { Hud } from "../ui/Hud";
 import { MissionPanel } from "../ui/MissionPanel";
 import { Notebook } from "../ui/Notebook";
+import { Glossary } from "../ui/Glossary";
 import { Help, Settings, Truth } from "../ui/Panels";
+import { ReviewOverlay } from "../ui/Review";
 import { ScanCard } from "../ui/ScanCard";
 import { Title } from "../ui/Title";
 import {
@@ -74,7 +76,7 @@ export function App() {
   const world = useRef<WorldHandle>(null);
   const [tooSlow, setTooSlow] = useState(false);
   const [scanned, setScanned] = useState<SceneObject | null>(null);
-  const [panel, setPanel] = useState<"truth" | "settings" | "help" | null>(null);
+  const [panel, setPanel] = useState<"truth" | "settings" | "help" | "glossary" | null>(null);
   const [focusCard, setFocusCard] = useState<string | undefined>(undefined);
   const [narration, setNarration] = useState("");
   const [seen, setSeen] = useState(
@@ -183,6 +185,7 @@ export function App() {
     if (document.querySelector("dialog[open]")) return;
     if (k === "n" || k === "N") return void (notebookOpen ? closeNotebook() : openNotebook());
     if (k === "?") return setPanel("help");
+    if (k === "g" || k === "G") return setPanel("glossary");
     if ((k === "l" || k === "L") && lensAvailable(save))
       return update((s) => ({ ...s, settings: { ...s.settings, lens: !s.settings.lens } }));
     if (route.name !== "scene") return;
@@ -321,7 +324,8 @@ export function App() {
         />
       )}
       {panel === "truth" && <Truth scene={scene} onClose={() => setPanel(null)} />}
-      {panel === "help" && <Help onClose={() => setPanel(null)} />}
+      {panel === "help" && <Help onClose={() => setPanel(null)} onGlossary={() => setPanel("glossary")} />}
+      {panel === "glossary" && <Glossary save={save} onClose={() => setPanel(null)} />}
       {panel === "settings" && (
         <Settings
           save={save}
@@ -333,6 +337,7 @@ export function App() {
           onClose={() => setPanel(null)}
         />
       )}
+      {__SW_PROFILE__ === "internal" && route.name !== "title" && <ReviewOverlay sceneId={scene.id} />}
       {!persistent && (
         <p className="persist-note">Progress is not being kept in this browser. Export it from Settings.</p>
       )}

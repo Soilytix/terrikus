@@ -348,12 +348,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** unlocks after any four chapters; every report block requires benchmark, confidence and provenance; no Soilytix product depicted.
 - **Depends on:** T26, T28
 
-### T31 — Glossary and review-status tooling
+### T31 — Glossary and review-status tooling · **done**
 
 - **Goal:** reviewers can see and change what is approved.
 - **Scope:** glossary unlocked by phenomena (WB§8.3); `tools/review-report.ts` listing nodes by status and reviewer; internal review overlay.
 - **Acceptance:** report lists every node; glossary terms never appear before their phenomenon.
 - **Depends on:** T10
+- **Done:** `src/content/glossary.ts` seeds 14 of the WB§8.3 terms whose phenomena are playable (prologue, chapter 2); the rest arrive with their chapters. `mise run review-report`; internal overlay is read-only. Approval waits on OD-7.
 
 ### T32 — Sound mixer (off by default)
 

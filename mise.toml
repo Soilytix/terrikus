@@ -88,3 +88,7 @@ run = [
   "mise run test",
   "mise run build",
 ]
+
+[tasks.review-report]
+description = "Every content node by review status and reviewer (Markdown)"
+run = "pnpm exec tsx tools/review-report.ts"

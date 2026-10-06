@@ -1,0 +1,80 @@
+/**
+ * Internal review overlay: what is approved, by whom, for the scene in view
+ * and for everything. Read-only: a named reviewer changes `reviewStatus` in
+ * the content file, never here.
+ */
+import { useState } from "react";
+import { scene as sceneById, chapter as chapterById } from "../content";
+import { REVIEW_ROWS, REVIEW_STATUSES, type ReviewRow } from "../content/review";
+import { Dialog } from "./common";
+
+function Rows({ rows }: { rows: ReviewRow[] }) {
+  return (
+    <table className="keys credits">
+      <thead>
+        <tr>
+          <th scope="col">Kind</th>
+          <th scope="col">Node</th>
+          <th scope="col">Status</th>
+          <th scope="col">Reviewer</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr key={`${r.kind}/${r.id}`}>
+            <td>{r.kind}</td>
+            <td>
+              {r.title} <span className="mono muted">{r.id}</span>
+            </td>
+            <td>{r.reviewStatus}</td>
+            <td>{r.reviewer ?? "none named"}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+export function ReviewPanel({ sceneId, onClose }: { sceneId: string; onClose: () => void }) {
+  const s = sceneById(sceneId);
+  const ch = s && s.chapter !== "valley" ? chapterById(s.chapter) : undefined;
+  const inView = new Set([sceneId, ...(ch ? [ch.id, ...ch.missions] : [])]);
+  const here = REVIEW_ROWS.filter(
+    (r) => ["scene", "chapter", "mission"].includes(r.kind) && inView.has(r.id),
+  );
+  return (
+    <Dialog title="Scientific review" onClose={onClose} wide>
+      <p className="small muted">
+        Read-only. A named reviewer approves a node in its content file; nothing here changes a status. Run{" "}
+        <span className="mono">mise run review-report</span> for the full list as Markdown.
+      </p>
+      <h3>In view</h3>
+      <Rows rows={here} />
+      {REVIEW_STATUSES.map((status) => {
+        const rows = REVIEW_ROWS.filter((r) => r.reviewStatus === status);
+        return (
+          <details key={status}>
+            <summary>
+              {status} ({rows.length})
+            </summary>
+            {rows.length > 0 && <Rows rows={rows} />}
+          </details>
+        );
+      })}
+    </Dialog>
+  );
+}
+
+export function ReviewOverlay({ sceneId }: { sceneId: string }) {
+  const [open, setOpen] = useState(false);
+  const approved = REVIEW_ROWS.filter((r) => r.reviewStatus === "approved").length;
+  return (
+    <>
+      <button type="button" className="review-badge review-pill" onClick={() => setOpen(true)}>
+        <span className="dot" aria-hidden="true" />
+        Review: {approved} of {REVIEW_ROWS.length} approved
+      </button>
+      {open && <ReviewPanel sceneId={sceneId} onClose={() => setOpen(false)} />}
+    </>
+  );
+}

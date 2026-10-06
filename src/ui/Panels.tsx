@@ -47,11 +47,12 @@ export const KEYS: [string, string][] = [
   ["[ / ]", "Previous / next portal"],
   ["L", "Scientist lens (from chapter 2)"],
   ["N", "Field notebook"],
+  ["G", "Glossary"],
   ["?", "This help"],
   ["Esc", "Close the open panel, or go up a scale"],
 ];
 
-export function Help({ onClose }: { onClose: () => void }) {
+export function Help({ onClose, onGlossary }: { onClose: () => void; onGlossary: () => void }) {
   return (
     <Dialog title="How to explore" onClose={onClose}>
       <p className="lede">
@@ -75,6 +76,9 @@ export function Help({ onClose }: { onClose: () => void }) {
           ))}
         </tbody>
       </table>
+      <button type="button" className="btn" onClick={onGlossary}>
+        Open the glossary
+      </button>
       <p className="small muted">
         Add <span className="mono">?static=1</span> to the address for still pictures with the same buttons.
       </p>
