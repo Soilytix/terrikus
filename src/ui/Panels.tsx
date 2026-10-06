@@ -4,6 +4,7 @@ import type { Scene } from "../content/schema";
 import { exportSave, importSave } from "../save/storage";
 import type { Motion, Save } from "../save/schema";
 import { Dialog, Kbd } from "./common";
+import { AmbientToggle } from "./Ambient";
 import { Credits } from "./Credits";
 import { PilotSettings } from "./Pilot";
 
@@ -136,6 +137,7 @@ export function Settings({
           </label>
         ))}
       </fieldset>
+      <AmbientToggle />
       {tooSlow && (
         <p className="small muted">
           Still pictures were chosen because this device drew the moving world too slowly.

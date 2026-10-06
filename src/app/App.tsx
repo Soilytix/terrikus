@@ -253,6 +253,7 @@ export function App() {
         ref={world}
         sceneId={scene.id}
         reduced={reduced}
+        ambient={save.settings.ambient}
         forceStatic={forceStatic}
         dim={notebookOpen || !!panel}
         onTooSlow={() => setTooSlow(true)}

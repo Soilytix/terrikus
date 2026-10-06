@@ -2395,7 +2395,8 @@ input[type="range"] {
 }
 
 /* Learning study (T33) */
-.pilot-toggle {
+.pilot-toggle,
+.ambient-toggle {
   accent-color: var(--color-ink);
   display: flex;
   gap: 8px;

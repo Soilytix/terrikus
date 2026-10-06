@@ -238,12 +238,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** baked plates match runtime painter for the same seed; ≤ 2.5 MB per scale; runtime falls back to painter when a plate is missing.
 - **Depends on:** T07
 
-### T15 — Living-backdrop shaders and quality governor
+### T15 — Living-backdrop shaders and quality governor · **done**
 
 - **Goal:** lively backdrops S1–S9 within budget.
 - **Scope:** `src/world/shaders/`, quality tiers, governor, dimming during reading (AD§5.4), ambient toggle in settings.
 - **Acceptance:** 16.6 ms frames on reference hardware at high tier; governor steps down under load; reduced motion freezes all; OD-8 raised in PR.
 - **Depends on:** T06, T14
+- **Done:** S1 grain, S3 painterly flow, S7 scale dissolve and S9 microscope look as WebGL filters; S2 sway and S4 drift stay the stage's displacement and CPU particles. Tiers high/medium/off by scale (`src/world/shaders/tiers.ts`); the governor steps high → medium → off → no particles → static. S5, S6 and S8 follow simulation state and arrive with their chapter benches. Ambient toggle in settings is the OD-8 interim; reference-hardware frame time still to be confirmed at a visible display.
 
 ### T16 — Valley map, contents and retrieval prompts
 

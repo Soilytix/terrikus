@@ -4,14 +4,23 @@
  * and between scale nodes. Loaded lazily; the canvas is aria-hidden and every
  * interactive thing lives in the DOM above it.
  */
-import { Application, Container, DisplacementFilter, Graphics, Sprite, Texture } from "pixi.js";
+import { Application, Container, DisplacementFilter, Sprite, Texture } from "pixi.js";
+import type { Scale } from "../content/schema";
 import { num } from "./painter/color";
-import { UI } from "../styles/ui";
 import { fbm, rngFor } from "./painter/noise";
 import { paintOff } from "./painter/remote";
 import type { Plate, ParticleSpec, PlateLayer, SpriteSpec } from "./painter";
 import { HOME, clampView, easeChart, logLerp, viewTransform, type View } from "./camera";
 import { govern, initialGovernor } from "./governor";
+import {
+  backdropFilter,
+  dissolveFilter,
+  flowFilter,
+  shadersFor,
+  tierFor,
+  type ShaderId,
+  type Tier,
+} from "./shaders";
 
 export interface ScreenView {
   s: number;
@@ -37,6 +46,8 @@ export interface StageOptions {
   onPlate: (source: "baked" | "painted") => void;
   /** The governor's last step: frames stayed too slow even without shaders and particles. */
   onTooSlow: () => void;
+  /** The living-backdrop tier the governor is on. */
+  onTier: (tier: Tier) => void;
 }
 
 import { SOFT, loadManifest, pickBaked, plateUrl, sameLayers } from "./baked";
@@ -66,6 +77,8 @@ interface LiveLayer {
   holder: Container;
   sprite: Sprite;
   spec: PlateLayer;
+  /** Which filters the sprite carries now, so they are only reassigned on change. */
+  fx: string;
 }
 
 class SceneView {
@@ -154,7 +167,6 @@ function noiseTexture(seed: number): Texture {
 export class Stage {
   private app = new Application();
   private world = new Container();
-  private dim = new Graphics();
   private current: SceneView | null = null;
   private leaving: SceneView | null = null;
   private dot!: Texture;
@@ -162,7 +174,15 @@ export class Stage {
   private shimmer!: { sprite: Sprite; filter: DisplacementFilter };
   private t = 0;
   private reduced: boolean;
+  private ambient = true;
   private dimmed = false;
+  /** Eased dimming, 0 to 1 (AD §5.4). */
+  private dimK = 0;
+  private backdrop = backdropFilter();
+  private flow = flowFilter();
+  private dissolve = dissolveFilter();
+  private scale: Scale | undefined;
+  private fx = new Set<ShaderId>();
   private pointer = { x: 0, y: 0, sx: 0, sy: 0 };
   private gov = initialGovernor();
   private resizeTimer = 0;
@@ -173,6 +193,7 @@ export class Stage {
     from: SceneView;
     to: SceneView;
     how: Arrival;
+    dissolve: boolean;
     done: () => void;
   } | null = null;
   private size = { w: 1, h: 1 };
@@ -214,7 +235,9 @@ export class Stage {
     };
     this.sway = mk(11, 6);
     this.shimmer = mk(29, 2.5);
-    this.app.stage.addChild(this.world, this.dim);
+    this.world.filterArea = this.app.screen;
+    this.app.stage.addChild(this.world);
+    this.applyTier();
     this.app.ticker.add(() => this.frame());
     this.observer = new ResizeObserver(() => {
       window.clearTimeout(this.resizeTimer);
@@ -245,13 +268,19 @@ export class Stage {
     this.reduced = reduced;
   }
 
+  setAmbient(ambient: boolean): void {
+    this.ambient = ambient;
+  }
+
   setDim(dim: boolean): void {
     this.dimmed = dim;
   }
 
   /** Paint and show a scene. Resolves when the arrival has finished. */
-  async show(recipe: string, seed: number, how: Arrival): Promise<void> {
+  async show(recipe: string, seed: number, how: Arrival, scale?: Scale): Promise<void> {
     this.scene = { recipe, seed };
+    this.scale = scale;
+    this.applyTier();
     const key = `${recipe}:${seed}`;
     if (this.current?.key === key && !this.transition) return;
     this.opts.onBusy(true);
@@ -273,14 +302,17 @@ export class Stage {
     }
     await new Promise<void>((done) => {
       const dur = this.reduced || how.kind === "cut" ? FADE_MS : ZOOM_MS;
+      const dissolve = !this.reduced && how.kind !== "cut" && this.fx.has("S7");
       this.leaving = prev;
       next.root.alpha = 0;
+      if (dissolve) next.root.filters = [this.dissolve.filter];
       this.transition = {
         start: performance.now(),
         dur,
         from: prev,
         to: next,
         how: this.reduced ? { kind: "cut" } : how,
+        dissolve,
         done,
       };
     });
@@ -334,7 +366,7 @@ export class Stage {
       if (spec.blend && spec.blend !== "normal") sprite.blendMode = spec.blend;
       holder.addChild(sprite);
       view.root.addChild(holder);
-      view.layers.push({ holder, sprite, spec });
+      view.layers.push({ holder, sprite, spec, fx: "" });
     });
     // Sprites sit above the mid layers, below the atmosphere overlays.
     const overlayAt = view.layers.findIndex((l, i) => i > 0 && l.spec.parallax === 0);
@@ -369,7 +401,7 @@ export class Stage {
         const x = (spec.region.x0 + (spec.region.x1 - spec.region.x0) * rng()) * w;
         const y = (spec.region.y0 + (spec.region.y1 - spec.region.y0) * rng()) * h;
         sprite.position.set(x, y);
-        sprite.visible = this.gov.level < 2;
+        sprite.visible = this.gov.level < 3;
         parts.addChild(sprite);
         view.particles.push({
           sprite,
@@ -393,6 +425,7 @@ export class Stage {
     if (!tr) return;
     this.transition = null;
     tr.to.root.alpha = 1;
+    if (tr.dissolve) tr.to.root.filters = [];
     tr.to.view = { ...tr.to.target };
     if (this.leaving) {
       this.world.removeChild(this.leaving.root);
@@ -487,13 +520,20 @@ export class Stage {
     const dt = Math.min(this.app.ticker.deltaMS, 100) / 1000;
     // Raw frame time: deltaMS is capped at 100 ms, which would slow the governor's clock.
     this.govern(this.app.ticker.elapsedMS);
-    const speed = this.reduced ? 0 : this.dimmed ? 0.25 : 1;
+    // Reduced motion or ambient off freeze the shared clock, and with it every shader (AD §8).
+    const frozen = this.reduced || !this.ambient;
+    const speed = frozen ? 0 : this.dimmed ? 0.25 : 1;
     this.t += dt * speed;
     const { w, h } = this.size;
     const u = Math.min(w, h);
+    const want = this.dimmed ? 1 : 0;
+    this.dimK = this.reduced ? want : this.dimK + (want - this.dimK) * Math.min(1, dt * 8);
+
+    for (const f of [this.backdrop, this.flow, this.dissolve]) f.set.uTime = this.t;
+    this.flow.set.uSmear = u * 0.004;
 
     // Ambient displacement maps scroll slowly; frozen under reduced motion.
-    const amp = this.reduced || this.gov.level >= 1 ? 0 : 1;
+    const amp = frozen || !this.fx.has("S2") ? 0 : 1;
     this.sway.sprite.position.set(this.t * 9, this.t * 4);
     this.sway.filter.scale.set(u * 0.007 * amp, u * 0.004 * amp);
     this.shimmer.sprite.position.set(-this.t * 14, this.t * 6);
@@ -504,16 +544,19 @@ export class Stage {
       this.pointer.sy += (this.pointer.y - this.pointer.sy) * 0.04;
     }
 
-    this.dim.clear();
-    if (this.dimmed) this.dim.rect(0, 0, w, h).fill({ color: num(UI.heroDark), alpha: 0.4 });
-
     const tr = this.transition;
     if (tr) {
       const k = Math.min(1, (performance.now() - tr.start) / tr.dur);
       const e = easeChart(k);
       const fade = tr.how.kind === "cut" ? k : Math.min(1, Math.max(0, (k - 0.4) / 0.3));
-      tr.from.root.alpha = 1 - fade;
-      tr.to.root.alpha = fade;
+      if (tr.dissolve) {
+        // The arriving scene covers the leaving one as the noise front opens (S7).
+        this.dissolve.set.uProgress = fade;
+        tr.to.root.alpha = fade > 0 ? 1 : 0;
+      } else {
+        tr.from.root.alpha = 1 - fade;
+        tr.to.root.alpha = fade;
+      }
       if (tr.how.kind === "in") {
         const a = tr.how.anchor;
         tr.from.view = {
@@ -572,21 +615,29 @@ export class Stage {
     const t = this.t;
     const { w, h } = this.size;
     const u = Math.min(w, h);
-    for (const l of v.layers) {
+    const moving = !this.reduced && this.ambient;
+    // Layers 0–3 dim to 60 % while reading (AD §5.4); actors keep their colour.
+    const grey = Math.round(255 * (1 - 0.4 * this.dimK));
+    const tint = (grey << 16) | (grey << 8) | grey;
+    v.layers.forEach((l, i) => {
       const m = l.spec.motion;
-      const want = m === "sway" ? [this.sway.filter] : m === "shimmer" ? [this.shimmer.filter] : null;
-      const has = l.sprite.filters && (l.sprite.filters as unknown[]).length > 0;
-      if (want && this.gov.level < 1 && !this.reduced) {
-        if (!has) l.sprite.filters = want;
-      } else if (has) {
-        l.sprite.filters = [];
+      const sway = moving && this.fx.has("S2") && (m === "sway" || m === "shimmer");
+      const flow = i === 0 && this.fx.has("S3");
+      const fx = `${sway ? m : ""}|${flow ? "flow" : ""}`;
+      if (fx !== l.fx) {
+        l.fx = fx;
+        l.sprite.filters = [
+          ...(sway ? [m === "sway" ? this.sway.filter : this.shimmer.filter] : []),
+          ...(flow ? [this.flow.filter] : []),
+        ];
       }
+      l.sprite.tint = tint;
       if (m === "drift") {
         l.sprite.x = Math.sin(t * 0.06 + l.spec.parallax * 9) * u * 0.012;
         l.sprite.alpha = (l.spec.alpha ?? 1) * (0.88 + 0.12 * Math.sin(t * 0.11));
       }
-    }
-    if (this.reduced) return;
+    });
+    if (this.reduced || !this.ambient) return;
     const step = dt * (this.dimmed ? 0.25 : 1);
     for (const s of v.sprites) {
       const { spec, sprite } = s;
@@ -623,7 +674,7 @@ export class Stage {
           break;
       }
     }
-    if (this.gov.level >= 2) return;
+    if (this.gov.level >= 3) return;
     for (const p of v.particles) {
       const { spec } = p;
       const r = spec.region;
@@ -664,13 +715,26 @@ export class Stage {
     }
   }
 
-  /** Quality governor (spec §8, `./governor`): shaders, then particles, then static; never labels. */
+  /** Quality governor (spec §8, `./governor`): shader tiers, then particles, then static; never labels. */
   private govern(ms: number): void {
     const was = this.gov.level;
     this.gov = govern(this.gov, ms);
     if (this.gov.level === was) return;
-    if (this.gov.level === 2) for (const p of this.current?.particles ?? []) p.sprite.visible = false;
-    if (this.gov.level === 3) this.opts.onTooSlow();
+    this.applyTier();
+    if (this.gov.level === 3) for (const p of this.current?.particles ?? []) p.sprite.visible = false;
+    if (this.gov.level === 4) this.opts.onTooSlow();
+  }
+
+  /** The shaders the current scale and tier allow; S1 and S9 run as one pass over the world. */
+  private applyTier(): void {
+    const tier = tierFor(this.gov.level);
+    this.fx = shadersFor(this.scale, tier);
+    const grain = this.fx.has("S1");
+    const micro = this.fx.has("S9");
+    this.backdrop.set.uGrain = grain ? 1 : 0;
+    this.backdrop.set.uMicro = micro ? 1 : 0;
+    this.world.filters = grain || micro ? [this.backdrop.filter] : [];
+    this.opts.onTier(tier);
   }
 }
 

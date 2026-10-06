@@ -44,7 +44,12 @@ function check(d: Record<string, unknown>) {
   const s = d.settings as Record<string, unknown>;
   const fields: [string, boolean][] = [
     ["createdAt", typeof d.createdAt === "string"],
-    ["settings", ["system", "reduced", "full"].includes(s.motion as string) && typeof s.lens === "boolean"],
+    [
+      "settings",
+      ["system", "reduced", "full"].includes(s.motion as string) &&
+        typeof s.lens === "boolean" &&
+        typeof s.ambient === "boolean",
+    ],
     ["chaptersUnlocked", strings(d.chaptersUnlocked)],
     ["chaptersComplete", strings(d.chaptersComplete)],
     ["rumors", recordOf(d.rumors, (x) => ["glimpsed", "investigated", "explained"].includes(x as string))],

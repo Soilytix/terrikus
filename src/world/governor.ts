@@ -1,11 +1,12 @@
 /**
  * Quality governor (spec §8), time-based: while the median frame over the last
- * 2 s stays above 33 ms, step down one level at a time — ambient shaders, then
- * particles, then the static plate. Labels and hotspots are never touched.
+ * 2 s stays above 33 ms, step down one level at a time — the high-tier shader,
+ * then every ambient shader, then particles, then the static plate. Labels and
+ * hotspots are never touched.
  */
 
-/** 0 full, 1 no ambient shaders, 2 no particles, 3 static plate. */
-export type Level = 0 | 1 | 2 | 3;
+/** 0 high tier, 1 medium tier, 2 shaders off, 3 no particles, 4 static plate. */
+export type Level = 0 | 1 | 2 | 3 | 4;
 
 export interface Governor {
   level: Level;
@@ -31,7 +32,7 @@ function median(xs: number[]): number {
 }
 
 export function govern(g: Governor, ms: number): Governor {
-  if (g.level === 3) return g;
+  if (g.level === 4) return g;
   const frames = [...g.frames, ms];
   let sum = frames.reduce((a, b) => a + b, 0);
   while (frames.length > MIN_FRAMES && sum - frames[0]! >= WINDOW_MS) sum -= frames.shift()!;

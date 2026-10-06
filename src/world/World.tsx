@@ -6,6 +6,7 @@
 import { useEffect, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from "react";
 import { scene as sceneById } from "../content";
 import { loadManifest, pickBaked, plateUrl as bakedUrl } from "./baked";
+import type { Tier } from "./shaders/tiers";
 import type { Arrival, Stage, ScreenView } from "./stage";
 
 export interface WorldHandle {
@@ -17,6 +18,8 @@ export interface WorldHandle {
 interface Props {
   sceneId: string;
   reduced: boolean;
+  /** Ambient motion on (OD-8 interim: behind a settings toggle). */
+  ambient: boolean;
   forceStatic: boolean;
   dim: boolean;
   children: ReactNode;
@@ -46,7 +49,17 @@ function webglAvailable(): boolean {
   }
 }
 
-export function World({ sceneId, reduced, forceStatic, dim, children, ref, onReady, onTooSlow }: Props) {
+export function World({
+  sceneId,
+  reduced,
+  ambient,
+  forceStatic,
+  dim,
+  children,
+  ref,
+  onReady,
+  onTooSlow,
+}: Props) {
   const host = useRef<HTMLDivElement>(null);
   const stage = useRef<Stage | null>(null);
   const prev = useRef<string | null>(null);
@@ -57,6 +70,7 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
   const [ground, setGround] = useState<string | undefined>(undefined);
   const [plateUrl, setPlateUrl] = useState<string | null>(null);
   const [plateSource, setPlateSource] = useState<"baked" | "painted" | undefined>(undefined);
+  const [tier, setTier] = useState<Tier | undefined>(undefined);
   const [stageReady, setStageReady] = useState(0);
   const readyRef = useRef(onReady);
   readyRef.current = onReady;
@@ -106,6 +120,7 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
           onGround: setGround,
           onBusy: setBusy,
           onPlate: setPlateSource,
+          onTier: setTier,
           onTooSlow: () => {
             setMode("static");
             slowRef.current?.();
@@ -130,6 +145,7 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
 
   useEffect(() => stage.current?.setReducedMotion(reduced), [reduced, stageReady]);
   useEffect(() => stage.current?.setDim(dim), [dim, stageReady]);
+  useEffect(() => stage.current?.setAmbient(ambient), [ambient, stageReady]);
 
   // Show the scene.
   useEffect(() => {
@@ -142,7 +158,7 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
       const how = arrival(prev.current, sceneId, !!el && el.clientHeight > el.clientWidth);
       prev.current = sceneId;
       setBusy(true);
-      void st.show(s.recipe, s.seed, how).then(() => {
+      void st.show(s.recipe, s.seed, how, s.scale).then(() => {
         setBusy(false);
         readyRef.current?.();
       });
@@ -211,6 +227,7 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
       style={ground ? { background: ground } : undefined}
       data-mode={mode}
       data-plate={plateSource}
+      data-tier={mode === "pixi" ? tier : undefined}
     >
       <div ref={host} className="world-canvas" aria-hidden="true">
         {mode === "static" && plateUrl && <img src={plateUrl} alt="" className="world-plate" />}

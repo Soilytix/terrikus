@@ -14,11 +14,11 @@ function run(frameMs: number, totalMs: number, g: Governor = initialGovernor()) 
 }
 
 describe("quality governor", () => {
-  it("steps down through all three levels within 6 s on software GL", () => {
+  it("steps down through all four levels within 6 s on software GL", () => {
     const { g, reached } = run(116, 6000);
-    expect(g.level).toBe(3);
-    expect(reached).toHaveLength(3);
-    expect(reached[2]).toBeLessThanOrEqual(6000);
+    expect(g.level).toBe(4);
+    expect(reached).toHaveLength(4);
+    expect(reached[3]).toBeLessThanOrEqual(6000);
   });
 
   it("leaves a 60 fps stage alone", () => {
