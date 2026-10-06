@@ -466,21 +466,33 @@ export function MissionPanel(props: Props) {
   const body = useRef<HTMLDivElement>(null);
   const focusedStep = useRef<number | null>(null);
   const idx = m ? stepIndex(save, m.id) : -1;
-  // A step's controls replace each other as it advances; when the focused one vanished, keep the
-  // keyboard here: a new step starts at its first control, a running step continues at its primary button.
+  const idxRef = useRef(idx);
+  idxRef.current = idx;
+  // A step's controls replace each other as it advances; when the focused one vanished or was
+  // disabled, keep the keyboard here: a new step starts at its first control, a running step
+  // continues at its primary button. Step-local state re-renders only StepBody, so a
+  // MutationObserver on the body (not this component's render) triggers the restore, after the
+  // new controls are in the DOM.
   useEffect(() => {
     const el = body.current;
-    const a = document.activeElement;
-    if (!el || (a && a !== document.body)) return;
-    const fresh = focusedStep.current !== idx;
-    focusedStep.current = idx;
-    const control = ":is(button, input, select, [tabindex='0']):not([disabled])";
-    const target =
-      (!fresh && el.querySelector<HTMLElement>(`.btn-primary${control}`)) ||
-      el.querySelector<HTMLElement>(control) ||
-      el;
-    target.focus({ preventScroll: true });
-  });
+    if (!el) return;
+    const restore = () => {
+      const a = document.activeElement;
+      if (a && a !== document.body && !(el.contains(a) && a.matches(":disabled"))) return;
+      const fresh = focusedStep.current !== idxRef.current;
+      focusedStep.current = idxRef.current;
+      const control = ":is(button, input, select, [tabindex='0']):not([disabled])";
+      const target =
+        (!fresh && el.querySelector<HTMLElement>(`.btn-primary${control}`)) ||
+        el.querySelector<HTMLElement>(control) ||
+        el;
+      target.focus({ preventScroll: true });
+    };
+    restore();
+    const watch = new MutationObserver(restore);
+    watch.observe(el, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled"] });
+    return () => watch.disconnect();
+  }, [open, m?.id]);
   const ch = chapter(chapterId);
   if (!ch) return null;
 
