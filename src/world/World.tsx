@@ -153,17 +153,18 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
       if (!el) return;
       const w = el.clientWidth || 1;
       const h = el.clientHeight || 1;
-      void import("./painter").then(({ paint, composeStatic }) => {
-        if (!alive) return;
-        const plate = paint(s.recipe, s.seed, w, h, 1);
-        if (url) URL.revokeObjectURL(url);
-        url = URL.createObjectURL(new Blob([composeStatic(plate)], { type: "image/svg+xml" }));
-        setGround(plate.ground);
-        setPlateUrl(url);
-        applyView({ s: 1, tx: 0, ty: 0, w, h });
-        setBusy(false);
-        readyRef.current?.();
-      });
+      void import("./painter/remote")
+        .then(({ paintStaticOff }) => paintStaticOff(s.recipe, s.seed, w, h, 1))
+        .then(({ plate, svg }) => {
+          if (!alive) return;
+          if (url) URL.revokeObjectURL(url);
+          url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+          setGround(plate.ground);
+          setPlateUrl(url);
+          applyView({ s: 1, tx: 0, ty: 0, w, h });
+          setBusy(false);
+          readyRef.current?.();
+        });
     };
     paintNow();
     let t = 0;

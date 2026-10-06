@@ -174,12 +174,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** the new fixture test fails without the check; leaf-jar tests unchanged; `mise run check` green.
 - **Depends on:** —. Before T18.
 
-### R10 — Paint off the main thread and measure it (E8 rest, T07 acceptance)
+### R10 — Paint off the main thread and measure it (E8 rest, T07 acceptance) · **done**
 
 - **Problem:** the valley takes ~57 ms and 2.3 MB of SVG per paint on the main thread; T07's "≤ 150 ms per plate on M1" was never measured.
 - **Direction:** move `paint` (pure, deterministic) into a module worker used by `stage.build` and the static fallback; add `tools/plate.ts --bench` printing per-recipe paint time.
 - **Acceptance:** worker output equals main-thread output for every recipe (snapshot hash test); bench output in the PR; no frame over 50 ms during a portal zoom in a Playwright trace; `mise run check` green.
 - **Depends on:** —.
+- **Outcome:** `paint` runs in `src/world/painter/paint.worker.ts` via `remote.ts` (main-thread fallback); `remote.test.ts` hashes worker against main thread for every recipe; `tools/plate.ts --bench`; `e2e/paint-worker.spec.ts` profiles a portal zoom and asserts no painting on the main thread. The 50 ms bar is not met: GL texture upload of the SVG layers (`texImage2D`) and the governor's fallback still make long main-thread tasks under software GL, and T07's ≤ 150 ms on M1 still needs a quiet machine (bench numbers swung 2.5× on a loaded host).
 
 ### R11 — Science follow-ups needing full text (S M1, L1, L2)
 

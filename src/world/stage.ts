@@ -8,7 +8,8 @@ import { Application, Container, DisplacementFilter, Graphics, Sprite, Texture }
 import { num } from "./painter/color";
 import { UI } from "../styles/ui";
 import { fbm, rngFor } from "./painter/noise";
-import { paint, type Plate, type ParticleSpec, type PlateLayer, type SpriteSpec } from "./painter";
+import { paintOff } from "./painter/remote";
+import type { Plate, ParticleSpec, PlateLayer, SpriteSpec } from "./painter";
 import { HOME, clampView, easeChart, logLerp, viewTransform, type View } from "./camera";
 import { govern, initialGovernor } from "./governor";
 
@@ -298,7 +299,7 @@ export class Stage {
     const { w, h } = this.size;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const fine = Math.min(dpr, 1.5);
-    const crisp = paint(recipe, seed, w, h, fine);
+    const crisp = await paintOff(recipe, seed, w, h, fine);
     const view = new SceneView(crisp, `${recipe}:${seed}`);
     // Scale only sets the raster size, so soft layers are rastered at 1× by rewriting it, not repainted.
     const soft = (svg: string) =>
