@@ -9,7 +9,6 @@ import { advance, benchMission, currentStep, lensAvailable } from "../app/progre
 import { appendLab, type Save } from "../save/schema";
 import { run, type Snapshot } from "../sim/engine";
 import { ConservationError } from "../sim/ledger";
-import type { BenchId } from "../sim/benches";
 import {
   DAYS,
   DEFAULT_LEVERS,
@@ -252,7 +251,7 @@ function Readout({
 }
 
 interface Props {
-  bench: BenchId;
+  bench: "leaf-jar";
   save: Save;
   update: (fn: (s: Save) => Save) => void;
   go: (href: string) => void;

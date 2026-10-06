@@ -4,6 +4,7 @@ import { CHAPTERS, SCENES, chapter, scene as sceneById } from "../content";
 import type { SceneObject } from "../content/schema";
 import { World, type WorldHandle } from "../world/World";
 import { Bench } from "../ui/Bench";
+import { LabBench } from "../ui/LabBench";
 import { Hotspots } from "../ui/Hotspots";
 import { Hud } from "../ui/Hud";
 import { MissionPanel } from "../ui/MissionPanel";
@@ -218,6 +219,13 @@ export function App() {
   }, []);
 
   if (route.name === "bench") {
+    const backHref = save.lastSession?.route ?? targetHref(benchScene(href(route)));
+    if (route.bench === "lab-bench")
+      return (
+        <div className="app app-bench">
+          <LabBench backHref={backHref} />
+        </div>
+      );
     return (
       <div className="app app-bench">
         <Bench
@@ -226,7 +234,7 @@ export function App() {
           update={update}
           go={go}
           reduced={reduced}
-          backHref={save.lastSession?.route ?? targetHref(benchScene(href(route)))}
+          backHref={backHref}
         />
       </div>
     );

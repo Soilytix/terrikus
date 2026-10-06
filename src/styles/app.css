@@ -2248,3 +2248,93 @@ input[type="range"] {
     transition-duration: 1ms !important;
   }
 }
+
+/* Lab bench (T26) */
+.taxon-spore {
+  fill: var(--color-chart-subject);
+  background: var(--color-chart-subject);
+}
+.taxon-fast {
+  fill: var(--color-cat-gold);
+  background: var(--color-cat-gold);
+}
+.taxon-slow {
+  fill: var(--color-cat-azure);
+  background: var(--color-cat-azure);
+}
+.taxon-ammonia {
+  fill: var(--color-cat-rose);
+  background: var(--color-cat-rose);
+}
+.taxon-ghost {
+  fill: var(--color-ink-faint);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--color-ink-faint) 0 2px,
+    var(--color-surface-page) 2px 4px
+  );
+}
+.pipeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  counter-reset: stage;
+}
+.pipeline li {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  font-size: 13px;
+  counter-increment: stage;
+}
+.pipeline b::before {
+  content: counter(stage) ". ";
+}
+.pipeline .small {
+  display: flex;
+  gap: 8px;
+}
+.lab-levers {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.reads-jar {
+  width: 100%;
+  height: 36px;
+  border-radius: 6px;
+}
+.lab-compare {
+  padding: 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+}
+.lab-compare h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+.lab-compare table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.lab-compare th,
+.lab-compare td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+.lab-compare td:last-child {
+  color: var(--color-ink-muted);
+}
+@media (max-width: 760px) {
+  .pipeline {
+    grid-template-columns: 1fr 1fr;
+  }
+}

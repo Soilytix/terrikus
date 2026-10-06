@@ -144,3 +144,16 @@ test("settings credit every bundled asset", async ({ page }, info) => {
   await expect(credits.getByRole("row")).toHaveCount(13); // 11 assets + 2 fonts
   await shot(page, "15-credits", info.project.name);
 });
+
+test("the lab bench keeps reads at 100 % and needs a spike-in for amounts", async ({ page }, info) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(`${String(e)} @ ${page.url()}\n${e.stack ?? ""}`));
+  await page.goto("./#/bench/lab-bench");
+  await expect(page.getByRole("heading", { name: "From soil to reads" })).toBeVisible();
+  await expect(page.getByText("cannot tell without a spike-in").first()).toBeVisible();
+  await page.getByRole("radio", { name: "known amount added" }).check();
+  await page.getByRole("radio", { name: "five cores pooled" }).check();
+  await expect(page.getByText("cannot tell without a spike-in")).toHaveCount(0);
+  await shot(page, "16-lab-bench", info.project.name);
+  expect(errors).toEqual([]);
+});

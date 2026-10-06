@@ -312,7 +312,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** "present is not sick" enforced in diagnostics; evidence ladder rungs unlock bounded claims.
 - **Depends on:** T22
 
-### T26 — Measurement engine
+### T26 — Measurement engine · **done**
 
 - **Goal:** instruments over true state.
 - **Scope:** `src/sim/measure.ts` (sampling, detection limits, seeded noise, compositional closure, relic DNA, copy number); lab-bench scene.
