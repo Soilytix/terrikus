@@ -129,9 +129,10 @@ button {
   color: var(--color-ink);
   font-weight: 600;
 }
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background: var(--color-button-hover);
   border-color: var(--color-button-hover);
+  color: var(--color-white);
 }
 .btn-ghost {
   background: transparent;
@@ -350,12 +351,12 @@ button {
 .hotspots[data-busy="true"] .hotspot {
   pointer-events: none;
 }
-.outline {
+.scene-outline {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.outline li {
+.scene-outline li {
   position: absolute;
   left: calc(var(--vtx, 0px) + var(--x) * var(--vw, 100vw) * var(--vs, 1));
   top: calc(var(--vty, 0px) + var(--y) * var(--vh, 100vh) * var(--vs, 1));
@@ -1111,6 +1112,7 @@ input[type="range"] {
 
 /* ---------- Dialogs ---------- */
 .dialog {
+  margin: auto;
   width: min(560px, calc(100% - 24px));
   max-height: min(86vh, 900px);
   padding: 0;
@@ -1146,6 +1148,9 @@ input[type="range"] {
 }
 .dialog-head h2 {
   font-size: 19px;
+}
+.dialog-body > * {
+  flex-shrink: 0;
 }
 .dialog-body {
   padding: 18px 22px 22px;
@@ -1323,7 +1328,7 @@ input[type="range"] {
   background: var(--color-surface-card);
   color: var(--color-ink);
 }
-.connector.fixed {
+.connector-fixed {
   font-style: italic;
 }
 .confidence-pick {
@@ -1896,7 +1901,7 @@ input[type="range"] {
   width: 100%;
   height: auto;
 }
-.chart .grid {
+.chart .gridline {
   stroke: var(--color-chart-grid);
 }
 .chart .tick {

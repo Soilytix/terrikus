@@ -18,7 +18,7 @@ const VERB: Record<SceneObject["kind"], string> = {
 
 export function Hotspots({ objects, scanned, highlight, onActivate }: Props) {
   return (
-    <ul className="outline" aria-label="Things in this scene">
+    <ul className="scene-outline" aria-label="Things in this scene">
       {objects.map((o) => {
         const done = o.kind === "scan" && scanned(o.id);
         return (

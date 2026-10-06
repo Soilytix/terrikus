@@ -81,7 +81,7 @@ function ConnectorSlot({
   index: number;
 }) {
   if (options.length === 1)
-    return <span className="connector fixed">{CONNECTOR_LABEL[value || options[0]!]} →</span>;
+    return <span className="connector connector-fixed">{CONNECTOR_LABEL[value || options[0]!]} →</span>;
   return (
     <label className="connector">
       <select

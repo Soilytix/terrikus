@@ -12,14 +12,14 @@ const LAYERS = [
 export function Composition({ guess, reveal }: { guess: number | undefined; reveal: boolean }) {
   const H = 260;
   const top = 20;
-  const x0 = 120;
+  const x0 = 170;
   const cw = 120;
   const y = (pct: number) => top + H - (pct / 100) * H;
   let acc = 0;
   return (
     <figure className="composition">
       <svg
-        viewBox="0 0 420 320"
+        viewBox="0 -16 470 326"
         role="img"
         aria-label="A graduated cylinder: 45 % mineral, 5 % organic matter, 25 % water, 25 % air. The solid share in typical topsoil ranges from about 40 to 60 %."
       >
@@ -58,10 +58,13 @@ export function Composition({ guess, reveal }: { guess: number | undefined; reve
         <line x1={x0} x2={x0 + cw} y1={y(50)} y2={y(50)} className="solid-line" data-reveal={reveal} />
         {guess !== undefined && (
           <g className="guess">
-            <line x1={x0 - 30} x2={x0 + cw + 6} y1={y(guess)} y2={y(guess)} />
-            <circle cx={x0 - 30} cy={y(guess)} r={5} />
-            <text x={x0 - 38} y={y(guess) - 8} textAnchor="end">
-              Your guess {guess} %
+            <line x1={56} x2={x0 + cw + 6} y1={y(guess)} y2={y(guess)} />
+            <circle cx={56} cy={y(guess)} r={5} />
+            <text x={56} y={y(guess) - 22} textAnchor="middle">
+              Your guess
+            </text>
+            <text x={56} y={y(guess) - 9} textAnchor="middle" className="mono">
+              {guess} %
             </text>
           </g>
         )}

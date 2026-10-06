@@ -46,7 +46,7 @@ function CardView({ card, state }: { card: FieldCard; state: "partial" | "full" 
   return (
     <article className="field-card" data-state={state} id={`card-${item.id}`}>
       <div className="fc-art" aria-hidden="true">
-        {art ? <img src={art} alt="" loading="lazy" /> : <span className="fc-art-blank">{card.kind}</span>}
+        {art ? <img src={art} alt="" /> : <span className="fc-art-blank">{card.kind}</span>}
       </div>
       <div className="fc-body">
         <p className="eyebrow">

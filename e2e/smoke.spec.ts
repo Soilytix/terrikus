@@ -54,7 +54,10 @@ test("play the prologue and the first chapter-2 mission", async ({ page }, info)
   await shot(page, "04-pore", p);
   for (const name of ["Bacterium", "Amoeba", "Fungal thread"]) {
     await page.getByRole("button", { name: `Look at: ${name}` }).click();
-    if (name === "Amoeba") await shot(page, "05-pore-scan", p);
+    if (name === "Amoeba") {
+      await page.waitForTimeout(600);
+      await shot(page, "05-pore-scan", p);
+    }
     await page.locator(".scan-card").getByRole("button", { name: "Close" }).click();
   }
   await mission.getByRole("button", { name: "Add to my notebook" }).click();

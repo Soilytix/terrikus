@@ -74,7 +74,7 @@ function Chart({ snaps, day, frame }: { snaps: Snapshot[]; day: number; frame: "
       </defs>
       {[0, 25, 50, 75, 100].map((p) => (
         <g key={p}>
-          <line x1={0} x2={W} y1={y(p)} y2={y(p)} className="grid" />
+          <line x1={0} x2={W} y1={y(p)} y2={y(p)} className="gridline" />
           <text x={-6} y={y(p) + 3} textAnchor="end" className="tick">
             {p}
           </text>
