@@ -1519,6 +1519,34 @@ input[type="range"] {
 .rumors li[data-state="explained"] .rumor-quote {
   color: var(--color-ink-muted);
 }
+/* Rumor Map edges: the line style carries the meaning, not colour (WB§7.1). */
+.rumor-edges {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+}
+.rumors .rumor-edges .edge {
+  padding: 0 0 0 12px;
+  border-radius: 0;
+  background: none;
+  border-left: 2px dashed var(--color-ink-muted);
+}
+.rumors .rumor-edges .edge[data-edge="explains"] {
+  border-left-style: solid;
+  border-left-color: var(--color-ink);
+}
+.rumor-hint {
+  margin: 8px 0 0;
+}
+.recall h2 {
+  margin: 4px 0 12px;
+}
+.recall-answer {
+  margin: 0 0 16px;
+}
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -1670,7 +1698,9 @@ input[type="range"] {
   gap: 8px;
   font-size: 14px;
 }
-.chapters li[data-state="locked"] {
+.chapters li[data-state="locked"],
+.chapters li[data-state="planned"],
+.chapters li[data-state="ready"] {
   color: var(--color-ink-muted);
 }
 .truth {

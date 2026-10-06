@@ -169,6 +169,7 @@ describe("references resolve", () => {
     const settable = new Set([
       ...MISSIONS.map((m) => `${m.id}-done`),
       ...CHAPTERS.map((c) => `chapter:${c.id}`),
+      "map-open", // set by progress when the valley map opens (WB§1)
       ...[...MISSIONS, ...steps].flatMap((x) => x.onComplete?.flags ?? []),
       ...steps.flatMap((st) => (st.kind === "reactive-water-air" ? [st.flag] : [])),
     ]);

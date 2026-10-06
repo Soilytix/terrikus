@@ -32,6 +32,10 @@ const c1: Chapter = {
   ],
   after: ["prologue"],
   playable: true,
+  recall: [
+    { prompt: "What is the difference between texture and structure?", discovery: "d-c1-texture" },
+    { prompt: "What did small pores give the bacteria?", discovery: "d-c1-refuge" },
+  ],
   reviewStatus: "draft",
 };
 

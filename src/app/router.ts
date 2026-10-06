@@ -30,7 +30,7 @@ export function href(r: Route): string {
       return "#/";
     case "scene": {
       const s = scene(r.scene);
-      return s?.chapter === "valley" || !s ? "#/ch/valley" : `#/ch/${s.chapter}/${s.id}`;
+      return !s || s.id === "valley" ? "#/ch/valley" : `#/ch/${s.chapter}/${s.id}`;
     }
     case "bench":
       return `#/bench/${r.bench}`;

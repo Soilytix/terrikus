@@ -5,7 +5,7 @@ import { prologueBundle } from "./chapters/prologue";
 import { MATERIALS, PROCESSES } from "./processes";
 import { ORGANISMS } from "./organisms";
 import type { Chapter, ChapterBundle, CodexEntry, Mission, Rumor, Scene } from "./schema";
-import { LATER_BUNDLES, valleyScene } from "./valley";
+import { LATER_BUNDLES, valleyMapScene, valleyScene } from "./valley";
 
 /** Every chapter, once. A new chapter is one more bundle here. */
 const BUNDLES: ChapterBundle[] = [prologueBundle, c1Bundle, leafBundle, ...LATER_BUNDLES];
@@ -17,7 +17,7 @@ function order(n: string) {
   return n === "P" ? 0 : Number(n);
 }
 
-export const SCENES: Scene[] = [valleyScene, ...BUNDLES.flatMap((b) => b.scenes)];
+export const SCENES: Scene[] = [valleyScene, valleyMapScene, ...BUNDLES.flatMap((b) => b.scenes)];
 export const MISSIONS: Mission[] = BUNDLES.flatMap((b) => b.missions);
 export const CODEX: CodexEntry[] = BUNDLES.flatMap((b) => b.codex);
 export const RUMORS: Rumor[] = BUNDLES.flatMap((b) => b.rumors);

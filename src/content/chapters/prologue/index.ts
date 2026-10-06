@@ -40,6 +40,10 @@ const prologue: Chapter = {
   ],
   after: [],
   playable: true,
+  recall: [
+    { prompt: "How much of a handful of topsoil is solid?", discovery: "d-p-half-space" },
+    { prompt: "What were most of the microbes in the pore doing?", discovery: "d-p-sleepers" },
+  ],
   reviewStatus: "draft",
 };
 

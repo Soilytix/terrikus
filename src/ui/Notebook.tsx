@@ -6,6 +6,7 @@ import {
   DISCOVERIES,
   FIELD_CARDS,
   RUMORS,
+  chapter as chapterById,
   codex as codexById,
   type FieldCard,
 } from "../content";
@@ -13,6 +14,7 @@ import type { GroupBadge } from "../content/schema";
 import type { Save } from "../save/schema";
 import { assetUrl } from "../assets/urls";
 import { NOTEBOOK_TABS, type NotebookTab } from "../app/router";
+import { chapterState, whereToLook, type ChapterState } from "../app/progress";
 import { LADDER } from "./Hud";
 import { Dialog, Facts, ReviewBadge, SourceRef } from "./common";
 
@@ -32,6 +34,14 @@ const GROUP_SHAPE: Record<GroupBadge, string> = {
   pathogen: "M8 1l2 5h5l-4 3 2 6-5-4-5 4 2-6-4-3h5z",
   engineer: "M4 1h8l3 7-3 7H4L1 8z",
   shredder: "M1 1h14v14H1z",
+};
+
+const STATE_LABEL: Record<ChapterState, string> = {
+  complete: "complete",
+  open: "open",
+  ready: "opened by its rumor; not built yet",
+  locked: "locked",
+  planned: "planned",
 };
 
 function sizeLabel(m: number): string {
@@ -154,20 +164,41 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
       <div role="tabpanel" className="tab-panel" aria-label={TAB_LABEL[tab]}>
         {tab === "rumors" && (
           <>
-            <p className="lede">Questions you have met. Some are answered; most lead somewhere new.</p>
+            <p className="lede">
+              Questions you have met. Dashed lines hint at where a question leads; solid lines mark what
+              explained it.
+            </p>
             {rumors.length ? (
-              <ul className="rumors">
-                {rumors.map((r) => (
-                  <li key={r.id} data-state={save.rumors[r.id]}>
-                    <span className="rumor-state">{save.rumors[r.id]}</span>
-                    <p className="rumor-quote">“{r.text}”</p>
-                    {r.explainedBy && save.rumors[r.id] === "explained" && (
-                      <p className="small">
-                        Explained by: {DISCOVERIES.find((d) => d.id === r.explainedBy)?.statement}
-                      </p>
-                    )}
-                  </li>
-                ))}
+              <ul className="rumors rumor-map">
+                {rumors.map((r) => {
+                  const explained = save.rumors[r.id] === "explained";
+                  const by = explained ? DISCOVERIES.find((d) => d.id === r.explainedBy) : undefined;
+                  const hint = whereToLook(save, r);
+                  return (
+                    <li key={r.id} data-state={save.rumors[r.id]}>
+                      <span className="rumor-state">{save.rumors[r.id]}</span>
+                      <p className="rumor-quote">“{r.text}”</p>
+                      <ul className="rumor-edges">
+                        {r.hintsAt.map((id) => {
+                          const c = chapterById(id);
+                          return (
+                            c && (
+                              <li key={id} className="edge" data-edge="hints">
+                                hints at: chapter {c.number}, {c.title}
+                              </li>
+                            )
+                          );
+                        })}
+                        {by && (
+                          <li className="edge" data-edge="explains">
+                            explained by: {by.statement}
+                          </li>
+                        )}
+                      </ul>
+                      {hint && <p className="small rumor-hint">Where to look: {hint}</p>}
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <p className="empty">No rumors yet. Look around the valley.</p>
@@ -318,26 +349,9 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
             <h3>Chapters</h3>
             <ol className="chapters">
               {CHAPTERS.map((c) => (
-                <li
-                  key={c.id}
-                  data-state={
-                    save.chaptersComplete.includes(c.id)
-                      ? "done"
-                      : save.chaptersUnlocked.includes(c.id)
-                        ? "open"
-                        : "locked"
-                  }
-                >
+                <li key={c.id} data-state={chapterState(c, save)}>
                   <span className="mono">{c.number}</span> {c.title}
-                  <span className="small muted">
-                    {save.chaptersComplete.includes(c.id)
-                      ? "complete"
-                      : save.chaptersUnlocked.includes(c.id)
-                        ? "open"
-                        : c.playable
-                          ? "locked"
-                          : "planned"}
-                  </span>
+                  <span className="small muted">{STATE_LABEL[chapterState(c, save)]}</span>
                 </li>
               ))}
             </ol>

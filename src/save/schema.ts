@@ -49,6 +49,8 @@ export interface SaveV1 {
   /** Scene objects scanned, as `sceneId/objectId`. */
   scanned: string[];
   flags: string[];
+  /** Rumor Map views per rumor while its state stood still (WB§7.1 "where to look" hint). */
+  rumorViews: Record<string, { state: string; n: number }>;
   lastSession: { route: string; at: string } | null;
 }
 
@@ -72,6 +74,7 @@ export function freshSave(now = new Date().toISOString()): Save {
     missions: {},
     scanned: [],
     flags: [],
+    rumorViews: {},
     lastSession: null,
   };
 }

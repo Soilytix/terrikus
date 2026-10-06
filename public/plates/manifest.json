@@ -98,6 +98,54 @@
     "ground": "#f1e7d6"
    }
   ],
+  "valley-map:7": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "valley-map-7/1440x900/0-back.avif",
+      "sha": "d54eba631315eb0d9eccec7d13dd52e771f495406038c1a649d446e0b8c8a3b2"
+     },
+     {
+      "id": "land",
+      "file": "valley-map-7/1440x900/1-land.avif",
+      "sha": "a32914754cd4b7803b3161c5d49fe841e5945fe85eb29de0665a248059350ec4"
+     },
+     {
+      "id": "trees",
+      "file": "valley-map-7/1440x900/2-trees.avif",
+      "sha": "d95772ce51063ccfcb1f8fbae11f155491c7ef1d210399cf82ed2cbac2f34fd2"
+     }
+    ],
+    "flat": "valley-map-7/1440x900/flat.avif",
+    "ground": "#e9dbc8"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "valley-map-7/390x844/0-back.avif",
+      "sha": "9f0bc9bd3dd571f602d3669191f8b8dd1b8860033bc83e58a6c42e315a113f04"
+     },
+     {
+      "id": "land",
+      "file": "valley-map-7/390x844/1-land.avif",
+      "sha": "72bb9cd5a291f1d7b42768cfe482763f727b71e6971bb2f852c288c398faf58a"
+     },
+     {
+      "id": "trees",
+      "file": "valley-map-7/390x844/2-trees.avif",
+      "sha": "51d190993d7e26b7df9b9ee54d977da9ea1f4c22b7d762ea13b7bc711115d367"
+     }
+    ],
+    "flat": "valley-map-7/390x844/flat.avif",
+    "ground": "#e9dbc8"
+   }
+  ],
   "field-dawn:11": [
    {
     "w": 1440,
@@ -339,6 +387,140 @@
      }
     ],
     "flat": "pore-37/390x844/flat.avif",
+    "ground": "#161c19"
+   }
+  ],
+  "c1-grain-ruler:61": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c1-grain-ruler-61/1440x900/0-back.avif",
+      "sha": "6ec6e7ddaa01d8fe5454a8f31add66cd98a45715bfbc980e7e2262c23e8497a4"
+     },
+     {
+      "id": "trays",
+      "file": "c1-grain-ruler-61/1440x900/1-trays.avif",
+      "sha": "15dc25e8e4eca621c267d31d86574f80a728fb94ea0b1a2c7e60c01f670bd41f"
+     },
+     {
+      "id": "fill",
+      "file": "c1-grain-ruler-61/1440x900/2-fill.avif",
+      "sha": "19a754eab71f708450ffa5c6fa59a22426a27be2baa9b1d9c2f558f9b210323b"
+     }
+    ],
+    "flat": "c1-grain-ruler-61/1440x900/flat.avif",
+    "ground": "#f1e7d6"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c1-grain-ruler-61/390x844/0-back.avif",
+      "sha": "3ab84ac845d20cc3258b5d2688ba3f7697cc9d6b5d5d882f737c3da9a2944b7d"
+     },
+     {
+      "id": "trays",
+      "file": "c1-grain-ruler-61/390x844/1-trays.avif",
+      "sha": "928c64b98ec7bddda7d35042e46e947b24a73e4e1c050af41ba9834ac2a15ef7"
+     },
+     {
+      "id": "fill",
+      "file": "c1-grain-ruler-61/390x844/2-fill.avif",
+      "sha": "67d9bc6eb43c201edeb844d4fc94ae944cf7300690b205113cbf49cafba5c382"
+     }
+    ],
+    "flat": "c1-grain-ruler-61/390x844/flat.avif",
+    "ground": "#f1e7d6"
+   }
+  ],
+  "c1-aggregate-cut:67": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c1-aggregate-cut-67/1440x900/0-back.avif",
+      "sha": "22d333d84c4803d63f1c008e3b9963011e531bc0fe65ac15cc4a6a93ee0af076"
+     },
+     {
+      "id": "crumb",
+      "file": "c1-aggregate-cut-67/1440x900/1-crumb.avif",
+      "sha": "b84476d77aeddcc550e6116de0a4e393db7277982b2141a1ae7f852e2f95975f"
+     }
+    ],
+    "flat": "c1-aggregate-cut-67/1440x900/flat.avif",
+    "ground": "#161c19"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c1-aggregate-cut-67/390x844/0-back.avif",
+      "sha": "7a9aafe2c94ca9d97832b5e219b4d4933178a2312039b69fee1d83858eb3b327"
+     },
+     {
+      "id": "crumb",
+      "file": "c1-aggregate-cut-67/390x844/1-crumb.avif",
+      "sha": "cdc8db3450ce61e58428c231d36a8c62c6ddfca9a4ebd59ef9eda9fd7e351ff4"
+     }
+    ],
+    "flat": "c1-aggregate-cut-67/390x844/flat.avif",
+    "ground": "#161c19"
+   }
+  ],
+  "c1-labyrinth:71": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c1-labyrinth-71/1440x900/0-back.avif",
+      "sha": "1455aa40fefcffc5ae8791b8c5387cab337a31754447d32e60140cdd9f8fcf1a"
+     },
+     {
+      "id": "film",
+      "file": "c1-labyrinth-71/1440x900/1-film.avif",
+      "sha": "c786cdc5e2dd7a4636e02dba9ae69d4ba0a59cd0bd6976fd83e5b7014b3f0bfa"
+     },
+     {
+      "id": "grains",
+      "file": "c1-labyrinth-71/1440x900/2-grains.avif",
+      "sha": "c746409dcf4980a841f16e35c577c84445966faaf4cb0053f6ecabe281016ffd"
+     }
+    ],
+    "flat": "c1-labyrinth-71/1440x900/flat.avif",
+    "ground": "#161c19"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c1-labyrinth-71/390x844/0-back.avif",
+      "sha": "711ff8679f0e9cde555311eed11556dc56d5b6491a1ec085e5c278dacaa31ec0"
+     },
+     {
+      "id": "film",
+      "file": "c1-labyrinth-71/390x844/1-film.avif",
+      "sha": "83b87a4f53f740bd0e10a47e8910e0cff5abe37d364902877be00bfe47e4d680"
+     },
+     {
+      "id": "grains",
+      "file": "c1-labyrinth-71/390x844/2-grains.avif",
+      "sha": "f18729db542e51e2e0695f71a830537c2be2858922c044277a176bfe8e5d7262"
+     }
+    ],
+    "flat": "c1-labyrinth-71/390x844/flat.avif",
     "ground": "#161c19"
    }
   ],
@@ -604,140 +786,6 @@
     ],
     "flat": "pore-leaf-89/390x844/flat.avif",
     "ground": "#07262d"
-   }
-  ],
-  "c1-grain-ruler:61": [
-   {
-    "w": 1440,
-    "h": 900,
-    "layers": [
-     {
-      "id": "back",
-      "file": "c1-grain-ruler-61/1440x900/0-back.avif",
-      "sha": "6ec6e7ddaa01d8fe5454a8f31add66cd98a45715bfbc980e7e2262c23e8497a4"
-     },
-     {
-      "id": "trays",
-      "file": "c1-grain-ruler-61/1440x900/1-trays.avif",
-      "sha": "15dc25e8e4eca621c267d31d86574f80a728fb94ea0b1a2c7e60c01f670bd41f"
-     },
-     {
-      "id": "fill",
-      "file": "c1-grain-ruler-61/1440x900/2-fill.avif",
-      "sha": "19a754eab71f708450ffa5c6fa59a22426a27be2baa9b1d9c2f558f9b210323b"
-     }
-    ],
-    "flat": "c1-grain-ruler-61/1440x900/flat.avif",
-    "ground": "#f1e7d6"
-   },
-   {
-    "w": 390,
-    "h": 844,
-    "layers": [
-     {
-      "id": "back",
-      "file": "c1-grain-ruler-61/390x844/0-back.avif",
-      "sha": "3ab84ac845d20cc3258b5d2688ba3f7697cc9d6b5d5d882f737c3da9a2944b7d"
-     },
-     {
-      "id": "trays",
-      "file": "c1-grain-ruler-61/390x844/1-trays.avif",
-      "sha": "928c64b98ec7bddda7d35042e46e947b24a73e4e1c050af41ba9834ac2a15ef7"
-     },
-     {
-      "id": "fill",
-      "file": "c1-grain-ruler-61/390x844/2-fill.avif",
-      "sha": "67d9bc6eb43c201edeb844d4fc94ae944cf7300690b205113cbf49cafba5c382"
-     }
-    ],
-    "flat": "c1-grain-ruler-61/390x844/flat.avif",
-    "ground": "#f1e7d6"
-   }
-  ],
-  "c1-aggregate-cut:67": [
-   {
-    "w": 1440,
-    "h": 900,
-    "layers": [
-     {
-      "id": "back",
-      "file": "c1-aggregate-cut-67/1440x900/0-back.avif",
-      "sha": "22d333d84c4803d63f1c008e3b9963011e531bc0fe65ac15cc4a6a93ee0af076"
-     },
-     {
-      "id": "crumb",
-      "file": "c1-aggregate-cut-67/1440x900/1-crumb.avif",
-      "sha": "b84476d77aeddcc550e6116de0a4e393db7277982b2141a1ae7f852e2f95975f"
-     }
-    ],
-    "flat": "c1-aggregate-cut-67/1440x900/flat.avif",
-    "ground": "#161c19"
-   },
-   {
-    "w": 390,
-    "h": 844,
-    "layers": [
-     {
-      "id": "back",
-      "file": "c1-aggregate-cut-67/390x844/0-back.avif",
-      "sha": "7a9aafe2c94ca9d97832b5e219b4d4933178a2312039b69fee1d83858eb3b327"
-     },
-     {
-      "id": "crumb",
-      "file": "c1-aggregate-cut-67/390x844/1-crumb.avif",
-      "sha": "cdc8db3450ce61e58428c231d36a8c62c6ddfca9a4ebd59ef9eda9fd7e351ff4"
-     }
-    ],
-    "flat": "c1-aggregate-cut-67/390x844/flat.avif",
-    "ground": "#161c19"
-   }
-  ],
-  "c1-labyrinth:71": [
-   {
-    "w": 1440,
-    "h": 900,
-    "layers": [
-     {
-      "id": "back",
-      "file": "c1-labyrinth-71/1440x900/0-back.avif",
-      "sha": "1455aa40fefcffc5ae8791b8c5387cab337a31754447d32e60140cdd9f8fcf1a"
-     },
-     {
-      "id": "film",
-      "file": "c1-labyrinth-71/1440x900/1-film.avif",
-      "sha": "c786cdc5e2dd7a4636e02dba9ae69d4ba0a59cd0bd6976fd83e5b7014b3f0bfa"
-     },
-     {
-      "id": "grains",
-      "file": "c1-labyrinth-71/1440x900/2-grains.avif",
-      "sha": "c746409dcf4980a841f16e35c577c84445966faaf4cb0053f6ecabe281016ffd"
-     }
-    ],
-    "flat": "c1-labyrinth-71/1440x900/flat.avif",
-    "ground": "#161c19"
-   },
-   {
-    "w": 390,
-    "h": 844,
-    "layers": [
-     {
-      "id": "back",
-      "file": "c1-labyrinth-71/390x844/0-back.avif",
-      "sha": "711ff8679f0e9cde555311eed11556dc56d5b6491a1ec085e5c278dacaa31ec0"
-     },
-     {
-      "id": "film",
-      "file": "c1-labyrinth-71/390x844/1-film.avif",
-      "sha": "83b87a4f53f740bd0e10a47e8910e0cff5abe37d364902877be00bfe47e4d680"
-     },
-     {
-      "id": "grains",
-      "file": "c1-labyrinth-71/390x844/2-grains.avif",
-      "sha": "f18729db542e51e2e0695f71a830537c2be2858922c044277a176bfe8e5d7262"
-     }
-    ],
-    "flat": "c1-labyrinth-71/390x844/flat.avif",
-    "ground": "#161c19"
    }
   ]
  },

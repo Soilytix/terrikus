@@ -63,6 +63,7 @@ function check(d: Record<string, unknown>) {
     ["missions", recordOf(d.missions, (m) => isRecord(m) && typeof m.step === "number")],
     ["scanned", strings(d.scanned)],
     ["flags", strings(d.flags)],
+    ["rumorViews", recordOf(d.rumorViews, (v) => isRecord(v) && typeof v.n === "number")],
     [
       "lastSession",
       d.lastSession === null || (isRecord(d.lastSession) && typeof d.lastSession.route === "string"),

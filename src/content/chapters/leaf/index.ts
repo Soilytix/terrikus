@@ -40,6 +40,10 @@ const leaf: Chapter = {
   playable: true,
   rumor: "r-c2-leaf",
   lens: true,
+  recall: [
+    { prompt: "Where did the leaf's carbon go?", discovery: "d-c2-conserved" },
+    { prompt: "What did you find limits decomposition here?", discovery: "d-c2-moisture" },
+  ],
   reviewStatus: "draft",
 };
 

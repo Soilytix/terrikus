@@ -3,8 +3,25 @@
  * is next, and what completing a step writes into the notebook. No React here,
  * so every rule has a direct test.
  */
-import { CHAPTERS, mission, scene as sceneById } from "../content";
-import type { Mission, OnComplete, Scene, SceneObject, Step } from "../content/schema";
+import {
+  CHAPTERS,
+  DISCOVERIES,
+  RUMORS,
+  chapter as chapterById,
+  mission,
+  scene as sceneById,
+} from "../content";
+import type {
+  Chapter,
+  Discovery,
+  Mission,
+  OnComplete,
+  RecallCard,
+  Rumor,
+  Scene,
+  SceneObject,
+  Step,
+} from "../content/schema";
 import type { Save } from "../save/schema";
 
 const add = (list: string[], ...items: string[]) => [...new Set([...list, ...items])];
@@ -61,22 +78,56 @@ function complete(save: Save, step: Step): Save {
   return apply(save, step.onComplete);
 }
 
-function finishMission(save: Save, m: Mission): Save {
-  let next: Save = apply({ ...save, flags: add(save.flags, `${m.id}-done`) }, m.onComplete);
-  const ch = CHAPTERS.find((c) => c.id === m.chapter);
-  if (ch && ch.missions.every((id) => next.missions[id]?.done)) {
-    next = { ...next, chaptersComplete: add(next.chaptersComplete, ch.id) };
-    for (const c of CHAPTERS) {
-      if (!c.playable || next.chaptersUnlocked.includes(c.id)) continue;
-      if (c.after.every((a) => next.chaptersComplete.includes(a))) {
-        next = { ...next, chaptersUnlocked: add(next.chaptersUnlocked, c.id) };
-        // A newly opened chapter arrives as the rumor it starts from.
-        const rumor = c.rumor ?? `r-${c.id}`;
-        next = { ...next, rumors: { [rumor]: "glimpsed", ...next.rumors } };
-      }
-    }
+/** WB§1: the valley map opens once chapters 1 and 2 are both done. */
+export const MAP_AFTER = ["c1", "leaf"];
+
+export const rumorOf = (c: Chapter) => c.rumor ?? `r-${c.id}`;
+
+/** Whether WB§1 progression lets a chapter open, built or not. */
+export function canOpen(c: Chapter, save: Save): boolean {
+  const done = save.chaptersComplete;
+  if (!c.after.every((a) => done.includes(a))) return false;
+  if (c.needsAny && done.filter((id) => id !== "prologue").length < c.needsAny) return false;
+  return !c.byRumor || !!save.rumors[rumorOf(c)];
+}
+
+/** Open the map and every built chapter progression now allows. */
+function unlock(save: Save): Save {
+  let next = MAP_AFTER.every((id) => save.chaptersComplete.includes(id)) ? setFlag(save, "map-open") : save;
+  for (const c of CHAPTERS) {
+    if (!c.playable || next.chaptersUnlocked.includes(c.id) || !canOpen(c, next)) continue;
+    // A newly opened chapter arrives as the rumor it starts from.
+    next = {
+      ...next,
+      chaptersUnlocked: add(next.chaptersUnlocked, c.id),
+      rumors: { [rumorOf(c)]: "glimpsed", ...next.rumors },
+    };
   }
   return next;
+}
+
+export type ChapterState = "complete" | "open" | "ready" | "locked" | "planned";
+
+/** Contents and map state; `ready` is a chapter progression allows that is not built yet. */
+export function chapterState(c: Chapter, save: Save): ChapterState {
+  if (save.chaptersComplete.includes(c.id)) return "complete";
+  if (save.chaptersUnlocked.includes(c.id)) return "open";
+  if (!c.playable) return canOpen(c, save) ? "ready" : "planned";
+  return "locked";
+}
+
+/** Meeting a later chapter's opening rumor, e.g. on the valley map. */
+export function glimpse(save: Save, chapterId: string): Save {
+  const c = chapterById(chapterId);
+  if (!c || save.rumors[rumorOf(c)]) return save;
+  return unlock({ ...save, rumors: { ...save.rumors, [rumorOf(c)]: "glimpsed" } });
+}
+
+function finishMission(save: Save, m: Mission): Save {
+  const next: Save = apply({ ...save, flags: add(save.flags, `${m.id}-done`) }, m.onComplete);
+  const ch = CHAPTERS.find((c) => c.id === m.chapter);
+  if (!ch || !ch.missions.every((id) => next.missions[id]?.done)) return next;
+  return unlock({ ...next, chaptersComplete: add(next.chaptersComplete, ch.id) });
 }
 
 /** Finish the current step of a mission and enter the next. */
@@ -104,6 +155,11 @@ export function visit(save: Save, sceneId: string): Save {
   if (!s) return save;
   let next: Save = { ...save, stamps: add(save.stamps, s.scale) };
   if (s.chapter !== "valley") {
+    // Being in a chapter investigates the rumors that pointed at it.
+    const rumors = { ...next.rumors };
+    for (const r of RUMORS)
+      if (r.hintsAt.includes(s.chapter) && rumors[r.id] === "glimpsed") rumors[r.id] = "investigated";
+    next = { ...next, rumors };
     const m = activeMission(s.chapter, next);
     const step = m && currentStep(next, m);
     if (m && step?.kind === "go" && step.scene === sceneId) next = advance(next, m.id);
@@ -148,4 +204,45 @@ export function lensAvailable(save: Save): boolean {
 
 export function setFlag(save: Save, flag: string): Save {
   return save.flags.includes(flag) ? save : { ...save, flags: add(save.flags, flag) };
+}
+
+/**
+ * Recall on return (WB§7.4): entering a chapter from elsewhere asks up to two
+ * questions whose answers the player has already found there.
+ */
+export function recallOnReturn(
+  save: Save,
+  sceneId: string,
+  fromChapter: string | undefined,
+): (RecallCard & { answer: Discovery })[] {
+  const s = sceneById(sceneId);
+  if (!s || s.chapter === "valley" || s.chapter === fromChapter) return [];
+  return (chapterById(s.chapter)?.recall ?? [])
+    .filter((r) => save.discoveries.includes(r.discovery))
+    .map((r) => ({ ...r, answer: DISCOVERIES.find((d) => d.id === r.discovery)! }))
+    .slice(0, 2);
+}
+
+/** Opening the Rumor Map counts a view of each rumor in its current state. */
+export function viewRumors(save: Save): Save {
+  const views = { ...save.rumorViews };
+  for (const [id, state] of Object.entries(save.rumors)) {
+    const v = views[id];
+    views[id] = v?.state === state ? { state, n: v.n + 1 } : { state, n: 1 };
+  }
+  return { ...save, rumorViews: views };
+}
+
+/** WB§7.1: after two views without progress, an unexplained rumor offers where to look. */
+export function whereToLook(save: Save, r: Rumor): string | undefined {
+  const state = save.rumors[r.id];
+  const v = save.rumorViews[r.id];
+  if (!state || state === "explained" || !v || v.state !== state || v.n < 3) return undefined;
+  const c = chapterById(r.hintsAt[0] ?? r.chapter);
+  if (!c) return undefined;
+  if (save.chaptersUnlocked.includes(c.id))
+    return `Go to ${sceneById(c.entry)?.title.toLowerCase() ?? "the valley"}: chapter ${c.number}, ${c.title}, starts there.`;
+  if (c.playable)
+    return `Chapter ${c.number}, ${c.title}, opens when you finish ${c.after.map((a) => chapterById(a)?.title).join(" and ")}.`;
+  return `Chapter ${c.number}, ${c.title}, is not built yet. The question stays open in your notebook.`;
 }

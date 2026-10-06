@@ -9,12 +9,14 @@ import { hedgeEdge } from "./hedge-edge";
 import { litter } from "./litter";
 import { pore, poreLeaf } from "./pores";
 import { valley } from "./valley";
+import { valleyMap } from "./valley-map";
 
 export type RecipeOut = Omit<Plate, "recipe" | "seed" | "w" | "h">;
 export type Recipe = (c: Ctx, scale: number) => RecipeOut;
 
 export const RECIPES: Record<string, Recipe> = {
   valley,
+  "valley-map": valleyMap,
   "field-dawn": fieldDawn,
   handful,
   pore,

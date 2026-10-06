@@ -246,7 +246,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Depends on:** T06, T14
 - **Done:** S1 grain, S3 painterly flow, S7 scale dissolve and S9 microscope look as WebGL filters; S2 sway and S4 drift stay the stage's displacement and CPU particles. Tiers high/medium/off by scale (`src/world/shaders/tiers.ts`); the governor steps high → medium → off → no particles → static. S5, S6 and S8 follow simulation state and arrive with their chapter benches. Ambient toggle in settings is the OD-8 interim; reference-hardware frame time still to be confirmed at a visible display.
 
-### T16 — Valley map, contents and retrieval prompts
+### T16 — Valley map, contents and retrieval prompts · **done**
 
 - **Goal:** navigation across chapters and return visits.
 - **Scope:** landscape-scale valley map scene; unlock rules; full Rumor Map; recall cards on return (WB§7.4).

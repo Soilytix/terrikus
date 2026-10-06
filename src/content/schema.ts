@@ -324,6 +324,17 @@ export interface Chapter extends Reviewed {
   rumor?: string;
   /** Unlocking this chapter makes the scientist lens available. */
   lens?: boolean;
+  /** Opens only once its rumor has been met, as well as `after` (WB§1: chapters 3–13). */
+  byRumor?: boolean;
+  /** Opens once this many chapters other than the prologue are complete (WB§1: chapter 14). */
+  needsAny?: number;
+  /** Retrieval prompts on return (WB§7.4); a card shows only once its discovery is the player's. */
+  recall?: RecallCard[];
+}
+
+export interface RecallCard {
+  prompt: string;
+  discovery: string;
 }
 
 /** Everything one chapter contributes; `src/content/index.ts` builds the lists from these. */

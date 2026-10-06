@@ -11,6 +11,7 @@ import { MissionPanel } from "../ui/MissionPanel";
 import { Notebook } from "../ui/Notebook";
 import { Glossary } from "../ui/Glossary";
 import { Help, Settings, Truth } from "../ui/Panels";
+import { Recall } from "../ui/Recall";
 import { ReviewOverlay } from "../ui/Review";
 import { ScanCard } from "../ui/ScanCard";
 import { Title } from "../ui/Title";
@@ -18,9 +19,12 @@ import {
   activeMission,
   begin,
   currentStep,
+  glimpse as meetRumor,
   lensAvailable,
+  recallOnReturn,
   scan,
   stepIndex,
+  viewRumors,
   visibleObjects,
   visit,
 } from "./progress";
@@ -79,6 +83,7 @@ export function App() {
   const [panel, setPanel] = useState<"truth" | "settings" | "help" | "glossary" | null>(null);
   const [focusCard, setFocusCard] = useState<string | undefined>(undefined);
   const [narration, setNarration] = useState("");
+  const [recall, setRecall] = useState<ReturnType<typeof recallOnReturn>>([]);
   const [seen, setSeen] = useState(
     () => save.discoveries.length + save.codex.length + Object.keys(save.cards).length,
   );
@@ -103,6 +108,8 @@ export function App() {
   // Arrivals: stamps, `go` steps, and where to resume.
   useEffect(() => {
     if (route.name !== "scene") return;
+    const from = last?.name === "scene" ? sceneById(last.scene)?.chapter : undefined;
+    setRecall(recallOnReturn(save, route.scene, from));
     update((s) => ({
       ...visit(s, route.scene),
       lastSession: { route: href(route), at: new Date().toISOString() },
@@ -110,6 +117,12 @@ export function App() {
     setScanned(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- once per scene
   }, [route.name === "scene" ? route.scene : null]);
+
+  // Each opening of the Rumor Map is a view (WB§7.1 "where to look").
+  useEffect(() => {
+    if (route.name === "notebook" && route.tab === "rumors") update(viewRumors);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per opening
+  }, [route.name === "notebook" && route.tab === "rumors"]);
 
   useEffect(() => {
     if (mission && !save.missions[mission.id]) update((s) => begin(s, mission.id));
@@ -147,10 +160,7 @@ export function App() {
     }
     if (o.kind === "glimpse") {
       setScanned(o);
-      if (o.to)
-        update((s) =>
-          s.rumors[`r-${o.to}`] ? s : { ...s, rumors: { ...s.rumors, [`r-${o.to}`]: "glimpsed" } },
-        );
+      if (o.to) update((s) => meetRumor(s, o.to!));
       return;
     }
     setScanned(o);
@@ -325,6 +335,7 @@ export function App() {
           onClose={closeNotebook}
         />
       )}
+      {recall.length > 0 && <Recall cards={recall} onClose={() => setRecall([])} />}
       {panel === "truth" && <Truth scene={scene} onClose={() => setPanel(null)} />}
       {panel === "help" && <Help onClose={() => setPanel(null)} onGlossary={() => setPanel("glossary")} />}
       {panel === "glossary" && <Glossary save={save} onClose={() => setPanel(null)} />}
