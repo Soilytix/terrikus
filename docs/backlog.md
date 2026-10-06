@@ -195,6 +195,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** a grep of `docs/` for bucket URLs, the internal hub host and the share bucket finds nothing; denylist test covers the new hashes; `mise run check` green.
 - **Depends on:** —. **Blocks:** making the GitHub repo public. No longer blocks OD-5, which stays open.
 
+### Se1 — E2E port per worktree · **done**
+
+- **Problem:** `playwright.config.ts` hard-coded port 4173 with `reuseExistingServer: true`, so two worktrees running `mise run e2e` at once collided or tested each other's build.
+- **Direction:** the config reads `E2E_PORT` (default 4173) for `baseURL` and the preview server and never reuses a server; `mise run e2e` picks a free port when `E2E_PORT` is unset; `mise run serve` keeps 4173.
+- **Acceptance:** two `mise run e2e` invocations in two worktrees at the same time both pass.
+- **Depends on:** —.
+
 ---
 
 ## Later (T11–T35, ordered)

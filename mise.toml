@@ -68,7 +68,8 @@ run = "pnpm exec vite preview --port 4173"
 [tasks.e2e]
 description = "Playwright smoke over the built app; writes docs/screens/"
 depends = ["build"]
-run = "pnpm exec playwright test"
+# A free port unless E2E_PORT is set, so parallel worktrees do not collide.
+run = '''E2E_PORT="${E2E_PORT:-$(node -e 'const s=require("net").createServer().listen(0,()=>{console.log(s.address().port);s.close()})')}" pnpm exec playwright test'''
 
 [tasks.hooks]
 description = "Every hook over every file"
