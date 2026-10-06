@@ -184,7 +184,11 @@ export class Stage {
       resolution: Math.min(window.devicePixelRatio || 1, 2),
       preference: "webgl",
       powerPreference: "low-power",
+      accessibilityOptions: { activateOnTab: false },
     });
+    // Every interactive object is a DOM button (golden rule 8). Pixi's touch-device hook would add an
+    // unnamed tab stop; it has no public switch, so remove it here.
+    (this.app.renderer.accessibility as unknown as { _destroyTouchHook?: () => void })._destroyTouchHook?.();
     const canvas = this.app.canvas;
     canvas.setAttribute("aria-hidden", "true");
     canvas.setAttribute("tabindex", "-1");
@@ -292,11 +296,13 @@ export class Stage {
     const { w, h } = this.size;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const fine = Math.min(dpr, 1.5);
-    const plate = paint(recipe, seed, w, h, 1);
     const crisp = paint(recipe, seed, w, h, fine);
-    const view = new SceneView(plate, `${recipe}:${seed}`);
+    const view = new SceneView(crisp, `${recipe}:${seed}`);
+    // Scale only sets the raster size, so soft layers are rastered at 1× by rewriting it, not repainted.
+    const soft = (svg: string) =>
+      svg.replace(/^(<svg [^>]*?)width="\d+" height="\d+"/, `$1width="${crisp.w}" height="${crisp.h}"`);
     const textures = await Promise.all(
-      crisp.layers.map((l, i) => svgTexture(SOFT.has(l.id) ? (plate.layers[i]?.svg ?? l.svg) : l.svg)),
+      crisp.layers.map((l) => svgTexture(SOFT.has(l.id) ? soft(l.svg) : l.svg)),
     );
     const spriteTextures = await Promise.all(crisp.sprites.map((s) => svgTexture(s.svg)));
     textures.forEach((texture, i) => {
@@ -344,6 +350,7 @@ export class Stage {
         const x = (spec.region.x0 + (spec.region.x1 - spec.region.x0) * rng()) * w;
         const y = (spec.region.y0 + (spec.region.y1 - spec.region.y0) * rng()) * h;
         sprite.position.set(x, y);
+        sprite.visible = this.quality >= 1;
         parts.addChild(sprite);
         view.particles.push({
           sprite,
@@ -385,7 +392,15 @@ export class Stage {
     if (!this.scene || !this.current) return;
     this.finishTransition();
     const keep = { ...this.current.target };
+    const key = `${this.scene.recipe}:${this.scene.seed}`;
+    const size = this.size;
     const next = await this.build(this.scene.recipe, this.scene.seed);
+    // A scene change or a newer resize may have landed while this one painted.
+    const stale = key !== `${this.scene.recipe}:${this.scene.seed}` || size !== this.size;
+    if (stale || this.transition || this.current?.key !== key) {
+      next.destroy();
+      return;
+    }
     const old = this.current;
     this.current = next;
     next.view = keep;

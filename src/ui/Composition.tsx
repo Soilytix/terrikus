@@ -60,19 +60,16 @@ export function Composition({ guess, reveal }: { guess: number | undefined; reve
           <g className="guess">
             <line x1={56} x2={x0 + cw + 6} y1={y(guess)} y2={y(guess)} />
             <circle cx={56} cy={y(guess)} r={5} />
-            <text x={56} y={y(guess) - 22} textAnchor="middle">
+            <text x={56} y={y(guess) - 30} textAnchor="middle">
               Your guess
             </text>
-            <text x={56} y={y(guess) - 9} textAnchor="middle" className="mono">
+            <text x={56} y={y(guess) - 12} textAnchor="middle" className="mono">
               {guess} %
             </text>
           </g>
         )}
       </svg>
-      <figcaption>
-        Idealised moist loam. Real topsoils run about 40–60 % solid (the bar on the scale), and the water/air
-        split changes with every rain.
-      </figcaption>
+      <figcaption>An idealised moist loam. The bar on the scale marks the real range.</figcaption>
     </figure>
   );
 }

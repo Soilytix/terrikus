@@ -112,6 +112,12 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
   useEffect(() => {
     if (focusCard) document.getElementById(`card-${focusCard}`)?.scrollIntoView({ block: "center" });
   }, [focusCard, tab]);
+  // Arrow keys change the tab through the route; focus follows the selection (ARIA tabs pattern).
+  useEffect(() => {
+    const list = tabs.current;
+    if (list?.contains(document.activeElement))
+      list.querySelector<HTMLElement>('[aria-selected="true"]')?.focus();
+  }, [tab]);
 
   const rumors = RUMORS.filter((r) => save.rumors[r.id]);
   const cards = FIELD_CARDS.filter((c) => save.cards[c.item.id]);

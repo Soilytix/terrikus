@@ -59,7 +59,7 @@ export function ReviewBadge({ status }: { status: ReviewStatus }) {
   return (
     <span className="review-badge" title="Content is a draft until a named scientist approves it.">
       <span className="dot" aria-hidden="true" />
-      Scientific review pending
+      <span className="review-badge-text">Scientific review pending</span>
     </span>
   );
 }

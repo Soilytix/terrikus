@@ -29,6 +29,40 @@ export function migrate(raw: unknown, migrations: Record<number, Migration> = MI
   const base = freshSave();
   const merged = { ...base } as Record<string, unknown>;
   for (const key of Object.keys(base)) if (key in data) merged[key] = data[key];
-  merged.settings = { ...base.settings, ...(data.settings as object) };
+  merged.settings = { ...base.settings, ...(isRecord(data.settings) ? data.settings : {}) };
+  check(merged);
   return merged as unknown as Save;
+}
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  !!v && typeof v === "object" && !Array.isArray(v);
+const strings = (v: unknown) => Array.isArray(v) && v.every((x) => typeof x === "string");
+const recordOf = (v: unknown, ok: (x: unknown) => boolean) => isRecord(v) && Object.values(v).every(ok);
+
+/** Shape check of a merged save: a wrong-typed field is refused here, not discovered by a render crash. */
+function check(d: Record<string, unknown>) {
+  const s = d.settings as Record<string, unknown>;
+  const fields: [string, boolean][] = [
+    ["createdAt", typeof d.createdAt === "string"],
+    ["settings", ["system", "reduced", "full"].includes(s.motion as string) && typeof s.lens === "boolean"],
+    ["chaptersUnlocked", strings(d.chaptersUnlocked)],
+    ["chaptersComplete", strings(d.chaptersComplete)],
+    ["rumors", recordOf(d.rumors, (x) => ["glimpsed", "investigated", "explained"].includes(x as string))],
+    ["cards", recordOf(d.cards, (x) => x === "partial" || x === "full")],
+    ["codex", strings(d.codex)],
+    ["discoveries", strings(d.discoveries)],
+    ["stamps", strings(d.stamps)],
+    ["labBook", Array.isArray(d.labBook) && d.labBook.every((e) => isRecord(e) && isRecord(e.a))],
+    ["chains", recordOf(d.chains, (c) => isRecord(c) && strings(c.cards) && strings(c.connectors))],
+    ["predictions", recordOf(d.predictions, (x) => ["string", "number"].includes(typeof x) || strings(x))],
+    ["missions", recordOf(d.missions, (m) => isRecord(m) && typeof m.step === "number")],
+    ["scanned", strings(d.scanned)],
+    ["flags", strings(d.flags)],
+    [
+      "lastSession",
+      d.lastSession === null || (isRecord(d.lastSession) && typeof d.lastSession.route === "string"),
+    ],
+  ];
+  const bad = fields.filter(([, ok]) => !ok).map(([k]) => k);
+  if (bad.length) throw new SaveError(`save has malformed fields: ${bad.join(", ")}`);
 }

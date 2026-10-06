@@ -22,18 +22,18 @@ const CONNECTOR_LABEL: Record<Connector, string> = {
 };
 const CONFIDENCE = ["", "A hunch", "Fairly sure", "Sure"] as const;
 
-type Draft = { cards: string[]; connectors: (Connector | "")[]; confidence: 1 | 2 | 3 };
+type Draft = { cards: string[]; connectors: (Connector | "")[]; confidence: 0 | 1 | 2 | 3 };
 
 function initial(t: ChainTemplate, prev?: ChainAnswer): Draft {
   if (prev) return { cards: [...prev.cards], connectors: [...prev.connectors], confidence: prev.confidence };
   return {
     cards: t.cards.map((opts) => (opts.length === 1 ? (opts[0] ?? "") : "")),
     connectors: t.connectors.map((opts) => (opts.length === 1 ? (opts[0] ?? "") : "")),
-    confidence: 2,
+    confidence: 0,
   };
 }
 
-const complete = (d: Draft) => d.cards.every(Boolean) && d.connectors.every(Boolean);
+const complete = (d: Draft) => d.cards.every(Boolean) && d.connectors.every(Boolean) && d.confidence > 0;
 
 function CardSlot({
   options,
@@ -81,7 +81,14 @@ function ConnectorSlot({
   index: number;
 }) {
   if (options.length === 1)
-    return <span className="connector connector-fixed">{CONNECTOR_LABEL[value || options[0]!]} →</span>;
+    return (
+      <span className="connector connector-fixed">
+        {CONNECTOR_LABEL[value || options[0]!]}{" "}
+        <span className="arrow" aria-hidden="true">
+          →
+        </span>
+      </span>
+    );
   return (
     <label className="connector">
       <select
@@ -96,24 +103,25 @@ function ConnectorSlot({
           </option>
         ))}
       </select>
-      <span aria-hidden="true">→</span>
+      <span className="arrow" aria-hidden="true">
+        →
+      </span>
     </label>
   );
 }
 
 interface Props {
   chains: string[];
+  judgeNow?: boolean;
   save: Save;
   onSave: (answers: Record<string, ChainAnswer>) => void;
   onDone: () => void;
   onClose: () => void;
 }
 
-export function ChainBuilder({ chains, save, onSave, onDone, onClose }: Props) {
+export function ChainBuilder({ chains, judgeNow, save, onSave, onDone, onClose }: Props) {
   const templates = chains.map((id) => chainTemplate(id)).filter((t): t is ChainTemplate => !!t);
-  const batch =
-    templates.length > 1 ||
-    templates.every((t) => [...t.cards, ...t.connectors].every((o) => o.length === 1));
+  const batch = templates.length > 1 || !!judgeNow;
   const [drafts, setDrafts] = useState<Record<string, Draft>>(() =>
     Object.fromEntries(templates.map((t) => [t.id, initial(t, save.chains[t.id])])),
   );
@@ -133,7 +141,11 @@ export function ChainBuilder({ chains, save, onSave, onDone, onClose }: Props) {
       const a = { cards: d.cards, connectors: d.connectors as Connector[] };
       const j = judge(t, a, save);
       judged[t.id] = j;
-      answers[t.id] = { ...a, confidence: d.confidence, ...(batch ? { verdict: j.verdict } : {}) };
+      answers[t.id] = {
+        ...a,
+        confidence: d.confidence as 1 | 2 | 3,
+        ...(batch ? { verdict: j.verdict } : {}),
+      };
     }
     onSave(answers);
     if (batch) setResults(judged);
@@ -146,12 +158,14 @@ export function ChainBuilder({ chains, save, onSave, onDone, onClose }: Props) {
     <Dialog
       title={templates.length > 1 ? "Your cause chains" : (templates[0]?.title ?? "Cause chain")}
       onClose={onClose}
-      wide
+      wide={templates.length > 1}
       className="chains"
     >
       <p className="lede">
         {batch
-          ? "Confirm your chains. Each is checked against your own runs, not against an answer key."
+          ? templates.length > 1
+            ? "Confirm your chains. Each is checked against your own runs, not against an answer key."
+            : "Pick the link and say how sure you are. It is checked against what you saw, not against an answer key."
           : "Build the chain. It is kept in your notebook and checked with the others later."}
       </p>
       {templates.map((t) => {

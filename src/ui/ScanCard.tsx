@@ -1,5 +1,5 @@
 /** What the naturalist notices when you look at something. */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fieldCard } from "../content";
 import type { SceneObject } from "../content/schema";
 import { Facts } from "./common";
@@ -13,7 +13,15 @@ interface Props {
 
 export function ScanCard({ object, glimpse, onClose, onOpenCard }: Props) {
   const ref = useRef<HTMLElement>(null);
+  // Closing hands the keyboard back to whatever opened the card (its hotspot).
+  const [opener] = useState(() => document.activeElement as HTMLElement | null);
   useEffect(() => ref.current?.focus(), [object.id]);
+  useEffect(() => {
+    return () => {
+      if (opener?.isConnected && (!document.activeElement || document.activeElement === document.body))
+        opener.focus({ preventScroll: true });
+    };
+  }, [opener]);
   const card = object.card ? fieldCard(object.card) : undefined;
   return (
     <section

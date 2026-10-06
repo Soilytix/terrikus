@@ -42,6 +42,8 @@ test("play the prologue and the first chapter-2 mission", async ({ page }, info)
   await mission.getByRole("button", { name: "Continue" }).click();
   await mission.getByRole("button", { name: "Build the chain" }).click();
   const chain = page.getByRole("dialog", { name: "Water and air" });
+  await chain.getByRole("combobox", { name: "Link 1" }).selectOption("decreases");
+  await chain.getByRole("radio", { name: "Fairly sure" }).check();
   await chain.getByRole("button", { name: "Confirm the chain" }).click();
   await expect(chain.getByText("Supported by your run", { exact: true })).toBeVisible();
   await shot(page, "03b-chain", p);
@@ -52,9 +54,9 @@ test("play the prologue and the first chapter-2 mission", async ({ page }, info)
   await expect(page.getByRole("heading", { name: "Inside a pore" })).toBeVisible();
   await settled(page);
   await shot(page, "04-pore", p);
-  for (const name of ["Bacterium", "Amoeba", "Fungal thread"]) {
+  for (const name of ["Bacterium", "Naked amoeba", "Fungal thread"]) {
     await page.getByRole("button", { name: `Look at: ${name}` }).click();
-    if (name === "Amoeba") {
+    if (name === "Naked amoeba") {
       await page.waitForTimeout(600);
       await shot(page, "05-pore-scan", p);
     }

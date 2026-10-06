@@ -3,13 +3,14 @@ import type { Scale, Scene } from "../content/schema";
 import { chapter } from "../content";
 import { ReviewBadge } from "./common";
 
-export const LADDER: { scale: Scale; label: string; span: string }[] = [
-  { scale: "landscape", label: "Landscape", span: "km" },
-  { scale: "field", label: "Field", span: "m" },
-  { scale: "profile", label: "Profile", span: "cm" },
-  { scale: "aggregate", label: "Aggregate & pore", span: "µm–mm" },
-  { scale: "rhizosphere", label: "Rhizosphere", span: "µm" },
-  { scale: "cell", label: "Cell", span: "nm–µm" },
+/** `bar`: a typical scale-bar length (m) at that rung; a much shorter bar marks a close-up. */
+export const LADDER: { scale: Scale; label: string; span: string; bar: number }[] = [
+  { scale: "landscape", label: "Landscape", span: "km", bar: 100 },
+  { scale: "field", label: "Field", span: "m", bar: 1 },
+  { scale: "profile", label: "Profile", span: "cm", bar: 0.01 },
+  { scale: "aggregate", label: "Aggregate & pore", span: "µm–mm", bar: 1e-4 },
+  { scale: "rhizosphere", label: "Rhizosphere", span: "µm", bar: 1e-5 },
+  { scale: "cell", label: "Cell", span: "nm–µm", bar: 1e-7 },
 ];
 
 interface Props {
@@ -41,7 +42,7 @@ function Icon({ d }: { d: string }) {
 const ICONS = {
   book: "M4 4.5C6 3.5 8 3.5 10 5c2-1.5 4-1.5 6-.5V16c-2-1-4-1-6 .5C8 15 6 15 4 16z M10 5v11.5",
   eye: "M2.5 10s3-5.5 7.5-5.5 7.5 5.5 7.5 5.5-3 5.5-7.5 5.5S2.5 10 2.5 10z M10 12.3a2.3 2.3 0 100-4.6 2.3 2.3 0 000 4.6z",
-  gear: "M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z M10 2.5v2 M10 15.5v2 M2.5 10h2 M15.5 10h2 M4.7 4.7l1.4 1.4 M13.9 13.9l1.4 1.4 M4.7 15.3l1.4-1.4 M13.9 6.1l1.4-1.4",
+  sliders: "M3.5 6h13 M3.5 14h13 M7.5 3.8v4.4 M12.5 11.8v4.4",
   help: "M7.5 7.5a2.5 2.5 0 114 2c-.9.6-1.5 1.1-1.5 2.2 M10 14.5v.3 M10 18a8 8 0 100-16 8 8 0 000 16z",
   up: "M10 15.5v-11 M5.5 9L10 4.5 14.5 9",
 };
@@ -49,6 +50,7 @@ const ICONS = {
 export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHelp, notebookDot }: Props) {
   const ch = scene.chapter === "valley" ? undefined : chapter(scene.chapter);
   const rung = LADDER.findIndex((l) => l.scale === scene.scale);
+  const closeUp = scene.scaleBar.metres < (LADDER[rung]?.bar ?? 0) / 5;
   return (
     <>
       <header className="hud-top">
@@ -64,24 +66,30 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
             </span>
           ) : (
             <span className="chip">
-              <span className="chip-num">◇</span>The valley
+              <span className="chip-num">◇</span>Map
             </span>
           )}
           <h1 className="scene-title">{scene.title}</h1>
           <ReviewBadge status={scene.reviewStatus} />
         </div>
         <nav className="hud-actions" aria-label="Tools">
-          <button type="button" className="hud-btn" onClick={onNotebook} aria-keyshortcuts="N">
+          <button
+            type="button"
+            className="hud-btn"
+            onClick={onNotebook}
+            aria-label={notebookDot ? "Notebook, new entries" : "Notebook"}
+            aria-keyshortcuts="N"
+          >
             <Icon d={ICONS.book} />
             <span className="hud-btn-label">Notebook</span>
-            {notebookDot && <span className="new-dot" aria-label="new entries" />}
+            {notebookDot && <span className="new-dot" aria-hidden="true" />}
           </button>
-          <button type="button" className="hud-btn" onClick={onTruth}>
+          <button type="button" className="hud-btn" onClick={onTruth} aria-label="What is real?">
             <Icon d={ICONS.eye} />
             <span className="hud-btn-label">What is real?</span>
           </button>
           <button type="button" className="hud-btn icon-only" onClick={onSettings} aria-label="Settings">
-            <Icon d={ICONS.gear} />
+            <Icon d={ICONS.sliders} />
           </button>
           <button
             type="button"
@@ -107,11 +115,17 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
               <span className="rung" aria-hidden="true" />
               <span className="rung-label">
                 {l.label}
-                <span className="rung-span">{l.span}</span>
+                <span className="rung-span">
+                  {i === rung && closeUp ? `close-up · ${scene.scaleBar.label}` : l.span}
+                </span>
+                {i !== rung && stamps.includes(l.scale) && <span className="sr-only"> (visited)</span>}
               </span>
             </li>
           ))}
         </ol>
+        <p className="ladder-key" aria-hidden="true">
+          <span className="rung" data-key="here" /> here <span className="rung" data-key="visited" /> visited
+        </p>
         {onUp && (
           <button type="button" className="up-btn" onClick={onUp} aria-keyshortcuts="Escape">
             <Icon d={ICONS.up} />

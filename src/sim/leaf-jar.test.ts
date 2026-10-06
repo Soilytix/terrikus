@@ -59,7 +59,7 @@ describe("leaf jar", () => {
   it("noise lives only in measurement: seeds change the reading, not the state", () => {
     const snaps = run(leafJar(base), DAYS);
     const seeds = Array.from({ length: 10 }, (_, i) => i + 1);
-    const readings = new Set(seeds.map((s) => measureCo2Flux(snaps, 60, s).value.toFixed(6)));
+    const readings = new Set(seeds.map((s) => measureCo2Flux(snaps, 60, s)!.value.toFixed(6)));
     expect(readings.size).toBeGreaterThan(1);
     expect(run(leafJar(base), DAYS)).toEqual(snaps);
   });

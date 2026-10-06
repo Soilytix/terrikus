@@ -11,9 +11,10 @@ export interface Measured {
   band: number;
 }
 
-/** Daily CO₂-C flux (units per day) averaged over a week, ±10 % seeded instrument noise. */
-export function measureCo2Flux(snapshots: Snapshot[], day: number, seed: number): Measured {
-  const d = Math.max(7, Math.min(day, snapshots.length - 1));
+/** Daily CO₂-C flux (units per day) averaged over a week, ±10 % seeded noise; null before the first week. */
+export function measureCo2Flux(snapshots: Snapshot[], day: number, seed: number): Measured | null {
+  if (day < 7) return null;
+  const d = Math.min(day, snapshots.length - 1);
   const now = snapshots[d]?.ledger.C.co2Out ?? 0;
   const before = snapshots[d - 7]?.ledger.C.co2Out ?? 0;
   const trueFlux = (now - before) / 7;

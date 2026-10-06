@@ -252,6 +252,7 @@ button {
   color: var(--color-status-info-ink);
 }
 .tier[data-tier="inferred"],
+.tier[data-tier="reference"],
 .tier[data-tier="interpreted"] {
   color: var(--color-ink-muted);
   border-style: dashed;
@@ -661,6 +662,29 @@ button {
 .ladder li[data-here="true"] .rung::after {
   display: none;
 }
+.ladder-key {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: var(--color-ink-muted);
+}
+.ladder-key .rung {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-ink);
+}
+.ladder-key .rung[data-key="here"] {
+  background: var(--color-brand-primary);
+  margin-left: 0;
+}
+.ladder-key .rung[data-key="visited"] {
+  background: var(--color-ink);
+  margin-left: 8px;
+}
 .rung-label {
   display: flex;
   flex-direction: column;
@@ -863,7 +887,7 @@ button {
 }
 .choice[aria-checked="true"] .choice-box {
   border-color: var(--color-ink);
-  background: var(--color-brand-primary);
+  background: var(--color-ink);
   box-shadow: 0 0 0 2px var(--color-surface-card) inset;
 }
 .feedback {
@@ -967,7 +991,7 @@ input[type="range"] {
 }
 .composition .axis-label,
 .composition .layer-label {
-  font-size: 12px;
+  font-size: 16px;
   fill: var(--color-ink);
 }
 .composition .axis-label {
@@ -1007,7 +1031,7 @@ input[type="range"] {
   stroke-width: 1.5;
 }
 .composition .guess text {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   fill: var(--color-functional-dark-green);
 }
@@ -1129,7 +1153,7 @@ input[type="range"] {
   display: none;
 }
 .dialog-wide {
-  width: min(960px, calc(100% - 24px));
+  width: min(780px, calc(100% - 24px));
 }
 .dialog::backdrop {
   background: rgb(22 28 25 / 0.45);
@@ -1345,8 +1369,28 @@ input[type="range"] {
   margin-right: 10px;
   color: var(--color-ink-muted);
 }
+.confidence-pick label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
 .confidence-pick input {
+  margin: 0;
   accent-color: var(--color-ink);
+}
+@media (max-width: 560px) {
+  .chain-row,
+  .chain-step {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .connector {
+    padding-left: 12px;
+  }
+  .connector .arrow {
+    display: inline-block;
+    transform: rotate(90deg);
+  }
 }
 .verdict {
   margin-top: 12px;
@@ -2069,8 +2113,29 @@ input[type="range"] {
   }
   .brand-name,
   .hud-btn-label,
-  .hud-where .review-badge {
+  .ladder-key {
     display: none;
+  }
+  /* The badge stays on a phone as its dot; the words remain for screen readers. */
+  .hud-where .review-badge {
+    padding: 4px;
+  }
+  /* Five tabs do not fit a phone row: wrap rather than hide one off-screen. */
+  .tabs {
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+  .tabs button {
+    padding: 7px 9px;
+    font-size: 13px;
+  }
+  .hud-where .review-badge-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
   .brand {
     padding: 9px;

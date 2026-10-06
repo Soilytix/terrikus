@@ -137,7 +137,8 @@ export function App() {
   };
 
   const notebookOpen = route.name === "notebook";
-  const openNotebook = (tab: NotebookTab = "rumors") => {
+  // Without a tab asked for, open where the newest entries usually land: field cards, once there are any.
+  const openNotebook = (tab: NotebookTab = Object.keys(save.cards).length ? "cards" : "rumors") => {
     setSeen(save.discoveries.length + save.codex.length + Object.keys(save.cards).length);
     go(href({ name: "notebook", tab }));
   };
@@ -148,47 +149,54 @@ export function App() {
   const fresh = save.discoveries.length + save.codex.length + Object.keys(save.cards).length > seen;
   const up = scene.up ? () => go(targetHref(scene.up!)) : null;
 
-  // Keyboard map (README "Controls").
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement | null;
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (t && (t.closest("input, select, textarea") || t.closest("dialog"))) return;
-      if (document.querySelector("dialog[open]")) return;
-      const k = e.key;
-      if (k === "n" || k === "N") return void (notebookOpen ? closeNotebook() : openNotebook());
-      if (k === "?") return setPanel("help");
-      if ((k === "l" || k === "L") && save.chaptersUnlocked.includes("leaf"))
-        return update((s) => ({ ...s, settings: { ...s.settings, lens: !s.settings.lens } }));
-      if (route.name !== "scene") return;
-      if (k === "Escape") {
-        if (scanned) setScanned(null);
-        else up?.();
-        return;
-      }
-      if (k === "+" || k === "=") return world.current?.zoom(1.25);
-      if (k === "-" || k === "_") return world.current?.zoom(0.8);
-      const pan: Record<string, [number, number]> = {
-        ArrowLeft: [-0.08, 0],
-        ArrowRight: [0.08, 0],
-        ArrowUp: [0, -0.08],
-        ArrowDown: [0, 0.08],
-      };
-      if (pan[k]) {
-        e.preventDefault();
-        return world.current?.pan(...pan[k]);
-      }
-      if (k === "[" || k === "]") {
-        const portals = [...document.querySelectorAll<HTMLButtonElement>('.hotspot[data-kind="portal"]')];
-        if (!portals.length) return;
-        const i = portals.indexOf(document.activeElement as HTMLButtonElement);
-        const n = k === "]" ? (i + 1) % portals.length : (i - 1 + portals.length) % portals.length;
-        portals[n]?.focus();
-      }
+  // Keyboard map (README "Controls"). One listener; it always calls the latest handler.
+  const lastDismiss = useRef(0);
+  const onKey = useRef<(e: KeyboardEvent) => void>(() => undefined);
+  onKey.current = (e: KeyboardEvent) => {
+    const t = e.target as HTMLElement | null;
+    const k = e.key;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    // An Esc that closed something must not, pressed again at once, also leave the scene.
+    const dismissing = !!(t?.closest("dialog") ?? document.querySelector("dialog[open]"));
+    if (k === "Escape" && dismissing) lastDismiss.current = performance.now();
+    if (t && (t.closest("input, select, textarea") || t.closest("dialog"))) return;
+    if (document.querySelector("dialog[open]")) return;
+    if (k === "n" || k === "N") return void (notebookOpen ? closeNotebook() : openNotebook());
+    if (k === "?") return setPanel("help");
+    if ((k === "l" || k === "L") && save.chaptersUnlocked.includes("leaf"))
+      return update((s) => ({ ...s, settings: { ...s.settings, lens: !s.settings.lens } }));
+    if (route.name !== "scene") return;
+    if (k === "Escape") {
+      if (scanned) setScanned(null);
+      else if (performance.now() - lastDismiss.current > 600) up?.();
+      lastDismiss.current = performance.now();
+      return;
+    }
+    if (k === "+" || k === "=") return world.current?.zoom(1.25);
+    if (k === "-" || k === "_") return world.current?.zoom(0.8);
+    const pan: Record<string, [number, number]> = {
+      ArrowLeft: [-0.08, 0],
+      ArrowRight: [0.08, 0],
+      ArrowUp: [0, -0.08],
+      ArrowDown: [0, 0.08],
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  });
+    if (pan[k]) {
+      e.preventDefault();
+      return world.current?.pan(...pan[k]);
+    }
+    if (k === "[" || k === "]") {
+      const portals = [...document.querySelectorAll<HTMLButtonElement>('.hotspot[data-kind="portal"]')];
+      if (!portals.length) return;
+      const i = portals.indexOf(document.activeElement as HTMLButtonElement);
+      const n = k === "]" ? (i + 1) % portals.length : (i - 1 + portals.length) % portals.length;
+      portals[n]?.focus();
+    }
+  };
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => onKey.current(e);
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, []);
 
   if (route.name === "bench") {
     return (

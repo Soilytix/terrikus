@@ -36,11 +36,17 @@ export function createStore(getStorage: () => StorageLike | undefined): Store {
         persistent = false;
         return memory ?? freshSave();
       }
+      let raw: string | null = null;
       try {
-        const raw = s.getItem(SAVE_KEY);
+        raw = s.getItem(SAVE_KEY);
         return raw ? migrate(JSON.parse(raw)) : freshSave();
       } catch {
-        // Corrupt or foreign data: start fresh, but do not overwrite it until the player acts.
+        // Corrupt or foreign data: keep a copy beside it, then start fresh (the next save overwrites it).
+        try {
+          if (raw) s.setItem(`${SAVE_KEY}.corrupt`, raw);
+        } catch {
+          /* storage full or blocked: nothing more to keep */
+        }
         return freshSave();
       }
     },

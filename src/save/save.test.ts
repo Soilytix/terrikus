@@ -28,10 +28,16 @@ describe("save", () => {
     expect(store.persistent()).toBe(true);
   });
 
-  it("starts fresh on corrupt JSON without throwing", () => {
+  it("starts fresh on corrupt JSON without throwing, keeping a copy", () => {
     const mem = memoryStorage();
     mem.data.set(SAVE_KEY, "{not json");
     expect(createStore(() => mem).load().schemaVersion).toBe(1);
+    expect(mem.data.get(`${SAVE_KEY}.corrupt`)).toBe("{not json");
+  });
+
+  it("refuses a save whose known fields have the wrong type", () => {
+    expect(() => importSave('{"schemaVersion":1,"cards":null,"scanned":5}')).toThrow(/cards, scanned/);
+    expect(() => importSave('{"schemaVersion":1,"settings":{"motion":"fast"}}')).toThrow(SaveError);
   });
 
   it("refuses unknown and future versions on import", () => {

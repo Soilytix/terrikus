@@ -2,7 +2,7 @@
  * The mission panel: one step at a time, predict → observe → explain. Feedback
  * is an observation or a question, never a score.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DISCOVERIES, chapter, scene as sceneById, SCENES } from "../content";
 import type { Choice, Mission, Step } from "../content/schema";
 import type { Save } from "../save/schema";
@@ -39,9 +39,23 @@ function Choices({
   setPicked: (p: string[]) => void;
   locked?: boolean | undefined;
 }) {
+  // A radio group is one tab stop; arrows move and select (WAI-ARIA radio pattern).
+  const current = Math.max(
+    0,
+    choices.findIndex((c) => picked.includes(c.id)),
+  );
+  const onArrow = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (multi || locked) return;
+    const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+    if (!d) return;
+    e.preventDefault();
+    const n = (current + d + choices.length) % choices.length;
+    setPicked([choices[n]!.id]);
+    (e.currentTarget.children[n] as HTMLElement | undefined)?.focus();
+  };
   return (
-    <div className="choices" role={multi ? "group" : "radiogroup"}>
-      {choices.map((c) => {
+    <div className="choices" role={multi ? "group" : "radiogroup"} onKeyDown={onArrow}>
+      {choices.map((c, k) => {
         const on = picked.includes(c.id);
         return (
           <button
@@ -50,6 +64,7 @@ function Choices({
             className="choice"
             role={multi ? "checkbox" : "radio"}
             aria-checked={on}
+            tabIndex={multi || k === current ? 0 : -1}
             disabled={locked}
             onClick={() =>
               setPicked(multi ? (on ? picked.filter((x) => x !== c.id) : [...picked, c.id]) : [c.id])
@@ -231,9 +246,7 @@ function StepBody({
             <>
               <Composition guess={typeof guess === "number" ? guess : undefined} reveal />
               <p className="observation">
-                <span className="tier" data-tier="measured">
-                  observed
-                </span>{" "}
+                {typeof guess === "number" && <>You guessed {guess} % solid. </>}
                 {step.resultText}
               </p>
               <Facts facts={step.facts} />
@@ -273,6 +286,7 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           <WaterAir onMoved={() => !moved && update((s) => setFlag(s, "p-m1-slider"))} />
+          {!moved && <p className="muted small">Move the slider to continue.</p>}
           <button type="button" className="btn btn-primary" disabled={!moved} onClick={next}>
             Continue
           </button>
@@ -316,6 +330,7 @@ function StepBody({
           {overlay && (
             <ChainBuilder
               chains={step.chains}
+              judgeNow={!!step.judgeNow}
               save={save}
               onClose={() => setOverlay(false)}
               onSave={(answers) => update((s) => ({ ...s, chains: { ...s.chains, ...answers } }))}
@@ -382,9 +397,19 @@ function StepBody({
         </>
       );
     }
-    case "discover":
+    case "discover": {
+      const guess = step.recall && save.predictions[step.recall.prediction];
       return (
         <>
+          {step.recall && guess !== undefined && (
+            <p className="observation">
+              You predicted{" "}
+              <b className="mono">
+                {Array.isArray(guess) ? guess.join(", ") : guess} {step.recall.unit}
+              </b>
+              ; {step.recall.observed}.
+            </p>
+          )}
           <ul className="discoveries">
             {step.discoveries.map((id) => {
               const d = DISCOVERIES.find((x) => x.id === id);
@@ -410,6 +435,7 @@ function StepBody({
           </button>
         </>
       );
+    }
     case "rumor":
       return (
         <>
@@ -433,6 +459,24 @@ export function MissionPanel(props: Props) {
         (!pending || pending.kind === "go" || pending.kind === "scan" || (m && m.scene !== sceneId))
       ),
   );
+  const body = useRef<HTMLDivElement>(null);
+  const focusedStep = useRef<number | null>(null);
+  const idx = m ? stepIndex(save, m.id) : -1;
+  // A step's controls replace each other as it advances; when the focused one vanished, keep the
+  // keyboard here: a new step starts at its first control, a running step continues at its primary button.
+  useEffect(() => {
+    const el = body.current;
+    const a = document.activeElement;
+    if (!el || (a && a !== document.body)) return;
+    const fresh = focusedStep.current !== idx;
+    focusedStep.current = idx;
+    const control = ":is(button, input, select, [tabindex='0']):not([disabled])";
+    const target =
+      (!fresh && el.querySelector<HTMLElement>(`.btn-primary${control}`)) ||
+      el.querySelector<HTMLElement>(control) ||
+      el;
+    target.focus({ preventScroll: true });
+  });
   const ch = chapter(chapterId);
   if (!ch) return null;
 
@@ -487,7 +531,7 @@ export function MissionPanel(props: Props) {
         </ol>
       </header>
       {open && (
-        <div className="mission-body">
+        <div className="mission-body" ref={body} tabIndex={-1}>
           {away && where ? (
             <>
               <p className="step-text">This mission starts at {where.title.toLowerCase()}.</p>

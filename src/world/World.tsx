@@ -63,14 +63,26 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
     reset: () => stage.current?.resetView(),
   }));
 
-  /** The camera, as CSS variables on the root: hotspots and the scale bar read them. */
+  /**
+   * The camera, as CSS variables on the two places that read them (hotspots
+   * and the scale bar), written only when it moved: the stage reports every frame.
+   */
+  const lastView = useRef("");
+  // A new scene may mount a new scale bar: let the next frame write again.
+  useEffect(() => {
+    lastView.current = "";
+  }, [sceneId]);
   const applyView = (v: ScreenView) => {
-    const el = document.documentElement.style;
-    el.setProperty("--vs", String(v.s));
-    el.setProperty("--vtx", `${v.tx}px`);
-    el.setProperty("--vty", `${v.ty}px`);
-    el.setProperty("--vw", `${v.w}px`);
-    el.setProperty("--vh", `${v.h}px`);
+    const key = `${v.s}|${v.tx}|${v.ty}|${v.w}|${v.h}`;
+    if (key === lastView.current) return;
+    lastView.current = key;
+    for (const el of document.querySelectorAll<HTMLElement>(".hotspots, .scalebar")) {
+      el.style.setProperty("--vs", String(v.s));
+      el.style.setProperty("--vtx", `${v.tx}px`);
+      el.style.setProperty("--vty", `${v.ty}px`);
+      el.style.setProperty("--vw", `${v.w}px`);
+      el.style.setProperty("--vh", `${v.h}px`);
+    }
   };
 
   // Pixi stage lifecycle.

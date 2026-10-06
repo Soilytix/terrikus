@@ -8,6 +8,7 @@ import type { Choice, LeverSettings, Step } from "../content/schema";
 import { activeMission, advance, currentStep } from "../app/progress";
 import { appendLab, type Save } from "../save/schema";
 import { run, type Snapshot } from "../sim/engine";
+import { ConservationError } from "../sim/ledger";
 import { DAYS, DEFAULT_LEVERS, INITIAL_LITTER, RULESET_VERSION, leafJar } from "../sim/benches/leaf-jar";
 import { decompositionRate, measureCo2Flux } from "../sim/measure";
 import { RESIDUE, TEMPERATURE, WATER } from "../sim/modifiers";
@@ -213,10 +214,16 @@ function Readout({
             <dt>Measured</dt>
             <dd>
               CO₂ flux{" "}
-              <b className="mono">
-                {flux.value.toFixed(1)} ± {flux.band.toFixed(1)}
-              </b>{" "}
-              units/day
+              {flux ? (
+                <>
+                  <b className="mono">
+                    {flux.value.toFixed(1)} ± {flux.band.toFixed(1)}
+                  </b>{" "}
+                  units/day
+                </>
+              ) : (
+                <>first reading at day 7</>
+              )}
               <small>weekly chamber reading, instrument noise ±10 %</small>
             </dd>
           </div>
@@ -243,6 +250,16 @@ interface Props {
   backHref: string;
 }
 
+/** A conservation failure halts the bench on screen rather than unmounting the app (engine.ts). */
+function safeRun(l: LeverSettings): Snapshot[] | ConservationError {
+  try {
+    return run(leafJar(l), DAYS);
+  } catch (e) {
+    if (e instanceof ConservationError) return e;
+    throw e;
+  }
+}
+
 export function Bench({ save, update, go, reduced, backHref }: Props) {
   const m = activeMission("leaf", save);
   const st = m && currentStep(save, m);
@@ -257,8 +274,11 @@ export function Bench({ save, update, go, reduced, backHref }: Props) {
   const [running, setRunning] = useState(false);
   const [logged, setLogged] = useState(false);
   const lensOn = save.settings.lens && save.chaptersUnlocked.includes("leaf");
-  const snapsA = useMemo(() => run(leafJar(a), DAYS), [a]);
-  const snapsB = useMemo(() => (b ? run(leafJar(b), DAYS) : null), [b]);
+  const resA = useMemo(() => safeRun(a), [a]);
+  const resB = useMemo(() => (b ? safeRun(b) : null), [b]);
+  const halted = resA instanceof ConservationError ? resA : resB instanceof ConservationError ? resB : null;
+  const snapsA = useMemo(() => (resA instanceof ConservationError ? [] : resA), [resA]);
+  const snapsB = resB instanceof ConservationError ? null : resB;
   const raf = useRef(0);
 
   const matches = !!step && same(a, full(step.a)) && (step.b ? !!b && same(b, full(step.b)) : !b);
@@ -294,7 +314,7 @@ export function Bench({ save, update, go, reduced, backHref }: Props) {
 
   // A finished year goes into the lab book once.
   useEffect(() => {
-    if (!finished || logged) return;
+    if (!finished || logged || halted) return;
     setLogged(true);
     const end = (s: Snapshot[]) => s[DAYS]!.ledger.C;
     const line = (n: string, s: Snapshot[]) =>
@@ -317,7 +337,7 @@ export function Bench({ save, update, go, reduced, backHref }: Props) {
         tier: "observed",
       }),
     }));
-  }, [finished, logged, a, b, snapsA, snapsB, update, matches, m, picked, step]);
+  }, [finished, logged, halted, a, b, snapsA, snapsB, update, matches, m, picked, step]);
 
   const start = () => {
     setDay(0);
@@ -345,6 +365,21 @@ export function Bench({ save, update, go, reduced, backHref }: Props) {
         ]
       : []),
   ];
+
+  if (halted)
+    return (
+      <main className="bench" aria-labelledby="bench-title">
+        <h1 id="bench-title">The bench stopped</h1>
+        <p>
+          The teaching model lost track of its carbon, so it halted instead of showing a wrong year. Nothing
+          was logged. This is a bug in the model, not in your experiment.
+        </p>
+        <p className="muted small mono">{halted.message}</p>
+        <a className="btn" href={backHref}>
+          Back to the field
+        </a>
+      </main>
+    );
 
   return (
     <main className="bench" aria-labelledby="bench-title">
