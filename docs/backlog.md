@@ -248,7 +248,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** missions playable; drainage order test (largest pores first); Birch pulse direction test; "unresolved" source attribution accepted.
 - **Depends on:** T13, T16
 
-### T18 — Nitrogen engine
+### T18 — Nitrogen engine · **done**
 
 - **Goal:** multi-element ledger rules for N.
 - **Scope:** mineralisation, immobilisation, nitrification, denitrification, leaching, grazing-N rules; C:N coupling; tests.

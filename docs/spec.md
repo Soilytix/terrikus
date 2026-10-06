@@ -214,7 +214,7 @@ Lever mapping: water dry/moist/waterlogged = WFPS 0.20/0.60/0.95 → fW 0.15/1.0
 
 Tests assert **directions**, not numbers: moist > dry (litter lost by day 180); waterlogged < moist; leaf > straw > wood; mild > cool; conservation exact at every tick for every lever combination (property test over all 18 combinations and 10 seeds); heat monotone.
 
-Nitrogen pools exist in the ledger type (multi-element) but no N rules ship until T18.
+Nitrogen rules (T18) live in `src/sim/nitrogen.ts`: `withNitrogen` wraps a carbon bench, couples N to C at each source pool's C:N, and adds mineralisation, immobilisation (microbes at 8:1), nitrification, denitrification (only when fO2 < 0.5), leaching, grazing and priming by N mining from old organic matter (`O`, CO₂ to `co2Old`).
 
 ### 6.5 Measurement layer (later, T26)
 
