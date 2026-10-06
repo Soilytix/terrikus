@@ -1,5 +1,5 @@
 # The prek hook config IS the lint gate: per-file at commit, tests at push, and
-# whole-repo in CI (`prek run --all-files`). Never add a CI lint step that differs.
+# whole-repo in CI (`prek run --all-files`, skipping what `mise run check` already runs).
 default_stages: [pre-commit]
 
 repos:

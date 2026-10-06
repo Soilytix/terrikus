@@ -18,7 +18,7 @@ Rules for every task:
 
 ## Build phase (T01–T10) — done
 
-All ten are merged on `main`. Three reviews (science, play/visual, engineering) followed at `919f9eb`; their high and medium findings in Build scope were fixed in `7469de3` (content) and `36bc6ff` (app). What remains is listed under **Review follow-ups** below. Known gaps against the Build acceptance text: T07 paint time is not yet measured on M1 (R10); T09 "scale stamp" and static/keyboard completion are covered by the smoke but not by a dedicated keyboard-only run (R08).
+All ten are merged on `main`. Three reviews (science, play/visual, engineering) followed at `919f9eb`; their high and medium findings in Build scope were fixed in `7469de3` (content) and `36bc6ff` (app). What remains is listed under **Review follow-ups** below. Known gaps against the Build acceptance text: T07 paint time is not yet measured on M1 (R10); T09 "scale stamp" and static/keyboard completion are covered by the smoke and by the keyboard-only run of `p-m1` (R08, done).
 
 ### T01 — Repository scaffold · Build phase · **done**
 
@@ -160,7 +160,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** no slug visible in the observe-step screenshot; content lint still checks ids; `mise run check` green.
 - **Depends on:** —.
 
-### R08 — CI: one pass of the hooks, e2e and axe (E14)
+### R08 — CI: one pass of the hooks, e2e and axe (E14) · **done**
 
 - **Problem:** `.github/workflows/ci.yml` runs prettier/eslint/tsc twice (prek and `mise run check`); Playwright and any a11y check never run in CI.
 - **Direction:** CI runs `prek run --all-files` for the hook-only checks (whitespace, gitleaks) and `mise run check` for the rest, without overlap; add a non-blocking `e2e` job running `mise run e2e` with `@axe-core/playwright` on title, one scene and the notebook, and a keyboard-only pass of the prologue (no mouse clicks). Screenshots are uploaded as an artifact, not committed.
