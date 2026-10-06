@@ -22,7 +22,17 @@ export function Hotspots({ objects, scanned, highlight, onActivate }: Props) {
       {objects.map((o) => {
         const done = o.kind === "scan" && scanned(o.id);
         return (
-          <li key={o.id} style={{ "--x": o.anchor.x, "--y": o.anchor.y } as CSSProperties}>
+          <li
+            key={o.id}
+            style={
+              {
+                "--x": o.anchor.x,
+                "--y": o.anchor.y,
+                "--px": o.portrait?.x ?? o.anchor.x,
+                "--py": o.portrait?.y ?? o.anchor.y,
+              } as CSSProperties
+            }
+          >
             <button
               type="button"
               className="hotspot"

@@ -82,6 +82,8 @@ export interface SceneObject {
   label: string;
   kind: "scan" | "portal" | "action" | "glimpse";
   anchor: { x: number; y: number };
+  /** Anchor on a portrait plate (h > w), where the recipe has a portrait branch. */
+  portrait?: { x: number; y: number };
   /** Scan text: what the naturalist notices. */
   scan?: string;
   /** Field card unlocked (partially) by scanning. */

@@ -361,6 +361,13 @@ button {
   left: calc(var(--vtx, 0px) + var(--x) * var(--vw, 100vw) * var(--vs, 1));
   top: calc(var(--vty, 0px) + var(--y) * var(--vh, 100vh) * var(--vs, 1));
 }
+/* Portrait plates (h > w) use the recipes' portrait anchors. */
+@media (max-aspect-ratio: 999/1000) {
+  .scene-outline li {
+    left: calc(var(--vtx, 0px) + var(--px) * var(--vw, 100vw) * var(--vs, 1));
+    top: calc(var(--vty, 0px) + var(--py) * var(--vh, 100vh) * var(--vs, 1));
+  }
+}
 .hotspot {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -2172,10 +2179,27 @@ input[type="range"] {
   .rung-label {
     display: none;
   }
+  /* The ladder collapses to the current rung; the others stay for screen readers. */
+  .ladder li:not([data-here="true"]) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  /* Its label sits beside the card's foot, clear of the scale bar. */
+  .ladder ol,
+  .ladder li[data-here="true"] {
+    position: static;
+  }
+  .ladder ol::before {
+    display: none;
+  }
   .ladder li[data-here="true"] .rung-label {
     display: flex;
     position: absolute;
-    left: 22px;
+    left: calc(100% + 6px);
+    bottom: 10px;
     white-space: nowrap;
     background: var(--glass-strong);
     padding: 2px 6px;
@@ -2200,7 +2224,7 @@ input[type="range"] {
     right: var(--hud-gap);
     bottom: var(--hud-gap);
     width: auto;
-    max-height: 52%;
+    max-height: 45%;
   }
   .mission[data-open="false"] {
     max-height: none;

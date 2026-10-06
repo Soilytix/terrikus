@@ -10,6 +10,11 @@ import { crumb } from "./plants";
 export function handful(c: Ctx, scale: number): RecipeOut {
   const { w, h, u } = c;
   const r = rngFor(c.seed, 4);
+  // Portrait (phones): the mound sits in the upper half, clear of the mission sheet,
+  // and heap-relative heights are squeezed so the root and leaf stay on it.
+  // Hotspot anchors in the prologue's `portrait` fields follow `fy`.
+  const portrait = h > w;
+  const fy = (y: number) => (portrait ? 0.36 + (y - 0.58) * 0.45 : y);
 
   // Out-of-focus field and dawn sky behind.
   const back = new Svg(w, h);
@@ -20,10 +25,10 @@ export function handful(c: Ctx, scale: number): RecipeOut {
     h,
     `fill="url(#${linear(back, [
       [0, mix(W.skyHigh, W.water, 0.15)],
-      [0.3, mix(W.skyLow, W.sand, 0.3)],
-      [0.42, mix(W.foliage, W.skyLow, 0.5)],
-      [0.7, mix(W.loam, W.foliage, 0.3)],
-      [1, W.topsoil],
+      [fy(0.3), mix(W.skyLow, W.sand, 0.3)],
+      [fy(0.42), mix(W.foliage, W.skyLow, 0.5)],
+      [fy(0.7), mix(W.loam, W.foliage, 0.3)],
+      [fy(1), W.topsoil],
     ])})"`,
   );
   const bb = blurDef(back, u * 0.03);
@@ -67,8 +72,8 @@ export function handful(c: Ctx, scale: number): RecipeOut {
   // The heap: a dark body, then crumbs back to front.
   const heap = new Svg(w, h);
   const cx = 0.5 * w;
-  const cy = 0.58 * h;
-  const R = Math.min(w * 0.36, u * 0.48);
+  const cy = fy(0.58) * h;
+  const R = portrait ? w * 0.42 : Math.min(w * 0.36, u * 0.48);
   heap.path(
     blob(r, cx - R * 0.05, cy + R * 0.42, R * 1.15, R * 0.18, 0.1),
     `fill="${W.dark}" opacity="0.45"`,
@@ -104,15 +109,15 @@ export function handful(c: Ctx, scale: number): RecipeOut {
     crumb(heap, r, x, y, rad, mix(mix(W.topsoil, W.humus, range(r, 0.1, 0.6)), W.loam, range(r, 0, 0.35)));
   }
   // The crumb in the foreground, and the pore the portal opens.
-  crumb(heap, r, 0.43 * w, 0.5 * h, u * 0.05, mix(W.topsoil, W.loam, 0.35));
-  crumb(heap, r, 0.56 * w, 0.44 * h, u * 0.055, mix(W.topsoil, W.loam, 0.25));
+  crumb(heap, r, 0.43 * w, fy(0.5) * h, u * 0.05, mix(W.topsoil, W.loam, 0.35));
+  crumb(heap, r, 0.56 * w, fy(0.44) * h, u * 0.055, mix(W.topsoil, W.loam, 0.25));
   // A crevice between crumbs: dark, irregular, with a film of water on its lip.
   heap.path(
-    `M${0.535 * w},${0.43 * h}q${u * 0.012},${u * 0.006} ${u * 0.022},${-u * 0.002}q${u * 0.01},${u * 0.004} ${u * 0.02},${u * 0.016}q${-u * 0.02},${u * 0.006} ${-u * 0.034},${-u * 0.004}z`,
+    `M${0.535 * w},${fy(0.43) * h}q${u * 0.012},${u * 0.006} ${u * 0.022},${-u * 0.002}q${u * 0.01},${u * 0.004} ${u * 0.02},${u * 0.016}q${-u * 0.02},${u * 0.006} ${-u * 0.034},${-u * 0.004}z`,
     `fill="${W.dark}"`,
   );
   heap.path(
-    `M${0.54 * w},${0.432 * h}q${u * 0.012},${u * 0.005} ${u * 0.02},0`,
+    `M${0.54 * w},${fy(0.432) * h}q${u * 0.012},${u * 0.005} ${u * 0.02},0`,
     `stroke="${W.film}" stroke-width="1" fill="none" opacity="0.55"`,
   );
 
@@ -125,7 +130,7 @@ export function handful(c: Ctx, scale: number): RecipeOut {
     [0.55, 0.58],
     [0.66, 0.66],
     [0.74, 0.72],
-  ].map(([x, y]) => [x! * w, y! * h] as Pt);
+  ].map(([x, y]) => [x! * w, fy(y!) * h] as Pt);
   detail.path(
     smoothOpen(root),
     `fill="none" stroke="${mix(W.dark, W.topsoil, 0.4)}" stroke-width="${u * 0.006}" stroke-linecap="round" opacity="0.6"`,
@@ -142,11 +147,11 @@ export function handful(c: Ctx, scale: number): RecipeOut {
     );
   }
   detail.path(
-    blob(r, 0.63 * w, 0.62 * h, u * 0.022, u * 0.012, 0.35),
+    blob(r, 0.63 * w, fy(0.62) * h, u * 0.022, u * 0.012, 0.35),
     `fill="${mix(W.subsoil, W.oxide, 0.35)}"`,
   );
   detail.path(
-    `M${0.615 * w},${0.62 * h}L${0.645 * w},${0.618 * h}`,
+    `M${0.615 * w},${fy(0.62) * h}L${0.645 * w},${fy(0.618) * h}`,
     `stroke="${mix(W.subsoil, W.pale, 0.3)}" stroke-width="0.8"`,
   );
   stipple(
@@ -154,10 +159,10 @@ export function handful(c: Ctx, scale: number): RecipeOut {
     c,
     r,
     900,
-    { x0: 0.2, y0: 0.28, x1: 0.8, y1: 0.85 },
+    { x0: 0.2, y0: fy(0.28), x1: 0.8, y1: fy(0.85) },
     [W.sand, mix(W.sand, W.pale, 0.5)],
     [0.4, 1.1],
-    (x, y) => ((x - 0.5) ** 2 / 0.09 + (y - 0.6) ** 2 / 0.06 < 1 ? 1 : 0),
+    (x, y) => ((x - 0.5) ** 2 / 0.09 + (y - fy(0.6)) ** 2 / (0.06 * (fy(1) - fy(0)) ** 2) < 1 ? 1 : 0),
     [0.35, 0.8],
   );
 

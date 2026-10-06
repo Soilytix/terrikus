@@ -132,7 +132,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** a unit test drives `govern` with synthetic frame times and sees all three steps within 6 s; a Playwright run with `--use-angle=swiftshader` ends in static mode; `mise run check` green.
 - **Depends on:** —. Feeds T15.
 
-### R04 — Phone composition: observe step and portrait plates (P phone)
+### R04 — Phone composition: observe step and portrait plates (P phone) · **done**
 
 - **Problem:** on a 390 px phone the observe step's sheet covers the handful (one crumb visible); the handful's portal crumb floats and the root runs into empty space; the ladder covers the pore's hypha.
 - **Direction:** a `portrait` branch in the `handful` and `pores` recipes (`src/world/painter/recipes/`) when `h > w`, anchoring the mound and hypha in the upper half; the mission sheet on phones caps at 45 % and the camera target shifts up while a step needs the scene; ladder collapses to the current rung on phones.

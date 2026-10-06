@@ -25,14 +25,14 @@ interface Props {
   onTooSlow?: () => void;
 }
 
-function arrival(prev: string | null, next: string): Arrival {
+function arrival(prev: string | null, next: string, portrait: boolean): Arrival {
   if (!prev) return { kind: "cut" };
   const p = sceneById(prev);
   const n = sceneById(next);
   const down = p?.objects.find((o) => o.to === next);
-  if (down) return { kind: "in", anchor: down.anchor };
+  if (down) return { kind: "in", anchor: (portrait && down.portrait) || down.anchor };
   const up = n?.objects.find((o) => o.to === prev);
-  if (up) return { kind: "out", anchor: up.anchor };
+  if (up) return { kind: "out", anchor: (portrait && up.portrait) || up.anchor };
   return { kind: "cut" };
 }
 
@@ -135,7 +135,8 @@ export function World({ sceneId, reduced, forceStatic, dim, children, ref, onRea
     if (mode === "pixi") {
       const st = stage.current;
       if (!st) return;
-      const how = arrival(prev.current, sceneId);
+      const el = host.current;
+      const how = arrival(prev.current, sceneId, !!el && el.clientHeight > el.clientWidth);
       prev.current = sceneId;
       setBusy(true);
       void st.show(s.recipe, s.seed, how).then(() => {

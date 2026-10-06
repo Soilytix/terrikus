@@ -139,29 +139,48 @@ function deep(c: Ctx, r: Rng, ground: string): Svg {
   return s;
 }
 
+/** Where the pore's subjects sit, in plate units. */
+const PORE_LANDSCAPE = {
+  big: { x: 0.16, y: 0.8 },
+  bacterium: { x: 0.46, y: 0.6 },
+  amoeba: { x: 0.7, y: 0.42 },
+  hypha: { x: 0.27, y: 0.24 },
+  film: { x: 0.56, y: 0.75 },
+};
+const PORE_PORTRAIT: typeof PORE_LANDSCAPE = {
+  big: { x: 0.2, y: 0.72 },
+  bacterium: { x: 0.7, y: 0.5 },
+  amoeba: { x: 0.3, y: 0.42 },
+  hypha: { x: 0.6, y: 0.24 },
+  film: { x: 0.56, y: 0.63 },
+};
+
 export function pore(c: Ctx, scale: number): RecipeOut {
   const { w, h, u } = c;
   const r = rngFor(c.seed, 5);
+  // Portrait (phones): hypha, amoeba and bacterium in the upper half, clear of the
+  // ladder and the mission sheet. The prologue's `portrait` anchors follow `at`.
+  const at = h > w ? PORE_PORTRAIT : PORE_LANDSCAPE;
   const back = deep(c, r, W.dark);
   const grains = new Svg(w, h);
   const film = new Svg(w, h);
-  const big: Grain = { x: 0.16 * w, y: 0.8 * h, rad: u * 0.17, tone: W.sand, d: "" };
+  const big: Grain = { x: at.big.x * w, y: at.big.y * h, rad: u * 0.17, tone: W.sand, d: "" };
   big.d = grainPath(r, big.x, big.y, big.rad);
   const g = pack(
     c,
     r,
     [
-      { x: 0.46, y: 0.6, r: 0.06 },
-      { x: 0.7, y: 0.42, r: 0.13 },
-      { x: 0.27, y: 0.3, r: 0.1 },
-      { x: 0.58, y: 0.78, r: 0.03 },
+      { ...at.bacterium, r: 0.06 },
+      { ...at.amoeba, r: 0.13 },
+      { x: at.hypha.x, y: at.hypha.y + 0.06, r: 0.1 },
+      { x: at.film.x + 0.02, y: at.film.y + 0.03, r: 0.03 },
     ],
     [big],
   );
   // A water-filled pore around the amoeba; the hypha's gap stays air.
   const pb = blurDef(film, u * 0.025);
   film.path(
-    blob(r, 0.7 * w, 0.43 * h, u * 0.2, u * 0.17, 0.25),
+    blob(r, at.amoeba.x * w, (at.amoeba.y + 0.01) * h, u * 0.2, u * 0.17, 0.25),
     `fill="url(#${radial(film, [
       [0, mix(W.water, W.deep, 0.3), 0.8],
       [1, mix(W.water, W.deep, 0.6), 0.4],
@@ -170,7 +189,7 @@ export function pore(c: Ctx, scale: number): RecipeOut {
   menisci(film, c, g);
   drawGrains(grains, film, c, r, g);
   film.path(
-    blob(r, 0.56 * w, 0.75 * h, u * 0.08, u * 0.025, 0.2),
+    blob(r, at.film.x * w, at.film.y * h, u * 0.08, u * 0.025, 0.2),
     `fill="${mix(W.water, W.film, 0.4)}" opacity="0.55"`,
   );
 
@@ -178,8 +197,8 @@ export function pore(c: Ctx, scale: number): RecipeOut {
     bacterium(
       {
         id: "bacterium",
-        x: 0.46 * w,
-        y: 0.6 * h,
+        x: at.bacterium.x * w,
+        y: at.bacterium.y * h,
         motion: "breathe",
         phase: 0.1,
         parallax: 0.6,
@@ -192,8 +211,8 @@ export function pore(c: Ctx, scale: number): RecipeOut {
     amoeba(
       {
         id: "amoeba",
-        x: 0.7 * w,
-        y: 0.42 * h,
+        x: at.amoeba.x * w,
+        y: at.amoeba.y * h,
         motion: "wiggle",
         phase: 0.4,
         parallax: 0.6,
@@ -203,7 +222,7 @@ export function pore(c: Ctx, scale: number): RecipeOut {
       u * 0.075,
     ),
     hypha(
-      { id: "hypha", x: 0.27 * w, y: 0.24 * h, motion: "sway", phase: 0.7, parallax: 0.6, scale },
+      { id: "hypha", x: at.hypha.x * w, y: at.hypha.y * h, motion: "sway", phase: 0.7, parallax: 0.6, scale },
       [
         [0, u * 0.32],
         [u * 0.12, u * 0.1],
