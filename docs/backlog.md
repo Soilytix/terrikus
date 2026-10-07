@@ -139,7 +139,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** phone screenshots `03-handful-observe` and `04-pore` show the subject above the sheet; painter snapshot tests updated deliberately; `mise run check` green.
 - **Depends on:** —.
 
-### R05 — Art polish: handful, pores, field, valley (P visual)
+### R05 — Art polish: handful, pores, field, valley (P visual) · **done**
 
 - **Problem:** the handful reads as identical stamped tiles with a sine-wave root and a flat chevron leaf; pore grains are near-identical eggs; the hypha is a thick white segmented tube; the field rows meet in a hard V seam and the mist is a flat band; valley plots look toy-scale against the 500 m bar.
 - **Direction:** vary crumb size, rotation and tone per seed; branch the root with tapered noise; give grains a size and angularity distribution; draw hyphae thinner (≈⅓ width) and translucent; feather the vanishing point and break the mist with noise; scale the valley plots to the bar. World register colours only.

@@ -2,8 +2,8 @@
 import { W } from "../../../styles/scene";
 import { blob, blurDef, linear, paperGrain, radial, range, stipple, type Ctx } from "../brush";
 import { mix } from "../color";
-import { rngFor } from "../noise";
-import { Svg, smoothOpen, type Pt } from "../svg";
+import { fbm, pow, rngFor } from "../noise";
+import { Svg, smoothClosed, type Pt } from "../svg";
 import type { RecipeOut } from "./index";
 import { crumb } from "./plants";
 
@@ -94,7 +94,11 @@ export function handful(c: Ctx, scale: number): RecipeOut {
       `fill="${mix(W.humus, W.dark, 0.4)}"`,
     );
   }
-  const crumbs: [number, number, number][] = [];
+  // Crumbs: a skewed size distribution (many fine, few coarse), each turned and
+  // stretched a little, toned by a seeded patchiness so the heap is not one stamp.
+  const patch = fbm(c.seed + 41, 3);
+  const darker = range(r, 0.15, 0.45);
+  const crumbs: { x: number; y: number; rad: number; rot: number; sq: number }[] = [];
   for (let i = 0; i < 760; i++) {
     const t = r();
     const a = Math.PI + r() * Math.PI;
@@ -102,11 +106,18 @@ export function handful(c: Ctx, scale: number): RecipeOut {
     const x = cx + Math.cos(a) * d * R * 1.05;
     const y = cy + R * 0.42 + Math.sin(a) * d * R * 0.95;
     const top = 1 - d;
-    crumbs.push([x, y, u * range(r, 0.008, 0.026) * (0.7 + top * 0.6)]);
+    const rad = u * (0.01 + 0.022 * pow(r(), 1.8)) * (0.7 + top * 0.6);
+    crumbs.push({ x, y, rad, rot: range(r, -40, 40), sq: range(r, 0.7, 1.15) });
   }
-  crumbs.sort((a, b) => a[1] - b[1]);
-  for (const [x, y, rad] of crumbs) {
-    crumb(heap, r, x, y, rad, mix(mix(W.topsoil, W.humus, range(r, 0.1, 0.6)), W.loam, range(r, 0, 0.35)));
+  crumbs.sort((a, b) => a.y - b.y);
+  for (const { x, y, rad, rot, sq } of crumbs) {
+    const k = patch((x / w) * 6, (y / h) * 6);
+    const tone = mix(mix(W.topsoil, W.humus, darker + k * 0.5), W.loam, range(r, 0, 0.4) * (1 - k));
+    heap.open(
+      `transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(0)}) scale(1 ${sq.toFixed(2)})"`,
+    );
+    crumb(heap, r, 0, 0, rad, tone);
+    heap.close();
   }
   // The crumb in the foreground, and the pore the portal opens.
   crumb(heap, r, 0.43 * w, fy(0.5) * h, u * 0.05, mix(W.topsoil, W.loam, 0.35));
@@ -121,30 +132,59 @@ export function handful(c: Ctx, scale: number): RecipeOut {
     `stroke="${W.film}" stroke-width="1" fill="none" opacity="0.55"`,
   );
 
-  // A pale root thread and an old leaf fleck.
+  // A pale root: a noisy main axis that tapers to its tip, laterals branching off it.
   const detail = new Svg(w, h);
-  const root: Pt[] = [
-    [0.28, 0.66],
-    [0.36, 0.6],
-    [0.45, 0.63],
-    [0.55, 0.58],
-    [0.66, 0.66],
-    [0.74, 0.72],
-  ].map(([x, y]) => [x! * w, fy(y!) * h] as Pt);
-  detail.path(
-    smoothOpen(root),
-    `fill="none" stroke="${mix(W.dark, W.topsoil, 0.4)}" stroke-width="${u * 0.006}" stroke-linecap="round" opacity="0.6"`,
-  );
-  detail.path(
-    smoothOpen(root),
-    `fill="none" stroke="${mix(W.pale, W.sand, 0.4)}" stroke-width="${u * 0.0025}" stroke-linecap="round" opacity="0.85"`,
-  );
-  for (let i = 0; i < 6; i++) {
-    const p = root[1 + Math.floor(r() * 4)]!;
-    detail.path(
-      `M${p[0]},${p[1]}q${u * range(r, -0.02, 0.02)},${u * 0.02} ${u * range(r, -0.03, 0.03)},${u * range(r, 0.02, 0.04)}`,
-      `fill="none" stroke="${mix(W.pale, W.sand, 0.4)}" stroke-width="1" opacity="0.8"`,
+  const wob = fbm(c.seed + 53, 3);
+  const axis = (from: Pt, ang: number, len: number, n: number, salt: number): Pt[] => {
+    const pts: Pt[] = [from];
+    for (let i = 1; i <= n; i++) {
+      const [px, py] = pts[i - 1]!;
+      const a = ang + (wob(i * 0.45, salt) - 0.5) * 2.2;
+      pts.push([px + Math.cos(a) * (len / n), py + Math.sin(a) * (len / n)]);
+    }
+    return pts;
+  };
+  const taper = (pts: Pt[], w0: number, w1: number): string => {
+    const left: Pt[] = [];
+    const right: Pt[] = [];
+    pts.forEach(([x, y], i) => {
+      const [ax, ay] = pts[Math.max(0, i - 1)]!;
+      const [bx, by] = pts[Math.min(pts.length - 1, i + 1)]!;
+      const l = Math.hypot(bx - ax, by - ay) || 1;
+      const half = (w0 + (w1 - w0) * (i / (pts.length - 1))) / 2;
+      left.push([x - ((by - ay) / l) * half, y + ((bx - ax) / l) * half]);
+      right.push([x + ((by - ay) / l) * half, y - ((bx - ax) / l) * half]);
+    });
+    return smoothClosed([...left, ...right.reverse()]);
+  };
+  const rootPale = mix(W.pale, W.sand, 0.4);
+  const rootShade = mix(W.dark, W.topsoil, 0.4);
+  const root = axis([0.27 * w, fy(range(r, 0.62, 0.68)) * h], range(r, -0.12, 0.08), R * 1.35, 14, 1);
+  const rootW = u * 0.01;
+  detail.path(taper(root, rootW * 1.6, rootW * 0.3), `fill="${rootShade}" opacity="0.45"`);
+  detail.path(taper(root, rootW, u * 0.0008), `fill="${rootPale}" opacity="0.9"`);
+  for (let i = 0; i < 5; i++) {
+    const at = 2 + Math.floor(r() * (root.length - 5));
+    const t = at / (root.length - 1);
+    const side = r() < 0.5 ? -1 : 1;
+    const [bx, by] = root[at]!;
+    const [nx, ny] = root[at + 1]!;
+    const lat = axis(
+      [bx, by],
+      Math.atan2(ny - by, nx - bx) + side * range(r, 0.6, 1.1),
+      R * range(r, 0.12, 0.3) * (1 - t * 0.5),
+      6,
+      10 + i,
     );
+    detail.path(taper(lat, rootW * (1 - t) * 0.6 + 0.6, 0.3), `fill="${rootPale}" opacity="0.8"`);
+    // Root hairs off the lateral.
+    for (let j = 1; j < lat.length; j += 2) {
+      const [hx, hy] = lat[j]!;
+      detail.path(
+        `M${hx.toFixed(1)},${hy.toFixed(1)}l${(u * range(r, -0.008, 0.008)).toFixed(1)},${(u * range(r, -0.008, 0.008)).toFixed(1)}`,
+        `stroke="${rootPale}" stroke-width="0.5" opacity="0.6"`,
+      );
+    }
   }
   detail.path(
     blob(r, 0.63 * w, fy(0.62) * h, u * 0.022, u * 0.012, 0.35),
@@ -162,7 +202,7 @@ export function handful(c: Ctx, scale: number): RecipeOut {
     { x0: 0.2, y0: fy(0.28), x1: 0.8, y1: fy(0.85) },
     [W.sand, mix(W.sand, W.pale, 0.5)],
     [0.4, 1.1],
-    (x, y) => ((x - 0.5) ** 2 / 0.09 + (y - fy(0.6)) ** 2 / (0.06 * (fy(1) - fy(0)) ** 2) < 1 ? 1 : 0),
+    (x, y) => (pow(x - 0.5, 2) / 0.09 + pow(y - fy(0.6), 2) / (0.06 * pow(fy(1) - fy(0), 2)) < 1 ? 1 : 0),
     [0.35, 0.8],
   );
 

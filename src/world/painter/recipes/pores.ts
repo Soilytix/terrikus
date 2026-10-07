@@ -1,18 +1,8 @@
 /** Aggregate scale: mineral grains, water films and air gaps (prologue p-pore and chapter 2). */
 import { W } from "../../../styles/scene";
-import {
-  blob,
-  blurDef,
-  grain as grainPath,
-  linear,
-  paperGrain,
-  radial,
-  range,
-  shaded,
-  type Ctx,
-} from "../brush";
+import { blob, blurDef, linear, paperGrain, radial, range, shaded, type Ctx } from "../brush";
 import { mix } from "../color";
-import { rngFor, type Rng } from "../noise";
+import { pow, rngFor, type Rng } from "../noise";
 import { amoeba, bacterium, hypha } from "../sprites";
 import { Svg, smoothClosed, type Pt } from "../svg";
 import type { SpriteSpec } from "../types";
@@ -24,6 +14,31 @@ interface Grain {
   rad: number;
   tone: string;
   d: string;
+}
+
+/**
+ * A mineral grain whose angularity `a` runs 0 (rounded) to 1 (angular): corners
+ * are cut at `k` along each face, so a small `k` leaves sharp corners and flat faces.
+ */
+function grainPath(r: Rng, x: number, y: number, rad: number, a = r()): string {
+  const n = 5 + Math.floor(r() * 4);
+  const rot = r() * Math.PI * 2;
+  const sq = range(r, 0.65, 1);
+  const corners: Pt[] = [];
+  for (let i = 0; i < n; i++) {
+    const t = rot + ((i + range(r, -0.25, 0.25)) / n) * Math.PI * 2;
+    const k = rad * range(r, 0.85, 1.12);
+    const px = Math.cos(t) * k;
+    const py = Math.sin(t) * k * sq;
+    corners.push([x + px * Math.cos(rot) - py * Math.sin(rot), y + px * Math.sin(rot) + py * Math.cos(rot)]);
+  }
+  const k = 0.36 - a * 0.3;
+  const pts: Pt[] = [];
+  corners.forEach(([ax, ay], i) => {
+    const [bx, by] = corners[(i + 1) % n]!;
+    pts.push([ax + (bx - ax) * k, ay + (by - ay) * k], [bx + (ax - bx) * k, by + (ay - by) * k]);
+  });
+  return smoothClosed(pts);
 }
 
 /** Pack grains with rejection sampling; `keep` are clearings (plate units) left open as pores. */
@@ -38,10 +53,11 @@ function pack(c: Ctx, r: Rng, keep: { x: number; y: number; r: number }[], force
     mix(W.sand, W.pale, 0.3),
   ];
   const out: Grain[] = [...force];
-  for (let tries = 0; tries < 2400 && out.length < 60; tries++) {
+  for (let tries = 0; tries < 5000 && out.length < 70; tries++) {
     const x = range(r, -0.08, 1.08) * w;
     const y = range(r, -0.08, 1.08) * h;
-    const rad = u * range(r, 0.05, 0.14);
+    // Skewed sizes: many fine sand grains, a few coarse ones.
+    const rad = u * (0.04 + 0.1 * pow(r(), 1.4));
     if (keep.some((k) => Math.hypot(x - k.x * w, y - k.y * h) < rad + k.r * u)) continue;
     if (out.some((g) => Math.hypot(x - g.x, y - g.y) < (rad + g.rad) * 0.92)) continue;
     out.push({ x, y, rad, tone: tones[Math.floor(r() * tones.length)]!, d: grainPath(r, x, y, rad) });
@@ -165,7 +181,7 @@ export function pore(c: Ctx, scale: number): RecipeOut {
   const grains = new Svg(w, h);
   const film = new Svg(w, h);
   const big: Grain = { x: at.big.x * w, y: at.big.y * h, rad: u * 0.17, tone: W.sand, d: "" };
-  big.d = grainPath(r, big.x, big.y, big.rad);
+  big.d = grainPath(r, big.x, big.y, big.rad, 0.5);
   const g = pack(
     c,
     r,
@@ -221,8 +237,18 @@ export function pore(c: Ctx, scale: number): RecipeOut {
       r,
       u * 0.075,
     ),
+    // A hypha is a few µm across, finer than any grain: a thin translucent thread.
     hypha(
-      { id: "hypha", x: at.hypha.x * w, y: at.hypha.y * h, motion: "sway", phase: 0.7, parallax: 0.6, scale },
+      {
+        id: "hypha",
+        x: at.hypha.x * w,
+        y: at.hypha.y * h,
+        motion: "sway",
+        phase: 0.7,
+        parallax: 0.6,
+        scale,
+        alpha: 0.7,
+      },
       [
         [0, u * 0.32],
         [u * 0.12, u * 0.1],
@@ -232,7 +258,7 @@ export function pore(c: Ctx, scale: number): RecipeOut {
       ],
       u * 0.58,
       u * 0.36,
-      u * 0.014,
+      u * 0.003,
     ),
   ];
   for (let k = 0; k < 5; k++) {

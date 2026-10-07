@@ -1,7 +1,9 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import { SCENES, scene } from "../../content";
+import { BAKE_SCALE, BAKE_SIZES } from "../baked";
 import { composeStatic, hasRecipe, paint } from ".";
+import { pow } from "./noise";
 
 const hash = (s: string) => createHash("sha256").update(s).digest("hex");
 
@@ -26,13 +28,38 @@ describe("painter", () => {
         for (const r of refs) expect(ids.has(r), `${recipe} ${w}x${h} #${r}`).toBe(true);
       }
     },
+    // Four full plates per case; the first also pays the warm-up on a busy machine.
     20_000,
   );
 
-  it("changes with the seed", () => {
-    expect(hash(composeStatic(paint("pore", 1, 800, 600)))).not.toBe(
-      hash(composeStatic(paint("pore", 2, 800, 600))),
+  // R05: crumbs, grains, mist and plots vary per seed.
+  it.each(["pore", "handful", "field-dawn", "valley"])("%s changes with the seed", (recipe) => {
+    expect(hash(composeStatic(paint(recipe, 1, 800, 600)))).not.toBe(
+      hash(composeStatic(paint(recipe, 2, 800, 600))),
     );
+  });
+
+  // V8's pow can round differently once the JIT warms up, so a fresh bake and the
+  // baked-plate test disagreed; these recipes use the arithmetic `pow` instead.
+  it.each(["pore", "handful", "field-dawn", "valley"])(
+    "%s bakes the same bytes cold and after warm-up",
+    (recipe) => {
+      const bake = () =>
+        BAKE_SIZES.map(([w, h]) => {
+          const p = paint(recipe, 1, w, h, BAKE_SCALE);
+          return hash(p.layers.map((l) => l.svg).join("") + composeStatic(paint(recipe, 1, w, h)));
+        });
+      const cold = bake();
+      for (let i = 0; i < 5; i++) bake();
+      expect(bake()).toEqual(cold);
+    },
+    60_000,
+  );
+
+  it("pow agrees with ** and is exact for integer powers", () => {
+    for (const x of [0, 1e-9, 0.013, 0.5, 0.731, 0.999999, 1, 3.7])
+      for (const p of [0.5, 1.3, 1.4, 1.8, 2.2, 3]) expect(pow(x, p)).toBeCloseTo(x ** p, 12);
+    for (const x of [-0.37, 0.1, 2.5]) expect(pow(x, 2)).toBe(x * x);
   });
 
   // R04: on a phone the mission sheet takes the lower 45 %, so the subject sits above it.

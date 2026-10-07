@@ -14,14 +14,19 @@ import {
   type Ctx,
 } from "../brush";
 import { mix } from "../color";
-import { rngFor } from "../noise";
+import { pow, rngFor } from "../noise";
 import { bird, cloudShadow } from "../sprites";
 import { Svg, poly, smoothOpen, type Pt } from "../svg";
 import type { RecipeOut } from "./index";
 
 const VP = { x: 0.52, y: 0.33 };
-const ROWS = [0.445, 0.5, 0.565, 0.645, 0.745, 0.87, 1.05];
-const COLS = [-3.2, -2, -1.1, -0.5, 0, 0.45, 0.89, 1.35, 2, 3, 4.2];
+// Plots sized to the 500 m scale bar: a mid-ground field is a few hundred metres
+// across, and drill lines are tramline texture, not individual crop rows.
+const ROWS = [0.445, 0.47, 0.5, 0.53, 0.565, 0.6, 0.645, 0.69, 0.745, 0.8, 0.87, 0.95, 1.05];
+const COLS = [
+  -3.2, -2.6, -2, -1.55, -1.1, -0.8, -0.5, -0.25, 0, 0.22, 0.45, 0.67, 0.89, 1.12, 1.35, 1.67, 2, 2.5, 3, 3.6,
+  4.2,
+];
 
 type Crop = "spinach" | "beet" | "peas" | "stubble" | "tilled" | "pasture" | "paddy" | "meadow";
 
@@ -132,7 +137,7 @@ export function valley(c: Ctx, scale: number): RecipeOut {
   for (let i = 0; i < 1100; i++) {
     const x = range(r, -0.03, 0.62) * w;
     const top = ySurf(x);
-    const depth = Math.pow(r(), 1.3) * (0.46 * h - top);
+    const depth = pow(r(), 1.3) * (0.46 * h - top);
     if (top + depth > 0.46 * h) continue;
     crowns.push([x, top + depth + u * 0.006, u * range(r, 0.014, 0.026) * (0.75 + (1.4 * depth) / h)]);
   }
@@ -181,9 +186,7 @@ export function valley(c: Ctx, scale: number): RecipeOut {
   force(0.44, 0.62, "spinach");
   force(0.2, 0.66, "beet");
   force(0.83, 0.58, "peas");
-  force(0.72, 0.8, "paddy");
-  force(0.9, 0.8, "paddy");
-  force(0.6, 0.8, "paddy");
+  for (let x = 0.48; x < 0.98; x += 0.04) for (const y of [0.76, 0.84]) force(x, y, "paddy");
   const wob = (i: number, j: number) => (c.noise(i * 3.1, j * 2.7) - 0.5) * 0.03 * persp(ROWS[i]!);
   const corner = (i: number, j: number): Pt => {
     const y = ROWS[i]! + (i > 0 && i < ROWS.length - 1 ? wob(i, j) : 0);
@@ -202,7 +205,7 @@ export function valley(c: Ctx, scale: number): RecipeOut {
   };
   for (let i = 0; i < ROWS.length - 1; i++) {
     for (let j = 0; j < COLS.length - 1; j++) {
-      const crop: Crop = forced.get(`${i},${j}`) ?? (i >= 5 ? "meadow" : pick(r, pool));
+      const crop: Crop = forced.get(`${i},${j}`) ?? (ROWS[i]! >= 0.87 ? "meadow" : pick(r, pool));
       const pts = [corner(i, j), corner(i, j + 1), corner(i + 1, j + 1), corner(i + 1, j)];
       const d = poly(pts);
       const clip = fields.id("cl");
@@ -223,13 +226,17 @@ export function valley(c: Ctx, scale: number): RecipeOut {
           lines.push(`M${colX(COLS[j]! - 0.1, y / h)},${y}L${colX(COLS[j + 1]! + 0.1, y / h)},${y}`);
         }
       } else {
-        const step = 0.022 + r() * 0.012;
+        const step = 0.012 + r() * 0.006;
         for (let xb = COLS[j]!; xb <= COLS[j + 1]!; xb += step) {
-          lines.push(`M${colX(xb, 0.4)},${0.4 * h}L${colX(xb, 1.1)},${1.1 * h}`);
+          const y0 = yTop - 0.02;
+          const y1 = yBot + 0.02;
+          lines.push(
+            `M${colX(xb, y0).toFixed(1)},${(y0 * h).toFixed(1)}L${colX(xb, y1).toFixed(1)},${(y1 * h).toFixed(1)}`,
+          );
         }
       }
       const path = lines.join("");
-      const sw = (k: number) => ((k * u) / 600).toFixed(2);
+      const sw = (k: number) => ((k * u) / 900).toFixed(2);
       if (crop === "spinach") {
         fields.path(
           path,
@@ -280,7 +287,7 @@ export function valley(c: Ctx, scale: number): RecipeOut {
           fields,
           c,
           r,
-          i >= 5 ? 900 : 160,
+          ROWS[i]! >= 0.87 ? 225 : 40,
           { x0: 0, y0: yTop, x1: 1, y1: yBot },
           [mix(W.foliage, W.dark, 0.2), mix(W.foliage, W.sand, 0.5)],
           [u * 0.0012, u * 0.003],
@@ -291,7 +298,7 @@ export function valley(c: Ctx, scale: number): RecipeOut {
           fields,
           c,
           r,
-          18,
+          5,
           { x0: 0, y0: yTop, x1: 1, y1: yBot },
           [mix(tint, W.dark, 0.25), mix(tint, W.pale, 0.25)],
           [u * 0.02, u * 0.06],
@@ -336,13 +343,13 @@ export function valley(c: Ctx, scale: number): RecipeOut {
       );
     }
   };
-  hedge(0.89, ROWS[0]!, ROWS[3]!, 0.03);
-  hedge(-0.5, ROWS[1]!, ROWS[4]!, 0.022);
-  hedge(2, ROWS[0]!, ROWS[4]!, 0.02);
-  for (const xb of [-1.1, 0.45, 1.35]) if (r() < 0.7) hedge(xb, ROWS[0]!, ROWS[3]!, 0.014);
+  hedge(0.89, ROWS[0]!, ROWS[6]!, 0.03);
+  hedge(-0.5, ROWS[2]!, ROWS[8]!, 0.022);
+  hedge(2, ROWS[0]!, ROWS[8]!, 0.02);
+  for (const xb of [-1.1, 0.45, 1.35]) if (r() < 0.7) hedge(xb, ROWS[0]!, ROWS[6]!, 0.014);
   // A few field trees by the chapter-2 hedge.
   for (let k = 0; k < 3; k++) {
-    const y = range(r, ROWS[0]!, ROWS[2]!);
+    const y = range(r, ROWS[0]!, ROWS[4]!);
     const x = colX(0.89, y);
     const rad = u * 0.04 * persp(y);
     const tone = mix(W.foliage, W.dark, 0.3);

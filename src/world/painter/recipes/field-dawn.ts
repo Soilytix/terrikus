@@ -13,7 +13,7 @@ import {
   type Ctx,
 } from "../brush";
 import { mix } from "../color";
-import { rngFor } from "../noise";
+import { fbm, pow, rngFor } from "../noise";
 import { Svg } from "../svg";
 import type { RecipeOut } from "./index";
 import { crumb, rosette } from "./plants";
@@ -112,15 +112,23 @@ export function fieldDawn(c: Ctx, scale: number): RecipeOut {
   const rows = [
     -4.2, -3.5, -2.9, -2.35, -1.85, -1.4, -0.98, -0.6, -0.25, 0.25, 0.6, 0.98, 1.4, 1.85, 2.35, 2.9, 3.5, 4.2,
   ];
+  // A darker furrow beside each ridge, fading out before the vanishing point so
+  // the rows dissolve into the haze instead of meeting in a hard seam.
+  const furrow = linear(field, [
+    [0, mix(W.loam, W.subsoil, 0.25), 0],
+    [0.15, mix(W.loam, W.subsoil, 0.25), 0.2],
+    [0.5, mix(W.loam, W.subsoil, 0.25), 0.45],
+  ]);
   for (const xb of rows) {
-    // A darker furrow beside each ridge.
     const x0 = rowX(xb - 0.09, 1.05);
     const x1 = rowX(xb + 0.09, 1.05);
-    field.path(
-      `M${VP.x},${VP.y}L${x0},${1.05 * h}L${x1},${1.05 * h}Z`,
-      `fill="${mix(W.loam, W.subsoil, 0.25)}" opacity="0.45"`,
-    );
+    field.path(`M${VP.x},${VP.y}L${x0},${1.05 * h}L${x1},${1.05 * h}Z`, `fill="url(#${furrow})"`);
   }
+  const vb = blurDef(field, u * 0.02);
+  field.path(
+    blob(r, VP.x, (HZ + 0.03) * h, w * 0.22, u * 0.05, 0.2),
+    `fill="${mix(W.topsoil, W.skyLow, 0.6)}" opacity="0.8" filter="url(#${vb})"`,
+  );
   strokes(
     field,
     c,
@@ -192,12 +200,16 @@ export function fieldDawn(c: Ctx, scale: number): RecipeOut {
   const mist = new Svg(w, h);
   const mb = blurDef(mist, u * 0.012);
   mist.open(`filter="url(#${mb})"`);
-  for (let i = 0; i < 30; i++) {
-    const y = (HZ + 0.005 + Math.pow(r(), 2.2) * 0.1) * h;
-    const x = range(r, 0.15, 1.1) * w;
+  const thick = fbm(c.seed + 67, 3);
+  for (let i = 0; i < 90; i++) {
+    const y = (HZ + 0.005 + pow(r(), 2.2) * 0.1) * h;
+    const x = range(r, 0.05, 1.1) * w;
+    // Noise breaks the band into banks and gaps.
+    const k = thick((x / w) * 5, (y / h) * 12) * (0.6 + 0.6 * (x / w));
+    if (k < 0.42) continue;
     mist.path(
-      blob(r, x, y, u * range(r, 0.2, 0.45), u * range(r, 0.005, 0.012), 0.15),
-      `fill="${W.pale}" opacity="${range(r, 0.2, 0.45).toFixed(2)}"`,
+      blob(r, x, y, u * range(r, 0.06, 0.22), u * range(r, 0.004, 0.012), 0.3),
+      `fill="${W.pale}" opacity="${Math.min(0.55, (k - 0.35) * range(r, 0.8, 1.4)).toFixed(2)}"`,
     );
   }
   mist.close();
