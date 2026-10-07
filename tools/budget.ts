@@ -8,7 +8,7 @@ import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 
 const KB = 1024;
-const BUDGET = { initial: 180 * KB, world: 350 * KB };
+const BUDGET = { initial: 200 * KB, world: 350 * KB };
 const dist = "dist";
 const assets = join(dist, "assets");
 

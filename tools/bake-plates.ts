@@ -12,6 +12,7 @@ import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
 import { SCENES } from "../src/content";
+import { c11Timelapse } from "../src/content/chapters/c11";
 import {
   BAKE_SCALE,
   BAKE_SIZES,
@@ -29,8 +30,8 @@ const QUALITY = 55;
 
 /**
  * Time-lapse frame sets: each frame a recipe and seed, crossfaded in order.
- * Empty until a recipe takes a time parameter (ch. 2 compressed year, ch. 11
- * pedogenesis); a frame set of unrelated plates would show change that is not there.
+ * Frames are one recipe at different ages (ch. 11 `pitWall(years)`); a frame
+ * set of unrelated plates would show change that is not there.
  */
 export const TIMELAPSES: Record<
   string,
@@ -39,7 +40,9 @@ export const TIMELAPSES: Record<
     size: readonly [number, number];
     frames: { label: string; recipe: string; seed: number }[];
   }
-> = {};
+> = {
+  [c11Timelapse.id]: { ...c11Timelapse, size: [480, 600] },
+};
 
 export const sha = (s: string) => createHash("sha256").update(s).digest("hex");
 

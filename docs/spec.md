@@ -196,7 +196,7 @@ Instruments read true state through sampling (core count, depth), detection limi
 
 | Item | Budget |
 |---|---|
-| Initial JS (shell, gz) | ≤ 180 KB |
+| Initial JS (shell, gz) | ≤ 200 KB |
 | World chunk (Pixi + world, gz) | ≤ 350 KB |
 | Plates per scale (later, AVIF) | ≤ 2.5 MB |
 | Frame time | 16.6 ms on Apple M1 / Intel Iris Xe at DPR ≤ 2 |

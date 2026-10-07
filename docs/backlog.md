@@ -326,11 +326,12 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** compositional reads always sum to 100 %; spike-in recovers absolute direction; noise only from seeded PRNG.
 - **Depends on:** T04
 
-### T27 — Chapter 11: Pit Walls and Deep Time
+### T27 — Chapter 11: Pit Walls and Deep Time · **done**
 
 - **Goal:** pedogenesis, horizons, catena.
 - **Scope:** profile scenes; pedogenesis time-lapse (T14); catena; content `c11-*`; WRB examples (OD-11 raised).
 - **Acceptance:** time-compression label always visible; mottle detective accepts several defensible answers.
+- **Done:** `src/sim/pedogenesis.ts` (horizons from climate, litter, parent material and time; years per cm from 0.3–1.4 t/ha/yr) and `src/sim/catena.ts` (three pits down one hill, redox from a seasonal water table, the detective pit's defensible readings); four missions on `c11-pit` and `c11-catena`; the `c11-timelapse` frames (`pitWall(years)` at 0, 100, 1,000 and 10,000 years) baked by `tools/bake-plates.ts` as it is. WRB names are labelled examples (OD-11 open). `c11-munsell` and the two chapter chains are deferred.
 - **Depends on:** T14, T16
 
 ### T28 — Chapter 12: Fields and Seasons

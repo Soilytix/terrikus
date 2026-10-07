@@ -1009,7 +1009,147 @@
     "flat": "c4-elevator-89/390x844/flat.avif",
     "ground": "#5f7470"
    }
+  ],
+  "c11-pit:83": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c11-pit-83/1440x900/0-back.avif",
+      "sha": "13ac0e747c9275f815f7a18bd6e975eea6ea4b2aaeeafd95900bdc482b40e41d"
+     },
+     {
+      "id": "face",
+      "file": "c11-pit-83/1440x900/1-face.avif",
+      "sha": "efdf2a571479d749b0726951c5be88a80636f3b88685f7fc9431c775593a2cee"
+     },
+     {
+      "id": "detail",
+      "file": "c11-pit-83/1440x900/2-detail.avif",
+      "sha": "f42627b5d1f344863bf89fc27f82d3c874a31fe8c5e7fa6b8adb9f28c6d290ac"
+     },
+     {
+      "id": "crown",
+      "file": "c11-pit-83/1440x900/3-crown.avif",
+      "sha": "5deb9eabf9850311006738f0445316ceaa0d30569979bba6c45e1453344e0ebf"
+     }
+    ],
+    "flat": "c11-pit-83/1440x900/flat.avif",
+    "ground": "#161c19"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c11-pit-83/390x844/0-back.avif",
+      "sha": "80c6616f7fcac47fa2061e1c199df5db7f0ac9e2ff7e9e2a06a23ec4062901a0"
+     },
+     {
+      "id": "face",
+      "file": "c11-pit-83/390x844/1-face.avif",
+      "sha": "2e6e7312c0c56e2fac6f82726cb26145d62458a668401a643d34773cbee2cfcf"
+     },
+     {
+      "id": "detail",
+      "file": "c11-pit-83/390x844/2-detail.avif",
+      "sha": "2d86517a5fd17b23bac5bd1e77ee879f717059e223ac90eee33ff462cc339e3e"
+     },
+     {
+      "id": "crown",
+      "file": "c11-pit-83/390x844/3-crown.avif",
+      "sha": "9dea5bc9d863661fe953227f3d271268b16d8eb46dd479ede3c36d691cc97619"
+     }
+    ],
+    "flat": "c11-pit-83/390x844/flat.avif",
+    "ground": "#161c19"
+   }
+  ],
+  "c11-catena:89": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "sky",
+      "file": "c11-catena-89/1440x900/0-sky.avif",
+      "sha": "2c55f25c4155477a9b3eeeb64d42c3475a84ab6cac81736f455227c0c0f41353"
+     },
+     {
+      "id": "hill",
+      "file": "c11-catena-89/1440x900/1-hill.avif",
+      "sha": "0d72c035e4e1bcf61cbe2716a0f369eec87fcd5b15cc0b766f787d2ec1818331"
+     },
+     {
+      "id": "wood",
+      "file": "c11-catena-89/1440x900/2-wood.avif",
+      "sha": "d694a0e3e70f73b64c035202f25e1990c5b303245485f843d3309f45d72e63cd"
+     },
+     {
+      "id": "pits",
+      "file": "c11-catena-89/1440x900/3-pits.avif",
+      "sha": "c215a165afd472a511ab942a15e14b40e930f79a1f350db7874710f955840507"
+     }
+    ],
+    "flat": "c11-catena-89/1440x900/flat.avif",
+    "ground": "#565e30"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "sky",
+      "file": "c11-catena-89/390x844/0-sky.avif",
+      "sha": "7ca2ba2a921fae8ac2d5c813860ab159fae5561d0e45043f4f60f43ae5f15419"
+     },
+     {
+      "id": "hill",
+      "file": "c11-catena-89/390x844/1-hill.avif",
+      "sha": "6b9e3fc56d284c987d3d23f537a049fd9fa2658af21166e25483310b960e777a"
+     },
+     {
+      "id": "wood",
+      "file": "c11-catena-89/390x844/2-wood.avif",
+      "sha": "7baf922736fba7761be69dc47b2636b508fa4b1b839e8c572afaac7f261ceb37"
+     },
+     {
+      "id": "pits",
+      "file": "c11-catena-89/390x844/3-pits.avif",
+      "sha": "b19605a40fa1339551c3e580b63b995eab1d41cc396ab9fa96b8e6b91bfdb2b8"
+     }
+    ],
+    "flat": "c11-catena-89/390x844/flat.avif",
+    "ground": "#565e30"
+   }
   ]
  },
- "timelapses": {}
+ "timelapses": {
+  "c11-timelapse": {
+   "compression": "Time compressed: 10,000 years in 12 seconds. Each frame is ten times older than the last.",
+   "w": 480,
+   "h": 600,
+   "frames": [
+    {
+     "label": "Year 0: fresh sand",
+     "file": "timelapse/c11-timelapse/0.avif"
+    },
+    {
+     "label": "Year 100",
+     "file": "timelapse/c11-timelapse/1.avif"
+    },
+    {
+     "label": "Year 1,000",
+     "file": "timelapse/c11-timelapse/2.avif"
+    },
+    {
+     "label": "Year 10,000",
+     "file": "timelapse/c11-timelapse/3.avif"
+    }
+   ]
+  }
+ }
 }

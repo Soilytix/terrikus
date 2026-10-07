@@ -3,6 +3,7 @@ import { c1Bundle } from "./chapters/c1";
 import { c3Bundle } from "./chapters/c3";
 import { c4Bundle } from "./chapters/c4";
 import { c5Bundle } from "./chapters/c5";
+import { c11Bundle } from "./chapters/c11";
 import { leafBundle } from "./chapters/leaf";
 import { prologueBundle } from "./chapters/prologue";
 import { MATERIALS, PROCESSES } from "./processes";
@@ -18,6 +19,7 @@ const BUNDLES: ChapterBundle[] = [
   c3Bundle,
   c4Bundle,
   c5Bundle,
+  c11Bundle,
   ...LATER_BUNDLES,
 ];
 

@@ -7,6 +7,8 @@ import type { SourceId } from "./sources";
 import type { BenchId } from "../sim/benches";
 import type { Moisture } from "../sim/films";
 import type { RungId } from "../sim/redox";
+import type { SlopePosition } from "../sim/catena";
+import type { HorizonId } from "../sim/pedogenesis";
 
 export type { SourceId };
 export type Confidence = "firm" | "estimate" | "contested";
@@ -226,6 +228,13 @@ export interface Attribution {
   sources: SourceId[];
 }
 
+/** Baked frames crossfaded in order (`tools/bake-plates.ts`); `compression` is always on screen while it plays. */
+export interface Timelapse {
+  id: string;
+  compression: string;
+  frames: { label: string; recipe: string; seed: number }[];
+}
+
 /** What finishing a step or mission writes into the save, besides its own record. */
 export interface OnComplete {
   flags?: string[];
@@ -321,6 +330,19 @@ export type Step = (
       resultText: string;
       facts: Fact[];
       floors?: Partial<Record<RungId, string>>;
+    }
+  /** Chapter 11 pit benches (`src/ui/PitWalls.tsx`) on `src/sim/pedogenesis.ts` and `src/sim/catena.ts`. */
+  | {
+      kind: "pit";
+      bench: "read-wall" | "timelapse" | "podzol" | "catena" | "detective" | "rates";
+      text: string;
+      resultText: string;
+      facts: Fact[];
+      /** Read the wall: each horizon's name and evidence, revealed after the player's guess. */
+      horizons?: Partial<Record<HorizonId, { name: string; evidence: string }>>;
+      /** Catena: example soil names, never survey results (OD-11). */
+      examples?: Record<SlopePosition, string>;
+      timelapse?: Timelapse;
     }
 ) & { onComplete?: OnComplete };
 

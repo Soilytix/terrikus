@@ -2,7 +2,7 @@
  * The mission panel: one step at a time, predict → observe → explain. Feedback
  * is an observation or a question, never a score.
  */
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { CHAPTERS, DISCOVERIES, chapter, scene as sceneById, SCENES } from "../content";
 import type { Choice, Mission, Step } from "../content/schema";
 import type { Save } from "../save/schema";
@@ -23,6 +23,9 @@ import { WaterAir } from "./WaterAir";
 import { WaterRoads } from "./WaterRoads";
 import { Facts } from "./common";
 import type { SceneEvent } from "../world/stage";
+
+// Chapter 11 benches load with the chapter, outside the initial JS budget.
+const PitWalls = lazy(() => import("./PitWalls").then((m) => ({ default: m.PitWalls })));
 
 interface Props {
   mission: Mission | undefined;
@@ -532,6 +535,15 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           <BreathRust step={step} onDone={next} />
+        </>
+      );
+    case "pit":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <Suspense fallback={<p className="muted small">Loading…</p>}>
+            <PitWalls step={step} reduced={reduced} onDone={next} />
+          </Suspense>
         </>
       );
     case "rumor":

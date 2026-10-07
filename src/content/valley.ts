@@ -4,6 +4,7 @@
  */
 import { c3Discoveries } from "./chapters/c3";
 import { c4Discoveries } from "./chapters/c4";
+import { c11Discoveries } from "./chapters/c11";
 import type { Chapter, ChapterBundle, Discovery, Scene } from "./schema";
 
 const later = (
@@ -54,7 +55,6 @@ const LATER_CHAPTERS: Chapter[] = [
     "sugarbeet",
   ),
   later("c10", "10", "Disease and Defence", "The pathogen is here, but the plants are healthy.", "bean"),
-  later("c11", "11", "Pit Walls and Deep Time", "Why are these layers different colours?", "forest"),
   later("c12", "12", "Fields and Seasons", "Same seed, two fields, different harvests.", "spinach"),
   later("c13", "13", "Hillslope and River", "Where does the soil from the hill go?", "rice"),
   later("c14", "14", "What Does the Sample Tell Us?", "Two reports about the same field disagree.", "bare"),
@@ -227,7 +227,22 @@ export const valleyMapScene: Scene = {
     { id: "peas", label: "Pea and bean strips", kind: "glimpse", anchor: { x: 0.72, y: 0.5 }, to: "c8" },
     { id: "beet", label: "Sugar beet field", kind: "glimpse", anchor: { x: 0.2, y: 0.58 }, to: "c9" },
     { id: "beans", label: "Bean rotation strip", kind: "glimpse", anchor: { x: 0.8, y: 0.62 }, to: "c10" },
-    { id: "pit", label: "A soil pit on the slope", kind: "glimpse", anchor: { x: 0.28, y: 0.44 }, to: "c11" },
+    {
+      id: "pit",
+      label: "A soil pit on the slope",
+      kind: "glimpse",
+      anchor: { x: 0.28, y: 0.44 },
+      to: "c11",
+      hiddenBy: "chapter:c11",
+    },
+    {
+      id: "pit-portal",
+      label: "A soil pit on the slope",
+      kind: "portal",
+      anchor: { x: 0.28, y: 0.44 },
+      to: "c11-pit",
+      requires: "chapter:c11",
+    },
     {
       id: "two-fields",
       label: "Two neighbouring fields",
@@ -305,4 +320,5 @@ export const DISCOVERIES: Discovery[] = [
   },
   ...c3Discoveries,
   ...c4Discoveries,
+  ...c11Discoveries,
 ];

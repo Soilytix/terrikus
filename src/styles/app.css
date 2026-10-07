@@ -2794,3 +2794,124 @@ input[type="range"] {
   fill: var(--color-border-default);
   opacity: 0.5;
 }
+/* Chapter 11 pit benches (src/ui/PitWalls.tsx). */
+.pit-read {
+  display: grid;
+  grid-template-columns: minmax(90px, 140px) 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+.pit-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.pit-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+.pit-columns figcaption {
+  font-size: 0.85rem;
+}
+.pit-column {
+  width: 100%;
+  height: auto;
+}
+.pit-column rect[data-picked="true"] {
+  stroke: var(--color-ink);
+  stroke-width: 0.8;
+}
+.pit-column rect[data-c="humus"] {
+  fill: var(--w-humus);
+}
+.pit-column rect[data-c="loam"] {
+  fill: var(--w-loam);
+}
+.pit-column rect[data-c="topsoil"] {
+  fill: var(--w-topsoil);
+}
+.pit-column rect[data-c="pale"] {
+  fill: var(--w-pale);
+}
+.pit-column rect[data-c="oxide"] {
+  fill: var(--w-oxide);
+}
+.pit-column rect[data-c="subsoil"] {
+  fill: var(--w-subsoil);
+}
+.pit-column rect[data-c="sand"] {
+  fill: var(--w-sand);
+}
+.pit-column rect[data-c="clay"] {
+  fill: var(--w-clay);
+}
+.pit-column .gley {
+  fill: var(--w-gley);
+  opacity: 0.85;
+}
+.pit-column .mottle {
+  fill: var(--w-oxide);
+}
+.pit-column .water-table {
+  stroke: var(--w-water);
+  stroke-width: 0.6;
+  stroke-dasharray: 2 1;
+}
+.pit-column .rail line {
+  stroke: var(--color-ink-muted);
+  stroke-width: 0.4;
+}
+.pit-column .rail text {
+  font-family: var(--font-mono);
+  font-size: 4px;
+  fill: var(--color-ink-muted);
+}
+.timelapse {
+  margin: 0;
+}
+.timelapse-label {
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+.timelapse-frames {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-height: 50vh;
+  background: var(--w-dark);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.timelapse-frames img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.timelapse-frames img[data-on="true"] {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .timelapse-frames img {
+    transition: none;
+  }
+}
+.rate-bars {
+  display: grid;
+  gap: 0.25rem;
+}
+.rate-bars span {
+  display: block;
+  height: 0.5rem;
+  min-width: 2px;
+  border-radius: 2px;
+}
+.rate-bars .form {
+  background: var(--w-topsoil);
+}
+.rate-bars .lose {
+  background: var(--w-oxide);
+}
