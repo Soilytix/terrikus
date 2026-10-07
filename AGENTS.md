@@ -19,10 +19,11 @@ and agents changing it. `CLAUDE.md` is a symlink to it. The plan lives in
    pending" badge on it. Only a named reviewer moves a node to `approved`; an
    agent never does. The `public` profile refuses anything not approved.
 3. **No customer names, ever.** No customer, variety, field, trial, sample id or
-   account framing in `src/` or `docs/` (except `docs/research/`, which is
-   quoted input). Crop worlds are generic (spinach, pea, bean, sugar beet,
-   rice). `tests/denylist.test.ts` enforces this from SHA-256 hashes; the plain
-   list lives outside the repo and is never committed, not even in a test.
+   account framing anywhere in `src/` or `docs/`, `docs/research/` included:
+   the repository is public. Crop worlds are generic (spinach, pea, bean, sugar
+   beet, rice). `tests/denylist.test.ts` enforces this against the SHA-256
+   hashes in `tests/denylist-hashes.json`; the plain list lives outside the
+   repo and is never committed, not even in a test.
 4. **Measurement is not inference.** Keep the evidence tiers apart on screen
    and in data: _measured_ (numbers with a ± band), _derived_ (formula shown),
    _interpreted_ (player-chosen confidence), _would-measure_ (if … then …
@@ -40,7 +41,8 @@ and agents changing it. `CLAUDE.md` is a symlink to it. The plan lives in
    register (`src/styles/scene.css` and its TS twin `src/styles/scene.ts`). Lime
    is the subject only and never appears in the world register; raw hexes
    live only in `src/styles/` and `src/design-system/`. `tests/tokens.test.ts`
-   enforces all of it.
+   enforces the registers; `tests/vendored.test.ts` holds every vendored file
+   to the SHA-256 recorded in `src/design-system/VENDORED.md`.
 8. **Text lives in the DOM.** The canvas is `aria-hidden`; every interactive
    object is a real button in the scene outline. Reduced motion and
    `?static=1` must work for every scene.
@@ -61,7 +63,7 @@ and agents changing it. `CLAUDE.md` is a symlink to it. The plan lives in
 | `src/styles/`  | World register and app CSS                                                          |
 | `src/assets/`  | Bundled art; every file listed in `src/assets/manifest.ts`                          |
 | `tools/`       | Budget check, bundle scan, denylist hashing, source registry generator              |
-| `tests/`       | Cross-cutting tests: content lint, denylist, tokens, profile                        |
+| `tests/`       | Cross-cutting tests: content lint, denylist, tokens, vendored, profile              |
 | `e2e/`         | Playwright smoke; writes screenshots to `docs/screens/`                             |
 
 ## Naming

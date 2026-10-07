@@ -8,3 +8,5 @@ test-results/
 playwright-report/
 src/assets/
 public/plates/
+src/design-system/tokens.css
+src/design-system/fonts.css

@@ -309,19 +309,9 @@
   --blur-map-glass: 12px; /* the cards, rail and labels that float on the map */
 
   /* ---- gradients (measured): the composite washes, read with bg-(image:--gradient-*) ---- */
-  --gradient-vignette: radial-gradient(
-    ellipse at center,
-    transparent 40%,
-    rgb(0 0 0 / 0.85) 100%
-  ); /* the map's darkened edge */
-  --gradient-glass-vignette:
-    radial-gradient(ellipse 100% 100% at 50% 50%, rgb(0 0 0 / 0) 58.65%, rgb(0 0 0 / 0.4) 99%),
-    rgb(0 0 0 / 0.2); /* the monitor glass card over imagery */
-  --gradient-bar-brand: linear-gradient(
-    180deg,
-    rgb(142 222 61 / 0.6),
-    rgb(142 222 61 / 0.05)
-  ); /* Primary/Green fading down a duration bar */
+  --gradient-vignette: radial-gradient(ellipse at center, transparent 40%, rgb(0 0 0 / 0.85) 100%); /* the map's darkened edge */
+  --gradient-glass-vignette: radial-gradient(ellipse 100% 100% at 50% 50%, rgb(0 0 0 / 0) 58.65%, rgb(0 0 0 / 0.4) 99%), rgb(0 0 0 / 0.2); /* the monitor glass card over imagery */
+  --gradient-bar-brand: linear-gradient(180deg, rgb(142 222 61 / 0.6), rgb(142 222 61 / 0.05)); /* Primary/Green fading down a duration bar */
 
   /* ---- motion: DESIGN.md durations and easings; the hero glows are marketing-only and live there ---- */
   --ease-drawer: ease-out;
@@ -408,9 +398,7 @@
   --color-status-info: var(--color-functional-blue);
   --color-status-info-bg: var(--color-functional-light-blue);
   --color-status-info-ink: var(--color-functional-dark-blue);
-  --color-status-active: var(
-    --color-functional-green-bright
-  ); /* the Step Progress Bar's active dot and status */
+  --color-status-active: var(--color-functional-green-bright); /* the Step Progress Bar's active dot and status */
 
   /* charts: Lime is the subject only; peers take register A */
   --color-chart-subject: var(--color-primary-green);

@@ -15,6 +15,15 @@ components (bench, notebook, chains) because the system has none of them.
 the canonical system; the hub carries an older generated copy. This is a
 deliberate deviation from the original task text and is flagged for the CTO.
 
-**Treat both files as read-only.** Re-copy them from platform to update. Colours
-the illustration needs that the system does not carry live in
+**Treat both files as read-only.** Re-copy them from platform to update, then
+record the new commit and hashes below. `tests/vendored.test.ts` fails when a
+file's SHA-256 differs from this table, so an edit in place fails
+`mise run check`. Prettier skips both files so they stay byte-for-byte.
+
+Colours the illustration needs that the system does not carry live in
 `src/styles/scene.css` (the world register, art-direction §2), never here.
+
+| File         | SHA-256 at the source commit                                       |
+| ------------ | ------------------------------------------------------------------ |
+| `tokens.css` | `c92d060200310e449f774eb27ecf58219f016f4053ba8c4bd37c4c6531ee77a1` |
+| `fonts.css`  | `17e648824c8156b53e05ffc02ede3c32f82b8f6dcddd122ca5a4f51f05ea1633` |
