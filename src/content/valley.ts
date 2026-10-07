@@ -33,13 +33,6 @@ const later = (
 /** Hooks verbatim from the world-bible chapter map. */
 const LATER_CHAPTERS: Chapter[] = [
   later(
-    "c8",
-    "8",
-    "Partners and Traders",
-    "This plant grows without nitrogen fertiliser, and that one typically forms no partnership with root fungi.",
-    "pea",
-  ),
-  later(
     "c9",
     "9",
     "The Nitrogen Relay",
@@ -116,6 +109,14 @@ export const valleyScene: Scene = {
       anchor: { x: 0.54, y: 0.8 },
       to: "c7-root-tip",
       requires: "chapter:c7",
+    },
+    {
+      id: "pea-root",
+      label: "A pea root",
+      kind: "portal",
+      anchor: { x: 0.8, y: 0.66 },
+      to: "c8-nodule",
+      requires: "chapter:c8",
     },
     {
       id: "woodland",

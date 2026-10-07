@@ -139,6 +139,21 @@ export interface Discovery {
   evidenceTier: "observed" | "derived" | "interpreted" | "reference" | "would-do";
 }
 
+export interface OpenQuestion {
+  claim: string;
+  sides: string[];
+  sources: SourceId[];
+}
+
+/** A claim to sort by the strength of its evidence. */
+export interface Claim {
+  id: string;
+  text: string;
+  verdict: "supported" | "weak" | "unsupported";
+  /** Shown once sorted: what the evidence says, never "wrong". */
+  feedback: string;
+}
+
 export interface CodexEntry extends Reviewed {
   id: string;
   title: string;
@@ -149,7 +164,7 @@ export interface CodexEntry extends Reviewed {
   realWorld?: Fact[];
   simplification?: string;
   /** Contested items get the open-question treatment (art-direction §6.5). */
-  openQuestion?: { claim: string; sides: string[]; sources: SourceId[] };
+  openQuestion?: OpenQuestion;
   /** Historical idea shown struck through. */
   revised?: { old: string; now: string; sources: SourceId[] };
 }
@@ -367,6 +382,16 @@ export type Step = (
   | { kind: "bare-planted"; id: string; text: string; question: string; choices: Choice[] }
   /** Shares near the root and in bulk soil; a spike-in adds absolute numbers. */
   | { kind: "home-away"; id: string; text: string; question: string; choices: Choice[]; facts: Fact[] }
+  /** Chapter 8 benches (`src/ui/Partners.tsx`) on `src/sim/trade.ts`, `sorption.ts` and `nodules.ts`. */
+  | {
+      kind: "partners";
+      bench: "trade" | "survey" | "knock" | "slice" | "nitrate" | "reach";
+      text: string;
+      resultText: string;
+      facts: Fact[];
+    }
+  /** Sort claims by their evidence; the evidence card gets the open-question treatment. */
+  | { kind: "claim-sort"; text: string; claims: Claim[]; evidence: OpenQuestion; facts: Fact[] }
 ) & { onComplete?: OnComplete };
 
 export interface Mission extends Reviewed {

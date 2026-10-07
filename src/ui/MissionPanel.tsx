@@ -2,7 +2,7 @@
  * The mission panel: one step at a time, predict → observe → explain. Feedback
  * is an observation or a question, never a score.
  */
-import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { CHAPTERS, DISCOVERIES, chapter, scene as sceneById, SCENES } from "../content";
 import type { Choice, Mission, Step } from "../content/schema";
 import type { Save } from "../save/schema";
@@ -10,23 +10,32 @@ import { advance, currentStep, isScanned, setFlag, stepIndex, visibleObjects } f
 import { appendLab } from "../save/schema";
 import { RULESET_VERSION, DEFAULT_LEVERS } from "../sim/benches/leaf-jar";
 import { href, targetHref } from "../app/router";
-import { BuildCrumb, Slake } from "./Aggregates";
-import { BreathRust } from "./BreathRust";
 import { ChainBuilder } from "./ChainBuilder";
 import { Composition } from "./Composition";
-import { Exchange } from "./Exchange";
 import { FeelTest } from "./FeelTest";
-import { FoodWebWatch, Mobile, Ripple, SqueezingJar } from "./FoodWeb";
 import { HandDecompose } from "./HandDecompose";
-import { GrazerWeek, Labyrinth } from "./Labyrinth";
-import { PhDial } from "./PhDial";
-import { BarePlanted, HomeAway, RootInputs } from "./Rhizosphere";
 import { WaterAir } from "./WaterAir";
-import { WaterRoads } from "./WaterRoads";
 import { Facts } from "./common";
 import type { SceneEvent } from "../world/stage";
 
-// Chapter 11 benches load with the chapter, outside the initial JS budget.
+// Chapter benches load on demand, off the initial bundle (spec §8.2); StepBody sits in one Suspense.
+const BuildCrumb = lazy(() => import("./Aggregates").then((m) => ({ default: m.BuildCrumb })));
+const Slake = lazy(() => import("./Aggregates").then((m) => ({ default: m.Slake })));
+const BreathRust = lazy(() => import("./BreathRust").then((m) => ({ default: m.BreathRust })));
+const Exchange = lazy(() => import("./Exchange").then((m) => ({ default: m.Exchange })));
+const FoodWebWatch = lazy(() => import("./FoodWeb").then((m) => ({ default: m.FoodWebWatch })));
+const Mobile = lazy(() => import("./FoodWeb").then((m) => ({ default: m.Mobile })));
+const Ripple = lazy(() => import("./FoodWeb").then((m) => ({ default: m.Ripple })));
+const SqueezingJar = lazy(() => import("./FoodWeb").then((m) => ({ default: m.SqueezingJar })));
+const GrazerWeek = lazy(() => import("./Labyrinth").then((m) => ({ default: m.GrazerWeek })));
+const Labyrinth = lazy(() => import("./Labyrinth").then((m) => ({ default: m.Labyrinth })));
+const PhDial = lazy(() => import("./PhDial").then((m) => ({ default: m.PhDial })));
+const BarePlanted = lazy(() => import("./Rhizosphere").then((m) => ({ default: m.BarePlanted })));
+const HomeAway = lazy(() => import("./Rhizosphere").then((m) => ({ default: m.HomeAway })));
+const RootInputs = lazy(() => import("./Rhizosphere").then((m) => ({ default: m.RootInputs })));
+const WaterRoads = lazy(() => import("./WaterRoads").then((m) => ({ default: m.WaterRoads })));
+const Partners = lazy(() => import("./Partners").then((m) => ({ default: m.Partners })));
+const ClaimSort = lazy(() => import("./Partners").then((m) => ({ default: m.ClaimSort })));
 const PitWalls = lazy(() => import("./PitWalls").then((m) => ({ default: m.PitWalls })));
 
 interface Props {
@@ -699,6 +708,18 @@ function StepBody({
         </>
       );
     }
+    case "partners":
+    case "claim-sort":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          {step.kind === "partners" ? (
+            <Partners step={step} onDone={next} />
+          ) : (
+            <ClaimSort step={step} onDone={next} />
+          )}
+        </>
+      );
     case "rumor":
       return (
         <>
@@ -822,7 +843,11 @@ export function MissionPanel(props: Props) {
               )}
             </>
           ) : (
-            step && <StepBody {...props} mission={m} step={step} />
+            step && (
+              <Suspense fallback={<p className="hint">Setting up the bench…</p>}>
+                <StepBody {...props} mission={m} step={step} />
+              </Suspense>
+            )
           )}
         </div>
       )}

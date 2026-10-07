@@ -1193,6 +1193,142 @@
     "flat": "c7-root-tip-71/390x844/flat.avif",
     "ground": "#161c19"
    }
+  ],
+  "c8-nodule:83": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "bulk",
+      "file": "c8-nodule-83/1440x900/0-bulk.avif",
+      "sha": "2f0b3fd0c0cf50061bb9340467a7462776dd676c21e09233bbd8826778ef28f2"
+     },
+     {
+      "id": "grains",
+      "file": "c8-nodule-83/1440x900/1-grains.avif",
+      "sha": "8fc6f5e6fcaae7094c00c527fce3dd5679eb9ac0e4a8e31820aa794c8197f02d"
+     },
+     {
+      "id": "root",
+      "file": "c8-nodule-83/1440x900/2-root.avif",
+      "sha": "c662bc33475d06586bd9b9998fbf0f53c34a215cf91e52fd49e2b8084449ebfa"
+     },
+     {
+      "id": "nodules",
+      "file": "c8-nodule-83/1440x900/3-nodules.avif",
+      "sha": "c124c708a66c6378d7102a3dd31e1ac034e61ed6d8493ad2a20a075e3c5c6121"
+     },
+     {
+      "id": "grain",
+      "file": "c8-nodule-83/1440x900/4-grain.avif",
+      "sha": "17a502c20250d543fba2b0e7ecff608c11891b2c0264e918d8e55b46f619c46a"
+     }
+    ],
+    "flat": "c8-nodule-83/1440x900/flat.avif",
+    "ground": "#161c19"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "bulk",
+      "file": "c8-nodule-83/390x844/0-bulk.avif",
+      "sha": "6f4b3af695d76edb26d2432d0650436b4a541f57990285346141d14aea4fc34e"
+     },
+     {
+      "id": "grains",
+      "file": "c8-nodule-83/390x844/1-grains.avif",
+      "sha": "9d0334ee0624a5d1f94a9c93e5b8d634f3400d36a53f45aa2fa8df55a7c03ef9"
+     },
+     {
+      "id": "root",
+      "file": "c8-nodule-83/390x844/2-root.avif",
+      "sha": "8ba824ee19689c93d786e15693db8c148fd42004f2e1eeb56af63eba14a09d40"
+     },
+     {
+      "id": "nodules",
+      "file": "c8-nodule-83/390x844/3-nodules.avif",
+      "sha": "827d448ef031d15cf9520693796a16f305b386274023f073068eb359b5c9e16f"
+     },
+     {
+      "id": "grain",
+      "file": "c8-nodule-83/390x844/4-grain.avif",
+      "sha": "f1491ce745cf44c75d63a0cc793eacf5bd2556e099574d2f63b0c537a4aaa3a7"
+     }
+    ],
+    "flat": "c8-nodule-83/390x844/flat.avif",
+    "ground": "#161c19"
+   }
+  ],
+  "c8-arbuscule:89": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c8-arbuscule-89/1440x900/0-back.avif",
+      "sha": "7b03e821276735d8b66f86f9dde43d58ab35d5234852bd2ea6ab7d4268edd723"
+     },
+     {
+      "id": "cells",
+      "file": "c8-arbuscule-89/1440x900/1-cells.avif",
+      "sha": "3097f2a24191689df08662e285dc88e6f2369f383d2d308e59e5bfefa65d35af"
+     },
+     {
+      "id": "fungus",
+      "file": "c8-arbuscule-89/1440x900/2-fungus.avif",
+      "sha": "e027c92734c5d1476c6a0b92cbb2db2a7037f4c84e64beb25e05384038bca9cb"
+     },
+     {
+      "id": "tree",
+      "file": "c8-arbuscule-89/1440x900/3-tree.avif",
+      "sha": "4168fa40b142ca94885af49130be81ba344925d340800ed46915d768071a6f15"
+     },
+     {
+      "id": "grain",
+      "file": "c8-arbuscule-89/1440x900/4-grain.avif",
+      "sha": "025e239c420daf53044c8f174bc06311fe74a918b6092bbacf0cfbb9ccfe2fcb"
+     }
+    ],
+    "flat": "c8-arbuscule-89/1440x900/flat.avif",
+    "ground": "#161c19"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c8-arbuscule-89/390x844/0-back.avif",
+      "sha": "ba85fe7db6f7ede47575ba7191d9bc1e9a91339d09cecef5e3f0a3baac21a142"
+     },
+     {
+      "id": "cells",
+      "file": "c8-arbuscule-89/390x844/1-cells.avif",
+      "sha": "c3d2a9a22d04ecc9e4ba7df9cd9351ea81372060a6fd86e84ab2570d409185be"
+     },
+     {
+      "id": "fungus",
+      "file": "c8-arbuscule-89/390x844/2-fungus.avif",
+      "sha": "731f8c4e64d114f4fa782bbfc31b72751f9d2ccf6e2e34eabac69c7cf7b404ad"
+     },
+     {
+      "id": "tree",
+      "file": "c8-arbuscule-89/390x844/3-tree.avif",
+      "sha": "df91df7fdb41e5996f493f3053399fd8af25530a7b107560c045afc20f6d0bd6"
+     },
+     {
+      "id": "grain",
+      "file": "c8-arbuscule-89/390x844/4-grain.avif",
+      "sha": "fa9aec20408d7a878f7be127e839a0b3baa05d1c09e8e8361c8906b624666b4f"
+     }
+    ],
+    "flat": "c8-arbuscule-89/390x844/flat.avif",
+    "ground": "#161c19"
+   }
   ]
  },
  "timelapses": {

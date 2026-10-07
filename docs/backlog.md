@@ -292,12 +292,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Depends on:** T20
 - **Done:** `src/sim/rhizosphere.ts` (exudation share and bare plot on the T20 food-web rules, conserving for every plot, band end, water and removal set); missions c7-m1–m4 on the `c7-root-tip` scene (`recipes/c7-root-tip.ts`, baked); every planted result is a 5–21 % range. Deferred: the S8 root-tip shader (T15's lane), the `c7-home-away` and `c7-season` scenes and the cause chain.
 
-### T22 — Chapter 8: Partners and Traders
+### T22 — Chapter 8: Partners and Traders · **done**
 
 - **Goal:** mycorrhiza, nodules, phosphorus.
 - **Scope:** trade and P-sorption rules; nodule and arbuscule scenes; pea/bean/spinach/beet contrast; content `c8-*`.
 - **Acceptance:** spinach and beet show no partner; pea/bean partner specificity enforced; wood-wide-web item uses open-question treatment.
 - **Depends on:** T21
+- **Done:** `src/sim/trade.ts` and `src/sim/sorption.ts` (root/hair/acid/fungus P uptake with C paid, pH-dependent sorption, conserving P and C for every crop, soil P, pH and strategy) and `src/sim/nodules.ts` (rhizobia specificity, pink vs white nodules, nitrate off-switch, conserving N and C); missions c8-m1–m7 on the baked `c8-nodule` and `c8-arbuscule` scenes; spinach and sugar beet form no partner in either rule set; the forest-network claim sort uses the open-question card. Deferred: the `c8-depletion-halo` and `c8-forest-network` scenes and the cause chains.
 
 ### T23 — Chapter 9: The Nitrogen Relay
 

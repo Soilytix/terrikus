@@ -4,6 +4,7 @@
  */
 import { c4Organisms } from "./chapters/c4";
 import { C6_ORGANISMS } from "./chapters/c6/organisms";
+import { C8_ORGANISMS } from "./chapters/c8/organisms";
 import type { Organism } from "./schema";
 
 export const ORGANISMS: Organism[] = [
@@ -194,6 +195,7 @@ export const ORGANISMS: Organism[] = [
   },
   ...c4Organisms,
   ...C6_ORGANISMS,
+  ...C8_ORGANISMS,
 ];
 
 export const organism = (id: string) => ORGANISMS.find((o) => o.id === id);

@@ -3146,3 +3146,74 @@ input[type="range"] {
 .jar-abs .jar-seg[data-row="2"] {
   opacity: 0.35;
 }
+/* Chapter 8: partner benches, nodule slices and the claim sort (T22) */
+.partners .segmented {
+  margin-bottom: 4px;
+}
+.knock-log {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+}
+.knock-log li[data-out="nodule"] {
+  font-weight: 600;
+}
+.nodule-slices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+.nodule-slice {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+.nodule-slice p {
+  margin: 0;
+}
+.nodule-swatch {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-ink);
+  background: var(--w-pale);
+}
+.nodule-swatch[data-colour="pink"] {
+  background: color-mix(in srgb, var(--w-oxide) 45%, var(--w-pale));
+}
+.o2-meter {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  font-size: 11px;
+}
+.o2-zone {
+  padding: 4px;
+  border-radius: 4px;
+  background: var(--color-table-rule);
+}
+.o2-zone[data-level="high"] {
+  background: var(--color-ink-muted);
+  color: var(--color-text-on-dark);
+}
+.o2-zone[data-level="mid"] {
+  background: color-mix(in srgb, var(--color-ink-muted) 45%, transparent);
+}
+.claim-sort {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.claim p {
+  margin: 0 0 6px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .open-question.flicker {
+    animation: open-flicker 2.4s ease-in-out infinite;
+  }
+}
+@keyframes open-flicker {
+  50% {
+    border-color: var(--color-border-default);
+  }
+}
