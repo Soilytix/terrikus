@@ -71,10 +71,12 @@ export const ORGANISMS: Organism[] = [
       },
       {
         id: "pore-cover",
-        text: "Cells occupy only a small fraction of the pore space, by common estimates a few percent at most: most of the habitat is empty.",
+        text: "Microbes cover only a minute fraction of the soil's internal surface: one estimate is about a millionth of a percent, and well under 1 % even on the most optimistic assumptions. Most of the habitat is unoccupied.",
         confidence: "estimate",
         evidence: "inferred",
-        sources: ["young-crawford-2004", "young-ritz-2000"],
+        sources: ["young-crawford-2004"],
+        simplification:
+          "A surface-area estimate, not a share of pore volume; the exact figure varies with clay, moisture and food supply.",
       },
     ],
     art: "specimen-bacterium",

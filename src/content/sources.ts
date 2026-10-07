@@ -178,6 +178,13 @@ export const SOURCES = {
     link: "https://doi.org/10.1128/aem.56.3.782-787.1990",
     status: "doi-checked",
   },
+  "torsvik-ovreas-2002": {
+    short: "Torsvik & Øvreås 2002",
+    citation:
+      "Torsvik, V. & Øvreås, L. (2002). Microbial diversity and function in soil: from genes to ecosystems. *Curr. Opin. Microbiol.* 5, 240–245.",
+    link: "https://doi.org/10.1016/S1369-5274(02)00324-7",
+    status: "doi-checked",
+  },
   "roesch-2007": {
     short: "Roesch et al. 2007",
     citation:

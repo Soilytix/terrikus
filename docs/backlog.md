@@ -182,13 +182,14 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Depends on:** —.
 - **Outcome:** `paint` runs in `src/world/painter/paint.worker.ts` via `remote.ts` (main-thread fallback); `remote.test.ts` hashes worker against main thread for every recipe; `tools/plate.ts --bench`; `e2e/paint-worker.spec.ts` profiles a portal zoom and asserts no painting on the main thread. The 50 ms bar is not met: GL texture upload of the SVG layers (`texImage2D`) and the governor's fallback still make long main-thread tasks under software GL, and T07's ≤ 150 ms on M1 still needs a quiet machine (bench numbers swung 2.5× on a loaded host).
 
-### R11 — Science follow-ups needing full text (S M1, L1, L2)
+### R11 — Science follow-ups needing full text (S M1, L1, L2) · **done**
 
 - **Problem:** three claims were softened rather than confirmed: the pore-occupancy figure (now "a few percent at most", `young-crawford-2004`, `young-ritz-2000`), the bacteria count (now "10⁸–10¹⁰ depending on method", NRCS only), and the Anthony 2023 species share (caveat dropped).
 - **Direction:** read the full texts; add `torsvik-ovreas-2002` for direct counts; set the exact figure and page in `docs/sources.md` notes; keep "active" and "occupancy" as separate claims. A named scientist reviews prologue and chapter 2 and moves nodes to `approved` (agents never do).
 - **Acceptance:** each claim cites a source whose text states it; `docs/sources.md` rows `doi-checked`; `mise run check` green.
 - **Progress (2026-10-06):** bacteria count now also cites `raynaud-nunan-2014` (direct thin-section counts, full text read); the Anthony 2023 share carries the phage caveat its text states. Still open: the pore-occupancy figure (no open full text of `young-crawford-2004` or `young-ritz-2000`) and `torsvik-ovreas-2002` (no open full text). See `docs/sources.md` §2, Full-text checks.
-- **Depends on:** a named reviewer for the approval part.
+- **Done (2026-10-07):** full texts read. `young-crawford-2004` p. 1634 gives about 10⁻⁶ % of the soil's *surface area* covered by microbes, not a share of pore space; `pore-cover` and `p-cover` now state the surface figure and cite only it. `young-ritz-2000` states no occupancy figure and is dropped from both facts. `torsvik-ovreas-2002` is registered and cited by `p-bact-gram` (p. 240). Page-level notes in `docs/sources.md` §2. All nodes stay `draft`.
+- **Depends on:** a named reviewer for the approval part, which is outside this item's acceptance.
 
 ### R12 — Public-repo hygiene of `docs/research/` (S L14) · **done**
 

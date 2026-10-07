@@ -67,6 +67,7 @@ These DOIs come from `docs/research/curriculum.md`, which checked them on 2026-1
 | `anthony-2023` | Anthony, M. A., Bender, S. F. & van der Heijden, M. G. A. (2023). Enumerating soil biodiversity. *PNAS* 120, e2304663120. | https://doi.org/10.1073/pnas.2304663120 | ref | doi-checked | P, 6 |
 | `raynaud-nunan-2014` | Raynaud, X. & Nunan, N. (2014). Spatial ecology of bacteria at the microscale in soil. *PLoS ONE* 9, e87217. | https://doi.org/10.1371/journal.pone.0087217 | cc-by | doi-checked | P, 1 |
 | `torsvik-1990` | Torsvik, V., Goksøyr, J. & Daae, F. L. (1990). High diversity in DNA of soil bacteria. *Appl. Environ. Microbiol.* 56, 782–787. | https://doi.org/10.1128/aem.56.3.782-787.1990 | ref | doi-checked | P |
+| `torsvik-ovreas-2002` | Torsvik, V. & Øvreås, L. (2002). Microbial diversity and function in soil: from genes to ecosystems. *Curr. Opin. Microbiol.* 5, 240–245. | https://doi.org/10.1016/S1369-5274(02)00324-7 | ref | doi-checked | P |
 | `roesch-2007` | Roesch, L. F. W. et al. (2007). Pyrosequencing enumerates and contrasts soil microbial diversity. *ISME J* 1, 283–290. | https://doi.org/10.1038/ismej.2007.53 | ref | doi-checked | P |
 | `young-crawford-2004` | Young, I. M. & Crawford, J. W. (2004). Interactions and self-organization in the soil-microbe complex. *Science* 304, 1634–1637. | https://doi.org/10.1126/science.1097394 | ref | doi-checked | P, 1 |
 | `blagodatskaya-kuzyakov-2013` | Blagodatskaya, E. & Kuzyakov, Y. (2013). Active microorganisms in soil: critical review of estimation criteria and approaches. *Soil Biol. Biochem.* 67, 192–211. | https://doi.org/10.1016/j.soilbio.2013.08.024 | ref | doi-checked | P, 6, 14 |
@@ -189,12 +190,13 @@ These DOIs come from `docs/research/curriculum.md`, which checked them on 2026-1
 
 ### Full-text checks (R11)
 
-Where a claim was checked against the source's full text, the location of the stating passage. Checked 2026-10-06.
+Where a claim was checked against the source's full text, the location of the stating passage. Checked 2026-10-06 unless dated otherwise.
 
 - `anthony-2023` (Europe PMC PMC10437432): Results, the paragraph after the virus estimates, and Fig. 2: the soil share averaged over the lower, central and upper estimates is 58.5 ± 14.7 %, excluding phage; including phage it is 20.8 ± 11 %. The 59 % is a mean of per-group shares, so it is not "dominated by microbial taxa".
 - `raynaud-nunan-2014` (Europe PMC PMC3905020): Introduction, "a single gram of soil can harbour up to 10¹⁰ bacterial cells"; Results and Table 1, epifluorescence counts in thin sections give ca. 1.09 × 10⁷ to 1.16 × 10¹⁰ cells g⁻¹ (topsoil 0–30 cm mean 1.03 × 10⁹).
-- `young-crawford-2004`, `young-ritz-2000`: no open full text found (Unpaywall, Semantic Scholar, Europe PMC, Glasgow Enlighten, UNE RUNE). The pore-occupancy figure is not yet verified.
-- `torsvik-ovreas-2002` (not registered): Crossref confirms DOI 10.1016/S1369-5274(02)00324-7 (*Curr. Opin. Microbiol.* 5, 240–245), but no open full text was found, so it is not cited yet.
+- `young-crawford-2004` (full text, checked 2026-10-07): p. 1634, "Biological Diversity": "the fraction of the surface area covered by soil microbes is only about 10⁻⁶ %", and "considerably less than 1%, even with the most optimistic balance of inputs". This is a share of the soil's surface area, not of its pore volume or pore space; `pore-cover` and `p-cover` now say surface. The same paragraph's "10¹² bacteria" gives no soil mass, so it is not cited for counts.
+- `young-ritz-2000` (full text, checked 2026-10-07): states no occupancy figure. §3.3 (p. 205–207) covers habitable pore space: habitat is defined by the pore network (p. 205), and most cells sit in pores about three times their diameter (p. 207, citing Kilbertus 1980). It is no longer cited for the occupancy claim; it stays on the prologue reading list.
+- `torsvik-ovreas-2002` (full text, checked 2026-10-07): p. 240, Introduction, "One gram of soil may harbor up to 10 billion microorganisms"; Fig. 1 caption, DAPI direct count 4.2 × 10¹⁰ cells g⁻¹ dry soil against 4.2 × 10⁶ colony-forming units g⁻¹ by plating. Cited by `p-bact-gram` for the upper end and the method dependence.
 
 ## 3. Learning-science sources
 

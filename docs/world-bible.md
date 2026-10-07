@@ -228,7 +228,7 @@ Mission steps follow the core loop: notice → predict → change → observe �
 
 1. Soil is a habitat. By volume it is roughly half solids and half pore space, and the pore space is shared between water and air. Life is a tiny fraction by volume but is everywhere.
 2. Things change dramatically with scale. Scale bars are part of reading any picture.
-3. Most microbes in a handful are dormant (about 0.1–2 % of biomass is active). Separately, cells occupy only a small fraction of the pore space, by common estimates a few percent at most (`young-crawford-2004`, `young-ritz-2000`; exact figure to confirm in full text).
+3. Most microbes in a handful are dormant (about 0.1–2 % of biomass is active). Separately, microbes cover only a minute fraction of the soil's internal surface, about 10⁻⁶ % by one estimate and well under 1 % on any optimistic assumption (`young-crawford-2004`, p. 1634; a surface-area figure, not a share of pore volume).
 
 **Scenes**
 
@@ -273,7 +273,7 @@ Mission steps follow the core loop: notice → predict → change → observe �
 
 - 10⁸–10¹⁰ bacterial cells per gram, depending on the counting method (`nrcs-soil-biology-primer`, `raynaud-nunan-2014`, estimate, order of magnitude).
 - Thousands to tens of thousands of bacterial taxa per gram (`torsvik-1990`, `roesch-2007`, estimate).
-- Cells occupy only a small fraction of the pore space, a few percent at most (`young-crawford-2004`, `young-ritz-2000`, estimate).
+- Microbes cover only a minute fraction of the soil's internal surface, about 10⁻⁶ % by one estimate, well under 1 % (`young-crawford-2004`, p. 1634, estimate; surface area, not pore volume).
 - Soil may host about 59 % ± 15 % of species, excluding phages; about 21 % with them (`anthony-2023`, estimate; contested register).
 
 **Contested items shown:** the 59 % species estimate carries its ± and the phage caveat (the 59 % is a mean of per-group shares excluding phages; `anthony-2023`).
