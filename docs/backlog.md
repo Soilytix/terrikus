@@ -303,12 +303,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** "N accounted for: 100.0 %"; gene ≠ rate mission requires a second measurement; no customer framing.
 - **Depends on:** T18, T21
 
-### T24 — Chapter 5: Charged Surfaces
+### T24 — Chapter 5: Charged Surfaces · **done**
 
 - **Goal:** CEC, clays, pH.
 - **Scope:** exchange rules; platelet scene; pH dial; content `c5-*`.
 - **Acceptance:** leaching of anions vs retention of cations shown; pH-predictor mission accepts association-not-cause answer.
 - **Depends on:** T16, T18
+- **Done:** `src/sim/exchange.ts` (integer cation exchange, strongest-held first, rain drains the soil water, every ion conserved; pH dial teaching curves, aluminium below pH 5.5); content in `src/content/chapters/c5/`; recipe `c5-platelet` (baked, cell scale); `src/ui/Exchange.tsx`, `src/ui/PhDial.tsx`; opens from the map's acid woodland edge; e2e `e2e/c5.spec.ts`. Open: `c5-vertisol`, `c5-m4` (acidification by ammonium fertiliser), the water-versus-CaCl₂ lens payoff and the two expected chains.
 
 ### T25 — Chapter 10: Disease and Defence
 

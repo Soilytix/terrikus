@@ -31,7 +31,6 @@ const later = (
 /** Hooks verbatim from the world-bible chapter map. */
 const LATER_CHAPTERS: Chapter[] = [
   later("c4", "4", "Breath and Rust", "The flooded field smells of eggs, and the rice is fine.", "rice"),
-  later("c5", "5", "Charged Surfaces", "The fertiliser stayed exactly where the clay was.", "spinach"),
   later("c6", "6", "Who Eats Whom", "Bacteria near the root multiply, then crash.", "forest"),
   later(
     "c7",
@@ -198,6 +197,15 @@ export const valleyMapScene: Scene = {
       kind: "glimpse",
       anchor: { x: 0.34, y: 0.3 },
       to: "c5",
+      hiddenBy: "chapter:c5",
+    },
+    {
+      id: "platelet",
+      label: "A clay platelet at the woodland edge",
+      kind: "portal",
+      anchor: { x: 0.34, y: 0.3 },
+      to: "c5-platelet",
+      requires: "chapter:c5",
     },
     { id: "forest", label: "Forest floor", kind: "glimpse", anchor: { x: 0.14, y: 0.2 }, to: "c6" },
     { id: "root", label: "A spinach root", kind: "glimpse", anchor: { x: 0.44, y: 0.42 }, to: "c7" },
@@ -242,6 +250,18 @@ export const DISCOVERIES: Discovery[] = [
     statement: "Hyphae are string: roots and fungi tie crumbs together.",
     evidenceTier: "derived",
   },
+  {
+    id: "d-c5-magnet",
+    statement: "Clay is a magnet for cations: acid knocked potassium off first and calcium last.",
+    evidenceTier: "observed",
+  },
+  {
+    id: "d-c5-leaky",
+    statement: "Nitrate washed through; ammonium stayed on the clay.",
+    evidenceTier: "observed",
+  },
+  { id: "d-c5-log", statement: "pH is logarithmic: one unit is ten times.", evidenceTier: "reference" },
+  { id: "d-c5-association", statement: "Strong association is not yet cause.", evidenceTier: "interpreted" },
   {
     id: "d-c2-conserved",
     statement: "Carbon is never destroyed; I traced it into air, biomass and minerals.",

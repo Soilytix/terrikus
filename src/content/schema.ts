@@ -309,6 +309,9 @@ export type Step = (
       facts: Fact[];
       attribution?: Attribution;
     }
+  /** Chapter 5 surface (`src/sim/exchange.ts`): seat cations then add acid, or fertilise then rain. */
+  | { kind: "exchange"; mode: "chairs" | "leaky"; text: string; resultText: string; facts: Fact[] }
+  | { kind: "ph-dial"; text: string; resultText: string; facts: Fact[] }
 ) & { onComplete?: OnComplete };
 
 export interface Mission extends Reviewed {

@@ -13,9 +13,11 @@ import { href, targetHref } from "../app/router";
 import { BuildCrumb, Slake } from "./Aggregates";
 import { ChainBuilder } from "./ChainBuilder";
 import { Composition } from "./Composition";
+import { Exchange } from "./Exchange";
 import { FeelTest } from "./FeelTest";
 import { HandDecompose } from "./HandDecompose";
 import { GrazerWeek, Labyrinth } from "./Labyrinth";
+import { PhDial } from "./PhDial";
 import { WaterAir } from "./WaterAir";
 import { WaterRoads } from "./WaterRoads";
 import { Facts } from "./common";
@@ -508,6 +510,20 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           <WaterRoads step={step} reduced={reduced} onDone={next} />
+        </>
+      );
+    case "exchange":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <Exchange mode={step.mode} resultText={step.resultText} facts={step.facts} onDone={next} />
+        </>
+      );
+    case "ph-dial":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <PhDial resultText={step.resultText} facts={step.facts} onDone={next} />
         </>
       );
     case "rumor":

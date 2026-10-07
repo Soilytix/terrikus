@@ -845,6 +845,54 @@
     "flat": "c3-rain-profile-79/390x844/flat.avif",
     "ground": "#423c2d"
    }
+  ],
+  "c5-platelet:53": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c5-platelet-53/1440x900/0-back.avif",
+      "sha": "5f075995fb5b449d846f873184db65a682ccfc6f9f95c9874490d79fde9856ed"
+     },
+     {
+      "id": "clay",
+      "file": "c5-platelet-53/1440x900/1-clay.avif",
+      "sha": "ef6fec209d96c29dae59abf0d0489311004db55b9b07280006443cd2aa580350"
+     },
+     {
+      "id": "ions",
+      "file": "c5-platelet-53/1440x900/2-ions.avif",
+      "sha": "f2de1129d3414b46adc4d599f147d87753fd2387db50f63c604f08c90e0d444a"
+     }
+    ],
+    "flat": "c5-platelet-53/1440x900/flat.avif",
+    "ground": "#dcedee"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c5-platelet-53/390x844/0-back.avif",
+      "sha": "14d504891cb6a9f52ff8c68f96eecbec877a2521a032a1da4abf966744a0d284"
+     },
+     {
+      "id": "clay",
+      "file": "c5-platelet-53/390x844/1-clay.avif",
+      "sha": "768ebaf27567a341dab5aaa694d8dfe33997ef4976038d1bdb0931c3cf64bcc6"
+     },
+     {
+      "id": "ions",
+      "file": "c5-platelet-53/390x844/2-ions.avif",
+      "sha": "d5227dc77e6a4534cb95d62b2af36a2356d79d7e48811d1e53c565192f20f818"
+     }
+    ],
+    "flat": "c5-platelet-53/390x844/flat.avif",
+    "ground": "#dcedee"
+   }
   ]
  },
  "timelapses": {}

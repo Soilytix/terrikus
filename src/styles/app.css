@@ -2571,6 +2571,123 @@ input[type="range"] {
   }
 }
 
+/* Chapter 5 (T24): exchange surface, pH dial */
+.exchange-drawing {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  display: block;
+}
+.exchange-drawing .platelet {
+  fill: var(--w-clay);
+}
+.exchange-drawing .charge {
+  font-size: 5px;
+  text-anchor: middle;
+  fill: var(--w-pale);
+}
+.exchange-drawing .soil-water {
+  fill: var(--w-film);
+}
+.exchange-drawing .drain {
+  fill: var(--w-stone-1);
+  opacity: 0.35;
+}
+.exchange-drawing .ion {
+  stroke: var(--color-ink);
+  stroke-width: 0.5;
+}
+.ion-H {
+  fill: var(--w-oxide);
+}
+.ion-Ca {
+  fill: var(--w-pale);
+}
+.ion-Mg {
+  fill: var(--w-gley);
+}
+.ion-K {
+  fill: var(--w-sand);
+}
+.ion-NH4 {
+  fill: var(--w-foliage);
+}
+.ion-NO3 {
+  fill: var(--w-deep);
+}
+.exchange-log {
+  font-size: 13.5px;
+  margin: 4px 0 8px;
+  padding-left: 20px;
+}
+.ph-dial {
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+.ph-bars {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0;
+  font-size: 13.5px;
+}
+.ph-bar {
+  display: grid;
+  grid-template-columns: 9em 1fr;
+  gap: 8px;
+  align-items: center;
+}
+.ph-bar dt,
+.ph-bar dd {
+  margin: 0;
+}
+.ph-bar dd {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.ph-bar .bar,
+.community-bar {
+  flex: 1;
+  height: 10px;
+  display: flex;
+  background: var(--color-surface-page-alt);
+  border: 1px solid var(--color-border-default);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.ph-bar .bar > span {
+  display: block;
+  transition: width 0.2s var(--ease-chart);
+}
+.ph-bar .bar[data-level="high"] > span {
+  background: var(--w-foliage);
+}
+.ph-bar .bar[data-level="mid"] > span {
+  background: var(--w-sand);
+}
+.ph-bar .bar[data-level="low"] > span {
+  background: var(--w-stone-1);
+}
+.ph-bar .bar[data-level="al"] > span {
+  background: var(--w-oxide);
+}
+.ph-community {
+  margin: 8px 0;
+}
+.community-bar .acid {
+  background: var(--w-oxide);
+}
+.community-bar .neutral {
+  background: var(--w-gley);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ph-bar .bar > span {
+    transition: none;
+  }
+}
+
 /* Sound captions (T32) */
 .sound-captions {
   position: fixed;

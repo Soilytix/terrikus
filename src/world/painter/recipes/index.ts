@@ -5,6 +5,7 @@ import { c1GrainRuler } from "./c1-grain-ruler";
 import { c1Labyrinth } from "./c1-labyrinth";
 import { c3Drain } from "./c3-drain";
 import { c3RainProfile } from "./c3-rain-profile";
+import { c5Platelet } from "./c5-platelet";
 import { fieldDawn } from "./field-dawn";
 import { handful } from "./handful";
 import { hedgeEdge } from "./hedge-edge";
@@ -30,4 +31,5 @@ export const RECIPES: Record<string, Recipe> = {
   "c1-labyrinth": c1Labyrinth,
   "c3-drain": c3Drain,
   "c3-rain-profile": c3RainProfile,
+  "c5-platelet": c5Platelet,
 };
