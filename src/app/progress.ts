@@ -202,6 +202,20 @@ export function lensAvailable(save: Save): boolean {
   return CHAPTERS.some((c) => c.lens && save.chaptersUnlocked.includes(c.id));
 }
 
+/** Review shortcut (`?unlock`, internal profile only): every built chapter and the map open. */
+export function unlockAll(save: Save): Save {
+  const built = CHAPTERS.filter((c) => c.playable);
+  const rumors = Object.fromEntries(built.map((c) => [rumorOf(c), "glimpsed" as const]));
+  return setFlag(
+    {
+      ...save,
+      chaptersUnlocked: add(save.chaptersUnlocked, ...built.map((c) => c.id)),
+      rumors: { ...rumors, ...save.rumors },
+    },
+    "map-open",
+  );
+}
+
 export function setFlag(save: Save, flag: string): Save {
   return save.flags.includes(flag) ? save : { ...save, flags: add(save.flags, flag) };
 }

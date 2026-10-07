@@ -29,6 +29,7 @@ import {
   viewRumors,
   visibleObjects,
   visit,
+  unlockAll,
 } from "./progress";
 import { href, parse, targetHref, type NotebookTab } from "./router";
 import { prefersReduced, useGame } from "./store";
@@ -108,6 +109,12 @@ export function App() {
         CHAPTERS.findLast((c) => c.playable && save.chaptersUnlocked.includes(c.id))?.id ??
         "prologue");
   const mission = activeMission(chapterId, save);
+
+  useEffect(() => {
+    if (__SW_PROFILE__ === "internal" && new URLSearchParams(window.location.search).has("unlock"))
+      update(unlockAll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once on load
+  }, []);
 
   // Arrivals: stamps, `go` steps, and where to resume.
   useEffect(() => {

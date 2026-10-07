@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { RUMORS, chapter, scene } from "../src/content";
+import { CHAPTERS, RUMORS, chapter, scene } from "../src/content";
 import { freshSave, type Save } from "../src/save/schema";
 import {
   activeMission,
@@ -11,6 +11,7 @@ import {
   glimpse,
   recallOnReturn,
   scan,
+  unlockAll,
   viewRumors,
   visibleObjects,
   visit,
@@ -24,6 +25,12 @@ const finish = (save: Save, id: string): Save => {
 };
 
 describe("progress", () => {
+  it("unlockAll opens every built chapter and the map", () => {
+    const s = unlockAll(freshSave());
+    for (const c of CHAPTERS.filter((c) => c.playable)) expect(chapterState(c, s)).toBe("open");
+    expect(s.flags).toContain("map-open");
+  });
+
   it("starts in the prologue with p-m1 active", () => {
     const s = freshSave();
     expect(activeMission("prologue", s)?.id).toBe("p-m1");
