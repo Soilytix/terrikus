@@ -7,6 +7,7 @@ import { c11Bundle } from "./chapters/c11";
 import { c6Bundle, C6_DISCOVERIES } from "./chapters/c6";
 import { c7Bundle, C7_DISCOVERIES } from "./chapters/c7";
 import { c8Bundle, C8_DISCOVERIES } from "./chapters/c8";
+import { c9Bundle, C9_DISCOVERIES } from "./chapters/c9";
 import { leafBundle } from "./chapters/leaf";
 import { prologueBundle } from "./chapters/prologue";
 import { MATERIALS, PROCESSES } from "./processes";
@@ -25,6 +26,7 @@ const BUNDLES: ChapterBundle[] = [
   c6Bundle,
   c7Bundle,
   c8Bundle,
+  c9Bundle,
   c11Bundle,
   ...LATER_BUNDLES,
 ];
@@ -60,4 +62,10 @@ export const FIELD_CARDS: FieldCard[] = [
 export const fieldCard = (id: string) => FIELD_CARDS.find((c) => c.item.id === id);
 
 export { ORGANISMS, PROCESSES, MATERIALS };
-export const DISCOVERIES = [...VALLEY_DISCOVERIES, ...C6_DISCOVERIES, ...C7_DISCOVERIES, ...C8_DISCOVERIES];
+export const DISCOVERIES = [
+  ...VALLEY_DISCOVERIES,
+  ...C6_DISCOVERIES,
+  ...C7_DISCOVERIES,
+  ...C8_DISCOVERIES,
+  ...C9_DISCOVERIES,
+];

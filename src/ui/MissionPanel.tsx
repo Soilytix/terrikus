@@ -36,6 +36,13 @@ const RootInputs = lazy(() => import("./Rhizosphere").then((m) => ({ default: m.
 const WaterRoads = lazy(() => import("./WaterRoads").then((m) => ({ default: m.WaterRoads })));
 const Partners = lazy(() => import("./Partners").then((m) => ({ default: m.Partners })));
 const ClaimSort = lazy(() => import("./Partners").then((m) => ({ default: m.ClaimSort })));
+const AmoaReading = lazy(() => import("./NitrogenRelay").then((m) => ({ default: m.AmoaReading })));
+const IncubationReading = lazy(() =>
+  import("./NitrogenRelay").then((m) => ({ default: m.IncubationReading })),
+);
+const LeakTable = lazy(() => import("./NitrogenRelay").then((m) => ({ default: m.LeakTable })));
+const RelaySeason = lazy(() => import("./NitrogenRelay").then((m) => ({ default: m.RelaySeason })));
+const StrawRun = lazy(() => import("./NitrogenRelay").then((m) => ({ default: m.StrawRun })));
 const PitWalls = lazy(() => import("./PitWalls").then((m) => ({ default: m.PitWalls })));
 
 interface Props {
@@ -720,6 +727,148 @@ function StepBody({
           )}
         </>
       );
+    case "relay": {
+      // `measure` holds the legs handed on so far.
+      const leg = step.legs[measure.length];
+      const pick = leg?.choices.find((c) => c.id === picked[0]);
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          {measure.length > 0 && (
+            <ol className="baton" aria-label="Handoffs so far">
+              {step.legs.slice(0, measure.length).map((l) => (
+                <li key={l.id}>
+                  {l.from} → {l.to}: <b>{l.choices.find((c) => c.ok)?.label}</b>
+                </li>
+              ))}
+            </ol>
+          )}
+          {leg ? (
+            <>
+              <p className="step-text">
+                Who carries the baton from <b>{leg.from}</b> to <b>{leg.to}</b>?
+              </p>
+              <Choices choices={leg.choices} picked={picked} setPicked={setPicked} locked={pick?.ok} />
+              {pick && !pick.ok && (
+                <div className="explain-card" role="note" aria-live="polite">
+                  <b>Misplaced handoff.</b> {pick.feedback}
+                </div>
+              )}
+              {pick?.ok && (
+                <>
+                  <Feedback choices={leg.choices} picked={picked} />
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => {
+                      setMeasure([...measure, leg.id]);
+                      setPicked([]);
+                    }}
+                  >
+                    Hand on the baton
+                  </button>
+                </>
+              )}
+            </>
+          ) : (
+            <>
+              <RelaySeason />
+              <Facts facts={step.facts} />
+              <button type="button" className="btn btn-primary" onClick={next}>
+                Continue
+              </button>
+            </>
+          )}
+        </>
+      );
+    }
+    case "straw-run":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <StrawRun facts={step.facts} />
+          <button type="button" className="btn btn-primary" onClick={next}>
+            Continue
+          </button>
+        </>
+      );
+    case "leak-hunt": {
+      const leaks = step.spots.filter((s) => s.ok);
+      const found = leaks.filter((s) => picked.includes(s.id));
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <Choices
+            choices={step.spots}
+            multi
+            picked={picked}
+            setPicked={(p) => setPicked([...new Set([...picked, ...p])])}
+          />
+          <Feedback choices={step.spots} picked={picked} />
+          <p className="hint" aria-live="polite">
+            Leaks found: {found.length} of {leaks.length}
+          </p>
+          {found.length === leaks.length && (
+            <>
+              <LeakTable found={found} />
+              <Facts facts={step.facts} />
+              <button type="button" className="btn btn-primary" onClick={next}>
+                Continue
+              </button>
+            </>
+          )}
+        </>
+      );
+    }
+    case "gene-rate": {
+      // `measure` holds the second measurements tried; a claim unlocks only after a rate.
+      const rate = step.measurements.some((c) => c.ok && measure.includes(c.id));
+      const pick = step.claims.find((c) => c.id === picked[0]);
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <AmoaReading />
+          <Facts facts={step.facts} />
+          <p className="step-text">Choose a second measurement before you make a claim.</p>
+          <div className="watch-row">
+            {step.measurements.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                className="btn"
+                disabled={measure.includes(c.id)}
+                onClick={() => setMeasure([...measure, c.id])}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+          <Feedback choices={step.measurements} picked={measure} />
+          {rate && <IncubationReading />}
+          <p className="step-text">{step.question}</p>
+          {!rate && <p className="hint">No claim yet: a gene count alone cannot say how fast.</p>}
+          <Choices choices={step.claims} picked={picked} setPicked={setPicked} locked={!rate || pick?.ok} />
+          {pick && <Feedback choices={step.claims} picked={picked} />}
+          {pick?.ok && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() =>
+                update((s) =>
+                  advance(
+                    { ...s, predictions: { ...s.predictions, [step.id]: [pick.id, ...measure] } },
+                    m.id,
+                  ),
+                )
+              }
+            >
+              Continue
+            </button>
+          )}
+          {pick && !pick.ok && <p className="hint">Look again, then choose another.</p>}
+        </>
+      );
+    }
     case "rumor":
       return (
         <>

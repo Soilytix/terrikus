@@ -7,12 +7,13 @@ export type Element = "C" | "N";
 
 /**
  * L litter, D dissolved, B microbial biomass, M mineral-associated, O old soil
- * organic matter, G grazers. Sinks: co2Out, co2Old (CO₂ from O, for priming),
- * n2Out, n2oOut, drainage. N rules live in `nitrogen.ts`.
+ * organic matter, G grazers, plant (N taken up by a crop, chapter 9). Sinks:
+ * co2Out, co2Old (CO₂ from O, for priming), n2Out, n2oOut, drainage, nh3Out.
+ * N rules live in `nitrogen.ts`.
  */
 export const POOLS = {
   C: ["L", "D", "B", "M", "O", "G", "co2Out", "co2Old"],
-  N: ["L", "D", "B", "M", "O", "G", "NH4", "NO3", "n2Out", "n2oOut", "drainage"],
+  N: ["L", "D", "B", "M", "O", "G", "NH4", "NO3", "plant", "n2Out", "n2oOut", "drainage", "nh3Out"],
 } as const;
 
 export type PoolOf<E extends Element> = (typeof POOLS)[E][number];
@@ -31,7 +32,21 @@ export class ConservationError extends Error {}
 export function emptyLedger(): Ledger {
   return {
     C: { L: 0, D: 0, B: 0, M: 0, O: 0, G: 0, co2Out: 0, co2Old: 0 },
-    N: { L: 0, D: 0, B: 0, M: 0, O: 0, G: 0, NH4: 0, NO3: 0, n2Out: 0, n2oOut: 0, drainage: 0 },
+    N: {
+      L: 0,
+      D: 0,
+      B: 0,
+      M: 0,
+      O: 0,
+      G: 0,
+      NH4: 0,
+      NO3: 0,
+      plant: 0,
+      n2Out: 0,
+      n2oOut: 0,
+      drainage: 0,
+      nh3Out: 0,
+    },
   };
 }
 

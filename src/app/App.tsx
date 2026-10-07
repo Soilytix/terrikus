@@ -5,6 +5,7 @@ import type { SceneObject } from "../content/schema";
 import { World, type WorldHandle } from "../world/World";
 import { Bench } from "../ui/Bench";
 import { LabBench } from "../ui/LabBench";
+import { StrawBench } from "../ui/NitrogenRelay";
 import { Hotspots } from "../ui/Hotspots";
 import { Hud } from "../ui/Hud";
 import { MissionPanel } from "../ui/MissionPanel";
@@ -240,6 +241,12 @@ export function App() {
       return (
         <div className="app app-bench">
           <LabBench backHref={backHref} />
+        </div>
+      );
+    if (route.bench === "straw-n")
+      return (
+        <div className="app app-bench">
+          <StrawBench backHref={backHref} />
         </div>
       );
     return (

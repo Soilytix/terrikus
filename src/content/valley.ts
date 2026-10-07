@@ -32,13 +32,6 @@ const later = (
 
 /** Hooks verbatim from the world-bible chapter map. */
 const LATER_CHAPTERS: Chapter[] = [
-  later(
-    "c9",
-    "9",
-    "The Nitrogen Relay",
-    "Straw was ploughed in and the next crop turned yellow.",
-    "sugarbeet",
-  ),
   later("c10", "10", "Disease and Defence", "The pathogen is here, but the plants are healthy.", "bean"),
   later("c12", "12", "Fields and Seasons", "Same seed, two fields, different harvests.", "spinach"),
   later("c13", "13", "Hillslope and River", "Where does the soil from the hill go?", "rice"),
@@ -127,7 +120,22 @@ export const valleyScene: Scene = {
     },
     { id: "paddy", label: "Rice paddy", kind: "glimpse", anchor: { x: 0.72, y: 0.8 }, to: "c4" },
     { id: "river", label: "The river", kind: "glimpse", anchor: { x: 0.9, y: 0.88 }, to: "c13" },
-    { id: "beet", label: "Sugar beet field", kind: "glimpse", anchor: { x: 0.2, y: 0.66 }, to: "c9" },
+    {
+      id: "beet",
+      label: "Sugar beet field",
+      kind: "glimpse",
+      anchor: { x: 0.2, y: 0.66 },
+      to: "c9",
+      hiddenBy: "chapter:c9",
+    },
+    {
+      id: "beet-relay",
+      label: "Under the sugar beet field",
+      kind: "portal",
+      anchor: { x: 0.2, y: 0.66 },
+      to: "c9-relay",
+      requires: "chapter:c9",
+    },
     { id: "peas", label: "Pea and bean strips", kind: "glimpse", anchor: { x: 0.83, y: 0.58 }, to: "c8" },
     {
       id: "map",

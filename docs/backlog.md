@@ -300,12 +300,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Depends on:** T21
 - **Done:** `src/sim/trade.ts` and `src/sim/sorption.ts` (root/hair/acid/fungus P uptake with C paid, pH-dependent sorption, conserving P and C for every crop, soil P, pH and strategy) and `src/sim/nodules.ts` (rhizobia specificity, pink vs white nodules, nitrate off-switch, conserving N and C); missions c8-m1–m7 on the baked `c8-nodule` and `c8-arbuscule` scenes; spinach and sugar beet form no partner in either rule set; the forest-network claim sort uses the open-question card. Deferred: the `c8-depletion-halo` and `c8-forest-network` scenes and the cause chains.
 
-### T23 — Chapter 9: The Nitrogen Relay
+### T23 — Chapter 9: The Nitrogen Relay · **done**
 
 - **Goal:** N cycle stage by stage on the sugar beet world.
 - **Scope:** `straw-n` bench; relay scene; content `c9-*`.
 - **Acceptance:** "N accounted for: 100.0 %"; gene ≠ rate mission requires a second measurement; no customer framing.
 - **Depends on:** T18, T21
+- **Done:** `src/sim/benches/straw-n.ts` (T18 nitrogen rules plus beet uptake and NH₃ loss; the ledger gains N pools `plant` and `nh3Out`; conserving for all 16 lever sets); missions c9-m1–m4 on the `c9-relay` scene (`recipes/c9-relay.ts`, baked); the gene ≠ rate claim stays locked until a 7-day incubation is measured. Deferred: the `c9-beet-field` scene, c9-m5, the cause chains and misconception ids for the new chapter 9 misconceptions (kept clear of T22's lane).
 
 ### T24 — Chapter 5: Charged Surfaces · **done**
 

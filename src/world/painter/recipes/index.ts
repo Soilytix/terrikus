@@ -14,6 +14,7 @@ import { c6Geosmin } from "./c6-geosmin";
 import { c7RootTip } from "./c7-root-tip";
 import { c8Arbuscule } from "./c8-arbuscule";
 import { c8Nodule } from "./c8-nodule";
+import { c9Relay } from "./c9-relay";
 import { fieldDawn } from "./field-dawn";
 import { handful } from "./handful";
 import { hedgeEdge } from "./hedge-edge";
@@ -50,4 +51,5 @@ export const RECIPES: Record<string, Recipe> = {
   "c7-root-tip": c7RootTip,
   "c8-nodule": c8Nodule,
   "c8-arbuscule": c8Arbuscule,
+  "c9-relay": c9Relay,
 };

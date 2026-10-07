@@ -392,7 +392,31 @@ export type Step = (
     }
   /** Sort claims by their evidence; the evidence card gets the open-question treatment. */
   | { kind: "claim-sort"; text: string; claims: Claim[]; evidence: OpenQuestion; facts: Fact[] }
+  /** Hand the N baton leg by leg; a misplaced handoff shows its explanation card. Ends on the ledger's account. */
+  | { kind: "relay"; text: string; legs: RelayLeg[]; facts: Fact[] }
+  /** The straw-n bench with straw beside beet tops: mineral N, microbial N, crop N and losses over a season. */
+  | { kind: "straw-run"; text: string; facts: Fact[] }
+  /** Heavy rain on bare soil and under a crop: find every `ok` spot (a loss); the rest explain why they are not. */
+  | { kind: "leak-hunt"; text: string; spots: Choice[]; facts: Fact[] }
+  /** A gene count arrives; no claim is accepted until a second measurement (an `ok` one: a rate) has been made. */
+  | {
+      kind: "gene-rate";
+      id: string;
+      text: string;
+      measurements: Choice[];
+      question: string;
+      claims: Choice[];
+      facts: Fact[];
+    }
 ) & { onComplete?: OnComplete };
+
+/** One leg of the nitrogen relay: who carries the baton from `from` to `to`. */
+export interface RelayLeg {
+  id: string;
+  from: string;
+  to: string;
+  choices: Choice[];
+}
 
 export interface Mission extends Reviewed {
   id: string;

@@ -23,6 +23,17 @@ export function measureCo2Flux(snapshots: Snapshot[], day: number, seed: number)
   return { value: trueFlux * (1 + noise), band: Math.max(0.5, trueFlux * 0.1) };
 }
 
+/**
+ * Net nitrate production in a 7-day incubation from `day` (units of N per day),
+ * ±10 % seeded noise. A rate measured on the soil, not inferred from its genes.
+ */
+export function measureNitrateProduction(snapshots: Snapshot[], day: number, seed: number): Measured {
+  const no3 = (d: number) => snapshots[Math.min(d, snapshots.length - 1)]!.ledger.N.NO3;
+  const trueRate = (no3(day + 7) - no3(day)) / 7;
+  const rng = mulberry32(hashSeed(seed, day));
+  return { value: trueRate * (1 + (rng() - 0.5) * 0.2), band: Math.max(0.2, Math.abs(trueRate) * 0.1) };
+}
+
 /** Derived, not measured: litter mass loss ÷ time, from two weighings. */
 export function decompositionRate(snapshots: Snapshot[], day: number): number {
   const d = Math.max(1, Math.min(day, snapshots.length - 1));
