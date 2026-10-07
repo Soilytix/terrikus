@@ -2767,3 +2767,30 @@ input[type="range"] {
   border-radius: var(--radius-md);
   padding: 0.5rem 0.75rem;
 }
+
+/* Chapter 4 (T19): redox elevator, airless crumb, paddy traces */
+.elevator {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+.microsite {
+  width: 100%;
+  max-width: 140px;
+  display: block;
+}
+.microsite .crumb {
+  fill: var(--w-loam);
+}
+.microsite .core {
+  fill: var(--w-gley);
+}
+.paddy-trace {
+  margin: 0;
+}
+.co2-trace .drained {
+  fill: var(--color-border-default);
+  opacity: 0.5;
+}

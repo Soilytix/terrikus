@@ -2,6 +2,7 @@
  * The Build-phase cast (world-bible §4). Functional roles in context, never
  * heroes or villains: copy says "can", "often", "in this context".
  */
+import { c4Organisms } from "./chapters/c4";
 import type { Organism } from "./schema";
 
 export const ORGANISMS: Organism[] = [
@@ -190,6 +191,7 @@ export const ORGANISMS: Organism[] = [
     misconceptions: ["M12"],
     reviewStatus: "draft",
   },
+  ...c4Organisms,
 ];
 
 export const organism = (id: string) => ORGANISMS.find((o) => o.id === id);

@@ -3,6 +3,7 @@
  * Later chapters are glimpsed here with their opening rumor, never their content.
  */
 import { c3Discoveries } from "./chapters/c3";
+import { c4Discoveries } from "./chapters/c4";
 import type { Chapter, ChapterBundle, Discovery, Scene } from "./schema";
 
 const later = (
@@ -30,7 +31,6 @@ const later = (
 
 /** Hooks verbatim from the world-bible chapter map. */
 const LATER_CHAPTERS: Chapter[] = [
-  later("c4", "4", "Breath and Rust", "The flooded field smells of eggs, and the rice is fine.", "rice"),
   later("c6", "6", "Who Eats Whom", "Bacteria near the root multiply, then crash.", "forest"),
   later(
     "c7",
@@ -190,7 +190,22 @@ export const valleyMapScene: Scene = {
       to: "c3-drain",
       requires: "chapter:c3",
     },
-    { id: "paddy", label: "Rice paddy", kind: "glimpse", anchor: { x: 0.68, y: 0.78 }, to: "c4" },
+    {
+      id: "paddy",
+      label: "Rice paddy",
+      kind: "glimpse",
+      anchor: { x: 0.68, y: 0.78 },
+      to: "c4",
+      hiddenBy: "chapter:c4",
+    },
+    {
+      id: "paddy-portal",
+      label: "Rice paddy",
+      kind: "portal",
+      anchor: { x: 0.68, y: 0.78 },
+      to: "c4-paddy",
+      requires: "chapter:c4",
+    },
     {
       id: "wood-edge",
       label: "The acid woodland edge",
@@ -289,4 +304,5 @@ export const DISCOVERIES: Discovery[] = [
     evidenceTier: "would-do",
   },
   ...c3Discoveries,
+  ...c4Discoveries,
 ];

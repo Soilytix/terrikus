@@ -893,6 +893,122 @@
     "flat": "c5-platelet-53/390x844/flat.avif",
     "ground": "#dcedee"
    }
+  ],
+  "c4-paddy:83": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c4-paddy-83/1440x900/0-back.avif",
+      "sha": "45d44892e86ceb49f7e1a9c47e8150787297626f94d41882b133943ac603fb42"
+     },
+     {
+      "id": "water",
+      "file": "c4-paddy-83/1440x900/1-water.avif",
+      "sha": "cc4a66c98051e8b398eaccfdc5e974b1ae9d5f8491f59a1e0c0b126a086f5e2e"
+     },
+     {
+      "id": "rice",
+      "file": "c4-paddy-83/1440x900/2-rice.avif",
+      "sha": "6190afe9980033cd061fd12f3ee934e097e6267599fbc45e44929fbe6f6771cd"
+     },
+     {
+      "id": "bund",
+      "file": "c4-paddy-83/1440x900/3-bund.avif",
+      "sha": "f317686efc5f3bb2c0facd176610897aaeeacf085ac579ca04c3f9f5d6a49cfd"
+     }
+    ],
+    "flat": "c4-paddy-83/1440x900/flat.avif",
+    "ground": "#f1e7d6"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c4-paddy-83/390x844/0-back.avif",
+      "sha": "9653cd664c3fcb83de5524085c4196732f0af01549b99340b9aef2a3a59086af"
+     },
+     {
+      "id": "water",
+      "file": "c4-paddy-83/390x844/1-water.avif",
+      "sha": "a139a7a5bd659c7f9b697a29cf02407c4ffeea2621165b0130e5fba912df6c0d"
+     },
+     {
+      "id": "rice",
+      "file": "c4-paddy-83/390x844/2-rice.avif",
+      "sha": "4d8a236572758fcf511d969a9359b4073f9b96324ecf0d3f626ae6a46d6efd30"
+     },
+     {
+      "id": "bund",
+      "file": "c4-paddy-83/390x844/3-bund.avif",
+      "sha": "bae20c6f85d8a939aadfd43e97b3b60b7b49bdb574a31cc7870ba516e6612d6b"
+     }
+    ],
+    "flat": "c4-paddy-83/390x844/flat.avif",
+    "ground": "#f1e7d6"
+   }
+  ],
+  "c4-elevator:89": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c4-elevator-89/1440x900/0-back.avif",
+      "sha": "d7cd1bda990fec3ee6afc9a421d26f31873448490acdfc2dfe0084f24a1d3fd4"
+     },
+     {
+      "id": "face",
+      "file": "c4-elevator-89/1440x900/1-face.avif",
+      "sha": "e1fcd4cdf6d32c2e3c248c5594ef0dafae2985e748dfeed382b00c6ac40f8c87"
+     },
+     {
+      "id": "roots",
+      "file": "c4-elevator-89/1440x900/2-roots.avif",
+      "sha": "9d0b4d74351a6f47c9b0de8f08b16ec8dcb7699f33db99f5551f125597a09182"
+     },
+     {
+      "id": "shaft",
+      "file": "c4-elevator-89/1440x900/3-shaft.avif",
+      "sha": "e68c65d2f332a763a022fae92524adafb0b9f5a18464ae0645ce747c6a842a41"
+     }
+    ],
+    "flat": "c4-elevator-89/1440x900/flat.avif",
+    "ground": "#5f7470"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c4-elevator-89/390x844/0-back.avif",
+      "sha": "475f985a470b32b24279ee897907b14a65302e4d195c91eda987451411d5cedc"
+     },
+     {
+      "id": "face",
+      "file": "c4-elevator-89/390x844/1-face.avif",
+      "sha": "556baf3d67ef16f6d27f70ec45d68c5ded6130b16cd00e4b0829181df168709d"
+     },
+     {
+      "id": "roots",
+      "file": "c4-elevator-89/390x844/2-roots.avif",
+      "sha": "05fa7a9ad6a5e2c6f3c96a9d9c773cf447e3df5ef68c2b0b3bb1598444116344"
+     },
+     {
+      "id": "shaft",
+      "file": "c4-elevator-89/390x844/3-shaft.avif",
+      "sha": "a7077ec71f8cb033396e51019bac92766d9eb69f1f179fbbc3baeb45031240ab"
+     }
+    ],
+    "flat": "c4-elevator-89/390x844/flat.avif",
+    "ground": "#5f7470"
+   }
   ]
  },
  "timelapses": {}

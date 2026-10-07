@@ -1,6 +1,7 @@
 /** One place to look content up. */
 import { c1Bundle } from "./chapters/c1";
 import { c3Bundle } from "./chapters/c3";
+import { c4Bundle } from "./chapters/c4";
 import { c5Bundle } from "./chapters/c5";
 import { leafBundle } from "./chapters/leaf";
 import { prologueBundle } from "./chapters/prologue";
@@ -10,7 +11,15 @@ import type { Chapter, ChapterBundle, CodexEntry, Mission, Rumor, Scene } from "
 import { LATER_BUNDLES, valleyMapScene, valleyScene } from "./valley";
 
 /** Every chapter, once. A new chapter is one more bundle here. */
-const BUNDLES: ChapterBundle[] = [prologueBundle, c1Bundle, leafBundle, c3Bundle, c5Bundle, ...LATER_BUNDLES];
+const BUNDLES: ChapterBundle[] = [
+  prologueBundle,
+  c1Bundle,
+  leafBundle,
+  c3Bundle,
+  c4Bundle,
+  c5Bundle,
+  ...LATER_BUNDLES,
+];
 
 export const CHAPTERS: Chapter[] = BUNDLES.map((b) => b.chapter).sort(
   (a, b) => order(a.number) - order(b.number),

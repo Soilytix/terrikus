@@ -11,6 +11,7 @@ import { appendLab } from "../save/schema";
 import { RULESET_VERSION, DEFAULT_LEVERS } from "../sim/benches/leaf-jar";
 import { href, targetHref } from "../app/router";
 import { BuildCrumb, Slake } from "./Aggregates";
+import { BreathRust } from "./BreathRust";
 import { ChainBuilder } from "./ChainBuilder";
 import { Composition } from "./Composition";
 import { Exchange } from "./Exchange";
@@ -524,6 +525,13 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           <PhDial resultText={step.resultText} facts={step.facts} onDone={next} />
+        </>
+      );
+    case "redox":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <BreathRust step={step} onDone={next} />
         </>
       );
     case "rumor":

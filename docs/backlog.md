@@ -268,11 +268,12 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** N conservation exact; immobilisation dip with high C:N; denitrification only when fO2 low; priming stretch for ch. 2 enabled.
 - **Depends on:** T04
 
-### T19 — Chapter 4: Breath and Rust (rice)
+### T19 — Chapter 4: Breath and Rust (rice) · **done**
 
 - **Goal:** O₂, microsites, redox ladder, trade-offs.
 - **Scope:** redox rules; paddy world art; redox elevator scene; content `c4-*`.
 - **Acceptance:** ladder order enforced in rules; drain-the-paddy shows both CH₄ and N₂O with no verdict score.
+- **Done:** `src/sim/redox.ts` (electron-conserving ladder column, anoxic microsites by wetness and crumb size, a 100-day paddy season flooded or drained in spells with N₂O from the unchanged nitrogen ledger); three missions on `c4-paddy` and `c4-elevator` (both baked); drain-the-paddy shows two curves and per-gas totals, no combined number. `c4-m4` (Q10), `c4-fog`, the chapter chains and new misconception ids are deferred.
 - **Depends on:** T16, T18
 
 ### T20 — Chapter 6: Who Eats Whom

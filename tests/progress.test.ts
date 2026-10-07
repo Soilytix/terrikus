@@ -108,18 +108,18 @@ describe("progress", () => {
     });
 
     it("opens chapters 3–13 only once the map is open and their rumor is met", () => {
-      const c4 = chapter("c4")!;
-      const early = glimpse(prologue(), "c4");
-      expect(early.rumors["r-c4"]).toBe("glimpsed");
-      expect(canOpen(c4, early)).toBe(false);
+      const c6 = chapter("c6")!;
+      const early = glimpse(prologue(), "c6");
+      expect(early.rumors["r-c6"]).toBe("glimpsed");
+      expect(canOpen(c6, early)).toBe(false);
       const s = both();
-      expect(canOpen(c4, s)).toBe(false);
-      expect(chapterState(c4, s)).toBe("planned");
-      const met = glimpse(s, "c4");
-      expect(canOpen(c4, met)).toBe(true);
+      expect(canOpen(c6, s)).toBe(false);
+      expect(chapterState(c6, s)).toBe("planned");
+      const met = glimpse(s, "c6");
+      expect(canOpen(c6, met)).toBe(true);
       // Not built yet, so it is ready rather than unlocked.
-      expect(chapterState(c4, met)).toBe("ready");
-      expect(met.chaptersUnlocked).not.toContain("c4");
+      expect(chapterState(c6, met)).toBe("ready");
+      expect(met.chaptersUnlocked).not.toContain("c6");
     });
 
     it("opens chapter 3 from the dry patch on the map, and its rumor is explained by the Birch pulse", () => {
@@ -135,6 +135,21 @@ describe("progress", () => {
       const done = ["c3-m1", "c3-m2", "c3-m3", "c3-m4"].reduce(finish, met);
       expect(done.rumors["r-c3"]).toBe("explained");
       expect(done.chaptersComplete).toContain("c3");
+    });
+
+    it("opens chapter 4 from the paddy on the map, and the elevator explains its rumor", () => {
+      const s = both();
+      const ids = (x: Save) => visibleObjects(scene("valley-map")!, x).map((o) => o.id);
+      expect(ids(s)).toContain("paddy");
+      expect(ids(s)).not.toContain("paddy-portal");
+      const met = glimpse(s, "c4");
+      expect(met.chaptersUnlocked).toContain("c4");
+      expect(activeMission("c4", met)?.id).toBe("c4-m1");
+      expect(ids(met)).toContain("paddy-portal");
+      expect(ids(met)).not.toContain("paddy");
+      const m1 = finish(met, "c4-m1");
+      expect(m1.rumors["r-c4"]).toBe("explained");
+      expect(["c4-m2", "c4-m3"].reduce(finish, m1).chaptersComplete).toContain("c4");
     });
 
     it("opens chapter 14 after any four completed chapters, with no rumor needed", () => {
@@ -166,14 +181,14 @@ describe("progress", () => {
     });
 
     it("offers where to look after two Rumor Map views without progress", () => {
-      const r = RUMORS.find((x) => x.id === "r-c4")!;
-      let s = glimpse(freshSave(), "c4");
+      const r = RUMORS.find((x) => x.id === "r-c6")!;
+      let s = glimpse(freshSave(), "c6");
       s = viewRumors(viewRumors(s));
       expect(whereToLook(s, r)).toBeUndefined();
       s = viewRumors(s);
       expect(whereToLook(s, r)).toMatch(/not built yet/);
       // Progress resets the count.
-      s = viewRumors({ ...s, rumors: { ...s.rumors, "r-c4": "investigated" } });
+      s = viewRumors({ ...s, rumors: { ...s.rumors, "r-c6": "investigated" } });
       expect(whereToLook(s, r)).toBeUndefined();
     });
   });

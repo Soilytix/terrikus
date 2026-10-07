@@ -6,6 +6,7 @@
 import type { SourceId } from "./sources";
 import type { BenchId } from "../sim/benches";
 import type { Moisture } from "../sim/films";
+import type { RungId } from "../sim/redox";
 
 export type { SourceId };
 export type Confidence = "firm" | "estimate" | "contested";
@@ -312,6 +313,15 @@ export type Step = (
   /** Chapter 5 surface (`src/sim/exchange.ts`): seat cations then add acid, or fertilise then rain. */
   | { kind: "exchange"; mode: "chairs" | "leaky"; text: string; resultText: string; facts: Fact[] }
   | { kind: "ph-dial"; text: string; resultText: string; facts: Fact[] }
+  /** Chapter 4 redox benches (`src/ui/BreathRust.tsx`) on the rules in `src/sim/redox.ts`; `floors` says what each rung looks and smells like. */
+  | {
+      kind: "redox";
+      bench: "elevator" | "microsites" | "drain";
+      text: string;
+      resultText: string;
+      facts: Fact[];
+      floors?: Partial<Record<RungId, string>>;
+    }
 ) & { onComplete?: OnComplete };
 
 export interface Mission extends Reviewed {
