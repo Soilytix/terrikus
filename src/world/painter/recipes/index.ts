@@ -11,6 +11,7 @@ import { c5Platelet } from "./c5-platelet";
 import { c11Catena } from "./c11-catena";
 import { c11Pit, pitWall } from "./c11-pit";
 import { c6Geosmin } from "./c6-geosmin";
+import { c7RootTip } from "./c7-root-tip";
 import { fieldDawn } from "./field-dawn";
 import { handful } from "./handful";
 import { hedgeEdge } from "./hedge-edge";
@@ -44,4 +45,5 @@ export const RECIPES: Record<string, Recipe> = {
   // Time-lapse frames of c11-pit (tools/bake-plates.ts TIMELAPSES).
   ...Object.fromEntries([0, 100, 1_000].map((y) => [`c11-form-${y}`, pitWall(y)])),
   "c6-geosmin": c6Geosmin,
+  "c7-root-tip": c7RootTip,
 };

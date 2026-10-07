@@ -1125,6 +1125,74 @@
     "flat": "c11-catena-89/390x844/flat.avif",
     "ground": "#565e30"
    }
+  ],
+  "c7-root-tip:71": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "bulk",
+      "file": "c7-root-tip-71/1440x900/0-bulk.avif",
+      "sha": "a56a89a1660caccd8ad2195a524f7614c8ee381de90a4ada68810bcd7382b84e"
+     },
+     {
+      "id": "halos",
+      "file": "c7-root-tip-71/1440x900/1-halos.avif",
+      "sha": "f504c4e0316e7fafdad609de9663bd400d10425590c3406c130057e663347627"
+     },
+     {
+      "id": "grains",
+      "file": "c7-root-tip-71/1440x900/2-grains.avif",
+      "sha": "e6d8ace526639c33b0ab9332eb5c9887d958d86068771588eed172b7f6858d81"
+     },
+     {
+      "id": "root",
+      "file": "c7-root-tip-71/1440x900/3-root.avif",
+      "sha": "ef83b2795d8a38c541312fbc8082e52c3d76e091b9207378929601152411365d"
+     },
+     {
+      "id": "grain",
+      "file": "c7-root-tip-71/1440x900/4-grain.avif",
+      "sha": "bf0a45943c96e02696c45d394195bba713e56552be4d2d9854f41b3f71b8a823"
+     }
+    ],
+    "flat": "c7-root-tip-71/1440x900/flat.avif",
+    "ground": "#161c19"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "bulk",
+      "file": "c7-root-tip-71/390x844/0-bulk.avif",
+      "sha": "f9897855d8522eb6bd2ba9d1e1b6c897c3be3b40c6fd9a942c81682253cb2394"
+     },
+     {
+      "id": "halos",
+      "file": "c7-root-tip-71/390x844/1-halos.avif",
+      "sha": "0fb04d4c67e2879ec0c9bc261c82675f05050477726fce3618625615ea90be0b"
+     },
+     {
+      "id": "grains",
+      "file": "c7-root-tip-71/390x844/2-grains.avif",
+      "sha": "181340404b76259aa8fdc18db407560f4349bf97fb67ef8cc96416be4073d115"
+     },
+     {
+      "id": "root",
+      "file": "c7-root-tip-71/390x844/3-root.avif",
+      "sha": "68b74af53c5e667c4bcb7de57dfea5b1403750d3ca0a636adb49ec30541a0040"
+     },
+     {
+      "id": "grain",
+      "file": "c7-root-tip-71/390x844/4-grain.avif",
+      "sha": "b93a1e1d3d0c260607d255639f2f5f9b983f6fb207c1efe68c0d31a3505cb8d1"
+     }
+    ],
+    "flat": "c7-root-tip-71/390x844/flat.avif",
+    "ground": "#161c19"
+   }
   ]
  },
  "timelapses": {

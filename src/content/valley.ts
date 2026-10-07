@@ -33,13 +33,6 @@ const later = (
 /** Hooks verbatim from the world-bible chapter map. */
 const LATER_CHAPTERS: Chapter[] = [
   later(
-    "c7",
-    "7",
-    "The Root's Neighbourhood",
-    "The soil touching the root is a different country.",
-    "spinach",
-  ),
-  later(
     "c8",
     "8",
     "Partners and Traders",
@@ -115,6 +108,14 @@ export const valleyScene: Scene = {
       anchor: { x: 0.5, y: 0.72 },
       to: "c6-gallery",
       requires: "chapter:c6",
+    },
+    {
+      id: "spinach-root-tip",
+      label: "A spinach root tip",
+      kind: "portal",
+      anchor: { x: 0.54, y: 0.8 },
+      to: "c7-root-tip",
+      requires: "chapter:c7",
     },
     {
       id: "woodland",

@@ -22,7 +22,7 @@ export const WEB_ORGANISMS = [
   "mite",
 ] as const;
 export type WebOrganism = (typeof WEB_ORGANISMS)[number];
-/** `supply` is the root's exudate reservoir; `food` is dissolved organic matter. */
+/** `supply` is the root's below-ground flow (`share` of its daily flow is exuded); `food` is dissolved organic matter. */
 export type WebPool = WebOrganism | "supply" | "food";
 export type WebChannel = "bacterial" | "fungal";
 
@@ -94,6 +94,12 @@ export interface WebSettings {
   removed?: WebOrganism[];
   /** An exudate pulse at day 0 (C), at food C:N. */
   pulse?: number;
+  /** Share of the root's daily flow that is exuded; the rest stays in the plant, off the web (chapter 7). Default 1. */
+  share?: number;
+  /** Size of the root's below-ground reservoir (C). Default 20 000. */
+  supply?: number;
+  /** No plant: no root flow and no root uptake (chapter 7's bare plot). */
+  bare?: boolean;
 }
 
 const FOOD_CN = 20;
@@ -132,8 +138,10 @@ const sum = (p: WebPools) => Object.values(p).reduce((a, b) => a + b, 0);
 
 export function webInitial(s: WebSettings): WebLedger {
   const l: WebLedger = { C: zero(), N: zero() };
-  l.C.supply = 20_000;
-  l.N.supply = 20_000 / FOOD_CN;
+  if (!s.bare) {
+    l.C.supply = s.supply ?? 20_000;
+    l.N.supply = Math.round(l.C.supply / FOOD_CN);
+  }
   l.C.food = s.pulse ?? 0;
   l.N.food = Math.round((s.pulse ?? 0) / FOOD_CN);
   for (const o of WEB_ORGANISMS) {
@@ -171,8 +179,9 @@ export function runWeb(s: WebSettings, days: number): WebSnapshot[] {
     };
     const ratio = (p: WebPool) => (start.C[p] > 0 ? start.N[p] / start.C[p] : 0);
 
-    move("C", "supply", "food", flux("supply-c", start.C.supply * WEB_RATES.supply), "exudation");
-    move("N", "supply", "food", flux("supply-n", start.N.supply * WEB_RATES.supply), "exudation");
+    const exude = WEB_RATES.supply * (s.share ?? 1);
+    move("C", "supply", "food", flux("supply-c", start.C.supply * exude), "exudation");
+    move("N", "supply", "food", flux("supply-n", start.N.supply * exude), "exudation");
 
     for (const link of WEB_LINKS) {
       const eater = start.C[link.eater];
@@ -200,7 +209,7 @@ export function runWeb(s: WebSettings, days: number): WebSnapshot[] {
       const dead = move("C", o, "food", flux(`death:${o}`, c * WEB_RATES.death), "death");
       move("N", o, "food", flux(`death-n:${o}`, dead * ratio(o)), "death");
     }
-    move("N", "nh4", "plant", flux("uptake", start.N.nh4 * WEB_RATES.uptake), "root-uptake");
+    if (!s.bare) move("N", "nh4", "plant", flux("uptake", start.N.nh4 * WEB_RATES.uptake), "root-uptake");
 
     for (const e of ["C", "N"] as const) {
       if (sum(l[e]) !== expected[e]) throw new ConservationError(`${e} total ${sum(l[e])} ≠ ${expected[e]}`);

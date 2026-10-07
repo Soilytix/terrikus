@@ -20,6 +20,7 @@ import { FoodWebWatch, Mobile, Ripple, SqueezingJar } from "./FoodWeb";
 import { HandDecompose } from "./HandDecompose";
 import { GrazerWeek, Labyrinth } from "./Labyrinth";
 import { PhDial } from "./PhDial";
+import { BarePlanted, HomeAway, RootInputs } from "./Rhizosphere";
 import { WaterAir } from "./WaterAir";
 import { WaterRoads } from "./WaterRoads";
 import { Facts } from "./common";
@@ -612,6 +613,74 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           <SqueezingJar facts={step.facts} />
+          <p className="step-text">{step.question}</p>
+          <Choices choices={step.choices} picked={picked} setPicked={setPicked} locked={pick?.ok} />
+          {pick && <Feedback choices={step.choices} picked={picked} />}
+          {pick?.ok && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() =>
+                update((s) => advance({ ...s, predictions: { ...s.predictions, [step.id]: pick.id } }, m.id))
+              }
+            >
+              Continue
+            </button>
+          )}
+          {pick && !pick.ok && <p className="hint">Look again, then choose another.</p>}
+        </>
+      );
+    }
+    case "root-inputs":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <RootInputs facts={step.facts} />
+          <button type="button" className="btn btn-primary" onClick={next}>
+            Continue
+          </button>
+        </>
+      );
+    case "bare-planted":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <p className="step-text">{step.question}</p>
+          <p className="prediction-tag">Your prediction</p>
+          <Choices choices={step.choices} picked={picked} setPicked={setPicked} locked={committed} />
+          {committed && <Feedback choices={step.choices} picked={picked} />}
+          {!committed ? (
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={!picked.length}
+              onClick={() => {
+                setCommitted(true);
+                update((s) => ({ ...s, predictions: { ...s.predictions, [step.id]: picked } }));
+              }}
+            >
+              Commit my prediction
+            </button>
+          ) : !overlay ? (
+            <button type="button" className="btn btn-primary" onClick={() => setOverlay(true)}>
+              Run both plots
+            </button>
+          ) : (
+            <>
+              <BarePlanted />
+              <button type="button" className="btn btn-primary" onClick={next}>
+                Continue
+              </button>
+            </>
+          )}
+        </>
+      );
+    case "home-away": {
+      const pick = step.choices.find((c) => c.id === picked[0]);
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <HomeAway facts={step.facts} />
           <p className="step-text">{step.question}</p>
           <Choices choices={step.choices} picked={picked} setPicked={setPicked} locked={pick?.ok} />
           {pick && <Feedback choices={step.choices} picked={picked} />}

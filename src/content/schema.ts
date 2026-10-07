@@ -361,6 +361,12 @@ export type Step = (
     }
   /** The squeezing jar (preview): a relative readout of a bloom, its caption always on screen. */
   | { kind: "squeezing-jar"; id: string; text: string; question: string; choices: Choice[]; facts: Fact[] }
+  /** Follow the root inputs day by day, at both ends of the contested exudation band. */
+  | { kind: "root-inputs"; text: string; facts: Fact[] }
+  /** Predict, then run a bare plot beside a planted one. */
+  | { kind: "bare-planted"; id: string; text: string; question: string; choices: Choice[] }
+  /** Shares near the root and in bulk soil; a spike-in adds absolute numbers. */
+  | { kind: "home-away"; id: string; text: string; question: string; choices: Choice[]; facts: Fact[] }
 ) & { onComplete?: OnComplete };
 
 export interface Mission extends Reviewed {

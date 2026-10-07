@@ -222,7 +222,7 @@ export function Ripple({ removed }: { removed: WebOrganism[] }) {
   );
 }
 
-const GROUPS = [
+export const GROUPS = [
   { id: "bacteria", label: "Bacteria", taxa: ["bacteria-copio"] },
   { id: "fungi", label: "Fungi", taxa: ["fungi-sap"] },
   { id: "protists", label: "Protists", taxa: ["amoeba"] },

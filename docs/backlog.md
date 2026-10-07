@@ -284,12 +284,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Depends on:** T12, T18
 - **Done:** `src/sim/food-web.ts` (grazing rules, conserving for every removal set); missions c6-m1–m4 and c6-m6 with the mobile, ripple run, geosmin scene (`recipes/c6-geosmin.ts`) and squeezing jar. Deferred: c6-m5 (phages), c6-m7, the forest-litter scene and cause chains. Protist avatar is guided pending OD-10; predator badge is text-only (art-direction §6.2).
 
-### T21 — Chapter 7: The Root's Neighbourhood
+### T21 — Chapter 7: The Root's Neighbourhood · **done**
 
 - **Goal:** rhizosphere gradients, exudates, recruitment.
 - **Scope:** exudation rules; root-tip shader S8; bare-vs-planted comparison; content `c7-*`.
 - **Acceptance:** C and N conserved through exudate → bloom → grazing → uptake; contested exudation share shown as a band.
 - **Depends on:** T20
+- **Done:** `src/sim/rhizosphere.ts` (exudation share and bare plot on the T20 food-web rules, conserving for every plot, band end, water and removal set); missions c7-m1–m4 on the `c7-root-tip` scene (`recipes/c7-root-tip.ts`, baked); every planted result is a 5–21 % range. Deferred: the S8 root-tip shader (T15's lane), the `c7-home-away` and `c7-season` scenes and the cause chain.
 
 ### T22 — Chapter 8: Partners and Traders
 
