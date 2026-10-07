@@ -2915,3 +2915,166 @@ input[type="range"] {
 .rate-bars .lose {
   background: var(--w-oxide);
 }
+/* Chapter 6: food-web mobile, ripple run and squeezing jar (T20) */
+.food-web,
+.ripple,
+.jar {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.mobile {
+  width: 100%;
+  height: auto;
+}
+.mobile-node text {
+  font-size: 19px;
+  fill: var(--color-ink);
+}
+.mobile-node .mobile-size-label {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  fill: var(--color-ink-muted);
+}
+.mobile-node[data-removed="true"] {
+  opacity: 0.25;
+}
+.mobile-size {
+  fill: var(--color-ink-muted);
+}
+.mobile-food {
+  fill: var(--color-primary-light-gold);
+  stroke: var(--color-ink);
+}
+.mobile-link {
+  stroke: var(--color-ink);
+  stroke-width: 2;
+  animation: mobile-link-in var(--duration-chart) var(--ease-chart);
+}
+.mobile-link[data-channel="fungal"] {
+  stroke-dasharray: 6 4;
+}
+@keyframes mobile-link-in {
+  from {
+    opacity: 0;
+  }
+}
+.watch-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.watch-log {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  display: grid;
+  gap: 4px;
+}
+.ripple table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.ripple th,
+.ripple td {
+  text-align: left;
+  padding: 3px 4px;
+  border-bottom: 1px solid var(--color-table-rule);
+  font-weight: 400;
+}
+.ripple thead th {
+  font-weight: 600;
+}
+.ripple td {
+  width: 32%;
+}
+.ripple-bar {
+  display: block;
+  height: 6px;
+  background: var(--color-ink-muted);
+  border-radius: 3px;
+}
+.ripple tr[data-key="plant"] .ripple-bar {
+  background: var(--color-cat-teal);
+}
+.ripple figcaption,
+.jar-key {
+  font-size: 12px;
+  color: var(--color-ink-muted);
+}
+.jar-panels {
+  display: grid;
+  gap: 12px;
+}
+.jar h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+.jar-row {
+  display: grid;
+  grid-template-columns: 9em 1fr;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.jar-stack,
+.jar-abs {
+  display: flex;
+  min-height: 20px;
+}
+.jar-stack {
+  border: 1px solid var(--color-ink);
+}
+.jar-abs {
+  flex-direction: column;
+  gap: 2px;
+}
+.jar-abs .jar-seg {
+  height: 8px;
+}
+.jar-abs .jar-seg[data-when="0"] {
+  opacity: 0.45;
+}
+.jar-seg {
+  display: block;
+  color: var(--color-neutral-white);
+  font-size: 11px;
+  text-align: center;
+  line-height: 20px;
+  overflow: hidden;
+}
+.jar-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 4px;
+}
+.jar-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.jar-bacteria {
+  background: var(--color-cat-azure);
+}
+.jar-fungi {
+  background: var(--color-cat-gold);
+}
+.jar-protists {
+  background: var(--color-cat-teal);
+}
+.jar-animals {
+  background: var(--color-cat-rose);
+}
+.jar-caption {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-left: 3px solid var(--color-ink);
+  background: var(--color-functional-light-yellow);
+}

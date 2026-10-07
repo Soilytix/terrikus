@@ -20,7 +20,7 @@ export const SOFT = new Set([
   "vignette",
 ]);
 /** Recipes left unbaked, painted at runtime, because baking them would push their scale over the plate budget. */
-export const UNBAKED = new Set(["c3-drain"]);
+export const UNBAKED = new Set(["c3-drain", "c6-geosmin"]);
 /** Raster scale of the crisp layers, the stage's own cap for painted plates. */
 export const BAKE_SCALE = 1.5;
 /** Reference viewports: desktop and phone, the two e2e projects. */

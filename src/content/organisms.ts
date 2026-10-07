@@ -3,6 +3,7 @@
  * heroes or villains: copy says "can", "often", "in this context".
  */
 import { c4Organisms } from "./chapters/c4";
+import { C6_ORGANISMS } from "./chapters/c6/organisms";
 import type { Organism } from "./schema";
 
 export const ORGANISMS: Organism[] = [
@@ -192,6 +193,7 @@ export const ORGANISMS: Organism[] = [
     reviewStatus: "draft",
   },
   ...c4Organisms,
+  ...C6_ORGANISMS,
 ];
 
 export const organism = (id: string) => ORGANISMS.find((o) => o.id === id);

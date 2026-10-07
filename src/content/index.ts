@@ -4,12 +4,13 @@ import { c3Bundle } from "./chapters/c3";
 import { c4Bundle } from "./chapters/c4";
 import { c5Bundle } from "./chapters/c5";
 import { c11Bundle } from "./chapters/c11";
+import { c6Bundle, C6_DISCOVERIES } from "./chapters/c6";
 import { leafBundle } from "./chapters/leaf";
 import { prologueBundle } from "./chapters/prologue";
 import { MATERIALS, PROCESSES } from "./processes";
 import { ORGANISMS } from "./organisms";
 import type { Chapter, ChapterBundle, CodexEntry, Mission, Rumor, Scene } from "./schema";
-import { LATER_BUNDLES, valleyMapScene, valleyScene } from "./valley";
+import { DISCOVERIES as VALLEY_DISCOVERIES, LATER_BUNDLES, valleyMapScene, valleyScene } from "./valley";
 
 /** Every chapter, once. A new chapter is one more bundle here. */
 const BUNDLES: ChapterBundle[] = [
@@ -19,6 +20,7 @@ const BUNDLES: ChapterBundle[] = [
   c3Bundle,
   c4Bundle,
   c5Bundle,
+  c6Bundle,
   c11Bundle,
   ...LATER_BUNDLES,
 ];
@@ -54,4 +56,4 @@ export const FIELD_CARDS: FieldCard[] = [
 export const fieldCard = (id: string) => FIELD_CARDS.find((c) => c.item.id === id);
 
 export { ORGANISMS, PROCESSES, MATERIALS };
-export { DISCOVERIES } from "./valley";
+export const DISCOVERIES = [...VALLEY_DISCOVERIES, ...C6_DISCOVERIES];

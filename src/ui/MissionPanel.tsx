@@ -16,6 +16,7 @@ import { ChainBuilder } from "./ChainBuilder";
 import { Composition } from "./Composition";
 import { Exchange } from "./Exchange";
 import { FeelTest } from "./FeelTest";
+import { FoodWebWatch, Mobile, Ripple, SqueezingJar } from "./FoodWeb";
 import { HandDecompose } from "./HandDecompose";
 import { GrazerWeek, Labyrinth } from "./Labyrinth";
 import { PhDial } from "./PhDial";
@@ -546,6 +547,89 @@ function StepBody({
           </Suspense>
         </>
       );
+    case "food-web": {
+      const seen = save.flags.filter((f) => f.startsWith("seen:")).map((f) => f.slice(5));
+      const missing = step.reveal.filter((id) => !seen.includes(id));
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <FoodWebWatch
+            watch={step.watch}
+            seen={seen}
+            onSeen={(links) => update((s) => links.reduce((acc, id) => setFlag(acc, `seen:${id}`), s))}
+          />
+          {missing.length > 0 && (
+            <p className="muted small">
+              {missing.length} link{missing.length > 1 ? "s" : ""} still to see.
+            </p>
+          )}
+          <button type="button" className="btn btn-primary" disabled={missing.length > 0} onClick={next}>
+            Continue
+          </button>
+        </>
+      );
+    }
+    case "food-web-remove": {
+      const seen = save.flags.filter((f) => f.startsWith("seen:")).map((f) => f.slice(5));
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <Mobile seen={seen} removed={step.remove} />
+          <p className="step-text">{step.question}</p>
+          <p className="prediction-tag">Your prediction</p>
+          <Choices choices={step.choices} picked={picked} setPicked={setPicked} locked={committed} />
+          {committed && <Feedback choices={step.choices} picked={picked} />}
+          {!committed ? (
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={!picked.length}
+              onClick={() => {
+                setCommitted(true);
+                update((s) => ({ ...s, predictions: { ...s.predictions, [step.id]: picked } }));
+              }}
+            >
+              Commit my prediction
+            </button>
+          ) : !overlay ? (
+            <button type="button" className="btn btn-primary" onClick={() => setOverlay(true)}>
+              Run both webs
+            </button>
+          ) : (
+            <>
+              <Ripple removed={step.remove} />
+              <button type="button" className="btn btn-primary" onClick={next}>
+                Continue
+              </button>
+            </>
+          )}
+        </>
+      );
+    }
+    case "squeezing-jar": {
+      const pick = step.choices.find((c) => c.id === picked[0]);
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <SqueezingJar facts={step.facts} />
+          <p className="step-text">{step.question}</p>
+          <Choices choices={step.choices} picked={picked} setPicked={setPicked} locked={pick?.ok} />
+          {pick && <Feedback choices={step.choices} picked={picked} />}
+          {pick?.ok && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() =>
+                update((s) => advance({ ...s, predictions: { ...s.predictions, [step.id]: pick.id } }, m.id))
+              }
+            >
+              Continue
+            </button>
+          )}
+          {pick && !pick.ok && <p className="hint">Look again, then choose another.</p>}
+        </>
+      );
+    }
     case "rumor":
       return (
         <>

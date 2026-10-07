@@ -108,18 +108,18 @@ describe("progress", () => {
     });
 
     it("opens chapters 3–13 only once the map is open and their rumor is met", () => {
-      const c6 = chapter("c6")!;
-      const early = glimpse(prologue(), "c6");
-      expect(early.rumors["r-c6"]).toBe("glimpsed");
-      expect(canOpen(c6, early)).toBe(false);
+      const c12 = chapter("c12")!;
+      const early = glimpse(prologue(), "c12");
+      expect(early.rumors["r-c12"]).toBe("glimpsed");
+      expect(canOpen(c12, early)).toBe(false);
       const s = both();
-      expect(canOpen(c6, s)).toBe(false);
-      expect(chapterState(c6, s)).toBe("planned");
-      const met = glimpse(s, "c6");
-      expect(canOpen(c6, met)).toBe(true);
+      expect(canOpen(c12, s)).toBe(false);
+      expect(chapterState(c12, s)).toBe("planned");
+      const met = glimpse(s, "c12");
+      expect(canOpen(c12, met)).toBe(true);
       // Not built yet, so it is ready rather than unlocked.
-      expect(chapterState(c6, met)).toBe("ready");
-      expect(met.chaptersUnlocked).not.toContain("c6");
+      expect(chapterState(c12, met)).toBe("ready");
+      expect(met.chaptersUnlocked).not.toContain("c12");
     });
 
     it("opens chapter 3 from the dry patch on the map, and its rumor is explained by the Birch pulse", () => {
@@ -181,14 +181,14 @@ describe("progress", () => {
     });
 
     it("offers where to look after two Rumor Map views without progress", () => {
-      const r = RUMORS.find((x) => x.id === "r-c6")!;
-      let s = glimpse(freshSave(), "c6");
+      const r = RUMORS.find((x) => x.id === "r-c12")!;
+      let s = glimpse(freshSave(), "c12");
       s = viewRumors(viewRumors(s));
       expect(whereToLook(s, r)).toBeUndefined();
       s = viewRumors(s);
       expect(whereToLook(s, r)).toMatch(/not built yet/);
       // Progress resets the count.
-      s = viewRumors({ ...s, rumors: { ...s.rumors, "r-c6": "investigated" } });
+      s = viewRumors({ ...s, rumors: { ...s.rumors, "r-c12": "investigated" } });
       expect(whereToLook(s, r)).toBeUndefined();
     });
   });

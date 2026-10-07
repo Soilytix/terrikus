@@ -32,6 +32,7 @@ import {
   lintSources,
   strings,
 } from "./lib/content-lint";
+import { observedLinks, runWeb } from "../src/sim/food-web";
 
 const ALL = { CHAPTERS, SCENES, MISSIONS, CODEX, ORGANISMS, PROCESSES, MATERIALS, WORLDS, ASSETS, RUMORS };
 const docRows = parseSourcesDoc(readFileSync("docs/sources.md", "utf8"));
@@ -164,6 +165,16 @@ describe("references resolve", () => {
     }
   });
 
+  it("every food-web link a step needs can be seen by watching an organism the step offers", () => {
+    const run = runWeb({ water: "moist", pulse: 3000 }, 10);
+    for (const m of MISSIONS)
+      for (const step of m.steps)
+        if (step.kind === "food-web") {
+          const seeable = new Set(step.watch.flatMap((o) => observedLinks(run, o)));
+          for (const id of step.reveal) expect(seeable.has(id), `${m.id} ${id}`).toBe(true);
+        }
+  });
+
   it("chains use known cards and every diagnostic names a misconception", () => {
     const cardIds = new Set(CARDS.map((c) => c.id));
     for (const ch of CHAINS) {
@@ -292,7 +303,7 @@ describe("copy", () => {
     expect(strings(ALL).filter((s) => NO_SCORES.test(s))).toEqual([]);
   });
 
-  it("organisms are never good or bad", () => {
-    expect(strings(ORGANISMS).filter((s) => NO_GOOD_BAD.test(s))).toEqual([]);
+  it("organisms are never good or bad, on a card or anywhere else in content", () => {
+    expect(strings({ ...ALL, CODEX, DISCOVERIES }).filter((s) => NO_GOOD_BAD.test(s))).toEqual([]);
   });
 });

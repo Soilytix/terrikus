@@ -9,6 +9,7 @@ import type { Moisture } from "../sim/films";
 import type { RungId } from "../sim/redox";
 import type { SlopePosition } from "../sim/catena";
 import type { HorizonId } from "../sim/pedogenesis";
+import type { WebOrganism } from "../sim/food-web";
 
 export type { SourceId };
 export type Confidence = "firm" | "estimate" | "contested";
@@ -36,7 +37,7 @@ export interface Reviewed {
 
 /** Group badge: shape + text, never colour alone (art-direction §6.2). */
 export type GroupBadge =
-  "decomposer" | "grazer" | "transformer" | "mutualist" | "pathogen" | "engineer" | "shredder";
+  "decomposer" | "grazer" | "transformer" | "mutualist" | "pathogen" | "engineer" | "shredder" | "predator";
 
 export type HowWeKnow = "microscopy" | "culture" | "dna" | "process" | "hand-sorting";
 
@@ -344,6 +345,22 @@ export type Step = (
       examples?: Record<SlopePosition, string>;
       timelapse?: Timelapse;
     }
+  /**
+   * The food-web mobile: watch an organism for a few days and the links it was
+   * seen feeding on light up. Links reveal by observation only; `reveal` must all be seen.
+   */
+  | { kind: "food-web"; text: string; watch: WebOrganism[]; reveal: string[] }
+  /** Take organisms out of the web, predict the ripple, then run both webs side by side. */
+  | {
+      kind: "food-web-remove";
+      id: string;
+      text: string;
+      remove: WebOrganism[];
+      question: string;
+      choices: Choice[];
+    }
+  /** The squeezing jar (preview): a relative readout of a bloom, its caption always on screen. */
+  | { kind: "squeezing-jar"; id: string; text: string; question: string; choices: Choice[]; facts: Fact[] }
 ) & { onComplete?: OnComplete };
 
 export interface Mission extends Reviewed {

@@ -276,12 +276,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Done:** `src/sim/redox.ts` (electron-conserving ladder column, anoxic microsites by wetness and crumb size, a 100-day paddy season flooded or drained in spells with N₂O from the unchanged nitrogen ledger); three missions on `c4-paddy` and `c4-elevator` (both baked); drain-the-paddy shows two curves and per-gas totals, no combined number. `c4-m4` (Q10), `c4-fog`, the chapter chains and new misconception ids are deferred.
 - **Depends on:** T16, T18
 
-### T20 — Chapter 6: Who Eats Whom
+### T20 — Chapter 6: Who Eats Whom · **done**
 
 - **Goal:** food web, microbial loop, compositional preview.
 - **Scope:** food-web mobile; grazing rules; geosmin scene; content `c6-*`.
 - **Acceptance:** link reveal by observation only; squeezing-jar preview caption persistent; no organism labelled good or bad (copy lint).
 - **Depends on:** T12, T18
+- **Done:** `src/sim/food-web.ts` (grazing rules, conserving for every removal set); missions c6-m1–m4 and c6-m6 with the mobile, ripple run, geosmin scene (`recipes/c6-geosmin.ts`) and squeezing jar. Deferred: c6-m5 (phages), c6-m7, the forest-litter scene and cause chains. Protist avatar is guided pending OD-10; predator badge is text-only (art-direction §6.2).
 
 ### T21 — Chapter 7: The Root's Neighbourhood
 

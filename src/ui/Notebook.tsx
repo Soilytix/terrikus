@@ -26,7 +26,8 @@ const TAB_LABEL: Record<NotebookTab, string> = {
   contents: "Contents",
 };
 
-const GROUP_SHAPE: Record<GroupBadge, string> = {
+/** Predator has no shape yet (art-direction §6.2): its badge is text only. */
+const GROUP_SHAPE: Partial<Record<GroupBadge, string>> = {
   decomposer: "M8 1l7 7-7 7-7-7z",
   grazer: "M8 1a7 7 0 110 14A7 7 0 018 1z",
   transformer: "M8 1l7 13H1z",
@@ -62,9 +63,11 @@ function CardView({ card, state, guess }: { card: FieldCard; state: "partial" | 
         <p className="eyebrow">
           {card.kind === "organism" ? (
             <span className="group-badge">
-              <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
-                <path d={GROUP_SHAPE[card.item.group]} />
-              </svg>
+              {GROUP_SHAPE[card.item.group] && (
+                <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                  <path d={GROUP_SHAPE[card.item.group]} />
+                </svg>
+              )}
               {card.item.group}
             </span>
           ) : (
