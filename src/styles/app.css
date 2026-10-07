@@ -2594,3 +2594,59 @@ input[type="range"] {
 .sound-cues td {
   font-size: 14px;
 }
+
+/* Chapter 3 (T17): drained pores, CO₂ trace, rain columns, attribution */
+.labyrinth-map .pore[data-full="true"] {
+  fill: var(--w-water);
+}
+.co2-trace,
+.mission-body > .labyrinth-map {
+  width: 100%;
+  height: auto;
+  flex-shrink: 0;
+}
+.co2-trace polyline {
+  fill: none;
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.co2-trace .dried {
+  stroke: var(--color-ink);
+}
+.co2-trace .moist {
+  stroke: var(--color-ink-muted);
+  stroke-dasharray: 2 1.5;
+}
+.co2-trace .axis,
+.co2-trace .rewet {
+  stroke: var(--color-border-default);
+  stroke-width: 0.4;
+}
+.co2-trace .rewet {
+  stroke-dasharray: 1 1;
+}
+.co2-trace .note {
+  font-size: 3px;
+  fill: var(--color-ink-muted);
+  font-family: var(--font-mono);
+}
+.rain-column {
+  width: 100%;
+  max-width: 120px;
+  height: auto;
+}
+.rain-column .soil {
+  fill: var(--w-subsoil);
+}
+.rain-column .wet {
+  fill: var(--w-topsoil);
+}
+.rain-column .burrow {
+  stroke: var(--w-dark);
+  stroke-width: 1.2;
+}
+.attribution {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.75rem;
+}

@@ -17,6 +17,7 @@ import { FeelTest } from "./FeelTest";
 import { HandDecompose } from "./HandDecompose";
 import { GrazerWeek, Labyrinth } from "./Labyrinth";
 import { WaterAir } from "./WaterAir";
+import { WaterRoads } from "./WaterRoads";
 import { Facts } from "./common";
 import type { SceneEvent } from "../world/stage";
 
@@ -500,6 +501,13 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           <BuildCrumb resultText={step.resultText} facts={step.facts} onDone={next} />
+        </>
+      );
+    case "water":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <WaterRoads step={step} reduced={reduced} onDone={next} />
         </>
       );
     case "rumor":

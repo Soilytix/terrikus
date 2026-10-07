@@ -253,11 +253,12 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** chapter unlocks follow WB§1 progression; recall prompt appears on return; keyboard and static mode work.
 - **Depends on:** T10, T13
 
-### T17 — Chapter 3: Water Roads
+### T17 — Chapter 3: Water Roads · **done**
 
 - **Goal:** matric potential, films as roads, Birch pulse.
 - **Scope:** water-potential rules in `sim/`; content `c3-*`; S5/S6 use.
 - **Acceptance:** missions playable; drainage order test (largest pores first); Birch pulse direction test; "unresolved" source attribution accepted.
+- **Done:** `src/sim/water.ts` (d ≈ 300/|ψ| drainage, the drying film graph, the Birch pulse on the integer ledger, matrix front and burrow bypass); four missions on `c3-drain` (unbaked, aggregate plates at budget) and `c3-rain-profile`; an `Attribution` with `shares: "unresolved"` in the content model. S5 film and S6 front filters are in `src/world/shaders/index.ts` with uniforms from `filmLook`/`frontLook`; attaching them to the stage waits for `src/world/stage.ts` (R02). `c3-root-pull` and the two chapter chains are deferred.
 - **Depends on:** T13, T16
 
 ### T18 — Nitrogen engine · **done**

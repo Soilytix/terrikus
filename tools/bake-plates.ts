@@ -16,6 +16,7 @@ import {
   BAKE_SCALE,
   BAKE_SIZES,
   SOFT,
+  UNBAKED,
   plateKey,
   type BakedPlate,
   type BakedTimelapse,
@@ -88,7 +89,8 @@ async function bakeTimelapse(id: string, t: (typeof TIMELAPSES)[string]): Promis
 if (process.argv[1]?.endsWith("bake-plates.ts")) {
   rmSync(OUT, { recursive: true, force: true });
   const manifest: PlateManifest = { plates: {}, timelapses: {} };
-  const scenes = [...new Map(SCENES.map((s) => [plateKey(s.recipe, s.seed), s])).values()];
+  const baked = SCENES.filter((s) => !UNBAKED.has(s.recipe));
+  const scenes = [...new Map(baked.map((s) => [plateKey(s.recipe, s.seed), s])).values()];
   for (const s of scenes) {
     const t = performance.now();
     const key = plateKey(s.recipe, s.seed);

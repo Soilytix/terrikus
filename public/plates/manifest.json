@@ -787,6 +787,64 @@
     "flat": "pore-leaf-89/390x844/flat.avif",
     "ground": "#07262d"
    }
+  ],
+  "c3-rain-profile:79": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c3-rain-profile-79/1440x900/0-back.avif",
+      "sha": "68b11e377749c2036d21edba35525ad242a14799da3a93369e9366d1ee06fa2f"
+     },
+     {
+      "id": "face",
+      "file": "c3-rain-profile-79/1440x900/1-face.avif",
+      "sha": "a3d18fb9ae933807bec760c61406ab1af6d5d93811a939e55e6398766e8097cf"
+     },
+     {
+      "id": "wet",
+      "file": "c3-rain-profile-79/1440x900/2-wet.avif",
+      "sha": "a1943388d1c1dc24621afc73bf516c633acf83a913709f09003523175041a251"
+     },
+     {
+      "id": "top",
+      "file": "c3-rain-profile-79/1440x900/3-top.avif",
+      "sha": "f1cf7e8298c5638bb323296c8a0f9f1401df27576dd7e1716ee1a17454c2ba7f"
+     }
+    ],
+    "flat": "c3-rain-profile-79/1440x900/flat.avif",
+    "ground": "#423c2d"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c3-rain-profile-79/390x844/0-back.avif",
+      "sha": "c95f1c00fc25f28daa3cd5260b6a2772a2d5cda4c3d459d1ef77eb887ea92e14"
+     },
+     {
+      "id": "face",
+      "file": "c3-rain-profile-79/390x844/1-face.avif",
+      "sha": "be1b4b35e0e876a97b576598a1eea265f2a5ed9664abf18927ecae99b8be0d40"
+     },
+     {
+      "id": "wet",
+      "file": "c3-rain-profile-79/390x844/2-wet.avif",
+      "sha": "9946ff2b4d480b8748a25b0f76ec36758465975007c6ae669c66356d15bd8676"
+     },
+     {
+      "id": "top",
+      "file": "c3-rain-profile-79/390x844/3-top.avif",
+      "sha": "c4c6d35f74680a449fbbff03911ecaeee3154791138e84125feb15a0a8f94bd5"
+     }
+    ],
+    "flat": "c3-rain-profile-79/390x844/flat.avif",
+    "ground": "#423c2d"
+   }
   ]
  },
  "timelapses": {}

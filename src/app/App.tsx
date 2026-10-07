@@ -103,7 +103,9 @@ export function App() {
       ? scene.chapter
       : (CHAPTERS.find(
           (c) => c.playable && save.chaptersUnlocked.includes(c.id) && !save.chaptersComplete.includes(c.id),
-        )?.id ?? CHAPTERS.findLast((c) => c.playable)!.id);
+        )?.id ??
+        CHAPTERS.findLast((c) => c.playable && save.chaptersUnlocked.includes(c.id))?.id ??
+        "prologue");
   const mission = activeMission(chapterId, save);
 
   // Arrivals: stamps, `go` steps, and where to resume.
@@ -317,7 +319,14 @@ export function App() {
             <ScanCard
               object={scanned}
               glimpse={
-                glimpse ? { number: glimpse.number, title: glimpse.title, hook: glimpse.hook } : undefined
+                glimpse
+                  ? {
+                      number: glimpse.number,
+                      title: glimpse.title,
+                      hook: glimpse.hook,
+                      open: save.chaptersUnlocked.includes(glimpse.id),
+                    }
+                  : undefined
               }
               onClose={() => setScanned(null)}
               onOpenCard={(id) => {

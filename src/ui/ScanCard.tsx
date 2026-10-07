@@ -6,7 +6,7 @@ import { Facts } from "./common";
 
 interface Props {
   object: SceneObject;
-  glimpse?: { number: string; title: string; hook: string } | undefined;
+  glimpse?: { number: string; title: string; hook: string; open: boolean } | undefined;
   onClose: () => void;
   onOpenCard: (id: string) => void;
 }
@@ -32,7 +32,11 @@ export function ScanCard({ object, glimpse, onClose, onOpenCard }: Props) {
       data-kind={object.kind}
     >
       <header>
-        <p className="eyebrow">{glimpse ? `Chapter ${glimpse.number} · not yet open` : "You notice"}</p>
+        <p className="eyebrow">
+          {glimpse
+            ? `Chapter ${glimpse.number} · ${glimpse.open ? "now open" : "not yet open"}`
+            : "You notice"}
+        </p>
         <h2 id="scan-title">{glimpse ? glimpse.title : object.label}</h2>
         <button type="button" className="icon-btn" onClick={onClose} aria-label="Close">
           <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
@@ -44,7 +48,10 @@ export function ScanCard({ object, glimpse, onClose, onOpenCard }: Props) {
         <>
           <p className="rumor-quote">“{glimpse.hook}”</p>
           <p className="muted">
-            {object.label}. This part of the valley is planned; the question is kept in your notebook.
+            {object.label}.{" "}
+            {glimpse.open
+              ? "The chapter is open: its way in is here on the map."
+              : "This part of the valley is planned; the question is kept in your notebook."}
           </p>
         </>
       ) : (

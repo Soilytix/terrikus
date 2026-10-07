@@ -28,6 +28,32 @@ export function lintSources(value: unknown, path = "content"): string[] {
   return errors;
 }
 
+/**
+ * Attributions (an effect split among candidate sources): shares name only
+ * candidates and sum to 100, or are "unresolved"; either way they are sourced.
+ */
+export function lintAttribution(value: unknown, path = "content"): string[] {
+  const errors: string[] = [];
+  const visit = (v: unknown, p: string) => {
+    if (Array.isArray(v)) return v.forEach((x, i) => visit(x, `${p}[${i}]`));
+    if (!v || typeof v !== "object") return;
+    const o = v as Record<string, unknown>;
+    if (Array.isArray(o.candidates) && "shares" in o) {
+      if (!Array.isArray(o.sources) || o.sources.length === 0)
+        errors.push(`${p}: attribution without sources`);
+      if (o.shares !== "unresolved") {
+        const ids = new Set((o.candidates as { id: string }[]).map((c) => c.id));
+        const shares = Object.entries((o.shares ?? {}) as Record<string, number>);
+        for (const [id] of shares) if (!ids.has(id)) errors.push(`${p}: "${id}" is not a candidate`);
+        if (shares.reduce((n, [, x]) => n + x, 0) !== 100) errors.push(`${p}: shares must sum to 100`);
+      }
+    }
+    for (const [k, x] of Object.entries(o)) visit(x, `${p}.${k}`);
+  };
+  visit(value, path);
+  return errors;
+}
+
 /** Every node that should be reviewable carries a status. */
 export function lintReview(nodes: { id: string; reviewStatus?: unknown }[]): string[] {
   const ok = new Set(["draft", "in-review", "approved", "needs-changes"]);

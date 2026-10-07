@@ -71,6 +71,39 @@ void main() {
   finalColor = texture(uTexture, vTextureCoord) * (1.0 - smoothstep(p - 0.08, p + 0.08, k));
 }`;
 
+/**
+ * S5 water film and meniscus (`filmLook` in src/sim/water.ts): water pools in
+ * the darkest hollows first and films ring the edges, both shrinking as ψ falls.
+ */
+const FILM = `${HEAD}
+uniform float uFilm;
+uniform float uFill;
+void main() {
+  vec4 c = texture(uTexture, vTextureCoord);
+  float lum = dot(c.rgb, vec3(0.333));
+  vec2 d = uInputSize.zw * 2.0;
+  float rim = abs(lum - dot(at(vTextureCoord + d).rgb, vec3(0.333)));
+  float sheen = 0.9 + 0.1 * vnoise(frameUv() * 40.0 + uTime * 0.3);
+  float filled = smoothstep(uFill * 0.35, uFill * 0.35 - 0.05, lum);
+  float film = smoothstep(0.02, 0.12, rim) * uFilm;
+  c.rgb *= 1.0 - max(filled, film) * 0.3 * sheen;
+  finalColor = c;
+}`;
+
+/** S6 wetting front (`frontLook` in src/sim/water.ts): wet soil above the front is darker, with fingers below. */
+const FRONT = `${HEAD}
+uniform float uFront;
+uniform float uFingering;
+void main() {
+  vec4 c = texture(uTexture, vTextureCoord);
+  vec2 uv = frameUv();
+  float fingers = pow(vnoise(vec2(uv.x * 8.0, 0.0)), 3.0) * uFingering;
+  float front = uFront + fingers + (vnoise(vec2(uv.x * 20.0, uTime * 0.05)) - 0.5) * 0.01;
+  float wet = smoothstep(front + 0.02, front - 0.02, uv.y);
+  c.rgb *= mix(1.0, 0.78, wet);
+  finalColor = c;
+}`;
+
 type Uniforms = Record<string, { value: number; type: "f32" }>;
 
 function make<U extends string>(name: string, fragment: string, extra: Record<U, number>) {
@@ -87,3 +120,5 @@ function make<U extends string>(name: string, fragment: string, extra: Record<U,
 export const backdropFilter = () => make("sw-backdrop", BACKDROP, { uGrain: 1, uMicro: 0 });
 export const flowFilter = () => make("sw-flow", FLOW, { uSmear: 3 });
 export const dissolveFilter = () => make("sw-dissolve", DISSOLVE, { uProgress: 0 });
+export const filmFilter = () => make("sw-film", FILM, { uFilm: 1, uFill: 1 });
+export const frontFilter = () => make("sw-front", FRONT, { uFront: 0, uFingering: 0 });

@@ -214,6 +214,17 @@ export interface FlowNode {
   branches: { id: string; label: string; to: string }[];
 }
 
+/**
+ * An effect split among candidate sources. Shares are per cent and sum to 100,
+ * or "unresolved" when the evidence cannot yet separate them (WB ch. 3).
+ */
+export interface Attribution {
+  effect: string;
+  candidates: { id: string; label: string }[];
+  shares: Record<string, number> | "unresolved";
+  sources: SourceId[];
+}
+
 /** What finishing a step or mission writes into the save, besides its own record. */
 export interface OnComplete {
   flags?: string[];
@@ -289,6 +300,15 @@ export type Step = (
   | { kind: "grazer-week"; text: string; moisture: Moisture; resultText: string; facts: Fact[] }
   | { kind: "slake"; text: string; resultText: string; facts: Fact[] }
   | { kind: "build-crumb"; text: string; resultText: string; facts: Fact[] }
+  /** Chapter 3 water benches (`src/ui/WaterRoads.tsx`) on the rules in `src/sim/water.ts`. */
+  | {
+      kind: "water";
+      bench: "drain" | "stranded" | "birch" | "fast-lanes";
+      text: string;
+      resultText: string;
+      facts: Fact[];
+      attribution?: Attribution;
+    }
 ) & { onComplete?: OnComplete };
 
 export interface Mission extends Reviewed {

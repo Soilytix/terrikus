@@ -3,6 +3,8 @@ import type { Plate } from "../types";
 import { c1AggregateCut } from "./c1-aggregate-cut";
 import { c1GrainRuler } from "./c1-grain-ruler";
 import { c1Labyrinth } from "./c1-labyrinth";
+import { c3Drain } from "./c3-drain";
+import { c3RainProfile } from "./c3-rain-profile";
 import { fieldDawn } from "./field-dawn";
 import { handful } from "./handful";
 import { hedgeEdge } from "./hedge-edge";
@@ -26,4 +28,6 @@ export const RECIPES: Record<string, Recipe> = {
   "c1-grain-ruler": c1GrainRuler,
   "c1-aggregate-cut": c1AggregateCut,
   "c1-labyrinth": c1Labyrinth,
+  "c3-drain": c3Drain,
+  "c3-rain-profile": c3RainProfile,
 };

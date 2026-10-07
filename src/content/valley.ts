@@ -2,6 +2,7 @@
  * The valley (landscape scale): the title vista and the map of chapters.
  * Later chapters are glimpsed here with their opening rumor, never their content.
  */
+import { c3Discoveries } from "./chapters/c3";
 import type { Chapter, ChapterBundle, Discovery, Scene } from "./schema";
 
 const later = (
@@ -29,7 +30,6 @@ const later = (
 
 /** Hooks verbatim from the world-bible chapter map. */
 const LATER_CHAPTERS: Chapter[] = [
-  later("c3", "3", "Water Roads", "After the dry spell, the soil breathed out a burst.", "spinach"),
   later("c4", "4", "Breath and Rust", "The flooded field smells of eggs, and the rice is fine.", "rice"),
   later("c5", "5", "Charged Surfaces", "The fertiliser stayed exactly where the clay was.", "spinach"),
   later("c6", "6", "Who Eats Whom", "Bacteria near the root multiply, then crash.", "forest"),
@@ -181,6 +181,15 @@ export const valleyMapScene: Scene = {
       kind: "glimpse",
       anchor: { x: 0.5, y: 0.62 },
       to: "c3",
+      hiddenBy: "chapter:c3",
+    },
+    {
+      id: "dry-patch-portal",
+      label: "A dry patch after rain",
+      kind: "portal",
+      anchor: { x: 0.5, y: 0.62 },
+      to: "c3-drain",
+      requires: "chapter:c3",
     },
     { id: "paddy", label: "Rice paddy", kind: "glimpse", anchor: { x: 0.68, y: 0.78 }, to: "c4" },
     {
@@ -259,4 +268,5 @@ export const DISCOVERIES: Discovery[] = [
     statement: "I predicted a new residue's fate and said what I would measure.",
     evidenceTier: "would-do",
   },
+  ...c3Discoveries,
 ];

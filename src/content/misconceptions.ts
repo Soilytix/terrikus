@@ -98,4 +98,14 @@ export const MISCONCEPTIONS: Misconception[] = [
     misconception: "Bigger pores are better",
     correctIdea: "Wide pores drain and let air in; narrow pores hold water and shelter microbes",
   },
+  {
+    id: "M31",
+    misconception: "A soil at field capacity is full",
+    correctIdea: "Its widest pores have drained and hold air, which roots and microbes breathe",
+  },
+  {
+    id: "M32",
+    misconception: "Plants suck water from a tank like a straw",
+    correctIdea: "Roots pull against the soil's rising grip; the last water is held too tightly to take",
+  },
 ];

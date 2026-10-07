@@ -4,14 +4,14 @@ import sharp, { type Sharp } from "sharp";
 import { describe, expect, it } from "vitest";
 import { SCENES } from "../content";
 import { OUT, sha } from "../../tools/bake-plates";
-import { BAKE_SCALE, BAKE_SIZES, pickBaked, plateKey, type PlateManifest } from "./baked";
+import { BAKE_SCALE, BAKE_SIZES, UNBAKED, pickBaked, plateKey, type PlateManifest } from "./baked";
 import { composeStatic, paint } from "./painter";
 
 const manifest = JSON.parse(readFileSync(join(OUT, "manifest.json"), "utf8")) as PlateManifest;
 
 describe("baked plates", () => {
   // Fails after a recipe or seed change: rebake with `mise run bake`.
-  it.each(SCENES.map((s) => [s.id, s.recipe, s.seed] as const))(
+  it.each(SCENES.filter((s) => !UNBAKED.has(s.recipe)).map((s) => [s.id, s.recipe, s.seed] as const))(
     "%s matches the runtime painter at every reference size",
     (_, recipe, seed) => {
       for (const [w, h] of BAKE_SIZES) {
@@ -38,6 +38,13 @@ describe("baked plates", () => {
     // AVIF is lossy: close to the same seed, clearly further from another.
     expect(diff(a, b)).toBeLessThan(4);
     expect(diff(a, other)).toBeGreaterThan(diff(a, b) * 2);
+  });
+});
+
+describe("unbaked recipes", () => {
+  it("have no plates, so the runtime paints them", () => {
+    for (const recipe of UNBAKED)
+      expect(Object.keys(manifest.plates).filter((k) => k.startsWith(`${recipe}:`))).toEqual([]);
   });
 });
 

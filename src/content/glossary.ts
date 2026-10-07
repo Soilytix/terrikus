@@ -200,6 +200,35 @@ export const GLOSSARY: GlossaryTerm[] = [
     },
     reviewStatus: "draft",
   },
+  ...(
+    [
+      [
+        "matric-potential",
+        "matric potential",
+        "How tightly soil holds its water, by capillarity and adsorption: zero when soaked, more negative as it dries.",
+        ["or-2007"],
+      ],
+      [
+        "field-capacity",
+        "field capacity",
+        "The water left after free drainage, by convention at about −10 to −33 kPa. Its widest pores already hold air.",
+        ["cornell-awc"],
+      ],
+      [
+        "wilting-point",
+        "wilting point",
+        "The dryness, by convention about −1,500 kPa, at which typical crops can no longer take up water.",
+        ["meter-paw-note"],
+      ],
+    ] as const
+  ).map(([id, term, text, sources]): GlossaryTerm => ({
+    id: `g-${id}`,
+    term,
+    chapter: "c3",
+    unlockedBy: "d-c3-drain",
+    definition: { id: `g-${id}-def`, text, confidence: "firm", sources: [...sources] },
+    reviewStatus: "draft",
+  })),
 ];
 
 /** Terms the player has unlocked, alphabetically. */

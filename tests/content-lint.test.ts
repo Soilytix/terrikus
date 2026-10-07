@@ -24,7 +24,14 @@ import { WORLDS } from "../src/content/worlds";
 import { ASSETS, INTERNAL_ASSETS } from "../src/assets/manifest";
 import { BENCHES, isBenchId } from "../src/sim/benches";
 import { LABYRINTH, blockedBy } from "../src/sim/films";
-import { NO_GOOD_BAD, NO_SCORES, lintReview, lintSources, strings } from "./lib/content-lint";
+import {
+  NO_GOOD_BAD,
+  NO_SCORES,
+  lintAttribution,
+  lintReview,
+  lintSources,
+  strings,
+} from "./lib/content-lint";
 
 const ALL = { CHAPTERS, SCENES, MISSIONS, CODEX, ORGANISMS, PROCESSES, MATERIALS, WORLDS, ASSETS, RUMORS };
 const docRows = parseSourcesDoc(readFileSync("docs/sources.md", "utf8"));
@@ -62,6 +69,36 @@ describe("sources", () => {
 
   it("fails on an unknown source id (fixture)", () => {
     expect(lintSources({ sources: ["nobody-1999"] })[0]).toMatch(/unknown source id/);
+  });
+});
+
+describe("source attribution", () => {
+  const birch = {
+    effect: "CO₂ pulse on rewetting",
+    candidates: [
+      { id: "osmolytes", label: "Osmolytes" },
+      { id: "dead", label: "Dead cells" },
+    ],
+    sources: ["schimel-2018"],
+  };
+
+  it("accepts an 'unresolved' attribution (fixture)", () => {
+    const a = { ...birch, shares: "unresolved" };
+    expect(lintAttribution(a)).toEqual([]);
+    expect(lintSources(a)).toEqual([]);
+  });
+
+  it("fails on shares that do not add up or name no candidate (fixture)", () => {
+    expect(lintAttribution({ ...birch, shares: { osmolytes: 60, dead: 30 } })[0]).toMatch(/sum to 100/);
+    expect(lintAttribution({ ...birch, shares: { osmolytes: 60, roots: 40 } })[0]).toMatch(/not a candidate/);
+    expect(lintAttribution({ ...birch, shares: "unresolved", sources: [] })[0]).toMatch(/without sources/);
+  });
+
+  it("every attribution in content is well formed, and the Birch pulse stays unresolved", () => {
+    expect(lintAttribution(MISSIONS)).toEqual([]);
+    const steps = MISSIONS.flatMap((m) => m.steps);
+    const pulse = steps.find((s) => s.kind === "water" && s.bench === "birch");
+    expect(pulse && "attribution" in pulse && pulse.attribution?.shares).toBe("unresolved");
   });
 });
 
