@@ -1,7 +1,7 @@
 /** Reactive figure (p-m1): solids stay put; water and air trade the pore space. */
 import { useState } from "react";
 
-export function WaterAir({ onMoved }: { onMoved: () => void }) {
+export function WaterAir({ onMoved }: { onMoved: (water: number) => void }) {
   const [water, setWater] = useState(25);
   const air = 50 - water;
   const seg = (label: string, pct: number, cls: string) => (
@@ -30,7 +30,7 @@ export function WaterAir({ onMoved }: { onMoved: () => void }) {
           aria-valuetext={`Water ${water} %, air ${air} %, solids 50 %`}
           onChange={(e) => {
             setWater(Number(e.target.value));
-            onMoved();
+            onMoved(Number(e.target.value));
           }}
         />
         <output className="mono">{water} %</output>

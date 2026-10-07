@@ -7,12 +7,14 @@ import { useEffect, useImperativeHandle, useRef, useState, type ReactNode, type 
 import { scene as sceneById } from "../content";
 import { loadManifest, pickBaked, plateUrl as bakedUrl } from "./baked";
 import type { Tier } from "./shaders/tiers";
-import type { Arrival, Stage, ScreenView } from "./stage";
+import type { Arrival, SceneEvent, Stage, ScreenView } from "./stage";
 
 export interface WorldHandle {
   zoom(factor: number): void;
   pan(dx: number, dy: number): void;
   reset(): void;
+  /** An experiment step changed the scene (R02). */
+  event(name: SceneEvent, value: number): void;
 }
 
 interface Props {
@@ -72,6 +74,9 @@ export function World({
   const [plateSource, setPlateSource] = useState<"baked" | "painted" | undefined>(undefined);
   const [tier, setTier] = useState<Tier | undefined>(undefined);
   const [stageReady, setStageReady] = useState(0);
+  /** Static mode's copy of the experiment state: the end state shows as a second plate. */
+  const [reaction, setReaction] = useState<{ on: boolean; water: number | null }>({ on: false, water: null });
+  const [bandsUrl, setBandsUrl] = useState<string | null>(null);
   const readyRef = useRef(onReady);
   readyRef.current = onReady;
   const slowRef = useRef(onTooSlow);
@@ -81,7 +86,33 @@ export function World({
     zoom: (f) => stage.current?.nudge(0, 0, f),
     pan: (dx, dy) => stage.current?.nudge(dx, dy),
     reset: () => stage.current?.resetView(),
+    event: (name, value) => {
+      stage.current?.event(name, value);
+      setReaction((r) => (name === "separate" ? { ...r, on: value > 0 } : { on: true, water: value }));
+    },
   }));
+
+  useEffect(() => setReaction({ on: false, water: null }), [sceneId]);
+  useEffect(() => {
+    const s = sceneById(sceneId);
+    const el = host.current;
+    if (mode !== "static" || !reaction.on || !s || !el) {
+      setBandsUrl(null);
+      return;
+    }
+    let alive = true;
+    let url: string | null = null;
+    void import("./painter/recipes/composition-bands").then(({ SEPARATES, compositionPlate }) => {
+      if (!alive || !SEPARATES.has(s.recipe)) return;
+      const svg = compositionPlate(el.clientWidth || 1, el.clientHeight || 1, s.seed, reaction.water ?? 25);
+      url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+      setBandsUrl(url);
+    });
+    return () => {
+      alive = false;
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [mode, reaction, sceneId]);
 
   /**
    * The camera, as CSS variables on the two places that read them (hotspots
@@ -231,6 +262,9 @@ export function World({
     >
       <div ref={host} className="world-canvas" aria-hidden="true">
         {mode === "static" && plateUrl && <img src={plateUrl} alt="" className="world-plate" />}
+        {mode === "static" && plateUrl && bandsUrl && (
+          <img src={bandsUrl} alt="" className="world-plate" style={{ position: "absolute", inset: 0 }} />
+        )}
       </div>
       {mode === "static" && dim && <div className="world-dim" aria-hidden="true" />}
       <div className="hotspots" data-busy={busy}>

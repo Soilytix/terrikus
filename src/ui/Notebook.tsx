@@ -50,7 +50,7 @@ function sizeLabel(m: number): string {
   return `${+(m * 1e6).toPrecision(2)} µm`;
 }
 
-function CardView({ card, state }: { card: FieldCard; state: "partial" | "full" }) {
+function CardView({ card, state, guess }: { card: FieldCard; state: "partial" | "full"; guess?: unknown }) {
   const item = card.item;
   const art = card.kind === "organism" && item && "art" in item && item.art ? assetUrl(item.art) : undefined;
   return (
@@ -74,6 +74,7 @@ function CardView({ card, state }: { card: FieldCard; state: "partial" | "full" 
         <h3>{item.name}</h3>
         {card.kind === "organism" && <p className="fc-role">{card.item.role}</p>}
         {card.kind !== "organism" && <p className="fc-role">{card.item.summary}</p>}
+        {typeof guess === "number" && <p className="small">You guessed {guess} % solid.</p>}
         {card.kind === "organism" && (
           <p className="fc-size">
             True size{" "}
@@ -213,7 +214,12 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
             </p>
             <div className="card-grid">
               {cards.map((c) => (
-                <CardView key={c.item.id} card={c} state={save.cards[c.item.id]!} />
+                <CardView
+                  key={c.item.id}
+                  card={c}
+                  state={save.cards[c.item.id]!}
+                  guess={c.item.id === "pore-space" ? save.predictions["p-m1-solid"] : undefined}
+                />
               ))}
               {Array.from({ length: Math.min(locked, 6) }, (_, i) => (
                 <div key={i} className="field-card locked" aria-hidden="true">

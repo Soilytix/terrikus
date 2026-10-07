@@ -118,7 +118,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Depends on:** —. **Blocks:** T13 and every later chapter.
 - **Done:** chapters export a `ChapterBundle`; bench steps name a bench from `BENCHES` (`src/sim/benches/index.ts`) and open `#/bench/:id`; flags and rumors come from `onComplete`, `Chapter.rumor` and `Chapter.lens`; the water/air step names its flag. Progress and verdict tests moved to `tests/` since they read chapter content. Open: `src/app/verdict.ts` still ties the evidence "your water/air slider" to the flag `p-m1-slider` by name.
 
-### R02 — The world reacts to the experiment (P1, P2 rest)
+### R02 — The world reacts to the experiment (P1, P2 rest) · **done**
 
 - **Problem:** "Separate the handful" and the water/air slider change only the side panel; the painted handful stays the same. Art direction says event motion is meaning.
 - **Direction:** in `src/world/stage.ts` add a small scene-event API (`stage.event("separate" | "water", value)`) driven from `MissionPanel` through `WorldHandle`; the handful plate gets a layered "settled cylinder" overlay that eases in, and the pore/handful water layer tint follows the slider value. Reduced motion jumps to the end state; static mode shows the end state as a second plate. Also record the learner's guess on the `pore-space` field card ("You guessed X %").

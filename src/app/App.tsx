@@ -311,6 +311,7 @@ export function App() {
             go={go}
             narrate={narrate}
             reduced={reduced || forceStatic}
+            sceneEvent={(name, value) => world.current?.event(name, value)}
           />
           {scanned && (
             <ScanCard

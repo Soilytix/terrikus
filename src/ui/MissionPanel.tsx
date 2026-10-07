@@ -18,6 +18,7 @@ import { HandDecompose } from "./HandDecompose";
 import { GrazerWeek, Labyrinth } from "./Labyrinth";
 import { WaterAir } from "./WaterAir";
 import { Facts } from "./common";
+import type { SceneEvent } from "../world/stage";
 
 interface Props {
   mission: Mission | undefined;
@@ -28,6 +29,8 @@ interface Props {
   go: (href: string) => void;
   narrate: (text: string) => void;
   reduced: boolean;
+  /** Tell the world an experiment step changed it (R02). */
+  sceneEvent?: ((name: SceneEvent, value: number) => void) | undefined;
 }
 
 function Choices({
@@ -113,6 +116,7 @@ function StepBody({
   narrate,
   sceneId,
   reduced,
+  sceneEvent,
 }: Props & { mission: Mission; step: Step }) {
   const next = () => update((s) => advance(s, m.id));
   const [picked, setPicked] = useState<string[]>([]);
@@ -244,7 +248,14 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           {!overlay ? (
-            <button type="button" className="btn btn-primary" onClick={() => setOverlay(true)}>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {
+                setOverlay(true);
+                sceneEvent?.("separate", 1);
+              }}
+            >
               Separate the handful
             </button>
           ) : (
@@ -290,7 +301,12 @@ function StepBody({
       return (
         <>
           <p className="step-text">{step.text}</p>
-          <WaterAir onMoved={() => !moved && update((s) => setFlag(s, step.flag))} />
+          <WaterAir
+            onMoved={(water) => {
+              sceneEvent?.("water", water);
+              if (!moved) update((s) => setFlag(s, step.flag));
+            }}
+          />
           {!moved && <p className="muted small">Move the slider to continue.</p>}
           <button type="button" className="btn btn-primary" disabled={!moved} onClick={next}>
             Continue

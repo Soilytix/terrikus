@@ -10,6 +10,7 @@ import { num } from "./painter/color";
 import { fbm, rngFor } from "./painter/noise";
 import { paintOff } from "./painter/remote";
 import type { Plate, ParticleSpec, PlateLayer, SpriteSpec } from "./painter";
+import { SEPARATES, compositionBands, waterLook, type Band } from "./painter/recipes/composition-bands";
 import { HOME, clampView, easeChart, logLerp, viewTransform, type View } from "./camera";
 import { govern, initialGovernor } from "./governor";
 import {
@@ -29,6 +30,9 @@ export interface ScreenView {
   w: number;
   h: number;
 }
+
+/** Experiment steps the scene answers (R02): `separate` 1/0, `water` the water share of the volume, %. */
+export type SceneEvent = "separate" | "water";
 
 export type Arrival =
   | { kind: "cut" }
@@ -54,6 +58,7 @@ import { SOFT, loadManifest, pickBaked, plateUrl, sameLayers } from "./baked";
 const PARALLAX_PX = 9;
 const ZOOM_MS = 1100;
 const FADE_MS = 200;
+const SETTLE_S = 1.6;
 
 interface LiveSprite {
   sprite: Sprite;
@@ -73,6 +78,13 @@ interface LiveParticle {
   phase: number;
   a: number;
 }
+interface LiveBands {
+  root: Container;
+  veil: Sprite;
+  edge: Sprite;
+  bands: { id: Band; sprite: Sprite; y: number }[];
+  drop: number;
+}
 interface LiveLayer {
   holder: Container;
   sprite: Sprite;
@@ -86,6 +98,7 @@ class SceneView {
   layers: LiveLayer[] = [];
   sprites: LiveSprite[] = [];
   particles: LiveParticle[] = [];
+  bands: LiveBands | null = null;
   view: View = { ...HOME };
   target: View = { ...HOME };
   constructor(
@@ -199,6 +212,8 @@ export class Stage {
   private size = { w: 1, h: 1 };
   private scene: { recipe: string; seed: number } | null = null;
   private drag: { x: number; y: number; cx: number; cy: number } | null = null;
+  /** The experiment's state on one scene; `k` eases 0 → 1 as the handful separates. */
+  private reaction: { key: string; on: boolean; water: number | null; k: number } | null = null;
 
   constructor(private opts: StageOptions) {
     this.reduced = opts.reducedMotion;
@@ -280,6 +295,7 @@ export class Stage {
   async show(recipe: string, seed: number, how: Arrival, scale?: Scale): Promise<void> {
     this.scene = { recipe, seed };
     this.scale = scale;
+    if (this.reaction && this.reaction.key !== `${recipe}:${seed}`) this.reaction = null;
     this.applyTier();
     const key = `${recipe}:${seed}`;
     if (this.current?.key === key && !this.transition) return;
@@ -316,6 +332,22 @@ export class Stage {
         done,
       };
     });
+  }
+
+  /** An experiment step changed the scene. Reduced motion jumps to the end state. */
+  event(name: SceneEvent, value: number): void {
+    const c = this.current;
+    if (!c?.bands) return;
+    if (this.reaction?.key !== c.key) this.reaction = { key: c.key, on: false, water: null, k: 0 };
+    const r = this.reaction;
+    if (name === "separate") r.on = value > 0;
+    else {
+      // The slider acts on the separated volume: show it settled.
+      r.water = value;
+      r.on = true;
+      r.k = 1;
+    }
+    if (this.reduced) r.k = r.on ? 1 : 0;
   }
 
   /** User camera: pan by a fraction of the view, zoom by a factor. */
@@ -417,7 +449,62 @@ export class Stage {
         });
       }
     }
+    if (SEPARATES.has(recipe)) view.bands = await this.buildBands(view, seed, fine);
     return view;
+  }
+
+  /** The separated handful, hidden until `event("separate")`. */
+  private async buildBands(view: SceneView, seed: number, scale: number): Promise<LiveBands> {
+    const { w, h } = this.size;
+    const p = compositionBands(w, h, seed, scale);
+    const [veilT, edgeT, ...bandT] = await Promise.all(
+      [p.veil, p.edge, ...p.bands.map((b) => b.svg)].map(svgTexture),
+    );
+    const root = new Container();
+    root.visible = false;
+    const full = (t: Texture) => {
+      const s = new Sprite(t);
+      s.width = w;
+      s.height = h;
+      return s;
+    };
+    const veil = full(veilT!);
+    root.addChild(veil);
+    const bands = p.bands.map((b, i) => {
+      const sprite = new Sprite(bandT[i]!);
+      sprite.position.set(p.layout.x, b.y);
+      sprite.width = p.layout.w;
+      sprite.height = b.h;
+      root.addChild(sprite);
+      return { id: b.id, sprite, y: b.y };
+    });
+    const edge = full(edgeT!);
+    root.addChild(edge);
+    view.root.addChild(root);
+    return { root, veil, edge, bands, drop: p.layout.h * 0.35 };
+  }
+
+  private react(v: SceneView, dt: number): void {
+    const b = v.bands;
+    if (!b) return;
+    const r = this.reaction?.key === v.key ? this.reaction : null;
+    const want = r?.on ? 1 : 0;
+    if (r)
+      r.k = this.reduced ? want : r.k + Math.sign(want - r.k) * Math.min(Math.abs(want - r.k), dt / SETTLE_S);
+    const k = r?.k ?? 0;
+    b.root.visible = k > 0;
+    if (!b.root.visible) return;
+    b.veil.alpha = Math.min(1, k * 1.6);
+    b.edge.alpha = Math.min(1, k * 2);
+    const look = waterLook(r?.water ?? 25);
+    const n = b.bands.length;
+    b.bands.forEach((band, i) => {
+      // Bottom band first, each settling in its own slice of the ease.
+      const e = easeChart(Math.min(1, Math.max(0, (k * (n + 1) - i) / 2)));
+      band.sprite.y = band.y - (1 - e) * b.drop;
+      band.sprite.alpha = band.id === "water" ? e * look.alpha : e;
+      if (band.id === "water") band.sprite.tint = num(look.colour);
+    });
   }
 
   private finishTransition(): void {
@@ -587,6 +674,7 @@ export class Stage {
     }
     this.place(c);
     this.animate(c, dt);
+    this.react(c, dt);
     this.emitView();
   }
 
