@@ -48,7 +48,8 @@ function check(d: Record<string, unknown>) {
       "settings",
       ["system", "reduced", "full"].includes(s.motion as string) &&
         typeof s.lens === "boolean" &&
-        typeof s.ambient === "boolean",
+        typeof s.ambient === "boolean" &&
+        typeof s.sound === "boolean",
     ],
     ["chaptersUnlocked", strings(d.chaptersUnlocked)],
     ["chaptersComplete", strings(d.chaptersComplete)],

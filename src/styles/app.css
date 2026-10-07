@@ -2570,3 +2570,27 @@ input[type="range"] {
     transition: none;
   }
 }
+
+/* Sound captions (T32) */
+.sound-captions {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 30;
+  display: grid;
+  gap: 4px;
+  max-width: min(420px, calc(100vw - 32px));
+  pointer-events: none;
+}
+.sound-caption {
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-ink-faint);
+  color: var(--color-ink);
+  font-size: 13px;
+}
+.sound-cues td {
+  font-size: 14px;
+}

@@ -33,8 +33,8 @@ export interface ChainAnswer {
 export interface SaveV1 {
   schemaVersion: 1;
   createdAt: string;
-  /** `ambient`: living backdrops move (OD-8 interim toggle). */
-  settings: { motion: Motion; lens: boolean; ambient: boolean };
+  /** `ambient`: living backdrops move (OD-8 interim toggle). `sound`: the T32 mixer, off by default. */
+  settings: { motion: Motion; lens: boolean; ambient: boolean; sound: boolean };
   chaptersUnlocked: string[];
   chaptersComplete: string[];
   rumors: Record<string, "glimpsed" | "investigated" | "explained">;
@@ -60,7 +60,7 @@ export function freshSave(now = new Date().toISOString()): Save {
   return {
     schemaVersion: 1,
     createdAt: now,
-    settings: { motion: "system", lens: false, ambient: true },
+    settings: { motion: "system", lens: false, ambient: true, sound: false },
     chaptersUnlocked: ["prologue"],
     chaptersComplete: [],
     rumors: {},

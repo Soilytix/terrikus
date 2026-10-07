@@ -7,6 +7,7 @@ import { Dialog, Kbd } from "./common";
 import { AmbientToggle } from "./Ambient";
 import { Credits } from "./Credits";
 import { PilotSettings } from "./Pilot";
+import { SoundSettings } from "./Sound";
 
 export function Truth({ scene, onClose }: { scene: Scene; onClose: () => void }) {
   const rows: [string, string[]][] = [
@@ -138,6 +139,7 @@ export function Settings({
         ))}
       </fieldset>
       <AmbientToggle />
+      <SoundSettings />
       {tooSlow && (
         <p className="small muted">
           Still pictures were chosen because this device drew the moving world too slowly.

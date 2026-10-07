@@ -359,11 +359,12 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Depends on:** T10
 - **Done:** `src/content/glossary.ts` seeds 14 of the WB§8.3 terms whose phenomena are playable (prologue, chapter 2); the rest arrive with their chapters. `mise run review-report`; internal overlay is read-only. Approval waits on OD-7.
 
-### T32 — Sound mixer (off by default)
+### T32 — Sound mixer (off by default) · **done**
 
 - **Goal:** optional ambient and event sound.
 - **Scope:** WebAudio mixer; per-scale ambience; event cues with captions.
 - **Acceptance:** off by default; every sound has a text equivalent; no autoplay.
+- **Done:** `src/audio/mixer.ts` (synthesised in WebAudio, no audio files; no AudioContext until the learner turns sound on), `settings.sound` in the save, the Settings section and caption strip in `src/ui/Sound.tsx`; the ambient toggle silences the bed and reduced motion holds its swell still.
 - **Depends on:** T15
 
 ### T33 — Pilot instrumentation · **done**

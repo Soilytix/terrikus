@@ -14,6 +14,7 @@ import { Help, Settings, Truth } from "../ui/Panels";
 import { Recall } from "../ui/Recall";
 import { ReviewOverlay } from "../ui/Review";
 import { ScanCard } from "../ui/ScanCard";
+import { SoundCaptions } from "../ui/Sound";
 import { Title } from "../ui/Title";
 import {
   activeMission,
@@ -279,6 +280,7 @@ export function App() {
           />
         )}
       </World>
+      <SoundCaptions scale={route.name === "title" ? null : scene.scale} reduced={reduced} />
 
       {route.name === "title" ? (
         <Title
