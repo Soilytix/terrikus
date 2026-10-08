@@ -3486,3 +3486,86 @@ input[type="range"] {
   stroke-width: 1;
   stroke-dasharray: 1 0.6;
 }
+
+/* Chapter 14: lab pipeline, claim budget, two reports and the honest report mock-up (T30) */
+.sample {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.sample .segmented span {
+  white-space: normal;
+}
+.table-scroll {
+  overflow-x: auto;
+}
+.stages {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+}
+.evidence-held {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+.evidence-held li[data-held="false"] {
+  color: var(--color-ink-muted);
+}
+.report-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+.lab-report,
+.report-draft,
+.report-mock {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+}
+.lab-report h4,
+.report-mock h4,
+.lab-report p,
+.report-block p {
+  margin: 0;
+}
+.report-mock {
+  border-style: dashed;
+}
+.report-stamp {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+.report-block {
+  padding-top: 8px;
+  border-top: 1px solid var(--color-table-rule);
+}
+.report-block dl {
+  margin: 6px 0 0;
+  display: grid;
+  gap: 2px;
+  font-size: 13px;
+}
+.report-block dl div {
+  display: grid;
+  grid-template-columns: 7em 1fr;
+  gap: 6px;
+}
+.report-block dt {
+  font-weight: 600;
+}
+.report-block dd {
+  margin: 0;
+}

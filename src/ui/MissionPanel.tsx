@@ -47,6 +47,7 @@ const PitWalls = lazy(() => import("./PitWalls").then((m) => ({ default: m.PitWa
 const DiseaseBench = lazy(() => import("./Disease").then((m) => ({ default: m.DiseaseBench })));
 const EvidenceLadder = lazy(() => import("./Disease").then((m) => ({ default: m.EvidenceLadder })));
 const Fields = lazy(() => import("./Fields").then((m) => ({ default: m.Fields })));
+const Sample = lazy(() => import("./Sample").then((m) => ({ default: m.Sample })));
 
 interface Props {
   mission: Mission | undefined;
@@ -573,6 +574,15 @@ function StepBody({
           <p className="step-text">{step.text}</p>
           <Suspense fallback={<p className="muted small">Loading…</p>}>
             <Fields step={step} onDone={next} />
+          </Suspense>
+        </>
+      );
+    case "sample":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <Suspense fallback={<p className="muted small">Loading…</p>}>
+            <Sample step={step} onDone={next} />
           </Suspense>
         </>
       );

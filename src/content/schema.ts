@@ -442,6 +442,23 @@ export type Step = (
       /** The season wheel: one turn of the field's year and what happens below. */
       events?: { id: string; label: string; below: string }[];
     }
+  /** Chapter 14 benches (`src/ui/Sample.tsx`) on `src/sim/measure.ts` and `src/sim/claims.ts`. */
+  | {
+      kind: "sample";
+      bench: "pipeline" | "jar" | "layers" | "budget" | "reports" | "report";
+      text: string;
+      resultText: string;
+      facts: Fact[];
+      /** Sort the statement: each into one of the five layers. */
+      statements?: Statement[];
+      /** Claim budget: the evidence ladder and the cases to judge on it. */
+      ladder?: ClaimRung[];
+      cases?: BudgetCase[];
+      /** Two reports about the same field. */
+      reports?: LabReport[];
+      /** The honest report: every block is placed only with its benchmark, confidence and provenance. */
+      blocks?: ReportBlock[];
+    }
 ) & { onComplete?: OnComplete };
 
 /** One rung of the evidence ladder: the evidence collected, the claim it allows and what it does not. */
@@ -450,6 +467,51 @@ export interface LadderRung {
   evidence: string;
   claim: string;
   notYet: string;
+}
+
+/** The five layers of a result, kept apart (world bible ch. 14). */
+export type ResultLayer = "measurement" | "derived" | "interpretation" | "prediction" | "recommendation";
+
+/** A statement to sort into its layer; `feedback` is shown once it sits there. */
+export interface Statement {
+  id: string;
+  text: string;
+  layer: ResultLayer;
+  feedback: string;
+}
+
+/** One rung of the evidence ladder: the claim it allows, and what is named when it is claimed without its evidence. */
+export interface ClaimRung {
+  id: string;
+  evidence: string;
+  claim: string;
+  overclaim: string;
+}
+
+/** A claim-budget case: the evidence in hand, as the ids of the rungs it shows. */
+export interface BudgetCase {
+  id: string;
+  scenario: string;
+  held: string[];
+}
+
+/** A lab report card: a result read against a benchmark, with the method that made it. */
+export interface LabReport {
+  id: string;
+  title: string;
+  result: string;
+  benchmark: string;
+  method: string[];
+}
+
+/** A block of the honest report mock-up. Each of the three fields must be filled with an `ok` choice before it is placed. */
+export interface ReportBlock {
+  id: string;
+  tier: "measured" | "derived" | "interpreted" | "would-measure";
+  text: string;
+  benchmark: Choice[];
+  confidence: Choice[];
+  provenance: Choice[];
 }
 
 /** One leg of the nitrogen relay: who carries the baton from `from` to `to`. */

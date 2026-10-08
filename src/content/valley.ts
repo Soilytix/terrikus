@@ -24,8 +24,9 @@ const later = (
   missions: [],
   entry: "valley",
   sources: ["soils4teachers-basics"],
-  // WB§1: chapters 3–13 open from the map as their rumors are met; 14 needs any four chapters.
-  ...(number === "14" ? { after: [], needsAny: 4 } : { after: ["c1", "leaf"], byRumor: true }),
+  // WB§1: chapters 3–13 open from the map as their rumors are met.
+  after: ["c1", "leaf"],
+  byRumor: true,
   playable: false,
   reviewStatus: "draft",
 });
@@ -33,7 +34,6 @@ const later = (
 /** Hooks verbatim from the world-bible chapter map. */
 const LATER_CHAPTERS: Chapter[] = [
   later("c13", "13", "Hillslope and River", "Where does the soil from the hill go?", "rice"),
-  later("c14", "14", "What Does the Sample Tell Us?", "Two reports about the same field disagree.", "bare"),
 ];
 
 /** A later chapter brings only its opening rumor. */
@@ -275,7 +275,22 @@ export const valleyMapScene: Scene = {
       requires: "chapter:c12",
     },
     { id: "river", label: "The river", kind: "glimpse", anchor: { x: 0.88, y: 0.86 }, to: "c13" },
-    { id: "lab", label: "The farm lab", kind: "glimpse", anchor: { x: 0.52, y: 0.86 }, to: "c14" },
+    {
+      id: "lab",
+      label: "The farm lab",
+      kind: "glimpse",
+      anchor: { x: 0.52, y: 0.86 },
+      to: "c14",
+      hiddenBy: "chapter:c14",
+    },
+    {
+      id: "lab-portal",
+      label: "The farm lab",
+      kind: "portal",
+      anchor: { x: 0.52, y: 0.86 },
+      to: "c14-bench",
+      requires: "chapter:c14",
+    },
   ],
   reviewStatus: "draft",
 };

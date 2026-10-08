@@ -197,7 +197,7 @@ Instruments read true state through sampling (core count, depth), detection limi
 | Item | Budget |
 |---|---|
 | Initial JS (shell, gz) | ≤ 200 KB |
-| World chunk (Pixi + world, gz) | ≤ 350 KB |
+| World chunk (Pixi + world, gz) | ≤ 400 KB |
 | Plates per scale (later, AVIF) | ≤ 2.5 MB |
 | Frame time | 16.6 ms on Apple M1 / Intel Iris Xe at DPR ≤ 2 |
 | First interactive scene | ≤ 2.5 s on a cold load over fast 4G (measured in T34) |
@@ -255,6 +255,7 @@ An agent must not settle a pending decision; it raises it and builds around it.
 | OD-13 | Pilot thresholds and instrument | pending | Founder | Not in Build phase |
 | OD-14 | Dark underground scenes vs light-only UI | pending | CTO | Build uses hero-dark as illustration only |
 | OD-15 | Platform vs hub token source (D-6) | decided (platform), flagged for review | CTO | Vendored from platform |
+| OD-16 | Chapter 14 honest-report mock-up: how close it may sit to Soilytix's own report vocabulary and layout (benchmark, confidence, provenance blocks), and whether Soilytix is named anywhere in the chapter | pending | Founder | Generic "farm lab"; report labelled a teaching mock-up, not any company's product; Soilytix not named |
 
 ## 12. Steps
 

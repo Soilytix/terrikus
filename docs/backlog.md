@@ -355,12 +355,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Acceptance:** storm passes the 3 Hz flash rule; satellite labelled reflectance measurement.
 - **Depends on:** T15, T27
 
-### T30 — Chapter 14: What Does the Sample Tell Us?
+### T30 — Chapter 14: What Does the Sample Tell Us? · **done**
 
 - **Goal:** the capstone on claims and confidence.
 - **Scope:** lab-bench pipeline; squeezing jar; claim-budget and sort-the-statement missions; honest-report mock-up labelled as teaching material.
 - **Acceptance:** unlocks after any four chapters; every report block requires benchmark, confidence and provenance; no Soilytix product depicted.
 - **Depends on:** T26, T28
+- **Done:** missions c14-m1–m5 on one runtime-painted `c14-bench` plate (flat line lab, two benches on portrait): the sample pipeline on `src/sim/measure.ts` (free DNA, cores and depth levers; the ghost group vanishes once free DNA is removed), the squeezing jar with a spike-in, sort the statement (12 statements, five layers), the claim budget on the evidence ladder in `src/sim/claims.ts` (overclaims named with the evidence they skip), and two reports that differ by depth and benchmark, then an honest report whose blocks are placed only with an accepted benchmark, confidence and provenance, labelled a teaching mock-up. Opens after any four chapters (`needsAny: 4`). The jar and report are panel benches, not `c14-jar`/`c14-report` plates. Deferred: "Same soil, three labs", "One core or five?" as its own mission, "What else could explain it?", primer bias, the evidence-ladder chain. OD-16 raised.
 
 ### T31 — Glossary and review-status tooling · **done**
 
