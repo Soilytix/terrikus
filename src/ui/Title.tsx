@@ -1,5 +1,6 @@
 /** The title card over the living valley. */
 import { CHAPTERS } from "../content";
+import { targetHref } from "../app/router";
 import type { Save } from "../save/schema";
 
 export function Title({
@@ -42,7 +43,11 @@ export function Title({
           >
             <span className="mono">{c.number === "P" ? "Prologue" : `Chapter ${c.number}`}</span>
             <span>
-              {c.title}
+              {save.chaptersUnlocked.includes(c.id) ? (
+                <a href={targetHref(c.scenes[0]!)}>{c.title}</a>
+              ) : (
+                c.title
+              )}
               <small>“{c.hook}”</small>
             </span>
           </li>
