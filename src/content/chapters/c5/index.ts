@@ -5,28 +5,8 @@
  * the field" (c5-m4), the water-versus-CaCl₂ scientist-lens payoff and the two
  * expected cause chains wait for a later pass; guo-2010 appears in the codex.
  */
-import type { Chapter, ChapterBundle, CodexEntry, Fact, Mission, Rumor, Scene } from "../../schema";
-
-const c5: Chapter = {
-  id: "c5",
-  number: "5",
-  title: "Charged Surfaces",
-  hook: "The fertiliser stayed exactly where the clay was.",
-  scales: ["cell"],
-  world: "spinach",
-  scenes: ["c5-platelet"],
-  missions: ["c5-m1", "c5-m2", "c5-m3"],
-  entry: "c5-platelet",
-  sources: ["cornell-fs22-cec", "wrb-2022", "lauber-2009", "rousk-2010", "guo-2010", "weil-brady-2017"],
-  after: ["c1", "leaf"],
-  byRumor: true,
-  playable: true,
-  recall: [
-    { prompt: "Which ions does a clay surface hold, and which wash through?", discovery: "d-c5-leaky" },
-    { prompt: "pH tracks the bacterial community closely. Is that cause?", discovery: "d-c5-association" },
-  ],
-  reviewStatus: "draft",
-};
+import type { ChapterBundle, CodexEntry, Fact, Mission, Scene } from "../../schema";
+import { c5, c5Rumors } from "./chapter";
 
 const F = {
   charge: {
@@ -516,8 +496,6 @@ const c5Codex: CodexEntry[] = [
     reviewStatus: "draft",
   },
 ];
-
-const c5Rumors: Rumor[] = [{ id: "r-c5", text: c5.hook, chapter: "c5", hintsAt: ["c5"] }];
 
 export const c5Bundle: ChapterBundle = {
   chapter: c5,

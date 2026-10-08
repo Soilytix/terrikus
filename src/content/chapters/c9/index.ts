@@ -4,17 +4,8 @@
  * bench. Not yet here: the `c9-beet-field` field scene, c9-m5 "The prime
  * suspect" (the chapter 2 stretch) and the expected cause chains.
  */
-import type {
-  Chapter,
-  ChapterBundle,
-  CodexEntry,
-  Discovery,
-  Fact,
-  Mission,
-  RelayLeg,
-  Rumor,
-  Scene,
-} from "../../schema";
+import type { ChapterBundle, CodexEntry, Fact, Mission, RelayLeg, Scene } from "../../schema";
+import { c9, c9Rumors } from "./chapter";
 
 /** C:N rule of thumb, quoted wherever a step explains immobilisation. */
 const CN_FACT: Fact = {
@@ -31,36 +22,6 @@ const TOTAL_FACT: Fact = {
   text: "Almost all soil nitrogen is in organic matter. The ammonium and nitrate a plant can take up are a small, fast-cycling fraction of the total.",
   confidence: "firm",
   sources: ["umn-n-cycle-2025", "schimel-bennett-2004"],
-};
-
-const c9: Chapter = {
-  id: "c9",
-  number: "9",
-  title: "The Nitrogen Relay",
-  hook: "Straw was ploughed in and the next crop turned yellow.",
-  scales: ["rhizosphere"],
-  world: "sugarbeet",
-  scenes: ["c9-relay"],
-  missions: ["c9-m1", "c9-m2", "c9-m3", "c9-m4"],
-  entry: "c9-relay",
-  sources: [
-    "nrcs-cn-ratios",
-    "umn-n-cycle-2025",
-    "schimel-bennett-2004",
-    "leininger-2006",
-    "daims-2015",
-    "van-kessel-2015",
-    "tian-2020",
-    "fowler-2013",
-    "lassaletta-2014",
-    "ipcc-ar6-wg1-ch7",
-  ],
-  // WB§1: chapters 3–13 open from the map once their rumor has been met.
-  after: ["c1", "leaf"],
-  byRumor: true,
-  playable: true,
-  rumor: "r-c9",
-  reviewStatus: "draft",
 };
 
 const c9Scenes: Scene[] = [
@@ -687,41 +648,6 @@ const c9Codex: CodexEntry[] = [
       },
     ],
     reviewStatus: "draft",
-  },
-];
-
-const c9Rumors: Rumor[] = [
-  {
-    id: "r-c9",
-    text: "Straw was ploughed in and the next crop turned yellow.",
-    chapter: "c9",
-    hintsAt: ["c9"],
-    explainedBy: "d-c9-borrow",
-  },
-];
-
-export const C9_DISCOVERIES: Discovery[] = [
-  {
-    id: "d-c9-total",
-    statement:
-      "Total is not available: most of the field's nitrogen is organic. N was 100.0 % accounted for.",
-    evidenceTier: "derived",
-  },
-  {
-    id: "d-c9-borrow",
-    statement: "Microbes borrow nitrogen from the soil when they eat straw, and give it back later.",
-    evidenceTier: "derived",
-  },
-  {
-    id: "d-c9-leaks",
-    statement:
-      "Nitrogen leaks three ways: to the drain, as gas from wet soil and as ammonia from the surface.",
-    evidenceTier: "derived",
-  },
-  {
-    id: "d-c9-gene",
-    statement: "A gene count is a potential, not a rate.",
-    evidenceTier: "interpreted",
   },
 ];
 

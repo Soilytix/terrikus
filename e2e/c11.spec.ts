@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { MISSIONS } from "../src/content";
+import { loadChapters } from "../src/content/load";
 import { c11Timelapse } from "../src/content/chapters/c11";
 import { SAVE_KEY, freshSave } from "../src/save/schema";
 
@@ -24,6 +25,7 @@ test("play chapter 11: read the wall, watch it form, the catena and deep time", 
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(String(e)));
   // Chapters 1 and 2 done and the pit glimpsed on the map: chapter 11 is open (WB§1).
+  await loadChapters(["prologue", "c1", "leaf"]);
   const done = MISSIONS.filter((m) => ["prologue", "c1", "leaf"].includes(m.chapter));
   const save = {
     ...freshSave(),

@@ -1,7 +1,9 @@
 /** The shell: routes, the world, the HUD and every panel above it. */
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { CHAPTERS, SCENES, chapter, scene as sceneById } from "../content";
+import { CHAPTERS, SCENES, chapter, sceneChapter, scene as sceneById } from "../content";
+import { isLoaded, loadChapters } from "../content/load";
 import type { SceneObject } from "../content/schema";
+import type { Save } from "../save/schema";
 import { World, type WorldHandle } from "../world/World";
 import { Bench } from "../ui/Bench";
 import { LabBench } from "../ui/LabBench";
@@ -31,7 +33,7 @@ import {
   visit,
   unlockAll,
 } from "./progress";
-import { href, parse, targetHref, type NotebookTab } from "./router";
+import { href, parse, targetHref, type NotebookTab, type Route } from "./router";
 import { prefersReduced, useGame } from "./store";
 
 const subscribeHash = (cb: () => void) => {
@@ -74,8 +76,45 @@ function towards(fromId: string, to: string, visible: SceneObject[]): string | u
 const benchScene = (route: string) =>
   SCENES.find((s) => s.objects.some((o) => o.to === route))?.id ?? "valley";
 
+/** The chapters a route draws on: its scene's and the last one's, every unlocked one, or all for the codex count and benches. */
+function needs(route: Route, save: Save): string[] {
+  if ((route.name === "notebook" && route.tab === "codex") || route.name === "bench")
+    return CHAPTERS.map((c) => c.id);
+  const last = save.lastSession?.route ? parse(save.lastSession.route) : null;
+  const scenes = [route, last].flatMap((r) => (r?.name === "scene" ? [sceneChapter(r.scene) ?? ""] : []));
+  return [...save.chaptersUnlocked, ...scenes];
+}
+
+// The first route's chapters start loading before the first render.
+void loadChapters(needs(parse(getHash()), useGame.getState().save));
+
+/** Holds the previous route on screen until the next one's chapter content has loaded. */
 export function App() {
   const hash = useSyncExternalStore(subscribeHash, getHash);
+  const save = useGame((g) => g.save);
+  const want = needs(parse(hash), save);
+  const [shown, setShown] = useState<string | null>(null);
+  const [, setLoads] = useState(0);
+  const ready = want.every(isLoaded);
+  useEffect(() => {
+    if (ready) return;
+    let live = true;
+    void loadChapters(want).then(() => {
+      if (live) setLoads((n) => n + 1);
+    });
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- keyed by the chapter set
+  }, [want.join()]);
+  useEffect(() => {
+    if (ready) setShown(hash);
+  }, [ready, hash]);
+  const view = ready ? hash : shown;
+  return view === null ? null : <Shell hash={view} />;
+}
+
+function Shell({ hash }: { hash: string }) {
   const route = parse(hash);
   const { save, update, replace, reset, persistent } = useGame();
   const reduced = useReducedMotion(save.settings.motion);

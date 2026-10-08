@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { MISSIONS } from "../src/content";
+import { loadChapters } from "../src/content/load";
 import { SAVE_KEY, freshSave } from "../src/save/schema";
 
 const shot = (page: Page, name: string, project: string) =>
@@ -22,6 +23,7 @@ test("play chapter 3: drain the cave, stranded, the Birch pulse and fast lanes",
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(String(e)));
   // Chapters 1 and 2 done and the dry patch glimpsed on the map: chapter 3 is open (WB§1).
+  await loadChapters(["prologue", "c1", "leaf"]);
   const done = MISSIONS.filter((m) => ["prologue", "c1", "leaf"].includes(m.chapter));
   const save = {
     ...freshSave(),

@@ -5,7 +5,11 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { SCENES } from "../src/content";
+import { LOADERS, loadChapters } from "../src/content/load";
 import { plateKey, type PlateManifest } from "../src/world/baked";
+
+// Every chapter's scenes, missions and codex, not just the ones a page has loaded.
+await loadChapters(Object.keys(LOADERS));
 
 const MB = 1024 * 1024;
 const BUDGET = 2.5 * MB;

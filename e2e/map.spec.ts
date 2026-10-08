@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { MISSIONS } from "../src/content";
+import { loadChapters } from "../src/content/load";
 import { SAVE_KEY, freshSave } from "../src/save/schema";
 
 const shot = (page: Page, name: string, project: string) =>
@@ -15,6 +16,7 @@ test("valley map, rumor glimpse and recall on return, by keyboard in static mode
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(String(e)));
   // Chapters 1 and 2 done: the map is open (WB§1).
+  await loadChapters(["prologue", "c1", "leaf"]);
   const done = MISSIONS.filter((m) => ["prologue", "c1", "leaf"].includes(m.chapter));
   const save = {
     ...freshSave(),

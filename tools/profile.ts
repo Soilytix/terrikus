@@ -3,9 +3,13 @@
  * assets; `internal` ships everything and badges what is not approved.
  */
 import { CHAPTERS, CODEX, MISSIONS, ORGANISMS, PROCESSES, MATERIALS, SCENES } from "../src/content";
+import { LOADERS, loadChapters } from "../src/content/load";
 import { bundledAssets } from "../src/assets/manifest";
 import { PILOT } from "../src/pilot/config";
 import { GLOSSARY } from "../src/content/glossary";
+
+// Every chapter's scenes, missions and codex, not just the ones a page has loaded.
+await loadChapters(Object.keys(LOADERS));
 
 export type Profile = "internal" | "public";
 

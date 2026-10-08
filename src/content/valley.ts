@@ -2,9 +2,9 @@
  * The valley (landscape scale): the title vista and the map of chapters.
  * Later chapters are glimpsed here with their opening rumor, never their content.
  */
-import { c3Discoveries } from "./chapters/c3";
-import { c4Discoveries } from "./chapters/c4";
-import { c11Discoveries } from "./chapters/c11";
+import { c3Discoveries } from "./chapters/c3/chapter";
+import { c4Discoveries } from "./chapters/c4/chapter";
+import { c11Discoveries } from "./chapters/c11/chapter";
 import type { Chapter, ChapterBundle, Discovery, Scene } from "./schema";
 
 const later = (

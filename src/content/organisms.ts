@@ -2,7 +2,7 @@
  * The Build-phase cast (world-bible §4). Functional roles in context, never
  * heroes or villains: copy says "can", "often", "in this context".
  */
-import { c4Organisms } from "./chapters/c4";
+import { c4Organisms } from "./chapters/c4/organisms";
 import { C6_ORGANISMS } from "./chapters/c6/organisms";
 import { C8_ORGANISMS } from "./chapters/c8/organisms";
 import { C9_ORGANISMS } from "./chapters/c9/organisms";

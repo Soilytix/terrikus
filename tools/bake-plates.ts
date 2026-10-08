@@ -12,6 +12,7 @@ import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
 import { SCENES } from "../src/content";
+import { LOADERS, loadChapters } from "../src/content/load";
 import { c11Timelapse } from "../src/content/chapters/c11";
 import {
   BAKE_SCALE,
@@ -24,6 +25,9 @@ import {
   type PlateManifest,
 } from "../src/world/baked";
 import { composeStatic, paint, type PlateLayer } from "../src/world/painter";
+
+// Every chapter's scenes, missions and codex, not just the ones a page has loaded.
+await loadChapters(Object.keys(LOADERS));
 
 export const OUT = "public/plates";
 const QUALITY = 55;

@@ -11,15 +11,20 @@ export interface ReviewRow {
   reviewer?: string | undefined;
 }
 
-export const REVIEW_ROWS: ReviewRow[] = [
-  ...CHAPTERS.map((n) => ({ kind: "chapter" as const, ...n })),
-  ...SCENES.map((n) => ({ kind: "scene" as const, ...n })),
-  ...MISSIONS.map((n) => ({ kind: "mission" as const, ...n })),
-  ...CODEX.map((n) => ({ kind: "codex" as const, ...n })),
-  ...ORGANISMS.map((n) => ({ kind: "organism" as const, ...n, title: n.name })),
-  ...PROCESSES.map((n) => ({ kind: "process" as const, ...n, title: n.name })),
-  ...MATERIALS.map((n) => ({ kind: "material" as const, ...n, title: n.name })),
-  ...GLOSSARY.map((n) => ({ kind: "glossary" as const, ...n, title: n.term })),
-].map(({ kind, id, title, reviewStatus, reviewer }) => ({ kind, id, title, reviewStatus, reviewer }));
+const rows = (): ReviewRow[] =>
+  [
+    ...CHAPTERS.map((n) => ({ kind: "chapter" as const, ...n })),
+    ...SCENES.map((n) => ({ kind: "scene" as const, ...n })),
+    ...MISSIONS.map((n) => ({ kind: "mission" as const, ...n })),
+    ...CODEX.map((n) => ({ kind: "codex" as const, ...n })),
+    ...ORGANISMS.map((n) => ({ kind: "organism" as const, ...n, title: n.name })),
+    ...PROCESSES.map((n) => ({ kind: "process" as const, ...n, title: n.name })),
+    ...MATERIALS.map((n) => ({ kind: "material" as const, ...n, title: n.name })),
+    ...GLOSSARY.map((n) => ({ kind: "glossary" as const, ...n, title: n.term })),
+  ].map(({ kind, id, title, reviewStatus, reviewer }) => ({ kind, id, title, reviewStatus, reviewer }));
+
+/** Covers the chapters loaded so far; `refreshReviewRows` after `loadChapters` brings in the rest. */
+export const REVIEW_ROWS: ReviewRow[] = rows();
+export const refreshReviewRows = () => void REVIEW_ROWS.splice(0, REVIEW_ROWS.length, ...rows());
 
 export const REVIEW_STATUSES: ReviewStatus[] = ["draft", "in-review", "needs-changes", "approved"];

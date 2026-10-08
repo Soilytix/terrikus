@@ -3,9 +3,10 @@
  * and for everything. Read-only: a named reviewer changes `reviewStatus` in
  * the content file, never here.
  */
-import { useState } from "react";
-import { scene as sceneById, chapter as chapterById } from "../content";
-import { REVIEW_ROWS, REVIEW_STATUSES, type ReviewRow } from "../content/review";
+import { useEffect, useState } from "react";
+import { CHAPTERS, scene as sceneById, chapter as chapterById } from "../content";
+import { loadChapters } from "../content/load";
+import { REVIEW_ROWS, REVIEW_STATUSES, refreshReviewRows, type ReviewRow } from "../content/review";
 import { Dialog } from "./common";
 
 function Rows({ rows }: { rows: ReviewRow[] }) {
@@ -67,6 +68,17 @@ export function ReviewPanel({ sceneId, onClose }: { sceneId: string; onClose: ()
 
 export function ReviewOverlay({ sceneId }: { sceneId: string }) {
   const [open, setOpen] = useState(false);
+  // The count covers every node, so the overlay brings in every chapter's content, once the page is idle.
+  const [, setLoaded] = useState(false);
+  useEffect(() => {
+    const later = window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 1000));
+    later(() => {
+      void loadChapters(CHAPTERS.map((c) => c.id)).then(() => {
+        refreshReviewRows();
+        setLoaded(true);
+      });
+    });
+  }, []);
   const approved = REVIEW_ROWS.filter((r) => r.reviewStatus === "approved").length;
   return (
     <>
