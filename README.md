@@ -3,7 +3,7 @@
 <h3>soil-worlds</h3>
 
 <p>
-  <sub>A SOILYTIX TOOL · A PLAYABLE SOIL SCIENCE TEXTBOOK</sub>
+  <sub>A PLAYABLE SOIL SCIENCE TEXTBOOK</sub>
   <br>
   <strong>Explore one valley across six scales and learn soil science by running experiments, for Soilytix colleagues and partners without a soil background.</strong>
   <br>
@@ -17,10 +17,30 @@
   </a>
   <img src="https://img.shields.io/badge/output-static%20site-8EDE3D?style=flat-square&amp;labelColor=16211B" alt="Output: static site">
 </p>
-
+	
 <br clear="left">
 
-- [What it does](#what-it-does)
+<table>
+  <tr>
+    <td><img src="docs/screens/desktop-01-title.jpg" alt="Title card"></td>
+    <td><img src="docs/screens/desktop-06-valley.jpg" alt="The valley"></td>
+    <td><img src="docs/screens/desktop-07-hedge.jpg" alt="Hedge edge"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screens/desktop-c11-01-pit.jpg" alt="Soil pit"></td>
+    <td><img src="docs/screens/desktop-04-pore.jpg" alt="Pore scale"></td>
+    <td><img src="docs/screens/desktop-c8-05-arbuscule.jpg" alt="Arbuscule"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screens/desktop-16-lab-bench.jpg" alt="Lab bench"></td>
+    <td><img src="docs/screens/desktop-c4-01-paddy.jpg" alt="Paddy"></td>
+    <td><img src="docs/screens/desktop-12-notebook-cards.jpg" alt="Field notebook"></td>
+  </tr>
+</table>
+
+<sub>Screens from <code>mise run e2e</code>, refreshed in <code>docs/screens/</code>.</sub>
+
+- [What it does](#what-it-does) 
 - [Install](#install)
 - [Chapters](#chapters)
 - [Controls](#controls)
