@@ -4,10 +4,11 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 # One gate. `mise run check` is the definition of done (lint, format, types,
 # unit tests, build, bundle scan, size budget); prek runs only the hooks that
-# check does not, so nothing runs twice. The e2e job reports, it does not block.
+# check does not, so nothing runs twice. The e2e job runs only on demand.
 # No deploy here: the host is open (spec OD-4).
 jobs:
   check:
@@ -38,8 +39,10 @@ jobs:
       - run: gitleaks dir . --redact --verbose
 
   # Playwright smoke, axe on title/scene/notebook and the keyboard-only p-m1 run.
-  # Non-blocking; screenshots are uploaded, never committed from CI.
+  # Non-blocking; screenshots are uploaded, never committed from CI. Manual
+  # only (Actions → CI → Run workflow): it takes ~45 min of runner time.
   e2e:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
