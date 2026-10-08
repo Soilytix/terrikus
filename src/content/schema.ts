@@ -10,6 +10,7 @@ import type { RungId } from "../sim/redox";
 import type { SlopePosition } from "../sim/catena";
 import type { HorizonId } from "../sim/pedogenesis";
 import type { WebOrganism } from "../sim/food-web";
+import type { Rung } from "../sim/disease";
 
 export type { SourceId };
 export type Confidence = "firm" | "estimate" | "contested";
@@ -37,7 +38,15 @@ export interface Reviewed {
 
 /** Group badge: shape + text, never colour alone (art-direction §6.2). */
 export type GroupBadge =
-  "decomposer" | "grazer" | "transformer" | "mutualist" | "pathogen" | "engineer" | "shredder" | "predator";
+  | "decomposer"
+  | "grazer"
+  | "transformer"
+  | "mutualist"
+  | "pathogen"
+  | "antagonist"
+  | "engineer"
+  | "shredder"
+  | "predator";
 
 export type HowWeKnow = "microscopy" | "culture" | "dna" | "process" | "hand-sorting";
 
@@ -210,6 +219,8 @@ export interface ChainDiagnostic {
   when: { card?: [number, string]; connector?: [number, Connector] }[];
   message: string;
   misconception: MisconceptionId;
+  /** The run named in `evidence` shows the opposite: a matching answer is contradicted, whatever its signs. */
+  contradicts?: boolean;
 }
 
 export type Verdict = "supported" | "plausible" | "contradicted";
@@ -408,7 +419,28 @@ export type Step = (
       claims: Choice[];
       facts: Fact[];
     }
+  /** Chapter 10 benches (`src/ui/Disease.tsx`) on the rules in `src/sim/disease.ts`. */
+  | {
+      kind: "disease";
+      bench: "triangle" | "rotation" | "transfer";
+      text: string;
+      resultText: string;
+      facts: Fact[];
+    }
+  /**
+   * Climb the evidence ladder: each rung's evidence card unlocks its bounded
+   * claim. `overreach` claims never unlock, whatever is in hand (M19).
+   */
+  | { kind: "evidence-ladder"; text: string; rungs: LadderRung[]; overreach: Choice[]; facts: Fact[] }
 ) & { onComplete?: OnComplete };
+
+/** One rung of the evidence ladder: the evidence collected, the claim it allows and what it does not. */
+export interface LadderRung {
+  id: Rung;
+  evidence: string;
+  claim: string;
+  notYet: string;
+}
 
 /** One leg of the nitrogen relay: who carries the baton from `from` to `to`. */
 export interface RelayLeg {

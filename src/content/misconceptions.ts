@@ -108,4 +108,20 @@ export const MISCONCEPTIONS: Misconception[] = [
     misconception: "Plants suck water from a tank like a straw",
     correctIdea: "Roots pull against the soil's rising grip; the last water is held too tightly to take",
   },
+  {
+    id: "M33",
+    misconception: "A diverse microbiome prevents disease",
+    correctIdea:
+      "Diversity tracks general suppression in some studies; specific suppression rests on particular functions",
+  },
+  {
+    id: "M34",
+    misconception: "Kill the pathogen and the problem is solved",
+    correctIdea: "Sterilising or fumigating also removes the organisms that suppress disease",
+  },
+  {
+    id: "M35",
+    misconception: "Cover crops cause disease, or cure it",
+    correctIdea: "Too general: a cover can host a particular pathogen or reduce a particular pressure",
+  },
 ];

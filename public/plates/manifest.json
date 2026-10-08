@@ -1417,6 +1417,142 @@
     "flat": "c9-relay-91/390x844/flat.avif",
     "ground": "#161c19"
    }
+  ],
+  "c10-triangle:101": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c10-triangle-101/1440x900/0-back.avif",
+      "sha": "85ac989dbfed08e9ad1f059fca00819280f5a7c9b65f6944118b1213b96ac6da"
+     },
+     {
+      "id": "water",
+      "file": "c10-triangle-101/1440x900/1-water.avif",
+      "sha": "7b4401ca76aa70e297cd1e8e18bfd1e0c33277e84ab76c23ee273257b859379f"
+     },
+     {
+      "id": "grains",
+      "file": "c10-triangle-101/1440x900/2-grains.avif",
+      "sha": "36f3a12360676ef12726288f1beac78cd7cf65f51b7c0e99ccdf36b9a0509693"
+     },
+     {
+      "id": "root",
+      "file": "c10-triangle-101/1440x900/3-root.avif",
+      "sha": "ed7f6cfbea3ac8b3be80352fea7e914fb5ef706a15b35a8c968c052790fda4ad"
+     },
+     {
+      "id": "pathogens",
+      "file": "c10-triangle-101/1440x900/4-pathogens.avif",
+      "sha": "666d4efc98f0a3d363a2c6e4a7753bf8e8df7c57d211db1f3cd43cc5fedc11d2"
+     }
+    ],
+    "flat": "c10-triangle-101/1440x900/flat.avif",
+    "ground": "#161c19"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c10-triangle-101/390x844/0-back.avif",
+      "sha": "6074cf3a3abb6aa448898a4c11e1253b87bddce88613d4d1eb3d070edafa54c8"
+     },
+     {
+      "id": "water",
+      "file": "c10-triangle-101/390x844/1-water.avif",
+      "sha": "20cb249b53f70c681df6982f93200183a603a4b50d7aa0489eb7c2404a0f2e37"
+     },
+     {
+      "id": "grains",
+      "file": "c10-triangle-101/390x844/2-grains.avif",
+      "sha": "2a49eb2ab4c338ae86f4a47cc8525209bae9cdcefeed736a36d5ae8eba1a116d"
+     },
+     {
+      "id": "root",
+      "file": "c10-triangle-101/390x844/3-root.avif",
+      "sha": "8365556ea1ebff072c32597a3a3c2e258d2ea022cd622f46d38273c935880ede"
+     },
+     {
+      "id": "pathogens",
+      "file": "c10-triangle-101/390x844/4-pathogens.avif",
+      "sha": "8e8d1c677bc56307b379a6497155d14f5e1a069b78dab20e598dc2f102f8313f"
+     }
+    ],
+    "flat": "c10-triangle-101/390x844/flat.avif",
+    "ground": "#161c19"
+   }
+  ],
+  "c10-shield:103": [
+   {
+    "w": 1440,
+    "h": 900,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c10-shield-103/1440x900/0-back.avif",
+      "sha": "79110144a8565ed748f1cfb2a43fc8210e6d90964123da85a1c12dd7f7e330ca"
+     },
+     {
+      "id": "grains",
+      "file": "c10-shield-103/1440x900/1-grains.avif",
+      "sha": "7e7ea248bba42617077ce21175bd4f55f4245dd22446701550b1a98ad1bdeb57"
+     },
+     {
+      "id": "root",
+      "file": "c10-shield-103/1440x900/2-root.avif",
+      "sha": "770ae9fb5b31d2eec646a171ae91be887db8d9cde629199f0572db8dce122c48"
+     },
+     {
+      "id": "film",
+      "file": "c10-shield-103/1440x900/3-film.avif",
+      "sha": "c9d6abfe408e970b84bf7c0eeae4ef73120cfb905c98b9dbdb479a54129aebb0"
+     },
+     {
+      "id": "fungus",
+      "file": "c10-shield-103/1440x900/4-fungus.avif",
+      "sha": "d525e883154993cabe81e08619a4e7f2a00a2ad87bb4e91dfd8f28b7015f8ca5"
+     }
+    ],
+    "flat": "c10-shield-103/1440x900/flat.avif",
+    "ground": "#161c19"
+   },
+   {
+    "w": 390,
+    "h": 844,
+    "layers": [
+     {
+      "id": "back",
+      "file": "c10-shield-103/390x844/0-back.avif",
+      "sha": "c9bd568fea2c0badfe51c5d2f38c4e65cd980e4acb1a7c35741fd901503cfac6"
+     },
+     {
+      "id": "grains",
+      "file": "c10-shield-103/390x844/1-grains.avif",
+      "sha": "1fda3bc58fa954ce7f25647490343f619b7d7680a5455daa427b27eaabff9b1e"
+     },
+     {
+      "id": "root",
+      "file": "c10-shield-103/390x844/2-root.avif",
+      "sha": "42ec7ccd050da9ad0ad7bfbba53899d366761ad812e44a178854e7338cf69da2"
+     },
+     {
+      "id": "film",
+      "file": "c10-shield-103/390x844/3-film.avif",
+      "sha": "1d2e20b788556bf08f22d498bb10dc2ef0e2d381e79ac529049fba3a35045270"
+     },
+     {
+      "id": "fungus",
+      "file": "c10-shield-103/390x844/4-fungus.avif",
+      "sha": "9e9071b48b7186358e16544f541549bb4b6af276d689e74ae8d13c3c74501e3c"
+     }
+    ],
+    "flat": "c10-shield-103/390x844/flat.avif",
+    "ground": "#161c19"
+   }
   ]
  },
  "timelapses": {

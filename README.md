@@ -17,7 +17,7 @@
   </a>
   <img src="https://img.shields.io/badge/output-static%20site-8EDE3D?style=flat-square&amp;labelColor=16211B" alt="Output: static site">
 </p>
-	
+
 <br clear="left">
 
 <table>
@@ -40,7 +40,7 @@
 
 <sub>Screens from <code>mise run e2e</code>, refreshed in <code>docs/screens/</code>.</sub>
 
-- [What it does](#what-it-does) 
+- [What it does](#what-it-does)
 - [Install](#install)
 - [Chapters](#chapters)
 - [Controls](#controls)

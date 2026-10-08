@@ -19,6 +19,7 @@ import {
   codex,
 } from "../src/content";
 import { CHAINS, CARDS } from "../src/content/chains";
+import { FLAG_EVIDENCE } from "../src/app/verdict";
 import { MISCONCEPTIONS } from "../src/content/misconceptions";
 import { WORLDS } from "../src/content/worlds";
 import { ASSETS, INTERNAL_ASSETS } from "../src/assets/manifest";
@@ -238,9 +239,8 @@ describe("references resolve", () => {
       for (const h of r.hintsAt) expect(chapterIds.has(h as never), `${r.id} hintsAt ${h}`).toBe(true);
       if (r.explainedBy) expect(discoveryIds.has(r.explainedBy), `${r.id} explainedBy`).toBe(true);
     }
-    const evidence =
-      /^your water\/air slider$|^(dry|moist|waterlogged|cool|mild|warm|leaf|straw|wood) vs \w+$/;
-    for (const ch of CHAINS) expect(ch.evidence, ch.id).toMatch(evidence);
+    const jars = /^(dry|moist|waterlogged|cool|mild|warm|leaf|straw|wood) vs \w+$/;
+    for (const ch of CHAINS) expect(ch.evidence in FLAG_EVIDENCE || jars.test(ch.evidence), ch.id).toBe(true);
   });
 
   it("ids are unique, including the step ids that key the save", () => {

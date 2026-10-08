@@ -32,7 +32,6 @@ const later = (
 
 /** Hooks verbatim from the world-bible chapter map. */
 const LATER_CHAPTERS: Chapter[] = [
-  later("c10", "10", "Disease and Defence", "The pathogen is here, but the plants are healthy.", "bean"),
   later("c12", "12", "Fields and Seasons", "Same seed, two fields, different harvests.", "spinach"),
   later("c13", "13", "Hillslope and River", "Where does the soil from the hill go?", "rice"),
   later("c14", "14", "What Does the Sample Tell Us?", "Two reports about the same field disagree.", "bare"),

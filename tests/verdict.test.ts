@@ -74,4 +74,23 @@ describe("verdicts", () => {
     expect(j.verdict).toBe("plausible");
     expect(j.messages.join(" ")).toMatch(/interpretation/);
   });
+
+  it("present is not sick: detection → disease is contradicted by the triangle toggles (M19)", () => {
+    const t = chainTemplate("c10-chain-triangle")!;
+    const ran = { ...freshSave(), flags: ["c10-triangle-run"] };
+    for (const c of ["enables", "increases"] as const) {
+      const j = judge(t, { cards: ["c-pathogen-detected", "o-disease"], connectors: [c] }, ran);
+      expect(j.verdict).toBe("contradicted");
+      expect(j.messages.join(" ")).toMatch(/Present is not sick/);
+    }
+    expect(judge(t, { cards: ["c-triangle", "o-disease"], connectors: ["enables"] }, ran).verdict).toBe(
+      "supported",
+    );
+    const before = judge(
+      t,
+      { cards: ["c-pathogen-detected", "o-disease"], connectors: ["enables"] },
+      freshSave(),
+    );
+    expect(before.verdict).toBe("plausible");
+  });
 });

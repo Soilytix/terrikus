@@ -317,12 +317,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Depends on:** T16, T18
 - **Done:** `src/sim/exchange.ts` (integer cation exchange, strongest-held first, rain drains the soil water, every ion conserved; pH dial teaching curves, aluminium below pH 5.5); content in `src/content/chapters/c5/`; recipe `c5-platelet` (baked, cell scale); `src/ui/Exchange.tsx`, `src/ui/PhDial.tsx`; opens from the map's acid woodland edge; e2e `e2e/c5.spec.ts`. Open: `c5-vertisol`, `c5-m4` (acidification by ammonium fertiliser), the water-versus-CaCl₂ lens payoff and the two expected chains.
 
-### T25 — Chapter 10: Disease and Defence
+### T25 — Chapter 10: Disease and Defence · **done**
 
 - **Goal:** disease triangle, rotations, suppressive soils, evidence ladder.
 - **Scope:** rotation inoculum rules; suppressive transfer experiment; content `c10-*`.
 - **Acceptance:** "present is not sick" enforced in diagnostics; evidence ladder rungs unlock bounded claims.
 - **Depends on:** T22
+- **Done:** `src/sim/disease.ts` (triangle, integer rotation-inoculum rules with cover crops, suppressive transfer with sterilised control, `LADDER`/`claimable`); content in `src/content/chapters/c10/` (scenes `c10-triangle`, `c10-shield`, missions T1–T4); benches and the evidence ladder in `src/ui/Disease.tsx`; recipes `c10-triangle`, `c10-shield`; e2e `e2e/c10.spec.ts`. A chain diagnostic can now mark a chain contradicted (`contradicts`), so detection → disease is contradicted once the triangle has been run. New misconceptions M33–M35. Open: the season wheel lives in the panel, not a field scene; no scientist-lens case file, endophyte mission or root-legume/root-tap cards; badge `antagonist` has no shape yet.
 
 ### T26 — Measurement engine · **done**
 

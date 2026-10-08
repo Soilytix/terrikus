@@ -18,6 +18,7 @@ export const LOADERS: Record<string, () => Promise<ChapterBundle>> = {
   c7: () => import("./chapters/c7").then((m) => m.c7Bundle),
   c8: () => import("./chapters/c8").then((m) => m.c8Bundle),
   c9: () => import("./chapters/c9").then((m) => m.c9Bundle),
+  c10: () => import("./chapters/c10").then((m) => m.c10Bundle),
   c11: () => import("./chapters/c11").then((m) => m.c11Bundle),
 };
 

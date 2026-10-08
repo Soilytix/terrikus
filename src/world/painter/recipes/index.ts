@@ -8,6 +8,7 @@ import { c3RainProfile } from "./c3-rain-profile";
 import { c4Elevator } from "./c4-elevator";
 import { c4Paddy } from "./c4-paddy";
 import { c5Platelet } from "./c5-platelet";
+import { c10Shield, c10Triangle } from "./c10-roots";
 import { c11Catena } from "./c11-catena";
 import { c11Pit, pitWall } from "./c11-pit";
 import { c6Geosmin } from "./c6-geosmin";
@@ -52,4 +53,6 @@ export const RECIPES: Record<string, Recipe> = {
   "c8-nodule": c8Nodule,
   "c8-arbuscule": c8Arbuscule,
   "c9-relay": c9Relay,
+  "c10-triangle": c10Triangle,
+  "c10-shield": c10Shield,
 };

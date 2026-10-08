@@ -31,9 +31,17 @@ function compared(e: LabEntry, x: string, y: string): boolean {
   return false;
 }
 
-/** Has the player observed the evidence this chain names ("dry vs moist", or a slider flag)? */
+/** Evidence that is a mission bench rather than a jar comparison, and the flag its run sets. */
+export const FLAG_EVIDENCE: Record<string, string> = {
+  "your water/air slider": "p-m1-slider",
+  "your triangle toggles": "c10-triangle-run",
+  "your rotation wheel": "c10-rotation-run",
+};
+
+/** Has the player observed the evidence this chain names ("dry vs moist", or a bench flag)? */
 export function observed(evidence: string, save: Save): boolean {
-  if (evidence === "your water/air slider") return save.flags.includes("p-m1-slider");
+  const flag = FLAG_EVIDENCE[evidence];
+  if (flag) return save.flags.includes(flag);
   const m = /^(\w+) vs (\w+)$/.exec(evidence);
   if (!m?.[1] || !m[2]) return false;
   const [, x, y] = m as unknown as [string, string, string];
@@ -48,16 +56,15 @@ export function netSign(connectors: Connector[]): number {
 }
 
 export function judge(t: ChainTemplate, answer: Answer, save: Save): Judgement {
-  const contradicted = netSign(answer.connectors) === -t.observed;
-  const messages = t.diagnostics
-    .filter((d) =>
-      d.when.every(
-        (w) =>
-          (!w.card || answer.cards[w.card[0]] === w.card[1]) &&
-          (!w.connector || answer.connectors[w.connector[0]] === w.connector[1]),
-      ),
-    )
-    .map((d) => d.message);
+  const matched = t.diagnostics.filter((d) =>
+    d.when.every(
+      (w) =>
+        (!w.card || answer.cards[w.card[0]] === w.card[1]) &&
+        (!w.connector || answer.connectors[w.connector[0]] === w.connector[1]),
+    ),
+  );
+  const contradicted = netSign(answer.connectors) === -t.observed || matched.some((d) => d.contradicts);
+  const messages = matched.map((d) => d.message);
   const seen = observed(t.evidence, save);
   let verdict: Verdict = "plausible";
   if (contradicted && seen) verdict = "contradicted";

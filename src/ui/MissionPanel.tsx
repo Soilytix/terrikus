@@ -44,6 +44,8 @@ const LeakTable = lazy(() => import("./NitrogenRelay").then((m) => ({ default: m
 const RelaySeason = lazy(() => import("./NitrogenRelay").then((m) => ({ default: m.RelaySeason })));
 const StrawRun = lazy(() => import("./NitrogenRelay").then((m) => ({ default: m.StrawRun })));
 const PitWalls = lazy(() => import("./PitWalls").then((m) => ({ default: m.PitWalls })));
+const DiseaseBench = lazy(() => import("./Disease").then((m) => ({ default: m.DiseaseBench })));
+const EvidenceLadder = lazy(() => import("./Disease").then((m) => ({ default: m.EvidenceLadder })));
 
 interface Props {
   mission: Mission | undefined;
@@ -715,6 +717,18 @@ function StepBody({
         </>
       );
     }
+    case "disease":
+    case "evidence-ladder":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          {step.kind === "disease" ? (
+            <DiseaseBench step={step} onDone={next} />
+          ) : (
+            <EvidenceLadder step={step} onDone={next} />
+          )}
+        </>
+      );
     case "partners":
     case "claim-sort":
       return (

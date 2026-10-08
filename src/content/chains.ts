@@ -19,6 +19,12 @@ export const CARDS: CauseCard[] = [
   { id: "a-microbial-growth", kind: "actor", label: "Microbial growth" },
   { id: "c-more-carbon", kind: "condition", label: "More carbon to eat" },
   { id: "p-decomposition-rate", kind: "process", label: "Decomposition rate" },
+  { id: "c-triangle", kind: "condition", label: "Host + virulent pathogen + conducive weather" },
+  { id: "c-pathogen-detected", kind: "condition", label: "Pathogen DNA detected" },
+  { id: "o-disease", kind: "outcome", label: "Disease" },
+  { id: "c-short-rotation", kind: "condition", label: "Short rotation of the same host" },
+  { id: "a-resting-inoculum", kind: "actor", label: "Resting inoculum" },
+  { id: "o-disease-risk", kind: "outcome", label: "Disease risk" },
 ];
 
 export const card = (id: string) => CARDS.find((c) => c.id === id);
@@ -146,6 +152,42 @@ export const CHAINS: ChainTemplate[] = [
     observed: -1,
     untested:
       "Your run shows straw losing mass more slowly than leaf. Why (too little nitrogen for microbes to grow) is an interpretation: this teaching model has no nitrogen yet, so the run cannot test it.",
+  },
+  {
+    id: "c10-chain-triangle",
+    title: "The disease triangle",
+    cards: [["c-triangle", "c-pathogen-detected"], ["o-disease"]],
+    connectors: [["enables", "increases", "limits"]],
+    accepted: [{ cards: ["c-triangle", "o-disease"], connectors: ["enables"] }],
+    diagnostics: [
+      {
+        when: [{ card: [0, "c-pathogen-detected"] }],
+        message:
+          "Present is not sick. Your toggles showed the pathogen there and the plants healthy: without a host or with dry weather, nothing happened. Detection is a lead, not a diagnosis.",
+        misconception: "M19",
+        contradicts: true,
+      },
+    ],
+    evidence: "your triangle toggles",
+    observed: 1,
+  },
+  {
+    id: "c10-chain-rotation",
+    title: "Rotation and inoculum",
+    cards: [["c-short-rotation"], ["a-resting-inoculum"], ["o-disease-risk"]],
+    connectors: [
+      ["increases", "decreases"],
+      ["increases", "decreases"],
+    ],
+    accepted: [
+      {
+        cards: ["c-short-rotation", "a-resting-inoculum", "o-disease-risk"],
+        connectors: ["increases", "increases"],
+      },
+    ],
+    diagnostics: [],
+    evidence: "your rotation wheel",
+    observed: 1,
   },
 ];
 

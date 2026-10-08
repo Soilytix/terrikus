@@ -3337,3 +3337,60 @@ input[type="range"] {
   text-align: left;
   padding-top: 4px;
 }
+
+/* Chapter 10: disease triangle, rotation wheel, pots and the evidence ladder (T25). */
+.disease .toggles {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+.disease .toggles legend {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.disease .toggles label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.evidence-ladder {
+  flex-shrink: 0;
+  width: 100%;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.ladder-rungs {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+}
+.ladder-rungs li {
+  padding: 6px 8px;
+  border-left: 3px solid var(--color-table-rule);
+}
+.ladder-rungs li[data-held="true"] {
+  border-left-color: var(--color-ink);
+}
+.ladder-rungs li[data-tier="would-measure"][data-held="true"] {
+  border-left-style: dashed;
+}
+.ladder-rungs p {
+  margin: 4px 0 0;
+}
+.ladder-claim .eyebrow,
+.ladder-not .eyebrow {
+  display: block;
+}
+.ladder-not {
+  color: var(--color-ink-muted);
+}
+.evidence-ladder .btn {
+  white-space: normal;
+  text-align: left;
+}
