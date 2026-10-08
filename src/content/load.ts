@@ -20,6 +20,7 @@ export const LOADERS: Record<string, () => Promise<ChapterBundle>> = {
   c9: () => import("./chapters/c9").then((m) => m.c9Bundle),
   c10: () => import("./chapters/c10").then((m) => m.c10Bundle),
   c11: () => import("./chapters/c11").then((m) => m.c11Bundle),
+  c12: () => import("./chapters/c12").then((m) => m.c12Bundle),
 };
 
 const loaded = new Map<string, ChapterBundle>();

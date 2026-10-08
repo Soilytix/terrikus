@@ -8,6 +8,7 @@ import { c3, c3Rumors } from "./chapters/c3/chapter";
 import { c4, c4Rumors } from "./chapters/c4/chapter";
 import { c5, c5Rumors } from "./chapters/c5/chapter";
 import { c11, c11Rumors } from "./chapters/c11/chapter";
+import { c12, c12Discoveries, c12Rumors } from "./chapters/c12/chapter";
 import { c6, c6Rumors, C6_DISCOVERIES } from "./chapters/c6/chapter";
 import { c7, c7Rumors, C7_DISCOVERIES } from "./chapters/c7/chapter";
 import { c8, c8Rumors, C8_DISCOVERIES } from "./chapters/c8/chapter";
@@ -34,6 +35,7 @@ const META: { chapter: Chapter; rumors: Rumor[] }[] = [
   { chapter: c9, rumors: c9Rumors },
   { chapter: c10, rumors: c10Rumors },
   { chapter: c11, rumors: c11Rumors },
+  { chapter: c12, rumors: c12Rumors },
   ...LATER_BUNDLES,
 ];
 
@@ -81,4 +83,5 @@ export const DISCOVERIES = [
   ...C8_DISCOVERIES,
   ...C9_DISCOVERIES,
   ...C10_DISCOVERIES,
+  ...c12Discoveries,
 ];

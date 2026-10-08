@@ -11,6 +11,8 @@ import { c5Platelet } from "./c5-platelet";
 import { c10Shield, c10Triangle } from "./c10-roots";
 import { c11Catena } from "./c11-catena";
 import { c11Pit, pitWall } from "./c11-pit";
+import { c12TwinFields } from "./c12-twin-fields";
+import { c12Wheel } from "./c12-wheel";
 import { c6Geosmin } from "./c6-geosmin";
 import { c7RootTip } from "./c7-root-tip";
 import { c8Arbuscule } from "./c8-arbuscule";
@@ -55,4 +57,6 @@ export const RECIPES: Record<string, Recipe> = {
   "c9-relay": c9Relay,
   "c10-triangle": c10Triangle,
   "c10-shield": c10Shield,
+  "c12-twin-fields": c12TwinFields,
+  "c12-wheel": c12Wheel,
 };

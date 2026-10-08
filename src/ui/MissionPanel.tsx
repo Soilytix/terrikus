@@ -46,6 +46,7 @@ const StrawRun = lazy(() => import("./NitrogenRelay").then((m) => ({ default: m.
 const PitWalls = lazy(() => import("./PitWalls").then((m) => ({ default: m.PitWalls })));
 const DiseaseBench = lazy(() => import("./Disease").then((m) => ({ default: m.DiseaseBench })));
 const EvidenceLadder = lazy(() => import("./Disease").then((m) => ({ default: m.EvidenceLadder })));
+const Fields = lazy(() => import("./Fields").then((m) => ({ default: m.Fields })));
 
 interface Props {
   mission: Mission | undefined;
@@ -563,6 +564,15 @@ function StepBody({
           <p className="step-text">{step.text}</p>
           <Suspense fallback={<p className="muted small">Loading…</p>}>
             <PitWalls step={step} reduced={reduced} onDone={next} />
+          </Suspense>
+        </>
+      );
+    case "fields":
+      return (
+        <>
+          <p className="step-text">{step.text}</p>
+          <Suspense fallback={<p className="muted small">Loading…</p>}>
+            <Fields step={step} onDone={next} />
           </Suspense>
         </>
       );

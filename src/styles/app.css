@@ -3394,3 +3394,95 @@ input[type="range"] {
   white-space: normal;
   text-align: left;
 }
+/* Chapter 12: twin fields, season wheel, heavy wheels, same seed (T28) */
+.field-subject {
+  --field: var(--color-chart-subject);
+}
+.field-comparison {
+  --field: var(--color-cat-gold);
+}
+.fields .swatch {
+  display: inline-block;
+  vertical-align: -1px;
+  background: var(--field);
+}
+.fields h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+.twin-levers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+.twin-levers section {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-left: 4px solid var(--field);
+}
+.season-wheel,
+.zone-plot {
+  width: min(100%, 160px);
+  height: auto;
+  justify-self: center;
+}
+.zone-plot {
+  width: min(100%, 320px);
+}
+.season-turn {
+  transition: transform var(--duration-chart) var(--ease-chart);
+}
+.season-wheel line {
+  stroke: var(--color-border-default);
+}
+.season-wheel circle {
+  fill: var(--color-surface-card);
+  stroke: var(--color-ink);
+}
+.season-wheel [data-on="true"] circle {
+  fill: var(--color-ink);
+}
+.season-wheel .rim {
+  fill: none;
+  stroke: var(--color-border-default);
+}
+.season-wheel .pointer {
+  fill: var(--color-ink);
+}
+.flip tr[data-sign="1"] td,
+.wheel tr[data-over="false"] td:last-child {
+  color: var(--color-ink);
+}
+.flip tr[data-sign="-1"] td,
+.wheel tr[data-over="true"] td:last-child {
+  font-weight: 600;
+}
+.flip tr[data-sign] td::after {
+  content: " ▲";
+}
+.flip tr[data-sign="-1"] td::after {
+  content: " ▼";
+}
+.zone-plot .axis {
+  stroke: var(--color-ink-muted);
+  stroke-width: 0.4;
+}
+.zone-plot text {
+  font-size: 4px;
+  fill: var(--color-ink-muted);
+}
+.zone-plot .field-subject,
+.zone-plot .field-comparison {
+  fill: var(--field);
+  stroke: var(--color-ink);
+  stroke-width: 0.3;
+}
+.zone-plot [data-poor="true"] {
+  stroke-width: 1;
+  stroke-dasharray: 1 0.6;
+}

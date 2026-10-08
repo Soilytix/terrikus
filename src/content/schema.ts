@@ -432,6 +432,16 @@ export type Step = (
    * claim. `overreach` claims never unlock, whatever is in hand (M19).
    */
   | { kind: "evidence-ladder"; text: string; rungs: LadderRung[]; overreach: Choice[]; facts: Fact[] }
+  /** Chapter 12 benches (`src/ui/Fields.tsx`) on `src/sim/twin-fields.ts` and `src/sim/compaction.ts`. */
+  | {
+      kind: "fields";
+      bench: "season" | "twin" | "flip" | "depth" | "wheel" | "same-seed";
+      text: string;
+      resultText: string;
+      facts: Fact[];
+      /** The season wheel: one turn of the field's year and what happens below. */
+      events?: { id: string; label: string; below: string }[];
+    }
 ) & { onComplete?: OnComplete };
 
 /** One rung of the evidence ladder: the evidence collected, the claim it allows and what it does not. */

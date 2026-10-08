@@ -340,12 +340,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Done:** `src/sim/pedogenesis.ts` (horizons from climate, litter, parent material and time; years per cm from 0.3–1.4 t/ha/yr) and `src/sim/catena.ts` (three pits down one hill, redox from a seasonal water table, the detective pit's defensible readings); four missions on `c11-pit` and `c11-catena`; the `c11-timelapse` frames (`pitWall(years)` at 0, 100, 1,000 and 10,000 years) baked by `tools/bake-plates.ts` as it is. WRB names are labelled examples (OD-11 open). `c11-munsell` and the two chapter chains are deferred.
 - **Depends on:** T14, T16
 
-### T28 — Chapter 12: Fields and Seasons
+### T28 — Chapter 12: Fields and Seasons · **done**
 
 - **Goal:** management through mechanisms; G×E×M.
 - **Scope:** `twin-fields` bench; season wheel; compaction scene; content `c12-*`.
 - **Acceptance:** context-flip mission flips sign; contested cover-crop SOC pair shown; confounder mission requires naming drainage.
 - **Depends on:** T17, T23, T26
+- **Done:** `src/sim/twin-fields.ts` (ten years of two fields that differ in one practice, integer carbon conserved for every practice set and context; the no-till yield effect flips sign between dry sand and humid clay; shallow against whole-profile carbon; a same-seed comparison where drainage explains the low-yield zones) and `src/sim/compaction.ts` (one wheel pass, wet against dry); missions c12-m1–m5 on `c12-twin-fields` and `c12-wheel` (both runtime-painted: the field and aggregate plate budgets are near full); the season wheel is a panel bench in `src/ui/Fields.tsx`, not its own scene; the cover-crop SOC pair is an open-question card (Poeplau & Don 2015 against Chaplot & Smith 2023). `tonitto-2006` is registered as verify. Deferred: a `c12-season-wheel` scene, the cause chains and the indicator-versus-model lens playground.
 
 ### T29 — Chapter 13: Hillslope and River
 

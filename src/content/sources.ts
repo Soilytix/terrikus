@@ -884,6 +884,13 @@ export const SOURCES = {
     link: "https://doi.org/10.1111/gcb.16917",
     status: "doi-checked",
   },
+  "tonitto-2006": {
+    short: "Tonitto et al. 2006",
+    citation:
+      "Tonitto, C., David, M. B. & Drinkwater, L. E. (2006). Replacing bare fallows with cover crops in fertilizer-intensive cropping systems: a meta-analysis of crop yield and N dynamics. *Agric. Ecosyst. Environ.* 112, 58–72.",
+    link: "https://doi.org/10.1016/j.agee.2005.07.003",
+    status: "verify (author added for the chapter 12 cover-crop nitrate readout; not in research)",
+  },
   "van-der-putten-2013": {
     short: "van der Putten et al. 2013",
     citation:

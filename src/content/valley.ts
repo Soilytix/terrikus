@@ -32,7 +32,6 @@ const later = (
 
 /** Hooks verbatim from the world-bible chapter map. */
 const LATER_CHAPTERS: Chapter[] = [
-  later("c12", "12", "Fields and Seasons", "Same seed, two fields, different harvests.", "spinach"),
   later("c13", "13", "Hillslope and River", "Where does the soil from the hill go?", "rice"),
   later("c14", "14", "What Does the Sample Tell Us?", "Two reports about the same field disagree.", "bare"),
 ];
@@ -265,6 +264,15 @@ export const valleyMapScene: Scene = {
       kind: "glimpse",
       anchor: { x: 0.3, y: 0.72 },
       to: "c12",
+      hiddenBy: "chapter:c12",
+    },
+    {
+      id: "two-fields-portal",
+      label: "Two neighbouring fields",
+      kind: "portal",
+      anchor: { x: 0.3, y: 0.72 },
+      to: "c12-twin-fields",
+      requires: "chapter:c12",
     },
     { id: "river", label: "The river", kind: "glimpse", anchor: { x: 0.88, y: 0.86 }, to: "c13" },
     { id: "lab", label: "The farm lab", kind: "glimpse", anchor: { x: 0.52, y: 0.86 }, to: "c14" },
