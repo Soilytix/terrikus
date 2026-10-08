@@ -13,6 +13,9 @@ import { c11Catena } from "./c11-catena";
 import { c11Pit, pitWall } from "./c11-pit";
 import { c12TwinFields } from "./c12-twin-fields";
 import { c12Wheel } from "./c12-wheel";
+import { c13Salt } from "./c13-salt";
+import { c13Splash } from "./c13-splash";
+import { c13Valley } from "./c13-valley";
 import { c14Bench } from "./c14-bench";
 import { c6Geosmin } from "./c6-geosmin";
 import { c7RootTip } from "./c7-root-tip";
@@ -60,5 +63,8 @@ export const RECIPES: Record<string, Recipe> = {
   "c10-shield": c10Shield,
   "c12-twin-fields": c12TwinFields,
   "c12-wheel": c12Wheel,
+  "c13-valley": c13Valley,
+  "c13-splash": c13Splash,
+  "c13-salt": c13Salt,
   "c14-bench": c14Bench,
 };

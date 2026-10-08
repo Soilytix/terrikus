@@ -30,7 +30,7 @@ Contents:
 1. **One subject, one accent.** Lime (#8EDE3D) marks the thing the player is following: a tracked carbon parcel, a selected organism, the active path, jar A. It is never decoration, foliage or "nature green".
 2. **Comparison is gold.** The comparison world, jar B and the twin field use gold. Peers in charts use gold #CA8407, azure #2998ED and rose #D76EB9, never green.
 3. **The world is painted; the knowledge is drawn.** Plates (ground, sky, horizons, grain textures) are painterly and textured. Organisms, labels, scale bars, readouts and chains are flat, crisp vector or DOM.
-4. **Every picture tells you its truth status.** Each scene carries a scale bar and, where enlarged, a *not to scale ×N* badge. Each asset carries a truth tag: `reference-drawn`, `schematic` or `decorative`.
+4. **Every picture tells you its truth status.** Each scene carries a scale bar and, where enlarged, a *not to scale ×N* badge. Each asset carries a truth tag: `reference-drawn`, `schematic` or `decorative`, or `measured` for instrument imagery such as the chapter 13 satellite inset.
 5. **Text lives in the DOM, never in the canvas.** Labels sit on glass cards over the world, so they inherit typography, zoom, contrast and screen-reader behaviour.
 6. **Calm by default.** Backdrops dim while the player reads, predicts or explains. Motion never competes with a question.
 
@@ -224,7 +224,7 @@ type Asset = {
   source: SourceId;        // an img-* or font-* id in sources.md
   licence: 'soilytix' | 'pd' | 'cc0' | 'cc-by' | 'cc-by-sa' | 'ofl' | 'internal-only';
   owner: string;
-  truthStatus: 'reference-drawn' | 'schematic' | 'decorative';
+  truthStatus: 'reference-drawn' | 'schematic' | 'decorative' | 'measured';
   publicOk: boolean;
   attribution?: string;    // required for cc-by / cc-by-sa
   referenceUrl?: string;   // what it was drawn from

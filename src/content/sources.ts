@@ -835,6 +835,13 @@ export const SOURCES = {
     link: "https://doi.org/10.1038/s41467-017-02142-7",
     status: "doi-checked",
   },
+  "drusch-2012": {
+    short: "Drusch et al. 2012",
+    citation:
+      "Drusch, M. et al. (2012). Sentinel-2: ESA's optical high-resolution mission for GMES operational services. *Remote Sens. Environ.* 120, 25–36.",
+    link: "https://doi.org/10.1016/j.rse.2011.11.026",
+    status: "doi-checked (2026-10-07)",
+  },
   "keller-2019": {
     short: "Keller et al. 2019",
     citation:

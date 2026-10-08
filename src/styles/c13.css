@@ -1,0 +1,160 @@
+/* Chapter 13 benches (src/ui/HillslopeRiver.tsx); loaded with the chapter's chunk. */
+.c13-crumbs,
+.c13-storm,
+.c13-salt-chart {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+.c13-crumbs {
+  background: var(--w-sky-low);
+}
+.c13-crumbs .crumb {
+  fill: var(--w-loam);
+}
+.c13-crumbs .loose {
+  fill: var(--w-subsoil);
+}
+.c13-crumbs .straw {
+  stroke: var(--w-sand);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+.c13-storm .sky {
+  fill: var(--w-sky-low);
+}
+.c13-storm .hill {
+  fill: var(--w-foliage);
+}
+.c13-storm .fields {
+  fill: var(--w-subsoil);
+}
+.c13-storm .grass {
+  fill: var(--w-stone-2);
+}
+.c13-storm .deposit {
+  fill: var(--w-loam);
+}
+.c13-storm .river {
+  fill: var(--w-water);
+}
+.c13-storm .plume {
+  fill: var(--w-clay);
+}
+.c13-storm .algae {
+  fill: var(--w-foliage);
+}
+.c13-storm .rain line {
+  stroke: var(--w-film);
+  stroke-width: 0.6;
+}
+.c13-storm .wash {
+  fill: var(--w-dark);
+  pointer-events: none;
+}
+.c13-salt-chart {
+  background: var(--color-neutral-white);
+}
+.c13-salt-chart .axis {
+  stroke: var(--color-ink-muted);
+  stroke-width: 0.6;
+}
+.c13-salt-chart text {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  fill: var(--color-ink-muted);
+}
+.c13-salt-chart .saline {
+  stroke: var(--color-functional-red);
+  stroke-width: 0.8;
+  stroke-dasharray: 3 2;
+}
+.c13-salt-chart .run {
+  fill: none;
+  stroke-width: 1.6;
+  stroke: var(--color-functional-dark-yellow);
+}
+.c13-salt-chart .run[data-drain="true"],
+.c13-legend [data-drain="true"]::before {
+  stroke: var(--color-functional-blue);
+  border-color: var(--color-functional-blue);
+}
+.c13-salt-chart .run[data-k="2"],
+.c13-salt-chart .run[data-k="3"] {
+  stroke-dasharray: 4 2;
+}
+.c13-legend {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0;
+}
+.c13-legend li::before {
+  content: "";
+  display: inline-block;
+  width: 1.2em;
+  margin-right: 0.4em;
+  vertical-align: middle;
+  border-top: 2px solid var(--color-functional-dark-yellow);
+}
+.c13-legend li[data-k="2"]::before,
+.c13-legend li[data-k="3"]::before {
+  border-top-style: dashed;
+}
+.c13-pair {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+.c13-inset {
+  margin: 0;
+}
+.c13-tag {
+  display: inline-block;
+  margin: 0 0 0.25rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid var(--color-border-default);
+}
+.c13-tag[data-kind="measured"] {
+  background: var(--color-functional-light-blue);
+  color: var(--color-functional-dark-blue);
+}
+.c13-tag[data-kind="illustration"] {
+  background: var(--color-primary-light-gold);
+  color: var(--color-primary-soil);
+}
+.c13-image {
+  position: relative;
+  aspect-ratio: 8 / 5;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--w-dark);
+}
+.c13-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.c13-probe {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  min-width: 1.9rem;
+  min-height: 1.9rem;
+  border-radius: 50%;
+  border: 2px solid var(--color-neutral-white);
+  background: var(--color-primary-dark-green);
+  color: var(--color-neutral-white);
+  font: 600 0.8rem var(--font-mono);
+  cursor: pointer;
+}
+.c13-probe[aria-pressed="true"] {
+  background: var(--color-neutral-white);
+  color: var(--color-primary-dark-green);
+}
+.c13-probe:focus-visible {
+  outline: 2px solid var(--color-functional-blue);
+  outline-offset: 2px;
+}

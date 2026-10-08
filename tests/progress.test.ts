@@ -121,12 +121,11 @@ describe("progress", () => {
       expect(canOpen(c13, early)).toBe(false);
       const s = both();
       expect(canOpen(c13, s)).toBe(false);
-      expect(chapterState(c13, s)).toBe("planned");
+      expect(chapterState(c13, s)).toBe("locked");
       const met = glimpse(s, "c13");
       expect(canOpen(c13, met)).toBe(true);
-      // Not built yet, so it is ready rather than unlocked.
-      expect(chapterState(c13, met)).toBe("ready");
-      expect(met.chaptersUnlocked).not.toContain("c13");
+      expect(chapterState(c13, met)).toBe("open");
+      expect(met.chaptersUnlocked).toContain("c13");
     });
 
     it("opens chapter 3 from the dry patch on the map, and its rumor is explained by the Birch pulse", () => {
@@ -193,7 +192,7 @@ describe("progress", () => {
       s = viewRumors(viewRumors(s));
       expect(whereToLook(s, r)).toBeUndefined();
       s = viewRumors(s);
-      expect(whereToLook(s, r)).toMatch(/not built yet/);
+      expect(whereToLook(s, r)).toMatch(/opens when you finish/);
       // Progress resets the count.
       s = viewRumors({ ...s, rumors: { ...s.rumors, "r-c13": "investigated" } });
       expect(whereToLook(s, r)).toBeUndefined();

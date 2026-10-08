@@ -9,6 +9,7 @@ const LICENCE: Record<Licence, string> = {
   "cc-by": "CC BY",
   "cc-by-sa": "CC BY-SA",
   ofl: "SIL OFL",
+  copernicus: "Copernicus free and open data",
   "internal-only": "Internal only",
 };
 

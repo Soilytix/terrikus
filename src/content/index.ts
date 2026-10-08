@@ -9,6 +9,7 @@ import { c4, c4Rumors } from "./chapters/c4/chapter";
 import { c5, c5Rumors } from "./chapters/c5/chapter";
 import { c11, c11Rumors } from "./chapters/c11/chapter";
 import { c12, c12Discoveries, c12Rumors } from "./chapters/c12/chapter";
+import { c13, c13Discoveries, c13Rumors } from "./chapters/c13/chapter";
 import { c14, c14Discoveries, c14Rumors } from "./chapters/c14/chapter";
 import { c6, c6Rumors, C6_DISCOVERIES } from "./chapters/c6/chapter";
 import { c7, c7Rumors, C7_DISCOVERIES } from "./chapters/c7/chapter";
@@ -20,7 +21,7 @@ import { prologue, prologueRumors } from "./chapters/prologue/chapter";
 import { MATERIALS, PROCESSES } from "./processes";
 import { ORGANISMS } from "./organisms";
 import type { Chapter, CodexEntry, Mission, Rumor, Scene } from "./schema";
-import { DISCOVERIES as VALLEY_DISCOVERIES, LATER_BUNDLES, valleyMapScene, valleyScene } from "./valley";
+import { DISCOVERIES as VALLEY_DISCOVERIES, valleyMapScene, valleyScene } from "./valley";
 
 /** Every chapter's metadata, once. A new chapter is one more entry here and one loader in `./load`. */
 const META: { chapter: Chapter; rumors: Rumor[] }[] = [
@@ -37,8 +38,8 @@ const META: { chapter: Chapter; rumors: Rumor[] }[] = [
   { chapter: c10, rumors: c10Rumors },
   { chapter: c11, rumors: c11Rumors },
   { chapter: c12, rumors: c12Rumors },
+  { chapter: c13, rumors: c13Rumors },
   { chapter: c14, rumors: c14Rumors },
-  ...LATER_BUNDLES,
 ];
 
 export const CHAPTERS: Chapter[] = META.map((b) => b.chapter).sort(
@@ -86,5 +87,6 @@ export const DISCOVERIES = [
   ...C9_DISCOVERIES,
   ...C10_DISCOVERIES,
   ...c12Discoveries,
+  ...c13Discoveries,
   ...c14Discoveries,
 ];

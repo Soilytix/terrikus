@@ -348,12 +348,13 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Depends on:** T17, T23, T26
 - **Done:** `src/sim/twin-fields.ts` (ten years of two fields that differ in one practice, integer carbon conserved for every practice set and context; the no-till yield effect flips sign between dry sand and humid clay; shallow against whole-profile carbon; a same-seed comparison where drainage explains the low-yield zones) and `src/sim/compaction.ts` (one wheel pass, wet against dry); missions c12-m1–m5 on `c12-twin-fields` and `c12-wheel` (both runtime-painted: the field and aggregate plate budgets are near full); the season wheel is a panel bench in `src/ui/Fields.tsx`, not its own scene; the cover-crop SOC pair is an open-question card (Poeplau & Don 2015 against Chaplot & Smith 2023). `tonitto-2006` is registered as verify. Deferred: a `c12-season-wheel` scene, the cause chains and the indicator-versus-model lens playground.
 
-### T29 — Chapter 13: Hillslope and River
+### T29 — Chapter 13: Hillslope and River · **done**
 
 - **Goal:** erosion, catena water, salinity, satellite as measurement.
 - **Scope:** valley storm, splash, salt scenes; Sentinel-2 inset with attribution; content `c13-*`.
 - **Acceptance:** storm passes the 3 Hz flash rule; satellite labelled reflectance measurement.
 - **Depends on:** T15, T27
+- **Done:** `src/sim/hillslope.ts` (raindrop splash by cover, a storm moving tagged topsoil and its bound phosphorus to the foot and the river with an optional grass strip, a bloom weeks later, thirty years of irrigation with and without drains; soil, P and salt conserved as integers); content in `src/content/chapters/c13/`; recipes `c13-valley`, `c13-splash`, `c13-salt` (all three unbaked); `src/ui/HillslopeRiver.tsx`; the storm is a darkening wash driven by `src/ui/storm.ts`, held to the 3 Hz rule by `src/ui/storm.test.ts`. The Sentinel-2 inset is the `c13-m4` bench: a real 2024 L2A true-colour crop of loess hills near Yan'an, tagged with the new truth tag `measured` and the new licence `copernicus`, labelled "Measurement: reflectance" beside the painted valley; `tests/c13.test.ts` checks the label and that the probe values match the image. Open: the real place, and `measured`/`copernicus` as extensions of the art-direction contract, both await a reviewer; the two chapter chains are deferred.
 
 ### T30 — Chapter 14: What Does the Sample Tell Us? · **done**
 

@@ -1,49 +1,10 @@
 /**
  * The valley (landscape scale): the title vista and the map of chapters.
- * Later chapters are glimpsed here with their opening rumor, never their content.
  */
 import { c3Discoveries } from "./chapters/c3/chapter";
 import { c4Discoveries } from "./chapters/c4/chapter";
 import { c11Discoveries } from "./chapters/c11/chapter";
-import type { Chapter, ChapterBundle, Discovery, Scene } from "./schema";
-
-const later = (
-  id: Chapter["id"],
-  number: string,
-  title: string,
-  hook: string,
-  world: Chapter["world"],
-): Chapter => ({
-  id,
-  number,
-  title,
-  hook,
-  scales: [],
-  world,
-  scenes: [],
-  missions: [],
-  entry: "valley",
-  sources: ["soils4teachers-basics"],
-  // WB§1: chapters 3–13 open from the map as their rumors are met.
-  after: ["c1", "leaf"],
-  byRumor: true,
-  playable: false,
-  reviewStatus: "draft",
-});
-
-/** Hooks verbatim from the world-bible chapter map. */
-const LATER_CHAPTERS: Chapter[] = [
-  later("c13", "13", "Hillslope and River", "Where does the soil from the hill go?", "rice"),
-];
-
-/** A later chapter brings only its opening rumor. */
-export const LATER_BUNDLES: ChapterBundle[] = LATER_CHAPTERS.map((c) => ({
-  chapter: c,
-  scenes: [],
-  missions: [],
-  codex: [],
-  rumors: [{ id: `r-${c.id}`, text: c.hook, chapter: c.id, hintsAt: [c.id] }],
-}));
+import type { Discovery, Scene } from "./schema";
 
 export const valleyScene: Scene = {
   id: "valley",
@@ -274,7 +235,22 @@ export const valleyMapScene: Scene = {
       to: "c12-twin-fields",
       requires: "chapter:c12",
     },
-    { id: "river", label: "The river", kind: "glimpse", anchor: { x: 0.88, y: 0.86 }, to: "c13" },
+    {
+      id: "river",
+      label: "The river",
+      kind: "glimpse",
+      anchor: { x: 0.88, y: 0.86 },
+      to: "c13",
+      hiddenBy: "chapter:c13",
+    },
+    {
+      id: "river-portal",
+      label: "The river",
+      kind: "portal",
+      anchor: { x: 0.88, y: 0.86 },
+      to: "c13-valley",
+      requires: "chapter:c13",
+    },
     {
       id: "lab",
       label: "The farm lab",

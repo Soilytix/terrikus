@@ -17,7 +17,7 @@ export type Confidence = "firm" | "estimate" | "contested";
 export type EvidenceKind = "measured" | "derived" | "inferred";
 export type ReviewStatus = "draft" | "in-review" | "approved" | "needs-changes";
 export type Scale = "landscape" | "field" | "profile" | "aggregate" | "rhizosphere" | "cell";
-export type TruthTag = "reference-drawn" | "schematic" | "decorative";
+export type TruthTag = "reference-drawn" | "schematic" | "decorative" | "measured";
 export type MisconceptionId = `M${number}`;
 export type ChapterId = "prologue" | "leaf" | `c${number}`;
 
@@ -442,6 +442,14 @@ export type Step = (
       /** The season wheel: one turn of the field's year and what happens below. */
       events?: { id: string; label: string; below: string }[];
     }
+  /** Chapter 13 benches (`src/ui/HillslopeRiver.tsx`) on `src/sim/hillslope.ts`; `satellite` is a measured image, not the model. */
+  | {
+      kind: "hill";
+      bench: "splash" | "storm" | "salt" | "satellite";
+      text: string;
+      resultText: string;
+      facts: Fact[];
+    }
   /** Chapter 14 benches (`src/ui/Sample.tsx`) on `src/sim/measure.ts` and `src/sim/claims.ts`. */
   | {
       kind: "sample";
@@ -590,7 +598,8 @@ export interface World {
   sources: SourceId[];
 }
 
-export type Licence = "soilytix" | "pd" | "cc0" | "cc-by" | "cc-by-sa" | "ofl" | "internal-only";
+export type Licence =
+  "soilytix" | "pd" | "cc0" | "cc-by" | "cc-by-sa" | "ofl" | "copernicus" | "internal-only";
 
 export interface Asset {
   id: string;
