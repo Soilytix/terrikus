@@ -11,7 +11,7 @@ import { blob, blurDef, linear, paperGrain, range, shaded, type Ctx } from "../b
 import { mix } from "../color";
 import { rngFor } from "../noise";
 import { amoeba, bacterium } from "../sprites";
-import { Svg, smoothClosed, smoothOpen, type Pt } from "../svg";
+import { Svg, f, smoothClosed, smoothOpen, type Pt } from "../svg";
 import type { RecipeOut } from "./index";
 
 /** Subjects in plate units; portrait keeps them above the phone sheet. Scene anchors follow these. */
@@ -159,15 +159,15 @@ export function c9Relay(c: Ctx, scale: number): RecipeOut {
     const [dx, dy] = [Math.cos(a) * len, Math.sin(a) * len];
     const sw = u * 0.016;
     straw.path(
-      `M${x - dx / 2},${y - dy / 2}l${dx},${dy}`,
+      `M${f(x - dx / 2)},${f(y - dy / 2)}l${f(dx)},${f(dy)}`,
       `stroke="${UI.ink}" stroke-width="${sw + 2.5}" stroke-linecap="round"`,
     );
     straw.path(
-      `M${x - dx / 2},${y - dy / 2}l${dx},${dy}`,
+      `M${f(x - dx / 2)},${f(y - dy / 2)}l${f(dx)},${f(dy)}`,
       `stroke="${mix(W.sand, W.pale, 0.45)}" stroke-width="${sw}" stroke-linecap="round"`,
     );
     straw.path(
-      `M${x - dx / 2},${y - dy / 2}l${dx},${dy}`,
+      `M${f(x - dx / 2)},${f(y - dy / 2)}l${f(dx)},${f(dy)}`,
       `stroke="${mix(W.sand, W.subsoil, 0.4)}" stroke-width="${sw * 0.25}" stroke-linecap="round" opacity="0.7"`,
     );
   }

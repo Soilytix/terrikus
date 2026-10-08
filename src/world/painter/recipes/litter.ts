@@ -4,7 +4,7 @@ import { blob, blurDef, linear, paperGrain, radial, range, stipple, type Ctx } f
 import { mix } from "../color";
 import { rngFor } from "../noise";
 import { hypha, springtail } from "../sprites";
-import { Svg, smoothOpen, type Pt } from "../svg";
+import { Svg, f, smoothOpen, type Pt } from "../svg";
 import type { RecipeOut } from "./index";
 import { crumb } from "./plants";
 
@@ -79,7 +79,7 @@ export function litter(c: Ctx, scale: number): RecipeOut {
     const a = range(r, -0.4, 0.4);
     const tone = mix(leafTones[Math.floor(r() * leafTones.length)]!, W.humus, range(r, 0.35, 0.75));
     lyr.path(
-      `M${x},${y}l${Math.cos(a) * len},${Math.sin(a) * len}`,
+      `M${f(x)},${f(y)}l${f(Math.cos(a) * len)},${f(Math.sin(a) * len)}`,
       `stroke="${tone}" stroke-width="${u * range(r, 0.004, 0.009)}" stroke-linecap="round"`,
     );
   }
@@ -159,7 +159,7 @@ export function litter(c: Ctx, scale: number): RecipeOut {
     const len = u * range(r, 0.04, 0.12);
     const bend = range(r, -0.6, 0.6);
     web.path(
-      `M${x0},${y0}q${Math.cos(a + bend) * len * 0.6},${Math.sin(a + bend) * len * 0.6} ${Math.cos(a) * len},${Math.sin(a) * len}`,
+      `M${f(x0)},${f(y0)}q${f(Math.cos(a + bend) * len * 0.6)},${f(Math.sin(a + bend) * len * 0.6)} ${f(Math.cos(a) * len)},${f(Math.sin(a) * len)}`,
       `fill="none" stroke="${W.pale}" stroke-width="${range(r, 0.4, 1).toFixed(1)}" opacity="${range(r, 0.3, 0.7).toFixed(2)}"`,
     );
   }

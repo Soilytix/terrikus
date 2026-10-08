@@ -1,7 +1,8 @@
 /** A tiny string builder for deterministic SVG plates. */
 export type Pt = [number, number];
 
-const f = (n: number) => (Math.round(n * 10) / 10).toString();
+/** Rounds a coordinate to 0.1 px, so last-bit trig differences between platforms vanish. */
+export const f = (n: number) => (Math.round(n * 10) / 10).toString();
 
 /** Closed smooth path through points (Catmull-Rom → cubic Bézier). */
 export function smoothClosed(pts: Pt[]): string {
