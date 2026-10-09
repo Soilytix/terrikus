@@ -145,6 +145,6 @@ test("play chapter 14: the lab, the jar, five layers, the claim budget and an ho
   await expect(mission.locator(".report-mock")).toContainText("Teaching mock-up");
   await mission.getByRole("button", { name: "Continue" }).click();
   await mission.getByRole("button", { name: "Add to my notebook" }).click();
-  await expect(page.locator(".mission")).toContainText("Chapter 14 · complete");
+  await expect(page.locator(".mission")).toContainText("· complete");
   expect(errors).toEqual([]);
 });

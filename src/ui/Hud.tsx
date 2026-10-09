@@ -1,6 +1,6 @@
 /** Heads-up display: where you are, how big things are, and the way out. */
 import type { Scale, Scene } from "../content/schema";
-import { chapter } from "../content";
+import { assetUrl } from "../assets/urls";
 import { ReviewBadge } from "./common";
 
 /** `bar`: a typical scale-bar length (m) at that rung; a much shorter bar marks a close-up. */
@@ -48,27 +48,15 @@ const ICONS = {
 };
 
 export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHelp, notebookDot }: Props) {
-  const ch = scene.chapter === "valley" ? undefined : chapter(scene.chapter);
   const rung = LADDER.findIndex((l) => l.scale === scene.scale);
   const closeUp = scene.scaleBar.metres < (LADDER[rung]?.bar ?? 0) / 5;
   return (
     <>
       <header className="hud-top">
-        <a className="brand" href="#/" aria-label="Pedologicus, title screen">
-          <span className="brand-mark" aria-hidden="true" />
-          <span className="brand-name">Pedologicus</span>
-        </a>
-        <div className="hud-where">
-          {ch ? (
-            <span className="chip">
-              <span className="chip-num">{ch.number === "P" ? "P" : ch.number}</span>
-              {ch.title}
-            </span>
-          ) : (
-            <span className="chip">
-              <span className="chip-num">◇</span>Map
-            </span>
-          )}
+        <div className="brand">
+          <a className="brand-home" href="#/" aria-label="Pedologicus, title screen">
+            <img className="brand-mark" src={assetUrl("brand-icon")} alt="" />
+          </a>
           <h1 className="scene-title">{scene.title}</h1>
           <ReviewBadge status={scene.reviewStatus} />
         </div>

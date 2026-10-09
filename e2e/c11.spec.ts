@@ -110,6 +110,6 @@ test("play chapter 11: read the wall, watch it form, the catena and deep time", 
   await mission.getByRole("radio", { name: /Not on a human timescale/ }).click();
   await mission.getByRole("button", { name: "Continue" }).click();
   await mission.getByRole("button", { name: "Add to my notebook" }).click();
-  await expect(page.locator(".mission")).toContainText("Chapter 11 · complete");
+  await expect(page.locator(".mission")).toContainText("· complete");
   expect(errors).toEqual([]);
 });

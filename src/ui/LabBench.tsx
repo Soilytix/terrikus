@@ -144,7 +144,6 @@ export function LabBench({ backHref }: { backHref: string }) {
           ← Back to the field
         </a>
         <div>
-          <p className="eyebrow">Lab bench · free play</p>
           <h1 id="bench-title">From soil to reads</h1>
         </div>
         <p className="teaching-banner" role="note">

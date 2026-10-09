@@ -112,6 +112,6 @@ test("play chapter 1: feel test, labyrinth, slake and crumb", async ({ page }, i
   await mission.getByRole("radio", { name: /Clay–organic bonds inside/ }).click();
   await mission.getByRole("button", { name: "Continue" }).click();
   await mission.getByRole("button", { name: "Add to my notebook" }).click();
-  await expect(page.locator(".mission")).toContainText("Chapter 1 · complete");
+  await expect(page.locator(".mission")).toContainText("· complete");
   expect(errors).toEqual([]);
 });

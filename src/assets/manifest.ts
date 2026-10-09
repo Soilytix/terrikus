@@ -133,6 +133,29 @@ export const ASSETS: Asset[] = [
     provenance:
       "Sentinel-2A L2A true-colour image (TCI) S2A_49SCA_20240805_0_L2A, 5 August 2024, read from the public Sentinel-2 COG archive on AWS on 2026-10-07: a 640 × 400 pixel window (10 m pixels) centred on 36.75° N, 109.30° E, loess hills near Yan'an, China. Cropped and encoded as WebP (quality 82); colours not altered.",
   },
+  {
+    id: "brand-icon",
+    path: "brand/icon.svg",
+    source: "img-soilytix-authored",
+    licence: "soilytix",
+    owner: "Soilytix",
+    truthStatus: "decorative",
+    publicOk: true,
+    attribution: "Soil Worlds mark © Soilytix",
+    provenance: "Copied unchanged from icons/icon.svg (the README icon) on 2026-10-09.",
+  },
+  {
+    id: "brand-wordmark",
+    path: "brand/wordmark.svg",
+    source: "img-soilytix-authored",
+    licence: "soilytix",
+    owner: "Soilytix",
+    truthStatus: "decorative",
+    publicOk: true,
+    attribution: "Soilytix wordmark © Soilytix",
+    provenance:
+      "Soilytix wordmark SVG in Obsidian ink, copied unchanged from the Soilytix hub (org overview title artwork) on 2026-10-09.",
+  },
 ];
 
 /**

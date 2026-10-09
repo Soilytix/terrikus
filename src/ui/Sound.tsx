@@ -1,4 +1,4 @@
-/** Sound (T32): the settings line and the caption strip that shows every sound as text while it plays. */
+/** Sound (T32): the settings line, and captions that announce every sound to screen readers while it plays. */
 import { useEffect, useState } from "react";
 import { useGame } from "../app/store";
 import { CUES, mixer, type CueId } from "../audio/mixer";
@@ -34,7 +34,7 @@ export function SoundSettings() {
             update((s) => ({ ...s, settings: { ...s.settings, sound: on } }));
           }}
         />
-        <span>Play sounds (each one is shown as a caption)</span>
+        <span>Play sounds (each one is captioned for screen readers)</span>
       </label>
       <table className="keys sound-cues">
         <tbody>
@@ -106,8 +106,8 @@ export function SoundCaptions({ scale, reduced }: { scale: Scale | null; reduced
   );
 
   return (
-    <div className="sound-captions" aria-live="polite">
-      {bed && <p className="sound-caption muted">{bed}</p>}
+    <div className="sound-captions sr-only" aria-live="polite">
+      {bed && <p className="sound-caption">{bed}</p>}
       {cue && <p className="sound-caption">{cue}</p>}
     </div>
   );

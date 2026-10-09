@@ -56,7 +56,9 @@ function Result({ step, onDone }: { step: WaterStep; onDone: () => void }) {
 function AttributionNote({ a }: { a: Attribution }) {
   return (
     <div className="attribution">
-      <p className="eyebrow">{a.effect}: candidate sources</p>
+      <p>
+        <b>{a.effect}: candidate sources</b>
+      </p>
       <ul>
         {a.candidates.map((c) => (
           <li key={c.id}>

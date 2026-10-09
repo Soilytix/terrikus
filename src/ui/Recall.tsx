@@ -18,9 +18,6 @@ export function Recall({ cards, onClose }: Props) {
   const last = i + 1 >= cards.length;
   return (
     <Dialog title="Before you go on" onClose={onClose} className="recall">
-      <p className="eyebrow">
-        Recall · {i + 1} of {cards.length}
-      </p>
       <h2>{card.prompt}</h2>
       {shown ? (
         <>

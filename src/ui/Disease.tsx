@@ -302,10 +302,10 @@ export function EvidenceLadder({ step, onDone }: { step: LadderStep; onDone: () 
                 <>
                   <p>{r.evidence}</p>
                   <p className="ladder-claim">
-                    <span className="eyebrow">Claim unlocked</span> {r.claim}
+                    <b>Claim unlocked</b> {r.claim}
                   </p>
                   <p className="ladder-not">
-                    <span className="eyebrow">Not supported yet</span> {r.notYet}
+                    <b>Not supported yet</b> {r.notYet}
                   </p>
                 </>
               ) : id === up ? (

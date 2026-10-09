@@ -95,6 +95,7 @@ export function Settings({
   onMotion,
   onReplace,
   onReset,
+  onUnlockAll,
   onClose,
 }: {
   save: Save;
@@ -103,6 +104,8 @@ export function Settings({
   onMotion: (m: Motion) => void;
   onReplace: (s: Save) => void;
   onReset: () => void;
+  /** Internal profile only: the in-app twin of `?unlock`. */
+  onUnlockAll?: (() => void) | undefined;
   onClose: () => void;
 }) {
   const file = useRef<HTMLInputElement>(null);
@@ -179,6 +182,21 @@ export function Settings({
         <p className="small" role="status">
           {msg}
         </p>
+      )}
+      {onUnlockAll && (
+        <>
+          <h3>Review</h3>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              onUnlockAll();
+              setMsg("Every built chapter is open.");
+            }}
+          >
+            Open every chapter
+          </button>
+        </>
       )}
       <h3>Start over</h3>
       {!confirm ? (

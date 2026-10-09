@@ -361,9 +361,6 @@ function Budget({ step, onDone }: Props) {
   const top = ladder[strongest(ladder, here.held)];
   return (
     <figure className="claim-sort sample budget">
-      <p className="eyebrow">
-        Case {at + 1} of {cases.length}
-      </p>
       <p>{here.scenario}</p>
       <ul className="evidence-held" aria-label="Evidence in hand">
         {ladder.map((r) => (

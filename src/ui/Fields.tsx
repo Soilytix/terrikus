@@ -105,8 +105,8 @@ function Season({ step, onDone }: Props) {
         <path d="M0,-49 l-3,-0 l3,6 l3,-6 Z" className="pointer" />
       </svg>
       <div aria-live="polite">
-        <p className="eyebrow">
-          {at + 1} of {n} · {here.label}
+        <p>
+          <b>{here.label}</b>
         </p>
         <p>
           <b>Below:</b> {here.below}

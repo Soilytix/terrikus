@@ -102,6 +102,6 @@ test("play chapter 4: the redox elevator, airless crumbs and draining the paddy"
   await mission.getByRole("radio", { name: "It depends on what you value and measure" }).click();
   await mission.getByRole("button", { name: "Continue" }).click();
   await mission.getByRole("button", { name: "Add to my notebook" }).click();
-  await expect(page.locator(".mission")).toContainText("Chapter 4 · complete");
+  await expect(page.locator(".mission")).toContainText("· complete");
   expect(errors).toEqual([]);
 });

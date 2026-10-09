@@ -144,7 +144,7 @@ test("chapter 8: the root exchange, who has no partner, reach or release, myth o
   await mission.getByRole("button", { name: "Continue" }).click();
   await mission.getByRole("button", { name: "Add to my notebook" }).click();
 
-  await expect(mission.locator(".open-question").getByText("Open question · evidence card")).toBeVisible();
+  await expect(mission.locator(".open-question").getByText(/^Open question:/)).toBeVisible();
   const sort = async (claim: RegExp, verdict: string) =>
     mission.getByRole("region", { name: claim }).getByRole("radio", { name: verdict, exact: true }).check();
   await sort(/Most forest trees partner/, "Supported");

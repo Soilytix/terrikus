@@ -975,8 +975,7 @@ export function MissionPanel(props: Props) {
     return (
       <aside className="mission" aria-label="Chapter" data-open={open}>
         <header className="mission-head">
-          <p className="eyebrow">Chapter {ch.number} · complete</p>
-          <h2>{ch.title}</h2>
+          <h2>{ch.title} · complete</h2>
         </header>
         <div className="mission-body">
           {next && entry ? (
@@ -1010,9 +1009,6 @@ export function MissionPanel(props: Props) {
     <aside className="mission" aria-label={`Mission: ${m.title}`} data-open={open}>
       <header className="mission-head">
         <button type="button" className="mission-toggle" aria-expanded={open} onClick={() => setOpen(!open)}>
-          <span className="eyebrow">
-            Chapter {ch.number} · {m.tier}
-          </span>
           <h2>{m.title}</h2>
           <span className="chev" aria-hidden="true" />
         </button>

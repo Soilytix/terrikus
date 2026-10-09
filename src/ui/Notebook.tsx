@@ -60,20 +60,16 @@ function CardView({ card, state, guess }: { card: FieldCard; state: "partial" | 
         {art ? <img src={art} alt="" /> : <span className="fc-art-blank">{card.kind}</span>}
       </div>
       <div className="fc-body">
-        <p className="eyebrow">
-          {card.kind === "organism" ? (
-            <span className="group-badge">
-              {GROUP_SHAPE[card.item.group] && (
-                <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
-                  <path d={GROUP_SHAPE[card.item.group]} />
-                </svg>
-              )}
-              {card.item.group}
-            </span>
-          ) : (
-            card.kind
-          )}
-        </p>
+        {card.kind === "organism" && (
+          <p className="small group-badge">
+            {GROUP_SHAPE[card.item.group] && (
+              <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                <path d={GROUP_SHAPE[card.item.group]} />
+              </svg>
+            )}
+            {card.item.group}
+          </p>
+        )}
         <h3>{item.name}</h3>
         {card.kind === "organism" && <p className="fc-role">{card.item.role}</p>}
         {card.kind !== "organism" && <p className="fc-role">{card.item.summary}</p>}
@@ -298,9 +294,8 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                   )}
                   {c.openQuestion && (
                     <div className="open-question">
-                      <p className="eyebrow">Open question</p>
                       <p>
-                        <b>{c.openQuestion.claim}</b>
+                        <b>Open question: {c.openQuestion.claim}</b>
                       </p>
                       <ul>
                         {c.openQuestion.sides.map((s) => (
@@ -317,7 +312,9 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                   <Facts facts={c.facts} />
                   {c.realWorld && (
                     <>
-                      <p className="eyebrow">In the real world</p>
+                      <p>
+                        <b>In the real world</b>
+                      </p>
                       <Facts facts={c.realWorld} />
                     </>
                   )}

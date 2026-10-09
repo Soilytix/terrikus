@@ -78,13 +78,6 @@ button {
   white-space: nowrap;
   border: 0;
 }
-.eyebrow {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-ink-muted);
-}
 :focus-visible {
   outline: 2px solid var(--color-ink);
   outline-offset: 2px;
@@ -541,54 +534,23 @@ button {
 .brand {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 9px 14px 9px 10px;
+  gap: 10px;
+  min-width: 0;
+  padding: 8px 14px 8px 8px;
   color: var(--color-ink);
   text-decoration: none;
   font-weight: 700;
   font-size: 14px;
   letter-spacing: -0.01em;
 }
-.brand-mark {
-  width: 22px;
-  height: 22px;
-  border-radius: 7px;
-  background:
-    radial-gradient(circle at 34% 36%, var(--color-brand-primary) 0 3px, transparent 3.5px),
-    radial-gradient(circle at 66% 58%, var(--color-brand-primary) 0 2.5px, transparent 3px),
-    radial-gradient(circle at 38% 72%, var(--color-brand-primary) 0 2px, transparent 2.5px), var(--color-ink);
-}
-.hud-where {
+.brand-home {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 12px;
-  padding: 8px 14px 8px 8px;
-  min-width: 0;
+  border-radius: 7px;
 }
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 3px 10px 3px 3px;
-  border-radius: var(--radius-pill);
-  background: var(--color-ink);
-  color: var(--color-text-on-dark);
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.chip-num {
-  display: inline-grid;
-  place-items: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 5px;
-  border-radius: var(--radius-pill);
-  background: var(--color-brand-primary);
-  color: var(--color-ink);
-  font-family: var(--font-mono);
-  font-size: 11px;
+.brand-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
 }
 .scene-title {
   font-size: 15px;
@@ -1810,8 +1772,13 @@ input[type="range"] {
   border-radius: 24px;
   animation: rise 0.9s var(--ease-chart);
 }
+.title-wordmark {
+  display: block;
+  height: 14px;
+  width: auto;
+}
 .title-card h1 {
-  margin-top: 6px;
+  margin-top: 12px;
   font-size: clamp(40px, 6vw, 60px);
   letter-spacing: -0.035em;
   line-height: 1;
@@ -1827,30 +1794,33 @@ input[type="range"] {
 }
 .title-chapters {
   list-style: none;
-  margin: 22px 0 0;
-  padding: 0;
+  margin: 18px 0 0;
+  padding: 0 6px 0 0;
   display: grid;
-  gap: 2px;
   border-top: 1px solid var(--glass-line);
+  /* The card stays inside the viewport: the chapter list scrolls, not the page. */
+  max-height: max(140px, calc(100vh - 470px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .title-chapters li {
   display: grid;
-  grid-template-columns: 84px 1fr;
+  grid-template-columns: 72px 1fr;
   gap: 8px;
-  padding: 10px 0;
+  padding: 6px 0;
   border-bottom: 1px solid var(--glass-line);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 .title-chapters li .mono {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--color-ink-muted);
   padding-top: 2px;
 }
 .title-chapters small {
   display: block;
   font-weight: 400;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--color-ink-muted);
 }
 .title-chapters a {
@@ -1859,6 +1829,87 @@ input[type="range"] {
 .title-chapters li[data-state="locked"],
 .title-chapters li[data-state="planned"] {
   opacity: 0.7;
+}
+/* Far birds crossing the valley sky behind the title card. World register: they are illustration. */
+.title-birds {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.title-bird {
+  position: absolute;
+  left: 0;
+  width: 18px;
+  height: 8px;
+  fill: none;
+  stroke: var(--w-stone-2);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0.75;
+  animation: bird-cross 70s linear infinite;
+}
+.title-bird path {
+  transform-origin: 50% 60%;
+  animation: bird-flap 0.9s ease-in-out infinite alternate;
+}
+.title-bird:nth-child(1) {
+  top: 14%;
+}
+.title-bird:nth-child(2) {
+  top: 16.5%;
+  width: 14px;
+  animation-delay: -1.6s;
+}
+.title-bird:nth-child(3) {
+  top: 12.5%;
+  width: 15px;
+  animation-delay: -3s;
+}
+.title-bird:nth-child(4) {
+  top: 22%;
+  width: 12px;
+  animation-duration: 95s;
+  animation-delay: -40s;
+}
+.title-bird:nth-child(5) {
+  top: 24%;
+  width: 11px;
+  animation-duration: 95s;
+  animation-delay: -41.8s;
+}
+.title-bird:nth-child(2) path {
+  animation-delay: -0.3s;
+}
+.title-bird:nth-child(3) path {
+  animation-delay: -0.6s;
+}
+.title-bird:nth-child(5) path {
+  animation-delay: -0.45s;
+}
+@keyframes bird-cross {
+  from {
+    transform: translate(-40px, 0);
+  }
+  50% {
+    transform: translate(50vw, -14px);
+  }
+  to {
+    transform: translate(calc(100vw + 40px), 4px);
+  }
+}
+@keyframes bird-flap {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.45);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-birds {
+    display: none;
+  }
 }
 .title-foot {
   margin-top: 16px;
@@ -2188,13 +2239,12 @@ input[type="range"] {
   :root {
     --hud-gap: 10px;
   }
-  .brand-name,
   .hud-btn-label,
   .ladder-key {
     display: none;
   }
   /* The badge stays on a phone as its dot; the words remain for screen readers. */
-  .hud-where .review-badge {
+  .brand .review-badge {
     padding: 4px;
   }
   /* Five tabs do not fit a phone row: wrap rather than hide one off-screen. */
@@ -2206,7 +2256,7 @@ input[type="range"] {
     padding: 7px 9px;
     font-size: 13px;
   }
-  .hud-where .review-badge-text {
+  .brand .review-badge-text {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -2215,20 +2265,12 @@ input[type="range"] {
     white-space: nowrap;
   }
   .brand {
-    padding: 9px;
-  }
-  .hud-where {
     flex: 1;
-    gap: 2px 8px;
+    gap: 8px;
     padding: 6px 10px 6px 6px;
   }
   .scene-title {
     font-size: 13.5px;
-    width: 100%;
-    padding-left: 4px;
-  }
-  .chip {
-    font-size: 11px;
   }
   .hud-btn {
     width: 36px;
@@ -2692,25 +2734,6 @@ input[type="range"] {
 }
 
 /* Sound captions (T32) */
-.sound-captions {
-  position: fixed;
-  left: 16px;
-  bottom: 16px;
-  z-index: 30;
-  display: grid;
-  gap: 4px;
-  max-width: min(420px, calc(100vw - 32px));
-  pointer-events: none;
-}
-.sound-caption {
-  margin: 0;
-  padding: 6px 10px;
-  border-radius: 6px;
-  background: var(--color-surface-card);
-  border: 1px solid var(--color-ink-faint);
-  color: var(--color-ink);
-  font-size: 13px;
-}
 .sound-cues td {
   font-size: 14px;
 }
@@ -3383,8 +3406,8 @@ input[type="range"] {
 .ladder-rungs p {
   margin: 4px 0 0;
 }
-.ladder-claim .eyebrow,
-.ladder-not .eyebrow {
+.ladder-claim b,
+.ladder-not b {
   display: block;
 }
 .ladder-not {

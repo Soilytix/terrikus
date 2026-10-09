@@ -130,6 +130,6 @@ test("play chapter 12: twin fields, the context flip, depth, heavy wheels and a 
   await mission.getByRole("radio", { name: /The water table in every zone/ }).click();
   await mission.getByRole("button", { name: "Continue" }).click();
   await mission.getByRole("button", { name: "Add to my notebook" }).click();
-  await expect(page.locator(".mission")).toContainText("Chapter 12 · complete");
+  await expect(page.locator(".mission")).toContainText("· complete");
   expect(errors).toEqual([]);
 });

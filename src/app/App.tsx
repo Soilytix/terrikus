@@ -341,6 +341,7 @@ function Shell({ hash }: { hash: string }) {
         <Title
           save={save}
           resumeLabel={resumeScene?.title ?? "the spinach field"}
+          birds={!reduced && !forceStatic && save.settings.ambient}
           onStart={() => go(resumeScene ? save.lastSession!.route : targetHref("p-field-dawn"))}
         />
       ) : (
@@ -411,6 +412,7 @@ function Shell({ hash }: { hash: string }) {
           tooSlow={tooSlow}
           onMotion={(m) => update((s) => ({ ...s, settings: { ...s.settings, motion: m } }))}
           onReplace={replace}
+          onUnlockAll={__SW_PROFILE__ === "internal" ? () => update(unlockAll) : undefined}
           onReset={reset}
           onClose={() => setPanel(null)}
         />

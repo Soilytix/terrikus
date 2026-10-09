@@ -368,7 +368,6 @@ export function StrawBench({ backHref }: { backHref: string }) {
           ← Back to the field
         </a>
         <div>
-          <p className="eyebrow">Straw bench · free play</p>
           <h1 id="bench-title">The nitrogen relay</h1>
         </div>
         <Banner />

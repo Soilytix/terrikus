@@ -103,6 +103,6 @@ test("play chapter 5: musical chairs, leaky nitrate and the pH predictor", async
   await mission.getByRole("radio", { name: /inside one field/ }).click();
   await mission.getByRole("button", { name: "Continue" }).click();
   await mission.getByRole("button", { name: "Add to my notebook" }).click();
-  await expect(page.locator(".mission")).toContainText("Chapter 5 · complete");
+  await expect(page.locator(".mission")).toContainText("· complete");
   expect(errors).toEqual([]);
 });

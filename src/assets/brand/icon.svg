@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Soil Worlds mark: a world in cross-section. Sky above, horizons below,
+       and three nested rings for the scale ladder; Lime marks the one subject
+       the player follows. Colours: Obsidian #29332E ground, Lime #8EDE3D,
+       scale-gold 1-4 for the horizons, light gold #F4ECE2 for sky. -->
+  <defs>
+    <clipPath id="disc"><circle cx="512" cy="512" r="330"/></clipPath>
+  </defs>
+  <rect width="1024" height="1024" rx="224" fill="#29332E"/>
+  <g clip-path="url(#disc)">
+    <rect x="160" y="160" width="704" height="704" fill="#F4ECE2"/>
+    <path d="M160 470 C 300 430 420 455 512 440 C 610 425 720 450 864 420 L 864 864 L 160 864 Z" fill="#64461E"/>
+    <path d="M160 470 C 300 430 420 455 512 440 C 610 425 720 450 864 420 L 864 500 C 720 520 610 505 512 515 C 410 525 300 510 160 535 Z" fill="#36250F"/>
+    <path d="M160 640 C 300 620 420 650 512 635 C 620 618 720 640 864 615 L 864 864 L 160 864 Z" fill="#95692D"/>
+    <path d="M160 770 C 300 755 420 780 512 768 C 620 752 720 772 864 750 L 864 864 L 160 864 Z" fill="#CB8F3D"/>
+    <g fill="#F4ECE2" opacity="0.55">
+      <circle cx="300" cy="580" r="9"/><circle cx="660" cy="600" r="7"/><circle cx="420" cy="700" r="11"/>
+      <circle cx="720" cy="705" r="8"/><circle cx="560" cy="560" r="6"/><circle cx="350" cy="810" r="10"/>
+    </g>
+  </g>
+  <circle cx="512" cy="512" r="330" fill="none" stroke="#29332E" stroke-width="18"/>
+  <circle cx="586" cy="600" r="96" fill="none" stroke="#8EDE3D" stroke-width="22"/>
+  <circle cx="586" cy="600" r="36" fill="#8EDE3D"/>
+  <circle cx="512" cy="512" r="384" fill="none" stroke="#8EDE3D" stroke-width="10" stroke-dasharray="4 30" stroke-linecap="round" opacity="0.6"/>
+</svg>

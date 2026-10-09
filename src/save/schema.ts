@@ -33,7 +33,7 @@ export interface ChainAnswer {
 export interface SaveV1 {
   schemaVersion: 1;
   createdAt: string;
-  /** `ambient`: living backdrops move (OD-8 interim toggle). `sound`: the T32 mixer, off by default. */
+  /** `ambient`: living backdrops move (OD-8 interim toggle). `sound`: the T32 mixer, on by default (it still waits for the first gesture). */
   settings: { motion: Motion; lens: boolean; ambient: boolean; sound: boolean };
   chaptersUnlocked: string[];
   chaptersComplete: string[];
@@ -60,7 +60,7 @@ export function freshSave(now = new Date().toISOString()): Save {
   return {
     schemaVersion: 1,
     createdAt: now,
-    settings: { motion: "system", lens: false, ambient: true, sound: false },
+    settings: { motion: "system", lens: false, ambient: true, sound: true },
     chaptersUnlocked: ["prologue"],
     chaptersComplete: [],
     rumors: {},

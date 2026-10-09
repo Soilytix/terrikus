@@ -32,11 +32,6 @@ export function ScanCard({ object, glimpse, onClose, onOpenCard }: Props) {
       data-kind={object.kind}
     >
       <header>
-        <p className="eyebrow">
-          {glimpse
-            ? `Chapter ${glimpse.number} · ${glimpse.open ? "now open" : "not yet open"}`
-            : "You notice"}
-        </p>
         <h2 id="scan-title">{glimpse ? glimpse.title : object.label}</h2>
         <button type="button" className="icon-btn" onClick={onClose} aria-label="Close">
           <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">

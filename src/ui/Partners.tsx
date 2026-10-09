@@ -487,9 +487,8 @@ export function ClaimSort({ step, onDone }: { step: ClaimStep; onDone: () => voi
   return (
     <figure className="partners claim-sort">
       <div className="open-question flicker">
-        <p className="eyebrow">Open question · evidence card</p>
         <p>
-          <b>{step.evidence.claim}</b>
+          <b>Open question: {step.evidence.claim}</b>
         </p>
         <ul>
           {step.evidence.sides.map((s) => (

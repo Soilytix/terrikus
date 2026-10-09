@@ -3,7 +3,6 @@
  * that always reads 100.0 %. Teaching model: direction, not prediction.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { mission as missionById } from "../content";
 import type { Choice, Step } from "../content/schema";
 import { advance, benchMission, currentStep, lensAvailable } from "../app/progress";
 import { appendLab, type Save } from "../save/schema";
@@ -361,7 +360,6 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
     go(backHref);
   };
 
-  const mission = m ? missionById(m.id) : undefined;
   const jars: ["A" | "B", LeverSettings, Snapshot[], (l: LeverSettings) => void][] = [
     ["A", a, snapsA, setA],
     ...(b && snapsB
@@ -398,7 +396,6 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
           ← Back to the field
         </a>
         <div>
-          <p className="eyebrow">Lab bench{mission ? ` · ${mission.title}` : " · free play"}</p>
           <h1 id="bench-title">Leaf in a jar</h1>
         </div>
         <p className="teaching-banner" role="note">

@@ -1,6 +1,6 @@
 /**
- * WebAudio mixer (T32). Off by default: no AudioContext exists until `enable()`,
- * which the UI calls only from the learner's own gesture. Every sound is
+ * WebAudio mixer (T32). No AudioContext exists until `enable()`, which the UI
+ * calls only from the learner's own gesture. Every sound is
  * synthesised here (filtered noise and short tones); no audio files ship.
  * Each sound announces a caption to subscribers so the text shows when it plays.
  */

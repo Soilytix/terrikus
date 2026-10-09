@@ -114,6 +114,6 @@ test("play chapter 13: splash, the storm, salt and the satellite", async ({ page
   await expect(mission.locator(".feedback")).toContainText("Defensible");
   await mission.getByRole("button", { name: "Continue" }).click();
   await mission.getByRole("button", { name: "Add to my notebook" }).click();
-  await expect(page.locator(".mission")).toContainText("Chapter 13 · complete");
+  await expect(page.locator(".mission")).toContainText("· complete");
   expect(errors).toEqual([]);
 });

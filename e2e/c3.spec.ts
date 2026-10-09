@@ -102,6 +102,6 @@ test("play chapter 3: drain the cave, stranded, the Birch pulse and fast lanes",
   await mission.getByRole("radio", { name: /It ran down the burrows/ }).click();
   await mission.getByRole("button", { name: "Continue" }).click();
   await mission.getByRole("button", { name: "Add to my notebook" }).click();
-  await expect(page.locator(".mission")).toContainText("Chapter 3 · complete");
+  await expect(page.locator(".mission")).toContainText("· complete");
   expect(errors).toEqual([]);
 });
