@@ -50,3 +50,5 @@ jobs:
           destination: [hub-bucket]/artifacts/soil-worlds
           parent: false
           process_gcloudignore: false
+          # The hub proxy serves the stored bytes without Content-Encoding, so store them plain.
+          gzip: false
