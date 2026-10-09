@@ -3,7 +3,17 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { MISCONCEPTIONS } from "../content/misconceptions";
 import type { StorageLike } from "../save/storage";
 import { PILOT, type PilotConfig } from "./config";
-import { exportLog, loadLog, postOpen, recordPhase, saveLog, setOptIn, summarise, type Answer } from "./log";
+import {
+  PILOT_KEY,
+  exportLog,
+  loadLog,
+  postOpen,
+  recordPhase,
+  saveLog,
+  setOptIn,
+  summarise,
+  type Answer,
+} from "./log";
 
 const memory = (): StorageLike & { data: Map<string, string> } => {
   const data = new Map<string, string>();
@@ -60,9 +70,16 @@ describe("pilot instrumentation (T33)", () => {
     const log = recordPhase(setOptIn(loadLog(s, PILOT), true), PILOT, "pre", all("true"));
     expect(saveLog(s, log)).toBe(true);
     expect(loadLog(s, PILOT)).toEqual(log);
-    s.setItem("soilworlds:pilot:v1", "{not json");
+    s.setItem(PILOT_KEY, "{not json");
     expect(loadLog(s, PILOT).responses).toEqual([]);
     expect(saveLog(undefined, log)).toBe(false);
+  });
+
+  it("reads a log left under the pre-rename key", () => {
+    const s = memory();
+    const log = setOptIn(loadLog(s, PILOT), true);
+    s.setItem("soilworlds:pilot:v1", JSON.stringify(log));
+    expect(loadLog(s, PILOT)).toEqual(log);
   });
 
   it("makes no network call across opt-in, answers, storage and export", () => {

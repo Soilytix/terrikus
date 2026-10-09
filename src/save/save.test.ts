@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { SaveError, migrate } from "./migrate";
-import { LAB_BOOK_CAP, SAVE_KEY, appendLab, freshSave, type LabEntry } from "./schema";
+import { LAB_BOOK_CAP, LEGACY_SAVE_KEY, SAVE_KEY, appendLab, freshSave, type LabEntry } from "./schema";
 import { createStore, exportSave, importSave, type StorageLike } from "./storage";
 
 function memoryStorage(): StorageLike & { data: Map<string, string> } {
@@ -26,6 +26,13 @@ describe("save", () => {
     store.save(s);
     expect(createStore(() => mem).load()).toEqual(s);
     expect(store.persistent()).toBe(true);
+  });
+
+  it("reads a save left under the pre-rename key", () => {
+    const mem = memoryStorage();
+    const s = { ...freshSave(), flags: ["p-m1-done"] };
+    mem.data.set(LEGACY_SAVE_KEY, JSON.stringify(s));
+    expect(createStore(() => mem).load()).toEqual(s);
   });
 
   it("starts fresh on corrupt JSON without throwing, keeping a copy", () => {

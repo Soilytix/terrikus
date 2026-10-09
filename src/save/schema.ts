@@ -2,7 +2,9 @@
 import type { Connector, Verdict } from "../content/schema";
 import type { LeverSettings } from "../sim/benches/leaf-jar";
 
-export const SAVE_KEY = "soilworlds:v1";
+export const SAVE_KEY = "pedologicus:v1";
+/** The key before the rename to Pedologicus; read once if the new key is empty, then left behind. */
+export const LEGACY_SAVE_KEY = "soilworlds:v1";
 export const SCHEMA_VERSION = 1;
 export const LAB_BOOK_CAP = 200;
 

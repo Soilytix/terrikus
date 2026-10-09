@@ -175,7 +175,7 @@ Instruments read true state through sampling (core count, depth), detection limi
 
 ## 7. Save state
 
-- Key `soilworlds:v1` in `localStorage`; every read and write wrapped in try/catch; in-memory fallback with a visible "progress will not be kept" note.
+- Key `pedologicus:v1` in `localStorage` (read from the pre-rename `soilworlds:v1` when empty); every read and write wrapped in try/catch; in-memory fallback with a visible "progress will not be kept" note.
 - Schema: `{ schemaVersion, createdAt, settings, chaptersUnlocked, rumors, cards, labBook[] (cap 200, oldest dropped), chains, predictions, lastSession, pilot? }`.
 - `migrate(vN → vN+1)` per version, tested with fixtures.
 - Export/import as JSON from settings; import validates and refuses unknown versions.

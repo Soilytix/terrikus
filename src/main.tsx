@@ -2,11 +2,11 @@ import { Component, StrictMode, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles/app.css";
 import { App } from "./app/App";
-import { SAVE_KEY } from "./save/schema";
+import { LEGACY_SAVE_KEY, SAVE_KEY } from "./save/schema";
 
 const raw = () => {
   try {
-    return localStorage.getItem(SAVE_KEY);
+    return localStorage.getItem(SAVE_KEY) ?? localStorage.getItem(LEGACY_SAVE_KEY);
   } catch {
     return null;
   }
@@ -42,6 +42,7 @@ class Crash extends Component<{ children: ReactNode }, { error: Error | null }> 
             onClick={() => {
               try {
                 localStorage.removeItem(SAVE_KEY);
+                localStorage.removeItem(LEGACY_SAVE_KEY);
               } catch {
                 /* nothing stored */
               }
