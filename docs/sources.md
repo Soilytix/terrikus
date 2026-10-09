@@ -1,13 +1,13 @@
 ---
-title: "Soil Worlds — Sources"
+title: "Pedologicus — Sources"
 description: "Bibliography with stable ids. Every fact in content files cites one or more ids from this list."
 status: draft — scientific review pending
 date: 2026-10-06
 ---
 
-# Soil Worlds — Sources
+# Pedologicus — Sources
 
-This is the bibliography for Soil Worlds. Each source has a **stable id**. Content files cite these ids in `sources: [...]`, and nothing else. `src/content/sources.ts` is the machine-readable registry. The content-lint test (backlog T03) fails in two cases:
+This is the bibliography for Pedologicus. Each source has a **stable id**. Content files cite these ids in `sources: [...]`, and nothing else. `src/content/sources.ts` is the machine-readable registry. The content-lint test (backlog T03) fails in two cases:
 
 - a content file cites an id that is not in `sources.ts`;
 - `sources.ts` contains an id that has no row here.

@@ -1,4 +1,4 @@
-# Learning game design for Soil Worlds
+# Learning game design for Pedologicus
 
 Status: design research, draft 1 (2026-10-06). Written autonomously while the founder was unavailable; every decision below is marked **Decision** and is reversible. Scientific review of mission content is still pending. Nothing here claims a validated learning effect: the pilot plan in section 12 exists to find out.
 
@@ -8,7 +8,7 @@ Prior art read: the internal single-file prototype (protist player, spinach worl
 
 ## 1. Design thesis
 
-> **Soil Worlds is a textbook you read by doing experiments.** Each chapter is a place. Each page is a phenomenon you can poke. You keep what you learn as explanations in your own notebook, not as points.
+> **Pedologicus is a textbook you read by doing experiments.** Each chapter is a place. Each page is a phenomenon you can poke. You keep what you learn as explanations in your own notebook, not as points.
 
 Three commitments follow from that thesis and from company rules:
 
@@ -48,7 +48,7 @@ For each reference: what it does, why it works for learning, what we take, what 
 - **What:** a shared world with populations, nutrient stocks and feedbacks; player actions have delayed, distributed consequences.
 - **Why it works:** systems thinking comes from watching delays and feedback loops; Eco makes the ecosystem a shared resource with real tradeoffs.
 - **We take:** stocks-and-flows display (a small Sankey per plot), time-lapse with explicit compression, and **tradeoffs without a winner**: rice paddy water saves one thing and costs another (methane).
-- **We refuse:** SimEarth's opaque coupling (players could not tell why things happened). Every flow in Soil Worlds can be clicked to see its rule in plain language. No global score, no "Gaia" health meter.
+- **We refuse:** SimEarth's opaque coupling (players could not tell why things happened). Every flow in Pedologicus can be clicked to see its rule in plain language. No global score, no "Gaia" health meter.
 
 ### 2.5 Spore cell stage (Maxis, 2008): play at microscopic scale
 
@@ -131,7 +131,7 @@ Effect sizes are indicative; most findings come from classroom or lab studies wi
 
 Chosen because they are common, consequential for how employees talk to customers, and testable. Each has a discrepant event in the game.
 
-| Misconception | Discrepant event in Soil Worlds | Source / note |
+| Misconception | Discrepant event in Pedologicus | Source / note |
 | --- | --- | --- |
 | Soil is inert dirt; plants "eat" soil | Weigh-the-pot experiment (van Helmont, ~1648, as a playable lab bench): tree gains 74 kg, soil loses ~0.06 kg | Classic; widely documented in plant-nutrition misconception literature |
 | Decomposed matter disappears | Tagged-carbon parcel: total C conserved, most leaves as CO2, some becomes microbial biomass and persists | Mass-balance display |

@@ -120,7 +120,7 @@ export function PilotSettings({ chaptersComplete }: { chaptersComplete: number }
     const url = URL.createObjectURL(new Blob([exportLog(log, PILOT)], { type: "application/json" }));
     const a = document.createElement("a");
     a.href = url;
-    a.download = "soil-worlds-study-answers.json";
+    a.download = "pedologicus-study-answers.json";
     a.click();
     URL.revokeObjectURL(url);
   };

@@ -1,11 +1,11 @@
 ---
-title: "Soil Worlds — Spec"
-description: "Agent plan for the Soil Worlds web app: why, how, what, open decisions, steps and acceptance."
+title: "Pedologicus — Spec"
+description: "Agent plan for the Pedologicus web app: why, how, what, open decisions, steps and acceptance."
 status: draft — Build phase ready to start; open decisions listed in §11
 date: 2026-10-06
 ---
 
-# Soil Worlds — Spec
+# Pedologicus — Spec
 
 Companion documents: `world-bible.md` (content), `art-direction.md` (look and motion), `backlog.md` (ordered tasks), `sources.md` (bibliography). Research behind these decisions is in `docs/research/`.
 
@@ -13,7 +13,7 @@ Companion documents: `world-bible.md` (content), `art-direction.md` (look and mo
 
 The vault prototype (`team/eng/soil-worlds/index.html`, a 417-line single-file SVG game) showed that a soil world you can poke teaches better than a page you read. It is too small to grow: one scene, inline tokens, no content model, no sources, a customer name in the copy.
 
-Soil Worlds becomes a **playable soil science textbook**: one generic valley, six nested scales, about fifteen chapters, each a place with experiments. A reader leaves with correct mental models of soil as a habitat, of carbon, water, nitrogen and life in soil, and of **what a measurement can and cannot tell you**.
+Pedologicus becomes a **playable soil science textbook**: one generic valley, six nested scales, about fifteen chapters, each a place with experiments. A reader leaves with correct mental models of soil as a habitat, of carbon, water, nitrogen and life in soil, and of **what a measurement can and cannot tell you**.
 
 What changes for people:
 
@@ -244,7 +244,7 @@ An agent must not settle a pending decision; it raises it and builds around it.
 | OD-2 | Water pigment: functional blue vs bespoke | pending | CTO | None |
 | OD-3 | `duration-zoom` 1100 ms token | pending | CTO | Local constant until decided |
 | OD-4 | Deployment target: IAP-gated internal hub artifacts path (recommended) vs other; hub card; service account | taken by the loop 2026-10-08: IAP-gated hub artifacts path, founder to review | Founder + orchestrator | None; static relative build |
-| OD-5 | Public profile and host (e.g. a share domain) | pending | Founder | None |
+| OD-5 | Public profile and host (e.g. a share domain) | taken by the founder 2026-10-09: the internal build, review badges and all, goes public at pedologicus.com on Cloudflare Pages; the `public` profile waits on OD-7 | Founder | None |
 | OD-6 | BioRender licence; designer infographic contract terms; AI imagery policy | pending | Founder | None; excluded from bundle |
 | OD-7 | Scientific reviewer per chapter | pending | Founder / CSO | Content ships `draft` with badge |
 | OD-8 | Living backdrop vs design system "entry animation only" rule | pending | CTO | Ambient behind toggle; reduced motion respected |

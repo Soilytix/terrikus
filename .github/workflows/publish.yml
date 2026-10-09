@@ -7,7 +7,8 @@ on:
 
 # Every merge to main goes live behind IAP at hub.<base_domain>/artifacts/soil-worlds/
 # (spec OD-4, taken by the loop). The internal profile ships, review badges and all;
-# the public profile and host wait on OD-5. Keyless: GitHub OIDC through Workload
+# OD-5 (founder, 2026-10-09): the same internal build also goes public at pedologicus.com
+# on Cloudflare Pages, review badges and all, until content is approved. Keyless: GitHub OIDC through Workload
 # Identity Federation, as a service account that can write artifacts/soil-worlds/ in
 # the hub bucket and nothing else (core/static's publisher.tf in Soilytix/terraform).
 permissions:
@@ -52,3 +53,24 @@ jobs:
           process_gcloudignore: false
           # The hub proxy serves the stored bytes without Content-Encoding, so store them plain.
           gzip: false
+
+  # Public at pedologicus.com (OD-5). Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID
+  # secrets and a Pages project named `pedologicus` with the custom domain attached.
+  pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - uses: jdx/mise-action@7e36c90d9ab29c415a2384db3006f3ec8a8cc654 # v4.2.4
+        with:
+          cache: true
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+      - run: pnpm dlx wrangler@4.148.0 pages deploy dist --project-name=pedologicus --branch=main
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

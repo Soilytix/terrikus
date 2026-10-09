@@ -17,7 +17,7 @@ test("play the prologue and the first chapter-2 mission", async ({ page }, info)
   page.on("pageerror", (e) => errors.push(`${String(e)} @ ${page.url()}\n${e.stack ?? ""}`));
 
   await page.goto("./");
-  await expect(page.getByRole("heading", { name: "Soil Worlds" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pedologicus" })).toBeVisible();
   await settled(page);
   await shot(page, "01-title", p);
 
@@ -179,6 +179,6 @@ test("the learning study is opt-in and its answers never leave the page", async 
   await study.getByRole("button", { name: "Keep my answers" }).click();
   const download = page.waitForEvent("download");
   await study.getByRole("button", { name: "Export study answers" }).click();
-  expect((await download).suggestedFilename()).toBe("soil-worlds-study-answers.json");
+  expect((await download).suggestedFilename()).toBe("pedologicus-study-answers.json");
   expect(offsite).toEqual([]);
 });

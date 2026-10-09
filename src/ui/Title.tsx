@@ -16,7 +16,7 @@ export function Title({
   return (
     <section className="title-card" aria-labelledby="title">
       <p className="eyebrow">A playable soil science textbook</p>
-      <h1 id="title">Soil Worlds</h1>
+      <h1 id="title">Pedologicus</h1>
       <p className="title-lede">
         One valley, six scales. Pick up a handful of soil and follow it down, from the field to a single water
         film, by predicting, running experiments and explaining what you saw.

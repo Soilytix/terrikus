@@ -54,9 +54,9 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
   return (
     <>
       <header className="hud-top">
-        <a className="brand" href="#/" aria-label="Soil Worlds, title screen">
+        <a className="brand" href="#/" aria-label="Pedologicus, title screen">
           <span className="brand-mark" aria-hidden="true" />
-          <span className="brand-name">Soil Worlds</span>
+          <span className="brand-name">Pedologicus</span>
         </a>
         <div className="hud-where">
           {ch ? (

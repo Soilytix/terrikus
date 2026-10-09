@@ -112,7 +112,7 @@ export function Settings({
     const url = URL.createObjectURL(new Blob([exportSave(save)], { type: "application/json" }));
     const a = document.createElement("a");
     a.href = url;
-    a.download = "soil-worlds-notebook.json";
+    a.download = "pedologicus-notebook.json";
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -170,7 +170,7 @@ export function Settings({
               onReplace(importSave(await f.text()));
               setMsg("Notebook imported.");
             } catch {
-              setMsg("That file is not a Soil Worlds notebook.");
+              setMsg("That file is not a Pedologicus notebook.");
             }
           }}
         />

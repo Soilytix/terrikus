@@ -30,7 +30,7 @@ class Crash extends Component<{ children: ReactNode }, { error: Error | null }> 
           {saved && (
             <a
               className="btn"
-              download="soil-worlds-notebook.json"
+              download="pedologicus-notebook.json"
               href={URL.createObjectURL(new Blob([saved], { type: "application/json" }))}
             >
               Export notebook

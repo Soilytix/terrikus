@@ -1,11 +1,11 @@
 ---
-title: "Soil Worlds — World bible"
+title: "Pedologicus — World bible"
 description: "The whole world: scales, crop worlds, cast, chapters, scenes, missions, discoveries, misconceptions and sources."
 status: draft — scientific review pending on every chapter
 date: 2026-10-06
 ---
 
-# Soil Worlds — World bible
+# Pedologicus — World bible
 
 > **A textbook you read by doing experiments.** Each chapter is a place, and each page is a phenomenon you can poke. What you learn, you keep as your own explanations in a field notebook. There are no points.
 

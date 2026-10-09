@@ -1,11 +1,11 @@
 ---
-title: "Soil Worlds — Backlog"
+title: "Pedologicus — Backlog"
 description: "Ordered, independently mergeable tasks. T01–T10 (Build phase) are done; R01–R12 are review follow-ups."
 status: Build phase done (919f9eb, review fixes 7469de3 + 36bc6ff); review follow-ups R01–R12 next, then T11 onward
 date: 2026-10-06
 ---
 
-# Soil Worlds — Backlog
+# Pedologicus — Backlog
 
 Rules for every task:
 
