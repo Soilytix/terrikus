@@ -18,6 +18,7 @@ import {
 } from "../sim/benches/leaf-jar";
 import { decompositionRate, measureCo2Flux } from "../sim/measure";
 import { RESIDUE, TEMPERATURE, WATER } from "../sim/modifiers";
+import { seededOrder } from "../sim/rng";
 import { Kbd } from "./common";
 
 type BenchStep = Extract<Step, { kind: "bench" }>;
@@ -417,7 +418,7 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
         <section className="bench-predict" aria-label="Your prediction">
           <p className="step-text">{step.predict.question}</p>
           <div className="choices row" role="radiogroup">
-            {step.predict.choices.map((c) => (
+            {seededOrder(step.predict.choices).map((c) => (
               <button
                 key={c.id}
                 type="button"

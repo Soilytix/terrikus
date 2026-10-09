@@ -23,3 +23,16 @@ export function hashSeed(...parts: number[]): number {
   }
   return h >>> 0;
 }
+
+/** A fixed shuffle seeded by the items' ids, so authored order (answer first) never shows but each list always looks the same. */
+export function seededOrder<T extends { id: string }>(items: readonly T[]): T[] {
+  let seed = 0;
+  for (const it of items) for (let i = 0; i < it.id.length; i++) seed = hashSeed(seed, it.id.charCodeAt(i));
+  const rand = mulberry32(seed);
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [out[i], out[j]] = [out[j]!, out[i]!];
+  }
+  return out;
+}

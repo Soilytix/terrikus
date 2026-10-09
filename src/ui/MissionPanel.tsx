@@ -9,6 +9,7 @@ import type { Save } from "../save/schema";
 import { advance, currentStep, isScanned, setFlag, stepIndex, visibleObjects } from "../app/progress";
 import { appendLab } from "../save/schema";
 import { RULESET_VERSION, DEFAULT_LEVERS } from "../sim/benches/leaf-jar";
+import { seededOrder } from "../sim/rng";
 import { href, targetHref } from "../app/router";
 import { ChainBuilder } from "./ChainBuilder";
 import { Composition } from "./Composition";
@@ -64,7 +65,7 @@ interface Props {
 }
 
 function Choices({
-  choices,
+  choices: authored,
   multi,
   picked,
   setPicked,
@@ -76,6 +77,7 @@ function Choices({
   setPicked: (p: string[]) => void;
   locked?: boolean | undefined;
 }) {
+  const choices = seededOrder(authored);
   // A radio group is one tab stop; arrows move and select (WAI-ARIA radio pattern).
   const current = Math.max(
     0,
