@@ -9,7 +9,7 @@ on:
 # One gate. `mise run check` is the definition of done (lint, format, types,
 # unit tests, build, bundle scan, size budget); prek runs only the hooks that
 # check does not, so nothing runs twice. The e2e job runs only on demand.
-# No deploy here: the host is open (spec OD-4).
+# Deploy lives in publish.yml.
 jobs:
   check:
     runs-on: ubuntu-latest

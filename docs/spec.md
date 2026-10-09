@@ -243,7 +243,7 @@ An agent must not settle a pending decision; it raises it and builds around it.
 | OD-1 | New scene hexes (gley, oxide, clay, foliage, sky) | pending | CTO (design system owner) | None; lives in `scene.css` |
 | OD-2 | Water pigment: functional blue vs bespoke | pending | CTO | None |
 | OD-3 | `duration-zoom` 1100 ms token | pending | CTO | Local constant until decided |
-| OD-4 | Deployment target: IAP-gated internal hub artifacts path (recommended) vs other; hub card; service account | pending | Founder + orchestrator | None; static relative build |
+| OD-4 | Deployment target: IAP-gated internal hub artifacts path (recommended) vs other; hub card; service account | taken by the loop 2026-10-08: IAP-gated hub artifacts path, founder to review | Founder + orchestrator | None; static relative build |
 | OD-5 | Public profile and host (e.g. a share domain) | pending | Founder | None |
 | OD-6 | BioRender licence; designer infographic contract terms; AI imagery policy | pending | Founder | None; excluded from bundle |
 | OD-7 | Scientific reviewer per chapter | pending | Founder / CSO | Content ships `draft` with badge |
