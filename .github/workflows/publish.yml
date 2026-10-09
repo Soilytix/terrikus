@@ -41,8 +41,12 @@ jobs:
           workload_identity_provider: projects/[project-number]/locations/global/workloadIdentityPools/artifacts-publish/providers/soil-worlds
           service_account: [service-account]
 
-      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3
-
-      # The prefix-only grant denies storage.objects.list, so no rsync: copy over the
-      # top and leave stale hashed chunks behind until pruning is granted.
-      - run: gcloud storage cp --recursive 'dist/*' gs://[hub-bucket]/artifacts/soil-worlds/
+      # The prefix-only grant denies storage.objects.list, which even `gcloud storage cp`
+      # needs, so upload object by object and leave stale hashed chunks behind until
+      # pruning is granted.
+      - uses: google-github-actions/upload-cloud-storage@6397bd7208e18d13ba2619ee21b9873edc94427a # v3.0.0
+        with:
+          path: dist
+          destination: [hub-bucket]/artifacts/soil-worlds
+          parent: false
+          process_gcloudignore: false
