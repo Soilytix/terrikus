@@ -401,7 +401,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Scope:** publish workflow per OD-4 (recommended IAP-gated hub artifacts path, keyless auth); public profile per OD-5.
 - **Acceptance:** blocked until OD-4 is decided; then a tagged build deploys and is reachable at the decided path.
 - **Depends on:** T10, OD-4
-- **Done:** `.github/workflows/publish.yml` builds the internal relative build on every push to main (and on dispatch) and copies `dist/` to `gs://[hub-bucket]/artifacts/pedologicus/`, served behind IAP at `hub.<base_domain>/artifacts/pedologicus/`, keyless via Workload Identity Federation as `static-soil-worlds-publish`. Goes live once the operator applies Soilytix/terraform#372 (the provider, service account and prefix grant). The grant denies listing, so stale hashed chunks are not pruned. OD-4 taken by the loop, founder to review; OD-5 (public profile and host) stays pending.
+- **Done:** `.github/workflows/publish.yml` builds the internal relative build on every push to main (and on dispatch) and copies `dist/` to `gs://[hub-bucket]/artifacts/terrikus/`, served behind IAP at `hub.<base_domain>/artifacts/terrikus/`, keyless via Workload Identity Federation as `static-soil-worlds-publish`. Goes live once the operator applies Soilytix/terraform#372 (the provider, service account and prefix grant). The grant denies listing, so stale hashed chunks are not pruned. OD-4 taken by the loop, founder to review; OD-5 (public profile and host) stays pending.
 
 ---
 

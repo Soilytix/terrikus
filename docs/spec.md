@@ -244,7 +244,7 @@ An agent must not settle a pending decision; it raises it and builds around it.
 | OD-2 | Water pigment: functional blue vs bespoke | pending | CTO | None |
 | OD-3 | `duration-zoom` 1100 ms token | pending | CTO | Local constant until decided |
 | OD-4 | Deployment target: IAP-gated internal hub artifacts path (recommended) vs other; hub card; service account | taken by the loop 2026-10-08: IAP-gated hub artifacts path, founder to review | Founder + orchestrator | None; static relative build |
-| OD-5 | Public profile and host (e.g. a share domain) | taken by the founder 2026-10-09: the internal build, review badges and all, goes public at pedologicus.com on Vercel (Soilytix team, Git integration; moved from a Cloudflare Worker on 2026-10-10); host and going public are the founder's decisions of 2026-10-09 and 2026-10-10, recorded here, not new ones; the `public` profile waits on OD-7 | Founder | None |
+| OD-5 | Public profile and host (e.g. a share domain) | taken by the founder 2026-10-09: the internal build, review badges and all, goes public on Vercel, first at pedologicus.com, at terrikus.com since the 2026-10-10 rename (Soilytix team, Git integration; moved from a Cloudflare Worker on 2026-10-10); host and going public are the founder's decisions of 2026-10-09 and 2026-10-10, recorded here, not new ones; the `public` profile waits on OD-7 | Founder | None |
 | OD-6 | BioRender licence; designer infographic contract terms; AI imagery policy | pending | Founder | None; excluded from bundle |
 | OD-7 | Scientific reviewer per chapter | pending | Founder / CSO | Content ships `draft` with badge |
 | OD-8 | Living backdrop vs design system "entry animation only" rule | pending | CTO | Ambient behind toggle; reduced motion respected |
