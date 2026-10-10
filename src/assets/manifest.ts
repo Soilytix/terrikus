@@ -13,6 +13,9 @@ const BIOME =
 const SPRITE =
   "Drawn in-house as SVG on 2026-10-06 to art-direction §6.2 (Obsidian monoline outline, one world-register fill, at most one detail line). Vector paths hand-written by a coding agent (Claude) under Soilytix direction: no image model, no traced image. Morphology checked against referenceUrl at schematic level only; reference-drawn needs an illustrator's pass.";
 
+const AMBIENCE =
+  "Field recording, CC0 1.0, background bed only (never a note in the music). Freesound HQ preview MP3 fetched on 2026-10-10; a 40 s window cut, mixed to mono, loudness-normalised to −20 LUFS and re-encoded as 80 kb/s MP3 with ffmpeg; the engine loops it with a 3 s crossfade.";
+
 export const ASSETS: Asset[] = [
   {
     id: "specimen-bacterium",
@@ -132,6 +135,78 @@ export const ASSETS: Asset[] = [
     referenceUrl: "https://registry.opendata.aws/sentinel-2-l2a-cogs/",
     provenance:
       "Sentinel-2A L2A true-colour image (TCI) S2A_49SCA_20240805_0_L2A, 5 August 2024, read from the public Sentinel-2 COG archive on AWS on 2026-10-07: a 640 × 400 pixel window (10 m pixels) centred on 36.75° N, 109.30° E, loess hills near Yan'an, China. Cropped and encoded as WebP (quality 82); colours not altered.",
+  },
+  {
+    id: "ambience-birds",
+    path: "ambience/birds.mp3",
+    source: "snd-freesound-cc0",
+    licence: "cc0",
+    owner: "fs_ejh (Freesound)",
+    truthStatus: "decorative",
+    publicOk: true,
+    attribution: "“DawnChorus362.wav” by fs_ejh, Freesound sound 199530 (CC0)",
+    referenceUrl: "https://freesound.org/people/fs_ejh/sounds/199530/",
+    provenance: AMBIENCE + " Window from 3 s.",
+  },
+  {
+    id: "ambience-brook",
+    path: "ambience/brook.mp3",
+    source: "snd-freesound-cc0",
+    licence: "cc0",
+    owner: "kyles (Freesound)",
+    truthStatus: "decorative",
+    publicOk: true,
+    attribution: "“river small brook stream …” by kyles, Freesound sound 454155 (CC0)",
+    referenceUrl: "https://freesound.org/people/kyles/sounds/454155/",
+    provenance: AMBIENCE + " Window from 10 s.",
+  },
+  {
+    id: "ambience-rain",
+    path: "ambience/rain.mp3",
+    source: "snd-freesound-cc0",
+    licence: "cc0",
+    owner: "jmbphilmes (Freesound)",
+    truthStatus: "decorative",
+    publicOk: true,
+    attribution: "“Rain light 2 (rural)” by jmbphilmes, Freesound sound 200273 (CC0)",
+    referenceUrl: "https://freesound.org/people/jmbphilmes/sounds/200273/",
+    provenance: AMBIENCE + " Window from 20 s.",
+  },
+  {
+    id: "ambience-crickets",
+    path: "ambience/crickets.mp3",
+    source: "snd-freesound-cc0",
+    licence: "cc0",
+    owner: "Defelozedd94 (Freesound)",
+    truthStatus: "decorative",
+    publicOk: true,
+    attribution: "“Crickets At Night - Raw sound” by Defelozedd94, Freesound sound 522299 (CC0)",
+    referenceUrl: "https://freesound.org/people/Defelozedd94/sounds/522299/",
+    provenance: AMBIENCE + " Window from 30 s.",
+  },
+  {
+    id: "ambience-frogs",
+    path: "ambience/frogs.mp3",
+    source: "snd-freesound-cc0",
+    licence: "cc0",
+    owner: "musicbrain (Freesound)",
+    truthStatus: "decorative",
+    publicOk: true,
+    attribution: "“frogs_02.flac” by musicbrain, Freesound sound 426461 (CC0)",
+    referenceUrl: "https://freesound.org/people/musicbrain/sounds/426461/",
+    provenance: AMBIENCE + " Window from 60 s.",
+  },
+  {
+    id: "ambience-wind",
+    path: "ambience/wind.mp3",
+    source: "snd-freesound-cc0",
+    licence: "cc0",
+    owner: "Borgory (Freesound)",
+    truthStatus: "decorative",
+    publicOk: true,
+    attribution: "“Soft Wind in the Trees - Leaves rustle” by Borgory, Freesound sound 751473 (CC0)",
+    referenceUrl: "https://freesound.org/people/Borgory/sounds/751473/",
+    provenance: AMBIENCE + " Window from 20 s.",
   },
   {
     id: "brand-icon",

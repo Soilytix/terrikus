@@ -1,5 +1,14 @@
 /** The shell: routes, the world, the HUD and every panel above it. */
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import {
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { CHAPTERS, SCENES, chapter, sceneChapter, scene as sceneById } from "../content";
 import { isLoaded, loadChapters } from "../content/load";
 import type { SceneObject } from "../content/schema";
@@ -35,6 +44,10 @@ import {
 } from "./progress";
 import { href, parse, targetHref, type NotebookTab, type Route } from "./router";
 import { prefersReduced, useGame } from "./store";
+
+/** Dev-only beats surface, loaded only with `?beats` in the URL. */
+const BeatsDev = lazy(() => import("../ui/BeatsDev"));
+const beats = new URLSearchParams(window.location.search).has("beats");
 
 const subscribeHash = (cb: () => void) => {
   window.addEventListener("hashchange", cb);
@@ -335,7 +348,12 @@ function Shell({ hash }: { hash: string }) {
           />
         )}
       </World>
-      <SoundCaptions scale={route.name === "title" ? null : scene.scale} reduced={reduced} />
+      <SoundCaptions scene={scene} reduced={reduced} />
+      {beats && (
+        <Suspense fallback={null}>
+          <BeatsDev />
+        </Suspense>
+      )}
 
       {route.name === "title" ? (
         <Title

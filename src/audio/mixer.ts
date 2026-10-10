@@ -1,10 +1,12 @@
 /**
  * WebAudio mixer (T32). No AudioContext exists until `enable()`, which the UI
- * calls only from the learner's own gesture. Every sound is
- * synthesised here (filtered noise and short tones); no audio files ship.
- * Each sound announces a caption to subscribers so the text shows when it plays.
+ * calls only from the learner's own gesture. Cues are short tones; the bed is
+ * the scene's music (src/audio/music), loaded only once sound is on. Every
+ * sound announces a caption to subscribers so the text shows when it plays.
  */
 import type { Scale } from "../content/schema";
+import type { Music } from "./music/engine";
+import { musicCaption, presetFor } from "./music/presets";
 
 export type Ctx = Pick<
   AudioContext,
@@ -34,78 +36,45 @@ export const CUES: Record<CueId, { caption: string; notes: number[] }> = {
   chapter: { caption: "Three rising tones: chapter complete.", notes: [523, 659, 784] },
 };
 
-/** Per-scale bed: a low-passed noise wash. Captions say it is made up, not a field recording. */
-export const AMBIENCE: Record<Scale, { label: string; cutoff: number }> = {
-  landscape: { label: "wind-like hush over the valley", cutoff: 900 },
-  field: { label: "breezy hush over the field", cutoff: 1200 },
-  profile: { label: "muffled hush below ground", cutoff: 400 },
-  aggregate: { label: "close, muffled hush inside the crumb", cutoff: 300 },
-  rhizosphere: { label: "faint, muffled hush beside the root", cutoff: 250 },
-  cell: { label: "very faint hush at the scale of cells", cutoff: 180 },
+export interface BedScene {
+  id: string;
+  scale: Scale;
+}
+
+export const ambienceCaption = (s: BedScene) => musicCaption(presetFor(s.id, s.scale), s.scale);
+
+type LoadMusic = (ctx: AudioContext, out: AudioNode) => Promise<Music>;
+const loadMusic: LoadMusic = async (ctx, out) => {
+  const [{ createMusic }, { assetUrl }] = await Promise.all([
+    import("./music/engine"),
+    import("../assets/urls"),
+  ]);
+  return createMusic(ctx, out, (b) => assetUrl(`ambience-${b}`));
 };
 
-export const ambienceCaption = (s: Scale) =>
-  `Background sound: ${AMBIENCE[s].label} (${s} scale; synthesised, not a recording).`;
-
-const BED_GAIN = 0.05;
 const CUE_GAIN = 0.12;
 
-export function createMixer(make: () => Ctx = () => new AudioContext()) {
+export function createMixer(make: () => Ctx = () => new AudioContext(), load: LoadMusic = loadMusic) {
   let ctx: Ctx | null = null;
   let master: GainNode | null = null;
-  let bed: { stop: () => void } | null = null;
+  let music: Promise<Music> | null = null;
+  let live: Music | null = null;
   let on = false;
-  let want: { scale: Scale | null; drift: boolean } = { scale: null, drift: false };
+  let want: { scene: BedScene | null; drift: boolean } = { scene: null, drift: false };
   const listeners = new Set<(c: Caption) => void>();
   const say = (c: Caption) => listeners.forEach((f) => f(c));
 
-  function stopBed() {
-    bed?.stop();
-    bed = null;
-  }
-
-  function startBed(scale: Scale, drift: boolean) {
-    const c = ctx!;
-    const buf = c.createBuffer(1, c.sampleRate * 2, c.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-    const src = c.createBufferSource();
-    src.buffer = buf;
-    src.loop = true;
-    const filter = c.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.value = AMBIENCE[scale].cutoff;
-    const gain = c.createGain();
-    gain.gain.value = BED_GAIN;
-    src.connect(filter);
-    filter.connect(gain);
-    gain.connect(master!);
-    // A slow swell in the wash; held still under reduced motion.
-    let lfo: OscillatorNode | null = null;
-    if (drift) {
-      lfo = c.createOscillator();
-      lfo.frequency.value = 0.07;
-      const depth = c.createGain();
-      depth.gain.value = BED_GAIN * 0.6;
-      lfo.connect(depth);
-      depth.connect(gain.gain);
-      lfo.start();
-    }
-    src.start();
-    bed = {
-      stop() {
-        src.stop();
-        lfo?.stop();
-        gain.disconnect();
-      },
-    };
-  }
-
   function applyBed() {
-    stopBed();
-    if (!on) return;
-    if (want.scale) startBed(want.scale, want.drift);
-    say({ kind: "ambience", text: want.scale ? ambienceCaption(want.scale) : null });
+    if (!on) return live?.stop();
+    const { scene } = want;
+    if (scene) {
+      music ??= load(ctx as AudioContext, master!).then((m) => (live = m));
+      void music.then((m) => {
+        // Only the latest wish plays: sound or the scene may have changed while loading.
+        if (on && want.scene) m.setScene(want.scene.id, want.scene.scale, want.drift);
+      });
+    } else live?.stop();
+    say({ kind: "ambience", text: scene ? ambienceCaption(scene) : null });
   }
 
   return {
@@ -130,16 +99,18 @@ export function createMixer(make: () => Ctx = () => new AudioContext()) {
     disable() {
       if (!on) return;
       on = false;
-      stopBed();
+      live?.stop();
       say({ kind: "ambience", text: null });
       void ctx?.suspend();
     },
-    /** Which bed should play: `null` for none (no scene, or the ambient toggle is off). */
-    ambience(scale: Scale | null, drift: boolean) {
-      if (scale === want.scale && drift === want.drift) return;
-      want = { scale, drift };
+    /** Which scene's music should play: `null` for none (no scene, or the ambient toggle is off). */
+    ambience(scene: BedScene | null, drift: boolean) {
+      if (scene?.id === want.scene?.id && scene?.scale === want.scene?.scale && drift === want.drift) return;
+      want = { scene, drift };
       applyBed();
     },
+    /** The running music engine, for the dev surface (`?beats`). */
+    music: () => live,
     /** Play an event cue; returns its caption, or `null` while sound is off. */
     cue(id: CueId): string | null {
       if (!on || !ctx) return null;

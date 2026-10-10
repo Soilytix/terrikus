@@ -1,8 +1,7 @@
 /** Sound (T32): the settings line, and captions that announce every sound to screen readers while it plays. */
 import { useEffect, useState } from "react";
 import { useGame } from "../app/store";
-import { CUES, mixer, type CueId } from "../audio/mixer";
-import type { Scale } from "../content/schema";
+import { CUES, mixer, type BedScene, type CueId } from "../audio/mixer";
 import type { Save } from "../save/schema";
 
 const CUE_MS = 4000;
@@ -57,8 +56,8 @@ export function SoundSettings() {
   );
 }
 
-/** Mounted once in the shell: follows the scene's scale for ambience, fires event cues, shows captions. */
-export function SoundCaptions({ scale, reduced }: { scale: Scale | null; reduced: boolean }) {
+/** Mounted once in the shell: plays the scene's music, fires event cues, shows captions. */
+export function SoundCaptions({ scene, reduced }: { scene: BedScene; reduced: boolean }) {
   const sound = useGame((g) => g.save.settings.sound);
   const ambient = useGame((g) => g.save.settings.ambient);
   const [bed, setBed] = useState<string | null>(null);
@@ -91,8 +90,9 @@ export function SoundCaptions({ scale, reduced }: { scale: Scale | null; reduced
     };
   }, [sound]);
 
-  // The ambient toggle silences the bed as it stills the backdrop; reduced motion holds its swell still.
-  useEffect(() => mixer.ambience(ambient ? scale : null, !reduced), [scale, ambient, reduced]);
+  // The ambient toggle silences the music as it stills the backdrop; reduced motion holds the tape wobble still.
+  const { id, scale } = scene;
+  useEffect(() => mixer.ambience(ambient ? { id, scale } : null, !reduced), [id, scale, ambient, reduced]);
 
   useEffect(
     () =>

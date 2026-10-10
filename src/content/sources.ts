@@ -1212,6 +1212,12 @@ export const SOURCES = {
     link: "No open licence found",
     status: "Excluded until permission is obtained",
   },
+  "snd-freesound-cc0": {
+    short: "Freesound",
+    citation: "Freesound (freesound.org) field recordings marked CC0 1.0",
+    link: "CC0 1.0 public domain dedication, checked per sound on its page 2026-10-10",
+    status: "Background ambience beds under the music, each listed in the manifest with its Freesound id",
+  },
 } as const satisfies Record<string, { short: string; citation: string; link: string; status: string }>;
 
 export type SourceId = keyof typeof SOURCES;

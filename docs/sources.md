@@ -243,4 +243,5 @@ These are sources of **images**, not facts. Each shipped file also gets a row in
 | `img-biorender` | `illustration-assets/src/biorender` | BioRender terms forbid standalone extraction; plan tier unknown | — | **Drawing reference only. Never bundled.** |
 | `img-strangespecimens` | `illustration-assets/src/strangespecimens` | Beta licence; no unauthenticated surface; decorative only | — | **Not bundled by default.** Allowed only in a later, explicitly decided `internal` decorative layer. |
 | `img-isric-monoliths` | ISRIC World Soil Museum | No open licence found | — | Excluded until permission is obtained |
+| `snd-freesound-cc0` | Freesound (freesound.org) field recordings marked CC0 1.0 | CC0 1.0 public domain dedication, checked per sound on its page 2026-10-10 | yes | Background ambience beds under the music, each listed in the manifest with its Freesound id |
 | `font-inter`, `font-plex-mono` | Inter; IBM Plex Mono | SIL OFL 1.1 | — | UI type, licence file in repo |
