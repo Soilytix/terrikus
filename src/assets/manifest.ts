@@ -141,7 +141,7 @@ export const ASSETS: Asset[] = [
     owner: "Soilytix",
     truthStatus: "decorative",
     publicOk: true,
-    attribution: "Pedologicus mark © Soilytix",
+    attribution: "Terrikus mark © Soilytix",
     provenance: "Copied unchanged from icons/icon.svg (the README icon) on 2026-10-09.",
   },
   {

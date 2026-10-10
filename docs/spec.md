@@ -1,11 +1,11 @@
 ---
-title: "Pedologicus — Spec"
-description: "Agent plan for the Pedologicus web app: why, how, what, open decisions, steps and acceptance."
+title: "Terrikus — Spec"
+description: "Agent plan for the Terrikus web app: why, how, what, open decisions, steps and acceptance."
 status: draft — Build phase ready to start; open decisions listed in §11
 date: 2026-10-06
 ---
 
-# Pedologicus — Spec
+# Terrikus — Spec
 
 Companion documents: `world-bible.md` (content), `art-direction.md` (look and motion), `backlog.md` (ordered tasks), `sources.md` (bibliography). Research behind these decisions is in `docs/research/`.
 
@@ -13,7 +13,7 @@ Companion documents: `world-bible.md` (content), `art-direction.md` (look and mo
 
 The vault prototype (`team/eng/soil-worlds/index.html`, a 417-line single-file SVG game) showed that a soil world you can poke teaches better than a page you read. It is too small to grow: one scene, inline tokens, no content model, no sources, a customer name in the copy.
 
-Pedologicus becomes a **playable soil science textbook**: one generic valley, six nested scales, about fifteen chapters, each a place with experiments. A reader leaves with correct mental models of soil as a habitat, of carbon, water, nitrogen and life in soil, and of **what a measurement can and cannot tell you**.
+Terrikus becomes a **playable soil science textbook**: one generic valley, six nested scales, about fifteen chapters, each a place with experiments. A reader leaves with correct mental models of soil as a habitat, of carbon, water, nitrogen and life in soil, and of **what a measurement can and cannot tell you**.
 
 What changes for people:
 
@@ -175,7 +175,7 @@ Instruments read true state through sampling (core count, depth), detection limi
 
 ## 7. Save state
 
-- Key `pedologicus:v1` in `localStorage` (read from the pre-rename `soilworlds:v1` when empty); every read and write wrapped in try/catch; in-memory fallback with a visible "progress will not be kept" note.
+- Key `terrikus:v1` in `localStorage` (read from the pre-rename `pedologicus:v1`, then `soilworlds:v1`, when empty); every read and write wrapped in try/catch; in-memory fallback with a visible "progress will not be kept" note.
 - Schema: `{ schemaVersion, createdAt, settings, chaptersUnlocked, rumors, cards, labBook[] (cap 200, oldest dropped), chains, predictions, lastSession, pilot? }`.
 - `migrate(vN → vN+1)` per version, tested with fixtures.
 - Export/import as JSON from settings; import validates and refuses unknown versions.

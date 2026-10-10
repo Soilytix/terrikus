@@ -1,6 +1,6 @@
-# Pedologicus — working agreement
+# Terrikus — working agreement
 
-Pedologicus is a playable soil science textbook: one generic valley, six nested
+Terrikus is a playable soil science textbook: one generic valley, six nested
 scales, chapters you play as experiments. This file is the contract for humans
 and agents changing it. `CLAUDE.md` is a symlink to it. The plan lives in
 `docs/spec.md`; the content authority is `docs/world-bible.md`; the look is

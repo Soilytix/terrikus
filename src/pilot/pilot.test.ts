@@ -78,7 +78,7 @@ describe("pilot instrumentation (T33)", () => {
   it("reads a log left under the pre-rename key", () => {
     const s = memory();
     const log = setOptIn(loadLog(s, PILOT), true);
-    s.setItem("soilworlds:pilot:v1", JSON.stringify(log));
+    s.setItem("pedologicus:pilot:v1", JSON.stringify(log));
     expect(loadLog(s, PILOT)).toEqual(log);
   });
 

@@ -54,7 +54,7 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
     <>
       <header className="hud-top">
         <div className="brand">
-          <a className="brand-home" href="#/" aria-label="Pedologicus, title screen">
+          <a className="brand-home" href="#/" aria-label="Terrikus, title screen">
             <img className="brand-mark" src={assetUrl("brand-icon")} alt="" />
           </a>
           <h1 className="scene-title">{scene.title}</h1>

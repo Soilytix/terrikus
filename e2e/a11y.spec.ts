@@ -16,7 +16,7 @@ for (const [name, url] of routes) {
     await page.goto(url);
     const ready = name.startsWith("notebook")
       ? page.getByRole("dialog", { name: "Field notebook" })
-      : page.getByRole("heading", { name: name === "title" ? "Pedologicus" : "A handful", exact: true });
+      : page.getByRole("heading", { name: name === "title" ? "Terrikus" : "A handful", exact: true });
     await expect(ready).toBeVisible();
     await page.waitForTimeout(1000);
     const { violations } = await new AxeBuilder({ page }).analyze();

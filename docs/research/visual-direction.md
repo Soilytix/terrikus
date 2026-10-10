@@ -1,4 +1,4 @@
-# Pedologicus: visual and technical rendering direction
+# Terrikus: visual and technical rendering direction
 
 Research note, 2026-10-06. Written for the build loop of `soilytix/soil-worlds` during a hands-off run. The founder could not be asked anything, so every choice below is a **decision recorded for review**, not an approved spec. Open questions are collected at the end.
 
@@ -22,7 +22,7 @@ I checked this on 2026-10-06 by fetching the page HTML.
 - **It is not a real-time WebGL piece.** Each painting is a program written by a model against an *offline* simulation of oil paint: bristle brushes, wet paint, drying, glazes. Visitors receive the result as media.
 - **Delivery is plain HTML and responsive media.** It uses `<picture>` with AVIF `srcset` at 720/960/1200/2000 widths and a JPEG fallback, with `fetchpriority="high"` on the hero and `loading="lazy" decoding="async"` on cards. The time-lapse plays as `<video muted loop playsinline preload="none" aria-hidden="true">`. Each card has `data-small`/`data-big` MP4 URLs and swaps by viewport. There is an explicit play button, and long, descriptive `alt` text on every still.
 - **The "alive" feeling comes from process, not ambient noise.** You watch the picture being made, stroke by stroke.
-- **Lessons for Pedologicus:**
+- **Lessons for Terrikus:**
   1. Bake the expensive look and play back cheaply.
   2. The painterly quality comes from *simulated material*: wet edges, glazes, bristle texture. A blur filter does not produce it.
   3. Motion should be opt-in or slow, with a still frame as the canonical state.

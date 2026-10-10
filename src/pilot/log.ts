@@ -8,8 +8,8 @@ import { MISCONCEPTIONS } from "../content/misconceptions";
 import type { StorageLike } from "../save/storage";
 import type { PilotConfig } from "./config";
 
-export const PILOT_KEY = "pedologicus:pilot:v1";
-const LEGACY_PILOT_KEY = "soilworlds:pilot:v1";
+export const PILOT_KEY = "terrikus:pilot:v1";
+const LEGACY_PILOT_KEYS = ["pedologicus:pilot:v1", "soilworlds:pilot:v1"];
 
 export type Phase = "pre" | "post";
 /** Every item states a misconception, so "false" is the expected answer. */
@@ -41,7 +41,7 @@ export const emptyLog = (config: PilotConfig): PilotLog => ({
 
 export function loadLog(storage: StorageLike | undefined, config: PilotConfig): PilotLog {
   try {
-    const raw = storage?.getItem(PILOT_KEY) ?? storage?.getItem(LEGACY_PILOT_KEY);
+    const raw = [PILOT_KEY, ...LEGACY_PILOT_KEYS].map((k) => storage?.getItem(k)).find((v) => v != null);
     const log = raw ? (JSON.parse(raw) as PilotLog) : null;
     return log?.version === 1 && Array.isArray(log.responses) ? log : emptyLog(config);
   } catch {

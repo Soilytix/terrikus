@@ -1,14 +1,14 @@
 ---
-title: "Pedologicus — Scientific curriculum backbone"
+title: "Terrikus — Scientific curriculum backbone"
 description: "Textbook-depth soil-science curriculum, organised as chapters, written to be taught through an explorable world."
 status: draft — scientific review pending
 date: 2026-10-06
 resource: authored (agent research run, web sources cited inline)
 ---
 
-# Pedologicus — Scientific curriculum backbone
+# Terrikus — Scientific curriculum backbone
 
-This is the content backbone for Pedologicus. It says **what is true, how sure we are, and where it comes from**. It also suggests how each idea can be *found* in the world rather than read. Game design, art direction and code live elsewhere. When a game mechanic and this document disagree, this document wins until a scientific reviewer says otherwise.
+This is the content backbone for Terrikus. It says **what is true, how sure we are, and where it comes from**. It also suggests how each idea can be *found* in the world rather than read. Game design, art direction and code live elsewhere. When a game mechanic and this document disagree, this document wins until a scientific reviewer says otherwise.
 
 ## How to read this document
 

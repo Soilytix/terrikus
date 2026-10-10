@@ -4,7 +4,7 @@
  * will not be kept", never to a crash.
  */
 import { migrate } from "./migrate";
-import { LEGACY_SAVE_KEY, SAVE_KEY, freshSave, type Save } from "./schema";
+import { LEGACY_SAVE_KEYS, SAVE_KEY, freshSave, type Save } from "./schema";
 
 export interface StorageLike {
   getItem(key: string): string | null;
@@ -38,7 +38,7 @@ export function createStore(getStorage: () => StorageLike | undefined): Store {
       }
       let raw: string | null = null;
       try {
-        raw = s.getItem(SAVE_KEY) ?? s.getItem(LEGACY_SAVE_KEY);
+        raw = [SAVE_KEY, ...LEGACY_SAVE_KEYS].map((k) => s.getItem(k)).find((v) => v !== null) ?? null;
         return raw ? migrate(JSON.parse(raw)) : freshSave();
       } catch {
         // Corrupt or foreign data: keep a copy beside it, then start fresh (the next save overwrites it).

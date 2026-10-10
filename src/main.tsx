@@ -2,11 +2,13 @@ import { Component, StrictMode, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles/app.css";
 import { App } from "./app/App";
-import { LEGACY_SAVE_KEY, SAVE_KEY } from "./save/schema";
+import { LEGACY_SAVE_KEYS, SAVE_KEY } from "./save/schema";
 
 const raw = () => {
   try {
-    return localStorage.getItem(SAVE_KEY) ?? localStorage.getItem(LEGACY_SAVE_KEY);
+    return (
+      [SAVE_KEY, ...LEGACY_SAVE_KEYS].map((k) => localStorage.getItem(k)).find((v) => v !== null) ?? null
+    );
   } catch {
     return null;
   }
@@ -30,7 +32,7 @@ class Crash extends Component<{ children: ReactNode }, { error: Error | null }> 
           {saved && (
             <a
               className="btn"
-              download="pedologicus-notebook.json"
+              download="terrikus-notebook.json"
               href={URL.createObjectURL(new Blob([saved], { type: "application/json" }))}
             >
               Export notebook
@@ -42,7 +44,7 @@ class Crash extends Component<{ children: ReactNode }, { error: Error | null }> 
             onClick={() => {
               try {
                 localStorage.removeItem(SAVE_KEY);
-                localStorage.removeItem(LEGACY_SAVE_KEY);
+                LEGACY_SAVE_KEYS.forEach((k) => localStorage.removeItem(k));
               } catch {
                 /* nothing stored */
               }

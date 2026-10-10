@@ -83,7 +83,7 @@ async function play(page: Page, d: Driver) {
     within.getByRole("button", { name, exact: typeof name === "string" });
   const mission = page.locator(".mission");
 
-  await expect(page.getByRole("heading", { name: "Pedologicus" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Terrikus" })).toBeVisible();
   await settled(page);
   await d.press(btn(/Begin in the spinach field/));
   await expect(page.getByRole("heading", { name: "The spinach field at dawn" })).toBeVisible();

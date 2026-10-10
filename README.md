@@ -1,6 +1,6 @@
-<img src="icons/icon.png" align="left" width="160" hspace="16" alt="Pedologicus logo">
+<img src="icons/icon.png" align="left" width="160" hspace="16" alt="Terrikus logo">
 
-<h3>pedologicus</h3>
+<h3>terrikus</h3>
 
 <p>
   <sub>A PLAYABLE SOIL SCIENCE TEXTBOOK</sub>
@@ -50,7 +50,7 @@
 
 ## What it does
 
-Pedologicus is a web app that teaches soil science through exploration. The
+Terrikus is a web app that teaches soil science through exploration. The
 player stands in one generic river valley and zooms down a ladder of scales:
 landscape, field, profile, aggregate and pore, rhizosphere, cell. Each chapter
 is a place with experiments. The player predicts, runs, observes and explains,
@@ -123,7 +123,7 @@ motion switch.
 ## Where it runs
 
 A static build with no backend and no network calls. Progress is saved in the
-browser's `localStorage` under `pedologicus:v1` and can be exported and imported
+browser's `localStorage` under `terrikus:v1` and can be exported and imported
 as JSON from Settings. Every merge to main publishes behind IAP to
 `hub.<base_domain>/artifacts/pedologicus/` (`.github/workflows/publish.yml`; spec
 OD-4, founder to review), and publicly to <https://pedologicus.com> on Vercel
