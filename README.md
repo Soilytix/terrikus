@@ -126,8 +126,8 @@ A static build with no backend and no network calls. Progress is saved in the
 browser's `localStorage` under `pedologicus:v1` and can be exported and imported
 as JSON from Settings. Every merge to main publishes behind IAP to
 `hub.<base_domain>/artifacts/pedologicus/` (`.github/workflows/publish.yml`; spec
-OD-4, founder to review), and publicly to <https://pedologicus.com> as a Cloudflare
-Worker (OD-5).
+OD-4, founder to review), and publicly to <https://pedologicus.com> on Vercel
+(OD-5).
 
 ## Configuration
 

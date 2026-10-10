@@ -7,10 +7,10 @@ on:
 
 # Every merge to main goes live behind IAP at hub.<base_domain>/artifacts/pedologicus/
 # (spec OD-4, taken by the loop). The internal profile ships, review badges and all;
-# OD-5 (founder, 2026-10-09): the same internal build also goes public at pedologicus.com
-# as a Cloudflare Worker serving static assets (wrangler.jsonc), review badges and all, until content is approved. Keyless: GitHub OIDC through Workload
-# Identity Federation, as a service account that can write artifacts/pedologicus/ in
-# the hub bucket and nothing else (core/static's publisher.tf in Soilytix/terraform).
+# OD-5 (founder, 2026-10-09): the same internal build also goes public at pedologicus.com,
+# deployed by Vercel's Git integration (Soilytix team, vercel.json), not by this workflow.
+# Keyless: GitHub OIDC through Workload Identity Federation, as a service account that
+# can write artifacts/pedologicus/ in the hub bucket and nothing else (core/static's publisher.tf in Soilytix/terraform).
 permissions:
   contents: read
   id-token: write
@@ -53,24 +53,3 @@ jobs:
           process_gcloudignore: false
           # The hub proxy serves the stored bytes without Content-Encoding, so store them plain.
           gzip: false
-
-  # Public at pedologicus.com (OD-5): the `pedologicus` Worker in wrangler.jsonc, custom
-  # domain attached in Cloudflare. Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID secrets.
-  cloudflare:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-
-      - uses: jdx/mise-action@7e36c90d9ab29c415a2384db3006f3ec8a8cc654 # v4.2.4
-        with:
-          cache: true
-
-      - run: pnpm install --frozen-lockfile
-
-      - run: pnpm build
-
-      - run: pnpm exec wrangler deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
