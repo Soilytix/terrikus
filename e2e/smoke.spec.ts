@@ -142,7 +142,7 @@ test("settings credit every bundled asset", async ({ page }, info) => {
   await page.getByRole("button", { name: "Settings" }).click();
   const credits = page.getByRole("region", { name: "Credits" });
   await credits.scrollIntoViewIfNeeded();
-  await expect(credits.getByRole("row")).toHaveCount(bundledAssets("internal").length + 2); // assets + 2 fonts
+  await expect(credits.getByRole("row")).toHaveCount(bundledAssets("internal").length + 3); // assets + 3 fonts
   await shot(page, "15-credits", info.project.name);
 });
 

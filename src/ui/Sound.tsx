@@ -1,7 +1,7 @@
 /** Sound (T32): the settings line, and captions that announce every sound to screen readers while it plays. */
 import { useEffect, useState } from "react";
 import { useGame } from "../app/store";
-import { CUES, mixer, type BedScene, type CueId } from "../audio/mixer";
+import { mixer, type BedScene, type CueId } from "../audio/mixer";
 import type { Save } from "../save/schema";
 
 const CUE_MS = 4000;
@@ -19,11 +19,15 @@ export function SoundSettings() {
   const [last, setLast] = useState<string | null>(null);
   useEffect(() => mixer.subscribe((c) => c.kind === "cue" && setLast(c.text)), []);
   return (
-    <section aria-labelledby="sound-title">
-      <h3 id="sound-title">Sound</h3>
-      <label className="ambient-toggle">
+    <>
+      <label className="setting">
+        <span className="setting-text">
+          <b>Play sounds</b>
+          <small>Music and short cues; each one is captioned for screen readers.</small>
+        </span>
         <input
           type="checkbox"
+          className="switch"
           checked={sound}
           onChange={(e) => {
             const on = e.target.checked;
@@ -33,26 +37,11 @@ export function SoundSettings() {
             update((s) => ({ ...s, settings: { ...s.settings, sound: on } }));
           }}
         />
-        <span>Play sounds (each one is captioned for screen readers)</span>
       </label>
-      <table className="keys sound-cues">
-        <tbody>
-          {(Object.keys(CUES) as CueId[]).map((id) => (
-            <tr key={id}>
-              <td>{CUES[id].caption}</td>
-              <td>
-                <button type="button" className="btn" disabled={!sound} onClick={() => mixer.cue(id)}>
-                  Play
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <p className="small" role="status">
+      <p className="small sr-only" role="status">
         {sound && last}
       </p>
-    </section>
+    </>
   );
 }
 

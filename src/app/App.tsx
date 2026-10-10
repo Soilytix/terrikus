@@ -9,7 +9,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import { CHAPTERS, SCENES, chapter, sceneChapter, scene as sceneById } from "../content";
+import { CHAPTERS, SCENES, chapter, fieldCard, sceneChapter, scene as sceneById } from "../content";
 import { isLoaded, loadChapters } from "../content/load";
 import type { SceneObject } from "../content/schema";
 import type { Save } from "../save/schema";
@@ -25,7 +25,7 @@ import { Glossary } from "../ui/Glossary";
 import { Help, Settings, Truth } from "../ui/Panels";
 import { Recall } from "../ui/Recall";
 import { ReviewOverlay } from "../ui/Review";
-import { ScanCard } from "../ui/ScanCard";
+import { CardTray, ScanCard } from "../ui/ScanCard";
 import { SoundCaptions } from "../ui/Sound";
 import { Title } from "../ui/Title";
 import {
@@ -100,6 +100,8 @@ function needs(route: Route, save: Save): string[] {
 
 // The first route's chapters start loading before the first render.
 void loadChapters(needs(parse(getHash()), useGame.getState().save));
+// The music engine too, ahead of the world's plates: the title waits on it before Begin.
+if (useGame.getState().save.settings.sound) void import("../audio/music/engine");
 
 /** Holds the previous route on screen until the next one's chapter content has loaded. */
 export function App() {
@@ -142,6 +144,16 @@ function Shell({ hash }: { hash: string }) {
   const [seen, setSeen] = useState(
     () => save.discoveries.length + save.codex.length + Object.keys(save.cards).length,
   );
+
+  // Cards picked up this visit stack in the tray until opened.
+  const [tray, setTray] = useState<string[]>([]);
+  const had = useRef(new Set(Object.keys(save.cards)));
+  useEffect(() => {
+    const got = Object.keys(save.cards).filter((id) => !had.current.has(id));
+    got.forEach((id) => had.current.add(id));
+    const cards = got.filter((id) => fieldCard(id));
+    if (cards.length) setTray((t) => [...t, ...cards]);
+  }, [save.cards]);
 
   const go = useCallback((h: string) => {
     window.location.hash = h;
@@ -241,6 +253,11 @@ function Shell({ hash }: { hash: string }) {
     setFocusCard(undefined);
     go(save.lastSession?.route ?? "#/");
   };
+  const openCard = (id: string) => {
+    setTray((t) => t.filter((x) => x !== id));
+    setFocusCard(id);
+    openNotebook("cards");
+  };
   const fresh = save.discoveries.length + save.codex.length + Object.keys(save.cards).length > seen;
   const up = scene.up ? () => go(targetHref(scene.up!)) : null;
 
@@ -327,7 +344,7 @@ function Shell({ hash }: { hash: string }) {
   const resumeScene = resume?.name === "scene" ? sceneById(resume.scene) : undefined;
 
   return (
-    <div className="app" data-route={route.name}>
+    <div className="app" data-route={route.name} data-tray={tray.length > 0}>
       <World
         ref={world}
         sceneId={scene.id}
@@ -345,6 +362,7 @@ function Shell({ hash }: { hash: string }) {
             onActivate={activate}
             fresh={!save.scanned.some((k) => k.startsWith(`${scene.id}/`))}
             reduced={reduced}
+            open={scanned?.id}
           />
         )}
       </World>
@@ -360,6 +378,11 @@ function Shell({ hash }: { hash: string }) {
           save={save}
           resumeLabel={resumeScene?.title ?? "the spinach field"}
           birds={!reduced && !forceStatic && save.settings.ambient}
+          sound={
+            save.settings.sound && save.settings.ambient
+              ? (sceneById(resumeScene?.id ?? "p-field-dawn") ?? null)
+              : null
+          }
           onStart={() => go(resumeScene ? save.lastSession!.route : targetHref("p-field-dawn"))}
         />
       ) : (
@@ -401,12 +424,10 @@ function Shell({ hash }: { hash: string }) {
                   : undefined
               }
               onClose={() => setScanned(null)}
-              onOpenCard={(id) => {
-                setFocusCard(id);
-                openNotebook("cards");
-              }}
+              onOpenCard={openCard}
             />
           )}
+          <CardTray ids={tray} onOpen={openCard} />
         </>
       )}
 

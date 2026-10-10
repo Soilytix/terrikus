@@ -10,6 +10,8 @@ interface Props {
   /** No scan in this scene yet: labels stay visible as a cue. */
   fresh: boolean;
   reduced: boolean;
+  /** The object whose scan card is open. */
+  open?: string | undefined;
 }
 
 const IDLE_MS = 6000;
@@ -21,7 +23,7 @@ const VERB: Record<SceneObject["kind"], string> = {
   glimpse: "Glimpse",
 };
 
-export function Hotspots({ objects, scanned, highlight, onActivate, fresh, reduced }: Props) {
+export function Hotspots({ objects, scanned, highlight, onActivate, fresh, reduced, open }: Props) {
   const [idle, setIdle] = useState(false);
   useEffect(() => {
     if (reduced) return;
@@ -65,6 +67,7 @@ export function Hotspots({ objects, scanned, highlight, onActivate, fresh, reduc
               data-kind={o.kind}
               data-done={done}
               data-hot={highlight.has(o.id)}
+              data-open={o.id === open}
               data-object={o.id}
               onClick={() => onActivate(o)}
               aria-label={`${VERB[o.kind]}: ${o.label}${done ? " (looked at)" : ""}`}

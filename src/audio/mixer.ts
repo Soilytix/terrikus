@@ -6,7 +6,7 @@
  */
 import type { Scale } from "../content/schema";
 import type { Music } from "./music/engine";
-import { musicCaption, presetFor } from "./music/presets";
+import { SAMPLE_BEDS, musicCaption, presetFor } from "./music/presets";
 
 export type Ctx = Pick<
   AudioContext,
@@ -51,6 +51,15 @@ const loadMusic: LoadMusic = async (ctx, out) => {
   ]);
   return createMusic(ctx, out, (b) => assetUrl(`ambience-${b}`));
 };
+
+/** Resolves once the engine is loaded; the scene's field recordings keep fetching behind it and fade in when ready. */
+async function preloadMusic(scene: BedScene) {
+  const [, { assetUrl }] = await Promise.all([import("./music/engine"), import("../assets/urls")]);
+  const beds = Object.keys(presetFor(scene.id, scene.scale).mood.beds);
+  SAMPLE_BEDS.filter((b) => beds.includes(b))
+    .flatMap((b) => assetUrl(`ambience-${b}`) ?? [])
+    .forEach((u) => void fetch(u).catch(() => undefined));
+}
 
 const CUE_GAIN = 0.12;
 
@@ -109,6 +118,8 @@ export function createMixer(make: () => Ctx = () => new AudioContext(), load: Lo
       want = { scene, drift };
       applyBed();
     },
+    /** Warm the cache for a scene's music; creates no AudioContext. */
+    preload: preloadMusic,
     /** The running music engine, for the dev surface (`?beats`). */
     music: () => live,
     /** Play an event cue; returns its caption, or `null` while sound is off. */

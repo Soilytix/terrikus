@@ -176,7 +176,7 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                   const hint = whereToLook(save, r);
                   return (
                     <li key={r.id} data-state={save.rumors[r.id]}>
-                      <span className="rumor-state">{save.rumors[r.id]}</span>
+                      <span className="sr-only">{save.rumors[r.id]}: </span>
                       <p className="rumor-quote">“{r.text}”</p>
                       <ul className="rumor-edges">
                         {r.hintsAt.map((id) => {

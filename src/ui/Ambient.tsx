@@ -5,13 +5,17 @@ export function AmbientToggle() {
   const ambient = useGame((g) => g.save.settings.ambient);
   const update = useGame((g) => g.update);
   return (
-    <label className="ambient-toggle">
+    <label className="setting">
+      <span className="setting-text">
+        <b>Gentle background motion</b>
+        <small>Clouds, water and birds drift; the scene’s music plays with it.</small>
+      </span>
       <input
         type="checkbox"
+        className="switch"
         checked={ambient}
         onChange={(e) => update((s) => ({ ...s, settings: { ...s.settings, ambient: e.target.checked } }))}
       />
-      <span>Gentle background motion</span>
     </label>
   );
 }

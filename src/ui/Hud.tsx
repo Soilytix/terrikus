@@ -1,7 +1,6 @@
 /** Heads-up display: where you are, how big things are, and the way out. */
 import type { Scale, Scene } from "../content/schema";
 import { assetUrl } from "../assets/urls";
-import { ReviewBadge } from "./common";
 
 /** `bar`: a typical scale-bar length (m) at that rung; a much shorter bar marks a close-up. */
 export const LADDER: { scale: Scale; label: string; span: string; bar: number }[] = [
@@ -53,13 +52,14 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
   return (
     <>
       <header className="hud-top">
-        <div className="brand">
-          <a className="brand-home" href="#/" aria-label="Terrikus, title screen">
-            <img className="brand-mark" src={assetUrl("brand-icon")} alt="" />
-          </a>
+        <a className="brand" href="#/">
+          <span className="brand-names">
+            <img className="brand-wordmark" src={assetUrl("brand-wordmark")} alt="Soilytix" />
+            <span className="brand-name">Terrikus</span>
+          </span>
           <h1 className="scene-title">{scene.title}</h1>
-          <ReviewBadge status={scene.reviewStatus} />
-        </div>
+          <span className="sr-only">, back to the title screen</span>
+        </a>
         <nav className="hud-actions" aria-label="Tools">
           <button
             type="button"
@@ -114,6 +114,19 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
         <p className="ladder-key" aria-hidden="true">
           <span className="rung" data-key="here" /> here <span className="rung" data-key="visited" /> visited
         </p>
+        <p className="scalebar">
+          <span className="scalebar-bar" aria-hidden="true" />
+          <span className="sr-only">Scale bar: </span>
+          <span className="scalebar-label">{scene.scaleBar.label}</span>
+          {scene.notToScale && (
+            <span
+              className="not-to-scale"
+              title="Some things are drawn bigger than true size so you can see them."
+            >
+              Cells drawn ×{scene.notToScale}
+            </span>
+          )}
+        </p>
         {onUp && (
           <button type="button" className="up-btn" onClick={onUp} aria-keyshortcuts="Escape">
             <Icon d={ICONS.up} />
@@ -121,19 +134,6 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
           </button>
         )}
       </nav>
-
-      <div className="scalebar" aria-label={`Scale bar: ${scene.scaleBar.label}`}>
-        <span className="scalebar-bar" aria-hidden="true" />
-        <span className="scalebar-label">{scene.scaleBar.label}</span>
-        {scene.notToScale && (
-          <span
-            className="not-to-scale"
-            title="Some things are drawn bigger than true size so you can see them."
-          >
-            Cells drawn ×{scene.notToScale}
-          </span>
-        )}
-      </div>
     </>
   );
 }

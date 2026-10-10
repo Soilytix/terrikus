@@ -17,12 +17,15 @@ const LICENCE: Record<Licence, string> = {
 const FONTS: [string, string][] = [
   ["Inter", "Rasmus Andersson, via @fontsource-variable/inter"],
   ["IBM Plex Mono", "IBM, via @fontsource/ibm-plex-mono"],
+  ["Source Serif 4", "Adobe, via @fontsource-variable/source-serif-4"],
 ];
 
 export function Credits() {
   return (
     <section aria-labelledby="credits-title">
-      <h3 id="credits-title">Credits</h3>
+      <h3 id="credits-title" className="settings-group">
+        Credits
+      </h3>
       <table className="keys credits">
         <tbody>
           {bundledAssets(__SW_PROFILE__).map((a) => (

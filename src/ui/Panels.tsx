@@ -121,26 +121,32 @@ export function Settings({
   };
   return (
     <Dialog title="Settings" onClose={onClose}>
-      <fieldset className="segmented wide">
-        <legend>Motion</legend>
-        {(
-          [
-            ["system", "Follow my system"],
-            ["reduced", "Reduced"],
-            ["full", "Full"],
-          ] as const
-        ).map(([v, label]) => (
-          <label key={v}>
-            <input
-              type="radio"
-              name="motion"
-              checked={save.settings.motion === v}
-              onChange={() => onMotion(v)}
-            />
-            <span>{label}</span>
-          </label>
-        ))}
-      </fieldset>
+      <h3 className="settings-group">Comfort</h3>
+      <div className="setting">
+        <span className="setting-text">
+          <b id="motion-title">Motion</b>
+          <small>How much the camera and the world move.</small>
+        </span>
+        <div className="segmented" role="radiogroup" aria-labelledby="motion-title">
+          {(
+            [
+              ["system", "Follow my system"],
+              ["reduced", "Reduced"],
+              ["full", "Full"],
+            ] as const
+          ).map(([v, label]) => (
+            <label key={v}>
+              <input
+                type="radio"
+                name="motion"
+                checked={save.settings.motion === v}
+                onChange={() => onMotion(v)}
+              />
+              <span>{label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
       <AmbientToggle />
       <SoundSettings />
       {tooSlow && (
@@ -148,19 +154,24 @@ export function Settings({
           Still pictures were chosen because this device drew the moving world too slowly.
         </p>
       )}
-      <h3>Your notebook</h3>
-      <p className="small">
-        {persistent
-          ? "Progress is saved in this browser only. Export it to move it or keep a copy."
-          : "This browser is not keeping progress (private window or blocked storage). Export before you leave."}
-      </p>
-      <div className="btn-row">
-        <button type="button" className="btn" onClick={download}>
-          Export notebook
-        </button>
-        <button type="button" className="btn" onClick={() => file.current?.click()}>
-          Import notebook
-        </button>
+      <h3 className="settings-group">Your notebook</h3>
+      <div className="setting">
+        <span className="setting-text">
+          <b>Keep a copy</b>
+          <small>
+            {persistent
+              ? "Progress is saved in this browser only. Export it to move it or keep a copy."
+              : "This browser is not keeping progress (private window or blocked storage). Export before you leave."}
+          </small>
+        </span>
+        <span className="setting-control">
+          <button type="button" className="btn" onClick={download}>
+            Export
+          </button>
+          <button type="button" className="btn" onClick={() => file.current?.click()}>
+            Import
+          </button>
+        </span>
         <input
           ref={file}
           type="file"
@@ -178,14 +189,12 @@ export function Settings({
           }}
         />
       </div>
-      {msg && (
-        <p className="small" role="status">
-          {msg}
-        </p>
-      )}
       {onUnlockAll && (
-        <>
-          <h3>Review</h3>
+        <div className="setting">
+          <span className="setting-text">
+            <b>Review</b>
+            <small>Open every built chapter, for reviewers.</small>
+          </span>
           <button
             type="button"
             className="btn"
@@ -196,31 +205,40 @@ export function Settings({
           >
             Open every chapter
           </button>
-        </>
-      )}
-      <h3>Start over</h3>
-      {!confirm ? (
-        <button type="button" className="btn" onClick={() => setConfirm(true)}>
-          Erase progress…
-        </button>
-      ) : (
-        <div className="btn-row">
-          <span className="small">This clears your notebook in this browser.</span>
-          <button
-            type="button"
-            className="btn btn-danger"
-            onClick={() => {
-              onReset();
-              setConfirm(false);
-              setMsg("Progress erased.");
-            }}
-          >
-            Erase
-          </button>
-          <button type="button" className="btn" onClick={() => setConfirm(false)}>
-            Keep it
-          </button>
         </div>
+      )}
+      <div className="setting">
+        <span className="setting-text">
+          <b>Start over</b>
+          <small>{confirm ? "This clears your notebook in this browser." : "Erase all progress."}</small>
+        </span>
+        {!confirm ? (
+          <button type="button" className="btn" onClick={() => setConfirm(true)}>
+            Erase progress…
+          </button>
+        ) : (
+          <span className="setting-control">
+            <button
+              type="button"
+              className="btn btn-danger"
+              onClick={() => {
+                onReset();
+                setConfirm(false);
+                setMsg("Progress erased.");
+              }}
+            >
+              Erase
+            </button>
+            <button type="button" className="btn" onClick={() => setConfirm(false)}>
+              Keep it
+            </button>
+          </span>
+        )}
+      </div>
+      {msg && (
+        <p className="small" role="status">
+          {msg}
+        </p>
       )}
       <PilotSettings chaptersComplete={save.chaptersComplete.length} />
       <Credits />

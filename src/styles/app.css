@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "../design-system/tokens.css";
 @import "../design-system/fonts.css";
+@import "@fontsource-variable/source-serif-4/opsz.css";
 @import "./scene.css";
 
 /*
@@ -8,8 +9,13 @@
   colours are translucent ink/white for glass, written as rgb() of the tokens.
 */
 :root {
-  --glass: rgb(255 255 255 / 0.82);
-  --glass-strong: rgb(255 255 255 / 0.94);
+  /* Cards follow the commercial site: soft off-white, slate for the one thing to act on, lime as accent. */
+  --glass: rgb(245 246 246 / 0.9);
+  --glass-strong: rgb(245 246 246 / 0.97);
+  --card-dark: var(--color-primary-slate);
+  --radius-soft: 22px;
+  /* Headings set like a field guide or a journal: a text serif over the Inter body. */
+  --font-display: "Source Serif 4 Variable", Georgia, serif;
   --glass-line: rgb(41 51 46 / 0.1);
   --ink-veil: rgb(22 28 25 / 0.55);
   --hud-gap: 16px;
@@ -53,6 +59,49 @@ h3 {
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+mark {
+  background: linear-gradient(transparent 55%, rgb(142 222 61 / 0.55) 55%);
+  color: inherit;
+  padding: 0 1px;
+}
+.pill-eyebrow {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-card);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+.icon-chip,
+.go-chip {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-brand-primary);
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.go-chip {
+  width: 30px;
+  height: 30px;
+  background: var(--color-ink);
+  color: var(--color-brand-primary);
+  font-size: 15px;
+}
 button {
   font: inherit;
   color: inherit;
@@ -93,7 +142,7 @@ button {
   gap: 8px;
   min-height: 40px;
   padding: 8px 16px;
-  border-radius: var(--radius-button);
+  border-radius: var(--radius-pill);
   border: 1px solid var(--color-border-default);
   background: var(--color-surface-card);
   color: var(--color-ink);
@@ -139,6 +188,10 @@ button {
   min-height: 48px;
   padding: 12px 22px;
   font-size: 15px;
+}
+.btn-go {
+  padding-right: 8px;
+  gap: 12px;
 }
 .btn[aria-pressed="true"] {
   background: var(--color-ink);
@@ -236,9 +289,9 @@ button {
   cursor: pointer;
 }
 @media (max-width: 760px) {
-  /* Clear of the mission sheet: in the HUD band, under the scale bar. */
+  /* Clear of the mission sheet: in the HUD band, right of the ladder. */
   .review-pill {
-    top: 128px;
+    top: 124px;
     bottom: auto;
   }
 }
@@ -505,17 +558,14 @@ button {
 .glass,
 .hud-top > *,
 .ladder,
-.scalebar,
 .mission,
 .scan-card,
 .title-card {
   background: var(--glass);
   -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(1.2);
   backdrop-filter: blur(var(--blur-glass)) saturate(1.2);
-  border: 1px solid rgb(255 255 255 / 0.6);
-  box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.6) inset,
-    0 10px 30px rgb(22 28 25 / 0.16);
+  border: 1px solid rgb(255 255 255 / 0.7);
+  box-shadow: 0 12px 36px rgb(22 28 25 / 0.14);
 }
 .hud-top {
   position: absolute;
@@ -529,32 +579,43 @@ button {
 }
 .hud-top > * {
   pointer-events: auto;
-  border-radius: 14px;
+  border-radius: 18px;
 }
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   min-width: 0;
-  padding: 8px 14px 8px 8px;
+  min-height: 46px;
+  padding: 7px 18px 7px 14px;
   color: var(--color-ink);
   text-decoration: none;
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: -0.01em;
+  transition: background var(--duration-instant) var(--ease-control);
 }
-.brand-home {
-  display: flex;
-  border-radius: 7px;
+.brand:hover {
+  background: var(--glass-strong);
 }
-.brand-mark {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
+.brand-names {
+  display: grid;
+  gap: 3px;
+  padding-right: 14px;
+  border-right: 1px solid var(--glass-line);
+}
+.brand-wordmark {
+  display: block;
+  height: 9px;
+  width: auto;
+}
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1;
 }
 .scene-title {
-  font-size: 15px;
-  font-weight: 600;
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  font-weight: 500;
 }
 .hud-actions {
   margin-left: auto;
@@ -595,13 +656,18 @@ button {
   box-shadow: 0 0 0 2px var(--color-surface-card);
 }
 
+/* One card: where you are on the ladder, how long the bar is here, and the way up. */
 .ladder {
   position: absolute;
   left: var(--hud-gap);
   top: 50%;
   transform: translateY(-50%);
+  min-width: 170px;
   padding: 14px 14px 12px 12px;
-  border-radius: 16px;
+  border-radius: var(
+    --radius-soft
+  ); /* Muted rung labels need the near-opaque fill to keep their contrast over any plate. */
+  background: var(--glass-strong);
 }
 .ladder ol {
   list-style: none;
@@ -703,7 +769,7 @@ button {
   width: 100%;
   justify-content: center;
   padding: 7px 10px;
-  border-radius: 9px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--color-border-default);
   background: var(--color-surface-card);
   font-size: 12.5px;
@@ -715,14 +781,14 @@ button {
 }
 
 .scalebar {
-  position: absolute;
-  left: var(--hud-gap);
-  bottom: var(--hud-gap);
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: start;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 12px;
+  gap: 6px 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--glass-line);
   font-size: 12px;
 }
 .scalebar-bar {
@@ -738,6 +804,8 @@ button {
   font-weight: 500;
 }
 .not-to-scale {
+  grid-column: 1 / -1;
+  justify-self: start;
   padding: 2px 8px;
   border-radius: var(--radius-pill);
   border: 1px dashed var(--color-ink-muted);
@@ -755,8 +823,11 @@ button {
   max-height: calc(100% - 84px - var(--hud-gap));
   display: flex;
   flex-direction: column;
-  border-radius: var(--radius-card);
+  border-radius: var(--radius-soft);
   overflow: hidden;
+}
+.app[data-tray="true"] .mission {
+  max-height: calc(100% - 84px - 120px);
 }
 .mission-head {
   padding: 14px 16px 12px;
@@ -775,7 +846,7 @@ button {
 .mission-toggle h2,
 .mission-head h2 {
   margin-top: 3px;
-  font-size: 18px;
+  font-size: 20px;
 }
 .chev {
   position: absolute;
@@ -1094,14 +1165,38 @@ input[type="range"] {
 /* ---------- Scan card ---------- */
 .scan-card {
   position: absolute;
-  left: calc(var(--hud-gap) + 190px);
+  left: calc(var(--hud-gap) + 200px);
   bottom: var(--hud-gap);
-  width: min(400px, calc(100% - 2 * var(--hud-gap)));
+  z-index: 2;
+  width: min(380px, calc(100% - 2 * var(--hud-gap)));
   max-height: 60%;
   overflow-y: auto;
-  padding: 14px 16px 16px;
-  border-radius: var(--radius-card);
+  padding: 16px 18px 18px;
+  border-radius: var(--radius-soft);
+  background: var(--glass-strong);
   animation: rise var(--duration-drawer) var(--ease-chart);
+}
+/* Placed beside its hotspot (ScanCard): a lime edge on the side that faces it. */
+.scan-card[data-side] {
+  bottom: auto;
+  overflow-y: auto;
+}
+.scan-card[data-side="right"] {
+  box-shadow:
+    -4px 0 0 var(--color-brand-primary),
+    0 12px 36px rgb(22 28 25 / 0.2);
+}
+.scan-card[data-side="left"] {
+  box-shadow:
+    4px 0 0 var(--color-brand-primary),
+    0 12px 36px rgb(22 28 25 / 0.2);
+}
+.hotspot[data-open="true"] .hotspot-ring {
+  transform: scale(1.3);
+  border-color: var(--color-brand-primary);
+  box-shadow:
+    0 0 0 6px rgb(142 222 61 / 0.35),
+    0 4px 14px rgb(22 28 25 / 0.3);
 }
 .scan-card header {
   position: relative;
@@ -1114,7 +1209,7 @@ input[type="range"] {
   top: -4px;
 }
 .scan-card h2 {
-  font-size: 18px;
+  font-size: 21px;
   margin-top: 2px;
 }
 .scan-card > p {
@@ -1140,7 +1235,7 @@ input[type="range"] {
   max-height: min(86vh, 900px);
   padding: 0;
   border: 0;
-  border-radius: 20px;
+  border-radius: 26px;
   background: var(--color-surface-card);
   color: var(--color-ink);
   box-shadow: 0 30px 80px rgb(22 28 25 / 0.35);
@@ -1170,7 +1265,7 @@ input[type="range"] {
   border-bottom: 1px solid var(--color-table-rule);
 }
 .dialog-head h2 {
-  font-size: 19px;
+  font-size: 22px;
 }
 .dialog-body > * {
   flex-shrink: 0;
@@ -1438,8 +1533,8 @@ input[type="range"] {
 .tabs button {
   border: 0;
   background: none;
-  padding: 7px 12px;
-  border-radius: 8px;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
   font-size: 14px;
   font-weight: 500;
   color: var(--color-ink-muted);
@@ -1468,15 +1563,8 @@ input[type="range"] {
 }
 .rumors li {
   padding: 14px 16px;
-  border-radius: 12px;
+  border-radius: 16px;
   background: var(--color-surface-page);
-}
-.rumor-state {
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-ink-muted);
 }
 .rumors li[data-state="explained"] .rumor-quote {
   color: var(--color-ink-muted);
@@ -1730,8 +1818,8 @@ input[type="range"] {
 }
 .segmented span {
   display: inline-block;
-  padding: 5px 10px;
-  border-radius: 8px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--color-border-default);
   background: var(--color-surface-card);
   font-size: 13px;
@@ -1768,8 +1856,8 @@ input[type="range"] {
   top: 50%;
   transform: translateY(-50%);
   width: min(460px, calc(100% - 32px));
-  padding: 30px 30px 24px;
-  border-radius: 24px;
+  padding: 32px 32px 24px;
+  border-radius: 28px;
   animation: rise 0.9s var(--ease-chart);
 }
 .title-wordmark {
@@ -1778,9 +1866,10 @@ input[type="range"] {
   width: auto;
 }
 .title-card h1 {
-  margin-top: 12px;
-  font-size: clamp(40px, 6vw, 60px);
-  letter-spacing: -0.035em;
+  margin-top: 14px;
+  font-size: clamp(44px, 6.5vw, 66px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
   line-height: 1;
 }
 .title-lede {
@@ -1792,43 +1881,109 @@ input[type="range"] {
 .title-card .btn-row {
   margin-top: 20px;
 }
-.title-chapters {
-  list-style: none;
-  margin: 18px 0 0;
-  padding: 0 6px 0 0;
-  display: grid;
-  border-top: 1px solid var(--glass-line);
-  /* The card stays inside the viewport: the chapter list scrolls, not the page. */
-  max-height: max(140px, calc(100vh - 470px));
-  overflow-y: auto;
-  overscroll-behavior: contain;
+.title-actions[inert] {
+  opacity: 0.55;
 }
-.title-chapters li {
-  display: grid;
-  grid-template-columns: 72px 1fr;
+.title-loading {
+  display: flex;
+  align-items: center;
   gap: 8px;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--glass-line);
-  font-size: 13px;
+  min-height: 20px;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--color-ink-muted);
+}
+.spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border-default);
+  border-top-color: var(--color-ink);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 3s;
+  }
+}
+/* The next chapter, then the whole book as a strip of numbers: not a long list. */
+.title-next {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--card-dark);
+  color: var(--color-text-on-dark);
+}
+.title-next .pill-eyebrow {
+  justify-self: start;
+  background: transparent;
+  border-color: rgb(255 255 255 / 0.3);
+  color: var(--color-text-on-dark);
+  margin-bottom: 4px;
+}
+.title-next p {
+  font-family: var(--font-display);
+  font-size: 18px;
   font-weight: 600;
 }
-.title-chapters li .mono {
-  font-size: 11px;
-  color: var(--color-ink-muted);
-  padding-top: 2px;
-}
-.title-chapters small {
-  display: block;
-  font-weight: 400;
+.title-next .mono {
   font-size: 12px;
+  font-weight: 400;
+  color: var(--color-brand-primary);
+  margin-right: 4px;
+}
+.title-next .muted {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-on-dark-warm);
+}
+.title-chapters {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.title-chapters li > * {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-card);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+.title-chapters a:hover {
+  border-color: var(--color-ink);
+}
+.title-chapters li[data-state="done"] > * {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-text-on-dark);
+}
+.title-chapters li[data-next="true"] > * {
+  background: var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
+}
+.title-chapters li[data-state="locked"] > *,
+.title-chapters li[data-state="planned"] > * {
+  border-style: dashed;
+  background: transparent;
   color: var(--color-ink-muted);
-}
-.title-chapters a {
-  color: inherit;
-}
-.title-chapters li[data-state="locked"],
-.title-chapters li[data-state="planned"] {
-  opacity: 0.7;
 }
 /* Far birds crossing the valley sky behind the title card. World register: they are illustration. */
 .title-birds {
@@ -2234,6 +2389,143 @@ input[type="range"] {
   justify-content: space-between;
 }
 
+/* ---------- Field-card tray: picked-up cards wait, stacked, until opened ---------- */
+.card-tray {
+  position: absolute;
+  right: var(--hud-gap);
+  bottom: calc(var(--hud-gap) + 40px);
+  width: min(300px, calc(100% - 2 * var(--hud-gap)));
+  animation: rise var(--duration-drawer) var(--ease-chart);
+}
+.card-tray::before,
+.card-tray::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: var(--card-dark);
+  opacity: 0.55;
+  transform: translateY(-8px) scale(0.95);
+}
+.card-tray::after {
+  opacity: 0.3;
+  transform: translateY(-16px) scale(0.9);
+}
+.card-tray[data-depth="1"]::before,
+.card-tray[data-depth="1"]::after,
+.card-tray[data-depth="2"]::after {
+  display: none;
+}
+.tray-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 12px 12px 12px;
+  border: 0;
+  border-radius: 20px;
+  background: var(--card-dark);
+  color: var(--color-text-on-dark);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 14px 36px rgb(22 28 25 / 0.3);
+}
+.tray-card .go-chip {
+  background: var(--color-brand-primary);
+  color: var(--color-ink);
+}
+.tray-card:hover .go-chip {
+  transform: translateX(2px);
+}
+.tray-text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+}
+.tray-text small {
+  font-size: 11.5px;
+  color: var(--color-text-on-dark-warm);
+}
+.tray-text b {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Settings rows ---------- */
+.settings-group {
+  margin-top: 6px;
+  font-size: 11px !important;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+.setting {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--color-neutral-lightest-green);
+}
+.setting-text {
+  flex: 1 1 220px;
+  display: grid;
+  gap: 2px;
+}
+.setting-text b {
+  font-weight: 600;
+  font-size: 14.5px;
+}
+.setting-text small {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+}
+.setting-control {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.switch {
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 42px;
+  height: 24px;
+  margin: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-neutral-lighter-green);
+  cursor: pointer;
+  transition: background var(--duration-instant) var(--ease-control);
+}
+.switch::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-surface-card);
+  box-shadow: 0 1px 3px rgb(22 28 25 / 0.3);
+  transition: transform var(--duration-instant) var(--ease-control);
+}
+.switch:checked {
+  background: var(--color-ink);
+}
+.switch:checked::before {
+  transform: translateX(18px);
+  background: var(--color-brand-primary);
+}
+
 /* ---------- Phone ---------- */
 @media (max-width: 760px) {
   :root {
@@ -2242,10 +2534,6 @@ input[type="range"] {
   .hud-btn-label,
   .ladder-key {
     display: none;
-  }
-  /* The badge stays on a phone as its dot; the words remain for screen readers. */
-  .brand .review-badge {
-    padding: 4px;
   }
   /* Five tabs do not fit a phone row: wrap rather than hide one off-screen. */
   .tabs {
@@ -2256,18 +2544,13 @@ input[type="range"] {
     padding: 7px 9px;
     font-size: 13px;
   }
-  .brand .review-badge-text {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
   .brand {
     flex: 1;
-    gap: 8px;
-    padding: 6px 10px 6px 6px;
+    gap: 10px;
+    padding: 6px 12px 6px 10px;
+  }
+  .brand-names {
+    padding-right: 10px;
   }
   .scene-title {
     font-size: 13.5px;
@@ -2277,10 +2560,16 @@ input[type="range"] {
     padding: 0;
     justify-content: center;
   }
+  /* On a phone the card is one row: the current rung, the bar, the way up. */
   .ladder {
     top: 74px;
+    right: var(--hud-gap);
     transform: none;
-    padding: 8px 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 6px 6px 6px 10px;
   }
   .rung-label {
     display: none;
@@ -2293,7 +2582,6 @@ input[type="range"] {
     overflow: hidden;
     clip: rect(0 0 0 0);
   }
-  /* Its label sits beside the card's foot, clear of the scale bar. */
   .ladder ol,
   .ladder li[data-here="true"] {
     position: static;
@@ -2303,26 +2591,23 @@ input[type="range"] {
   }
   .ladder li[data-here="true"] .rung-label {
     display: flex;
-    position: absolute;
-    left: calc(100% + 6px);
-    bottom: 10px;
-    white-space: nowrap;
-    background: var(--glass-strong);
-    padding: 2px 6px;
-    border-radius: 6px;
     font-size: 11px;
   }
   .up-btn {
+    width: auto;
+    margin: 0;
     font-size: 0;
     gap: 0;
     padding: 6px;
   }
   .scalebar {
-    top: 74px;
-    bottom: auto;
-    left: auto;
-    right: var(--hud-gap);
-    padding: 6px 10px;
+    margin: 0 0 0 auto;
+    padding: 0;
+    border: 0;
+    grid-template-columns: auto auto auto;
+  }
+  .not-to-scale {
+    grid-column: auto;
   }
   .mission {
     top: auto;
@@ -2334,6 +2619,30 @@ input[type="range"] {
   }
   .mission[data-open="false"] {
     max-height: none;
+  }
+  /* A phone keeps the stack to a chip, clear of the hotspots; its words stay for screen readers. */
+  .card-tray {
+    bottom: auto;
+    top: 156px;
+    width: auto;
+  }
+  .tray-card {
+    padding: 5px;
+    border-radius: var(--radius-pill);
+  }
+  .card-tray::before,
+  .card-tray::after {
+    border-radius: var(--radius-pill);
+  }
+  .tray-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .tray-card .go-chip {
+    display: none;
   }
   .scan-card {
     left: var(--hud-gap);
@@ -2470,13 +2779,10 @@ input[type="range"] {
 }
 
 /* Learning study (T33) */
-.pilot-toggle,
-.ambient-toggle {
-  accent-color: var(--color-ink);
+.pilot {
   display: flex;
-  gap: 8px;
-  align-items: center;
-  font-size: 14px;
+  flex-direction: column;
+  gap: 12px;
 }
 .pilot-questions {
   display: grid;
@@ -2731,11 +3037,6 @@ input[type="range"] {
   .ph-bar .bar > span {
     transition: none;
   }
-}
-
-/* Sound captions (T32) */
-.sound-cues td {
-  font-size: 14px;
 }
 
 /* Chapter 3 (T17): drained pores, CO₂ trace, rain columns, attribution */

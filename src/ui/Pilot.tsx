@@ -127,22 +127,25 @@ export function PilotSettings({ chaptersComplete }: { chaptersComplete: number }
   const after = PILOT.thresholds.postAfterChapters;
   return (
     <section className="pilot" aria-label="Learning study">
-      <h3>Learning study</h3>
-      <label className="pilot-toggle">
+      <h3 className="settings-group">Learning study</h3>
+      <label className="setting">
+        <span className="setting-text">
+          <b>Take part in a learning study on this device</b>
+          <small>
+            A few true-or-false statements before and after you play. Answers stay in this browser and are
+            never sent anywhere; you decide whether to export them.
+          </small>
+        </span>
         <input
           type="checkbox"
+          className="switch"
           checked={log.optedIn}
           onChange={(e) => {
             setAsking(null);
             commit(setOptIn(log, e.target.checked));
           }}
         />
-        <span>Take part in a learning study on this device</span>
       </label>
-      <p className="small muted">
-        A few true-or-false statements before and after you play. Answers stay in this browser and are never
-        sent anywhere; you decide whether to export them.
-      </p>
       {log.optedIn && (
         <>
           <ReviewBadge status={PILOT.reviewStatus} />
