@@ -1560,11 +1560,13 @@ input[type="range"] {
   border: 1px solid currentColor;
 }
 
-/* notebook: ruled paper under the entries */
+/* notebook: the tabs hang straight off the title, full width. */
+.notebook .dialog-head {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
 .notebook .dialog-body {
   padding-top: 0;
-  background: repeating-linear-gradient(to bottom, transparent 0 31px, var(--color-table-rule) 31px 32px);
-  background-attachment: local;
 }
 .tabs {
   position: sticky;
@@ -1572,7 +1574,8 @@ input[type="range"] {
   z-index: 1;
   display: flex;
   gap: 4px;
-  padding: 12px 0 10px;
+  margin: 0 -22px;
+  padding: 8px 22px 10px;
   background: var(--color-surface-card);
   border-bottom: 1px solid var(--color-table-rule);
   overflow-x: auto;
@@ -1608,8 +1611,15 @@ input[type="range"] {
   display: grid;
   gap: 8px;
 }
+.rumors {
+  gap: 0;
+}
 .rumors li {
-  padding: 6px 4px 10px;
+  padding: 14px 4px 14px;
+  border-bottom: 1px solid var(--color-table-rule);
+}
+.rumors li:last-child {
+  border-bottom: 0;
 }
 .rumor-quote::before {
   content: "“";
@@ -1625,25 +1635,60 @@ input[type="range"] {
 }
 /* Rumor Map edges: the line style carries the meaning, not colour (WB§7.1). */
 .rumor-edges {
-  list-style: none;
-  margin: 8px 0 0;
-  padding: 0;
-  display: grid;
-  gap: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 0 26px;
+  font-size: 12.5px;
+}
+.rumors .edge[data-edge="hints"] {
+  padding: 2px 9px;
+  border: 1px dashed var(--color-ink-muted);
+  border-radius: var(--radius-pill);
+  color: var(--color-ink-muted);
+}
+.rumors .edge[data-edge="explains"] {
+  margin: 8px 0 0 26px;
+  padding: 0 0 0 12px;
+  border-left: 2px solid var(--color-ink);
   font-size: 13px;
 }
-.rumors .rumor-edges .edge {
-  padding: 0 0 0 12px;
-  border-radius: 0;
+/* Where to look: a hint on demand, never in the way of the question. */
+.tip {
+  position: relative;
+}
+.tip > button {
+  border: 0;
   background: none;
-  border-left: 2px dashed var(--color-ink-muted);
+  padding: 2px 4px;
+  font: inherit;
+  color: var(--color-ink-muted);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: help;
 }
-.rumors .rumor-edges .edge[data-edge="explains"] {
-  border-left-style: solid;
-  border-left-color: var(--color-ink);
+.tip > [role="tooltip"] {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 6px);
+  z-index: 2;
+  width: max-content;
+  max-width: 260px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--color-ink);
+  color: var(--color-text-on-dark);
+  font-size: 12.5px;
+  line-height: 1.4;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity var(--duration-instant);
 }
-.rumor-hint {
-  margin: 8px 0 0;
+.tip:hover > [role="tooltip"],
+.tip:focus-within > [role="tooltip"] {
+  visibility: visible;
+  opacity: 1;
 }
 .recall h2 {
   margin: 4px 0 12px;

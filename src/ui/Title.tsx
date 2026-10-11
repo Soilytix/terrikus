@@ -92,8 +92,9 @@ export function Title({
       <section className="title-card" aria-labelledby="title" aria-busy={!ready}>
         <h1 id="title">Terrikus</h1>
         <p className="title-lede">
-          One valley, <mark>six scales</mark>. Pick up a handful of soil and follow it down, from the field to
-          a single water film, by predicting, running experiments and explaining what you saw.
+          Take a handful of soil from one valley and follow it down through <mark>six scales</mark>, from the
+          field to a single film of water. At each step you make a guess, run an experiment and explain what
+          you saw.
         </p>
         <div className="title-actions" inert={!ready}>
           <div className="btn-row">

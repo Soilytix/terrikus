@@ -28,7 +28,7 @@ const COLS = [
   4.2,
 ];
 
-type Crop = "spinach" | "beet" | "peas" | "stubble" | "tilled" | "pasture" | "paddy" | "meadow";
+type Crop = "spinach" | "beet" | "peas" | "stubble" | "tilled" | "pasture" | "meadow";
 
 export function valley(c: Ctx, scale: number): RecipeOut {
   const { w, h, u } = c;
@@ -198,7 +198,7 @@ export function valley(c: Ctx, scale: number): RecipeOut {
   force(0.44, 0.62, "spinach");
   force(0.2, 0.66, "beet");
   force(0.83, 0.58, "peas");
-  for (let x = 0.48; x < 0.98; x += 0.04) for (const y of [0.76, 0.84]) force(x, y, "paddy");
+  for (let x = 0.48; x < 0.98; x += 0.04) for (const y of [0.76, 0.84]) force(x, y, "pasture");
   const wob = (i: number, j: number) => (c.noise(i * 3.1, j * 2.7) - 0.5) * 0.03 * persp(ROWS[i]!);
   const corner = (i: number, j: number): Pt => {
     const y = ROWS[i]! + (i > 0 && i < ROWS.length - 1 ? wob(i, j) : 0);
@@ -212,9 +212,9 @@ export function valley(c: Ctx, scale: number): RecipeOut {
     stubble: mix(W.sand, W.pale, 0.28),
     tilled: mix(W.loam, W.subsoil, 0.25),
     pasture: mix(W.foliage, W.sand, 0.4),
-    paddy: mix(W.water, W.skyLow, 0.5),
     meadow: mix(W.foliage, W.sand, 0.3),
   };
+  const sw = (k: number) => ((k * u) / 900).toFixed(2);
   for (let i = 0; i < ROWS.length - 1; i++) {
     for (let j = 0; j < COLS.length - 1; j++) {
       const crop: Crop = forced.get(`${i},${j}`) ?? (ROWS[i]! >= 0.87 ? "meadow" : pick(r, pool));
@@ -222,14 +222,13 @@ export function valley(c: Ctx, scale: number): RecipeOut {
       const d = poly(pts);
       const clip = fields.id("cl");
       fields.def(`<clipPath id="${clip}"><path d="${d}"/></clipPath>`);
-      const tint =
-        crop === "paddy" ? base[crop] : mix(base[crop], r() < 0.5 ? W.dark : W.sand, range(r, 0, 0.14));
+      const tint = mix(base[crop], r() < 0.5 ? W.dark : W.sand, range(r, 0, 0.14));
       fields.path(d, `fill="${tint}"`);
       fields.open(`clip-path="url(#${clip})"`);
       const yTop = ROWS[i]!;
       const yBot = ROWS[i + 1]!;
       const p = persp((yTop + yBot) / 2);
-      const across = crop === "paddy" || crop === "stubble" ? true : r() < 0.3;
+      const across = crop === "stubble" ? true : r() < 0.3;
       const lines: string[] = [];
       if (across) {
         const n = Math.max(4, Math.round(((yBot - yTop) * h) / (u * 0.01 * p + 1)));
@@ -248,7 +247,6 @@ export function valley(c: Ctx, scale: number): RecipeOut {
         }
       }
       const path = lines.join("");
-      const sw = (k: number) => ((k * u) / 900).toFixed(2);
       if (crop === "spinach") {
         fields.path(
           path,
@@ -271,29 +269,6 @@ export function valley(c: Ctx, scale: number): RecipeOut {
         );
       } else if (crop === "tilled") {
         fields.path(path, `stroke="${W.humus}" stroke-width="${sw(1.2)}" fill="none" opacity="0.55"`);
-      } else if (crop === "paddy") {
-        fields.rect(
-          0,
-          yTop * h,
-          w,
-          (yBot - yTop) * h,
-          `fill="url(#${linear(fields, [
-            [0, mix(W.skyLow, W.water, 0.35)],
-            [1, mix(W.water, W.gley, 0.3)],
-          ])})"`,
-        );
-        fields.path(
-          path,
-          `stroke="${mix(W.foliage, W.sand, 0.2)}" stroke-width="${sw(2.2)}" stroke-dasharray="${sw(1.4)} ${sw(2.6)}" fill="none"`,
-        );
-        // Bunds: raised earth walls that hold the water in.
-        for (let k = 1; k < 3; k++) {
-          const y = (yTop + ((yBot - yTop) * k) / 3) * h;
-          fields.path(
-            `M0,${y}L${w},${y}`,
-            `stroke="${mix(W.loam, W.foliage, 0.35)}" stroke-width="${sw(3)}"`,
-          );
-        }
       } else {
         stipple(
           fields,
@@ -305,19 +280,18 @@ export function valley(c: Ctx, scale: number): RecipeOut {
           [u * 0.0012, u * 0.003],
         );
       }
-      if (crop !== "paddy")
-        strokes(
-          fields,
-          c,
-          r,
-          5,
-          { x0: 0, y0: yTop, x1: 1, y1: yBot },
-          [mix(tint, W.dark, 0.25), mix(tint, W.pale, 0.25)],
-          [u * 0.02, u * 0.06],
-          [u * 0.004, u * 0.01],
-          () => range(r, -0.05, 0.05),
-          [0.12, 0.25],
-        );
+      strokes(
+        fields,
+        c,
+        r,
+        5,
+        { x0: 0, y0: yTop, x1: 1, y1: yBot },
+        [mix(tint, W.dark, 0.25), mix(tint, W.pale, 0.25)],
+        [u * 0.02, u * 0.06],
+        [u * 0.004, u * 0.01],
+        () => range(r, -0.05, 0.05),
+        [0.12, 0.25],
+      );
       // Light from the upper right; a thin bank along each field's lower edge.
       fields.path(
         d,
@@ -339,6 +313,56 @@ export function valley(c: Ctx, scale: number): RecipeOut {
         `stroke="${mix(base[crop], W.dark, 0.3)}" stroke-width="${sw(0.8)}" fill="none" opacity="0.5"`,
       );
     }
+  }
+  // Paddy terraces laid over the pasture: bunds follow the contour and the plots between them
+  // are cut at uneven widths, so the paddy sits in the land instead of in the field grid.
+  const bunds = [0.752, 0.79, 0.826, 0.866];
+  const contour = (k: number, x: number) =>
+    (bunds[k]! + (c.noise(x * 7 + k * 7.3, k * 2.1) - 0.5) * 0.03 * persp(bunds[k]!)) * h;
+  const bund = `stroke="${mix(W.loam, W.foliage, 0.35)}" stroke-width="${sw(3)}" stroke-linejoin="round"`;
+  for (let k = 0; k < bunds.length - 1; k++) {
+    // The near end runs down a perspective line, nudged so no two terraces stop in step.
+    const xb = 0.4 + range(r, 0, 0.14);
+    const edge = (kk: number, x: number): Pt => [colX(xb + (x - 0.5) * 0.03, bunds[kk]!), contour(kk, x)];
+    const x0 = colX(xb, bunds[k]!) / w;
+    const x1 = colX(xb, bunds[k + 1]!) / w;
+    const along = (from: number, kk: number): Pt[] => {
+      const pts: Pt[] = [edge(kk, from)];
+      for (let x = from + 0.03; x < 1.08; x += 0.03) pts.push([x * w, contour(kk, x)]);
+      return pts;
+    };
+    const top = along(x0, k);
+    const bot = along(x1, k + 1).reverse();
+    const d = smoothOpen(top) + smoothOpen(bot).replace(/^M/, "L") + "Z";
+    fields.path(
+      d,
+      `fill="url(#${linear(fields, [
+        [0, mix(W.skyLow, W.water, 0.35)],
+        [1, mix(W.water, W.gley, 0.3)],
+      ])})" ${bund}`,
+    );
+    // Rice rows along the contour.
+    const rows: string[] = [];
+    for (let q = 1; q < 4; q++) {
+      const t = q / 4;
+      const pts: Pt[] = [];
+      for (let x = Math.max(x0, x1) + 0.01; x < 1.08; x += 0.03)
+        pts.push([x * w, contour(k, x) * (1 - t) + contour(k + 1, x) * t]);
+      rows.push(smoothOpen(pts));
+    }
+    fields.path(
+      rows.join(""),
+      `stroke="${mix(W.foliage, W.sand, 0.2)}" stroke-width="${sw(2.2)}" stroke-dasharray="${sw(1.4)} ${sw(2.6)}" fill="none"`,
+    );
+    // Cross bunds: plots of uneven width, each wall leaning toward the vanishing point.
+    const walls: string[] = [];
+    for (let x = Math.max(x0, x1) + range(r, 0.06, 0.12); x < 1; x += range(r, 0.07, 0.15)) {
+      const xbAt = VP.x + (x - VP.x) / persp((bunds[k]! + bunds[k + 1]!) / 2);
+      walls.push(
+        `M${colX(xbAt, bunds[k]!).toFixed(1)},${contour(k, x).toFixed(1)}L${colX(xbAt, bunds[k + 1]!).toFixed(1)},${contour(k + 1, x).toFixed(1)}`,
+      );
+    }
+    fields.path(walls.join(""), `${bund} fill="none" stroke-linecap="round"`);
   }
   // Hedgerows along some boundaries; the chapter-2 hedge is always there.
   const hedge = (xb: number, y0: number, y1: number, size: number) => {

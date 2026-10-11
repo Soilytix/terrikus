@@ -1002,11 +1002,13 @@ export function MissionPanel(props: Props) {
 
   const step = currentStep(save, m);
   const i = stepIndex(save, m.id);
-  const away = m.scene !== sceneId && step && step.kind !== "go" && step.kind !== "bench" && i === 0;
-  const where = sceneById(m.scene);
+  // A step plays where the last `go` before it led, else at the mission's own scene; elsewhere the
+  // card only points the way back.
+  const at = m.steps.slice(0, i).reduce((s, x) => (x.kind === "go" ? x.scene : s), m.scene);
+  const away = at !== sceneId && step && step.kind !== "go" && step.kind !== "bench";
+  const where = sceneById(at);
   const here = sceneById(sceneId);
-  const portalInView =
-    !!here && visibleObjects(here, save).some((o) => o.kind === "portal" && o.to === m.scene);
+  const portalInView = !!here && visibleObjects(here, save).some((o) => o.kind === "portal" && o.to === at);
   return (
     <aside className="mission" aria-label={`Mission: ${m.title}`} data-open={open}>
       <header className="mission-head">
@@ -1024,7 +1026,9 @@ export function MissionPanel(props: Props) {
         <div className="mission-body" ref={body} tabIndex={-1}>
           {away && where ? (
             <>
-              <p className="step-text">This mission starts at {where.title.toLowerCase()}.</p>
+              <p className="step-text">
+                This mission {i === 0 ? "starts" : "continues"} at {where.title.toLowerCase()}.
+              </p>
               {portalInView ? (
                 <p className="hint">The portal is pulsing in the scene.</p>
               ) : (

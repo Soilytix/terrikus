@@ -136,7 +136,7 @@ const prologueScenes: Scene[] = [
         anchor: { x: 0.46, y: 0.6 },
         portrait: { x: 0.7, y: 0.5 },
         card: "bacteria-dormant",
-        scan: "It is not moving, not dividing, barely using energy. This one is dormant. Most cells here are asleep.",
+        scan: "This bacterium is dormant. It does not move or divide and uses almost no energy. Most of the cells around it are dormant too.",
       },
       {
         id: "amoeba",
@@ -163,7 +163,7 @@ const prologueScenes: Scene[] = [
         anchor: { x: 0.18, y: 0.72 },
         portrait: { x: 0.22, y: 0.66 },
         card: "mineral-grains",
-        scan: "A sand grain: broken rock, fixed in size for centuries. The soil's skeleton.",
+        scan: "A sand grain, a piece of broken rock. Its size barely changes over centuries, and grains like it form the frame of the soil.",
       },
       {
         id: "film",
@@ -204,7 +204,7 @@ const prologueMissions: Mission[] = [
       },
       {
         kind: "observe-composition",
-        text: "The handful separates by volume.",
+        text: "Here is the same handful, sorted by volume.",
         resultText: "Typical arable topsoil is about 40–60 % solid by volume; the rest is pore space.",
         facts: [POREFACT],
       },
@@ -222,10 +222,10 @@ const prologueMissions: Mission[] = [
           },
           {
             id: "nothing",
-            label: "Nowhere: it is empty",
+            label: "Nowhere, it is empty",
             ok: false,
             feedback:
-              "Not empty: the pores are full of something you cannot see. Squeeze a wet handful and water comes out; the rest is air.",
+              "The pores are full of things you cannot see. Squeeze a wet handful and water runs out; air fills the rest.",
             misconception: "M1",
           },
           {
@@ -244,13 +244,13 @@ const prologueMissions: Mission[] = [
       },
       {
         kind: "chains",
-        text: "Your first cause chain. Pick the link your slider showed, and say how sure you are.",
+        text: "Now write your first cause chain. Pick the link the slider showed and say how sure you are.",
         chains: ["p-water-air"],
         judgeNow: true,
       },
       {
         kind: "discover",
-        text: "Roughly half of soil is space.",
+        text: "About half of this handful is pore space.",
         discoveries: ["d-p-half-space"],
         recall: {
           prediction: "p-m1-solid",
@@ -287,7 +287,7 @@ const prologueMissions: Mission[] = [
       },
       {
         kind: "discover",
-        text: "Most of what lives here is asleep, and most of the habitat is empty.",
+        text: "Most cells here are dormant, and most of the pore surface has no cells on it at all.",
         discoveries: ["d-p-scale-100", "d-p-sleepers"],
         cards: ["bacteria-dormant", "amoeba", "fungi-sap"],
         codex: ["cx-p-sleepers", "cx-p-ladder"],

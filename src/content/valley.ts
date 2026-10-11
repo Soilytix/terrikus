@@ -276,14 +276,14 @@ export const valleyMapScene: Scene = {
 export const DISCOVERIES: Discovery[] = [
   {
     id: "d-p-half-space",
-    statement: "Roughly half of soil is space: about 40–60 % of topsoil is solid.",
+    statement: "About half of soil is space: 40–60 % of topsoil is solid, the rest is pores.",
     evidenceTier: "reference",
   },
   { id: "d-p-scale-100", statement: "One step down the ladder: ×100.", evidenceTier: "observed" },
   { id: "d-p-sleepers", statement: "Most microbes here are dormant.", evidenceTier: "derived" },
   {
     id: "d-c1-texture",
-    statement: "Texture is what it's made of; structure is how it's built.",
+    statement: "Texture is what the soil is made of. Structure is how those parts are put together.",
     evidenceTier: "interpreted",
   },
   { id: "d-c1-refuge", statement: "Small pores are refuges.", evidenceTier: "derived" },
@@ -294,12 +294,12 @@ export const DISCOVERIES: Discovery[] = [
   },
   {
     id: "d-c1-string",
-    statement: "Hyphae are string: roots and fungi tie crumbs together.",
+    statement: "Roots and fungal threads tie crumbs together.",
     evidenceTier: "derived",
   },
   {
     id: "d-c5-magnet",
-    statement: "Clay is a magnet for cations: acid knocked potassium off first and calcium last.",
+    statement: "Clay holds on to cations. Under acid, potassium came off first and calcium last.",
     evidenceTier: "observed",
   },
   {
@@ -327,7 +327,7 @@ export const DISCOVERIES: Discovery[] = [
   },
   {
     id: "d-c2-vault",
-    statement: "Carbon persists where it is protected, not because it is 'stable stuff'.",
+    statement: "Carbon lasts where it is protected. Its chemistry alone does not keep it.",
     evidenceTier: "interpreted",
   },
   {

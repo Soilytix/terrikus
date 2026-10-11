@@ -434,7 +434,7 @@ function Shell({ hash }: { hash: string }) {
                   : undefined
               }
               onClose={() => setScanned(null)}
-              onOpenCard={openCard}
+              onOpenCard={scanned.card && tray.includes(scanned.card) ? undefined : openCard}
             />
           )}
           <CardTray ids={tray} onOpen={openCard} />

@@ -8,7 +8,8 @@ interface Props {
   object: SceneObject;
   glimpse?: { number: string; title: string; hook: string; open: boolean } | undefined;
   onClose: () => void;
-  onOpenCard: (id: string) => void;
+  /** Left out while the card waits in the tray: the tray is the one way in. */
+  onOpenCard?: ((id: string) => void) | undefined;
 }
 
 export function ScanCard({ object, glimpse, onClose, onOpenCard }: Props) {
@@ -91,7 +92,7 @@ export function ScanCard({ object, glimpse, onClose, onOpenCard }: Props) {
         <p>{object.scan}</p>
       )}
       {object.facts && <Facts facts={object.facts} />}
-      {card && (
+      {card && onOpenCard && (
         <button type="button" className="link-btn" onClick={() => onOpenCard(card.item.id)}>
           Field card: {card.item.name} →
         </button>

@@ -156,8 +156,8 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
         {tab === "rumors" && (
           <>
             <p className="lede">
-              Questions you have met. Dashed lines hint at where a question leads; solid lines mark what
-              explained it.
+              Questions you have met. A dashed tag names the chapter a question points to; a solid line gives
+              what explained it.
             </p>
             {rumors.length ? (
               <ul className="rumors rumor-map">
@@ -169,24 +169,34 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                     <li key={r.id} data-state={save.rumors[r.id]}>
                       <span className="sr-only">{save.rumors[r.id]}: </span>
                       <blockquote className="rumor-quote">{r.text}</blockquote>
-                      <ul className="rumor-edges">
+                      <div className="rumor-edges">
                         {r.hintsAt.map((id) => {
                           const c = chapterById(id);
                           return (
                             c && (
-                              <li key={id} className="edge" data-edge="hints">
-                                hints at: chapter {c.number}, {c.title}
-                              </li>
+                              <span key={id} className="edge" data-edge="hints">
+                                <span className="sr-only">hints at: </span>Ch. {c.number} · {c.title}
+                              </span>
                             )
                           );
                         })}
-                        {by && (
-                          <li className="edge" data-edge="explains">
-                            explained by: {by.statement}
-                          </li>
+                        {hint && (
+                          <span className="tip">
+                            <button type="button" aria-describedby={`tip-${r.id}`}>
+                              Where to look
+                            </button>
+                            <span role="tooltip" id={`tip-${r.id}`}>
+                              {hint}
+                            </span>
+                          </span>
                         )}
-                      </ul>
-                      {hint && <p className="small rumor-hint">Where to look: {hint}</p>}
+                      </div>
+                      {by && (
+                        <p className="edge" data-edge="explains">
+                          <span className="sr-only">explained by: </span>
+                          {by.statement}
+                        </p>
+                      )}
                     </li>
                   );
                 })}

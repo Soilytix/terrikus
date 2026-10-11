@@ -62,7 +62,7 @@ const leafScenes: Scene[] = [
     chapter: "leaf",
     title: "The litter layer",
     scale: "profile",
-    tone: "light",
+    tone: "dark",
     recipe: "litter",
     seed: 71,
     scaleBar: { metres: 0.01, label: "1 cm" },
