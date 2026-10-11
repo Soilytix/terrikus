@@ -799,9 +799,6 @@ button {
   flex-direction: column;
   line-height: 1.2;
   color: var(--hud-ink);
-  text-shadow:
-    0 0 4px var(--hud-halo),
-    0 0 8px var(--hud-halo);
 }
 .rung-span {
   font-family: var(--font-mono);
@@ -823,7 +820,6 @@ button {
   display: none;
 }
 .ladder li[data-here="true"] .rung-label {
-  text-shadow: none;
   padding: 6px 12px;
   border-radius: 12px;
   background: var(--color-brand-primary);
