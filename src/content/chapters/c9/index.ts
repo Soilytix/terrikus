@@ -30,7 +30,7 @@ const c9Scenes: Scene[] = [
     chapter: "c9",
     title: "Under the beet field",
     scale: "rhizosphere",
-    tone: "light",
+    tone: "dark",
     recipe: "c9-relay",
     seed: 91,
     scaleBar: { metres: 0.1, label: "10 cm" },

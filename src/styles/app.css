@@ -732,7 +732,14 @@ button {
   pointer-events: none;
   transition:
     transform 0.25s ease,
+    translate 0.35s ease,
     opacity 0.25s ease;
+}
+/* Between scenes the old ladder slides out quickly; the new one slides in once the scene has arrived. */
+.app[data-arriving="true"] .ladder {
+  translate: calc(-100% - var(--hud-gap)) 0;
+  opacity: 0;
+  transition-duration: 0.15s;
 }
 .ladder[data-recede="true"] {
   transform: translate(-70%, -50%);
@@ -870,7 +877,7 @@ button {
   max-height: calc(100% - 84px - var(--hud-gap));
   display: flex;
   flex-direction: column;
-  border-radius: var(--radius-soft);
+  border-radius: 12px;
   overflow: hidden;
 }
 .app[data-tray="true"] .mission {
@@ -1947,7 +1954,7 @@ input[type="range"] {
   transform: translateY(-50%);
   width: min(460px, calc(100% - 32px));
   padding: 32px 32px 24px;
-  border-radius: 28px;
+  border-radius: 12px;
   animation: rise 0.9s var(--ease-chart);
 }
 /* The company mark sits on the picture's corner, not in the card. */
@@ -2005,21 +2012,26 @@ input[type="range"] {
   }
 }
 /* The next chapter, then the whole book as a strip of numbers: not a long list. */
+/* The up-next card sits in the list, below the row holding its circle, and points up at it. */
 .title-next {
+  position: relative;
+  flex-basis: 100%;
   display: grid;
   gap: 4px;
-  margin-top: 10px;
+  margin: 6px 0;
   padding: 14px 16px;
-  border-radius: 18px;
+  border-radius: 12px;
   background: var(--card-dark);
   color: var(--color-text-on-dark);
 }
-.title-next .pill-eyebrow {
-  justify-self: start;
-  background: transparent;
-  border-color: rgb(255 255 255 / 0.3);
-  color: var(--color-text-on-dark);
-  margin-bottom: 4px;
+.title-next::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: calc(var(--caret) - 8px);
+  border: 8px solid transparent;
+  border-top: 0;
+  border-bottom: 8px solid var(--card-dark);
 }
 .title-next p {
   font-family: var(--font-display);
@@ -2043,6 +2055,7 @@ input[type="range"] {
   color: var(--color-text-on-dark-warm);
 }
 .title-chapters {
+  position: relative;
   list-style: none;
   margin: 14px 0 0;
   padding: 0;
@@ -2050,7 +2063,7 @@ input[type="range"] {
   flex-wrap: wrap;
   gap: 6px;
 }
-.title-chapters li > * {
+.title-chapters li:not(.title-next) > * {
   display: grid;
   place-items: center;
   min-width: 34px;
@@ -2068,13 +2081,14 @@ input[type="range"] {
   border-color: var(--color-ink);
 }
 .title-chapters li[data-state="done"] > * {
-  background: var(--color-ink);
-  border-color: var(--color-ink);
-  color: var(--color-text-on-dark);
-}
-.title-chapters li[data-next="true"] > * {
   background: var(--color-brand-primary);
   border-color: var(--color-brand-primary);
+  color: var(--color-ink);
+}
+.title-chapters li[data-next="true"] > * {
+  background: var(--card-dark);
+  border-color: var(--card-dark);
+  color: var(--color-text-on-dark);
 }
 .title-chapters li[data-state="locked"] > *,
 .title-chapters li[data-state="planned"] > * {
@@ -2759,7 +2773,9 @@ input[type="range"] {
     max-height: calc(100% - 24px);
     overflow-y: auto;
   }
-  .title-chapters {
+  /* No circles on a phone; the up-next card stays, without its pointer. */
+  .title-chapters li:not(.title-next),
+  .title-next::before {
     display: none;
   }
   .jars {

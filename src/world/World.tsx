@@ -26,7 +26,8 @@ interface Props {
   dim: boolean;
   children: ReactNode;
   ref?: Ref<WorldHandle>;
-  onReady?: () => void;
+  /** The scene has arrived: painted and, with motion, its transition finished. */
+  onReady?: (sceneId: string) => void;
   /** The stage fell back to the static plate because it drew too slowly. */
   onTooSlow?: () => void;
 }
@@ -191,7 +192,7 @@ export function World({
       setBusy(true);
       void st.show(s.recipe, s.seed, how, s.scale).then(() => {
         setBusy(false);
-        readyRef.current?.();
+        readyRef.current?.(s.id);
       });
       return;
     }
@@ -219,7 +220,7 @@ export function World({
           setPlateSource("baked");
           applyView({ s: 1, tx: 0, ty: 0, w, h });
           setBusy(false);
-          readyRef.current?.();
+          readyRef.current?.(s.id);
           return;
         }
       }
@@ -234,7 +235,7 @@ export function World({
           setPlateSource("painted");
           applyView({ s: 1, tx: 0, ty: 0, w, h });
           setBusy(false);
-          readyRef.current?.();
+          readyRef.current?.(s.id);
         });
     };
     void paintNow();

@@ -142,6 +142,8 @@ function Shell({ hash }: { hash: string }) {
   const [focusCard, setFocusCard] = useState<string | undefined>(undefined);
   const [narration, setNarration] = useState("");
   const [recall, setRecall] = useState<ReturnType<typeof recallOnReturn>>([]);
+  // Until the new scene has arrived the ladder stays tucked away and arrival cards wait.
+  const [arrived, setArrived] = useState<string | null>(null);
   const [seen, setSeen] = useState(
     () => save.discoveries.length + save.codex.length + Object.keys(save.cards).length,
   );
@@ -345,7 +347,13 @@ function Shell({ hash }: { hash: string }) {
   const resumeScene = resume?.name === "scene" ? sceneById(resume.scene) : undefined;
 
   return (
-    <div className="app" data-route={route.name} data-tray={tray.length > 0} data-tone={scene.tone}>
+    <div
+      className="app"
+      data-route={route.name}
+      data-tray={tray.length > 0}
+      data-tone={scene.tone}
+      data-arriving={arrived !== scene.id}
+    >
       <World
         ref={world}
         sceneId={scene.id}
@@ -353,6 +361,7 @@ function Shell({ hash }: { hash: string }) {
         ambient={save.settings.ambient}
         forceStatic={forceStatic}
         dim={notebookOpen || !!panel}
+        onReady={setArrived}
         onTooSlow={() => setTooSlow(true)}
       >
         {route.name !== "title" && (
@@ -441,7 +450,7 @@ function Shell({ hash }: { hash: string }) {
           onClose={closeNotebook}
         />
       )}
-      {recall.length > 0 && <Recall cards={recall} onClose={() => setRecall([])} />}
+      {recall.length > 0 && arrived === scene.id && <Recall cards={recall} onClose={() => setRecall([])} />}
       {panel === "truth" && <Truth scene={scene} onClose={() => setPanel(null)} />}
       {panel === "help" && <Help onClose={() => setPanel(null)} onGlossary={() => setPanel("glossary")} />}
       {panel === "glossary" && <Glossary save={save} onClose={() => setPanel(null)} />}

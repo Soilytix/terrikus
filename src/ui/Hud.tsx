@@ -132,27 +132,30 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
         </nav>
       </header>
 
-      <nav className="ladder" aria-label="Scale ladder" ref={ladder} data-recede={recede}>
-        <ol>
-          {LADDER.map((l, i) => (
-            <li
-              key={l.scale}
-              data-here={i === rung}
-              data-stamped={stamps.includes(l.scale)}
-              aria-current={i === rung ? "location" : undefined}
-            >
-              <span className="rung" aria-hidden="true" />
-              <span className="rung-label">
-                {l.label}
-                <span className="rung-span">
-                  {i === rung && closeUp ? `close-up · ${scene.scaleBar.label}` : l.span}
+      {/* The valley is the whole landscape; its map carries the ladder instead. */}
+      {scene.id !== "valley" && (
+        <nav className="ladder" aria-label="Scale ladder" ref={ladder} data-recede={recede}>
+          <ol>
+            {LADDER.map((l, i) => (
+              <li
+                key={l.scale}
+                data-here={i === rung}
+                data-stamped={stamps.includes(l.scale)}
+                aria-current={i === rung ? "location" : undefined}
+              >
+                <span className="rung" aria-hidden="true" />
+                <span className="rung-label">
+                  {l.label}
+                  <span className="rung-span">
+                    {i === rung && closeUp ? `close-up · ${scene.scaleBar.label}` : l.span}
+                  </span>
+                  {i !== rung && stamps.includes(l.scale) && <span className="sr-only"> (visited)</span>}
                 </span>
-                {i !== rung && stamps.includes(l.scale) && <span className="sr-only"> (visited)</span>}
-              </span>
-            </li>
-          ))}
-        </ol>
-      </nav>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
 
       <p className="scalebar">
         {scene.notToScale && (

@@ -4,7 +4,7 @@ import { targetHref } from "../app/router";
 import type { Save } from "../save/schema";
 import { assetUrl } from "../assets/urls";
 import { mixer, type BedScene } from "../audio/mixer";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 
 /** A few far birds crossing the sky: CSS only, and not rendered at all under reduced motion. */
 function Birds() {
@@ -53,6 +53,38 @@ export function Title({
     save.chaptersComplete.includes(id) ? "done" : save.chaptersUnlocked.includes(id) ? "open" : "locked";
   const next =
     chapters.find((c) => state(c.id) === "open") ?? chapters.findLast((c) => state(c.id) !== "locked");
+  // The up-next card opens below the row that holds the next chapter's circle and points up at it.
+  const list = useRef<HTMLOListElement>(null);
+  const nextIndex = chapters.findIndex((c) => c.id === next?.id);
+  const [slot, setSlot] = useState({ after: nextIndex, caret: 0 });
+  useLayoutEffect(() => {
+    const ol = list.current;
+    if (!ol || nextIndex < 0) return;
+    const place = () => {
+      // Measure the rows as they wrap without the card, which breaks the row it sits in.
+      const card = ol.querySelector<HTMLElement>(":scope > .title-next");
+      if (card) card.style.display = "none";
+      const dots = [...ol.querySelectorAll<HTMLElement>(":scope > li:not(.title-next)")];
+      const dot = dots[nextIndex]!;
+      let after = nextIndex;
+      while (dots[after + 1]?.offsetTop === dot.offsetTop) after++;
+      if (card) card.style.display = "";
+      setSlot({ after, caret: dot.offsetLeft + dot.offsetWidth / 2 });
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(ol);
+    return () => ro.disconnect();
+  }, [nextIndex]);
+  const card = next && (
+    <li key="next" className="title-next" style={{ "--caret": `${slot.caret}px` } as CSSProperties}>
+      <p>
+        <span className="sr-only">{begun ? "Up next: " : "First chapter: "}</span>
+        <span className="mono">{label(next.number)}</span> {next.title}
+      </p>
+      <p className="hand">“{next.hook}”</p>
+    </li>
+  );
   return (
     <>
       {birds && <Birds />}
@@ -84,17 +116,8 @@ export function Title({
               </>
             )}
           </p>
-          {next && (
-            <div className="title-next">
-              <span className="pill-eyebrow">{begun ? "Up next" : "First chapter"}</span>
-              <p>
-                <span className="mono">{label(next.number)}</span> {next.title}
-              </p>
-              <p className="hand">“{next.hook}”</p>
-            </div>
-          )}
-          <ol className="title-chapters" aria-label="Chapters">
-            {chapters.map((c) => (
+          <ol className="title-chapters" aria-label="Chapters" ref={list}>
+            {chapters.map((c, i) => [
               <li key={c.id} data-state={state(c.id)} data-next={c.id === next?.id}>
                 {state(c.id) === "locked" ? (
                   <span title={c.title}>
@@ -114,13 +137,15 @@ export function Title({
                     </span>
                   </a>
                 )}
-              </li>
-            ))}
+              </li>,
+              i === slot.after && card,
+            ])}
             <li data-state="planned">
               <span title="Glimpsed in the valley, still being written">
                 +12<span className="sr-only"> chapters still being written</span>
               </span>
             </li>
+            {slot.after >= chapters.length && card}
           </ol>
         </div>
       </section>
