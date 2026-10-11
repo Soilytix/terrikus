@@ -15,7 +15,7 @@ import {
 } from "../brush";
 import { mix } from "../color";
 import { pow, rngFor } from "../noise";
-import { bird, cloudShadow } from "../sprites";
+import { bird, cloudShadow, prop } from "../sprites";
 import { Svg, poly, smoothOpen, type Pt } from "../svg";
 import type { RecipeOut } from "./index";
 
@@ -156,6 +156,18 @@ export function valley(c: Ctx, scale: number): RecipeOut {
       `fill="${mix(base, W.sand, 0.3)}" opacity="0.75"`,
     );
   }
+  // A village and a farm on the far slope, hazed by distance.
+  hill.open(`opacity="0.8"`);
+  for (const [x, id, size, flip] of [
+    [0.74, "conifer", 0.045, false],
+    [0.775, "village", 0.045, false],
+    [0.83, "tree-rounded", 0.03, true],
+    [0.9, "tree-broadleaf", 0.035, false],
+    [0.93, "farmhouse", 0.026, true],
+    [0.965, "tree-rounded", 0.028, false],
+  ] as const)
+    prop(hill, id, x * w, ySurf(x * w) + u * 0.006, u * size, flip);
+  hill.close();
   hill.rect(
     0,
     0.15 * h,

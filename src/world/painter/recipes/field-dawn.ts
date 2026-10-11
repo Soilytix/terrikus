@@ -14,6 +14,7 @@ import {
 } from "../brush";
 import { mix } from "../color";
 import { fbm, pow, rngFor } from "../noise";
+import { prop } from "../sprites";
 import { Svg } from "../svg";
 import type { RecipeOut } from "./index";
 import { crumb, rosette } from "./plants";
@@ -85,6 +86,13 @@ export function fieldDawn(c: Ctx, scale: number): RecipeOut {
       `fill="${mix(W.foliage, W.skyHigh, range(r, 0.4, 0.6))}"`,
     );
   }
+
+  // A farm on the horizon, half lost in the dawn mist; the hedge hides its foot.
+  far.open(`opacity="0.7"`);
+  prop(far, "tree-broadleaf", 0.7 * w, (HZ - 0.012) * h, u * 0.07);
+  prop(far, "farmhouse", 0.76 * w, (HZ - 0.012) * h, u * 0.05);
+  prop(far, "tree-rounded", 0.815 * w, (HZ - 0.012) * h, u * 0.06, true);
+  far.close();
 
   // The hedge at the end of the rows.
   const hedge = new Svg(w, h);

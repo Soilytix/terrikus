@@ -8,6 +8,7 @@ import { W } from "../../../styles/scene";
 import { linear, range, ridge, strokes, type Ctx } from "../brush";
 import { mix } from "../color";
 import { rngFor } from "../noise";
+import { prop } from "../sprites";
 import { Svg, smoothOpen, type Pt } from "../svg";
 import type { RecipeOut } from "./index";
 import { crumb, rosette } from "./plants";
@@ -76,6 +77,12 @@ export function c12TwinFields(c: Ctx, scale: number): RecipeOut {
     `M${w * 0.495},${top}L${w * 0.505},${top}L${w * 0.53},${SURFACE * h + u * 0.02}L${w * 0.47},${SURFACE * h + u * 0.02}Z`,
     `fill="${mix(W.foliage, W.sand, 0.25)}"`,
   );
+
+  // A farm on the far hedge line, and the plough at work on the left field.
+  prop(fields, "tree-broadleaf", 0.76 * w, top + u * 0.004, u * 0.065);
+  prop(fields, "farmhouse", 0.82 * w, top + u * 0.004, u * 0.05);
+  prop(fields, "tree-rounded", 0.875 * w, top + u * 0.004, u * 0.055, true);
+  prop(fields, "tractor", 0.24 * w, top + u * 0.05, u * 0.035);
 
   // The cutaway: one block of soil under both fields.
   const below = new Svg(w, h);

@@ -13,6 +13,12 @@ const BIOME =
 const SPRITE =
   "Drawn in-house as SVG on 2026-10-06 to art-direction §6.2 (Obsidian monoline outline, one world-register fill, at most one detail line). Vector paths hand-written by a coding agent (Claude) under Soilytix direction: no image model, no traced image. Morphology checked against referenceUrl at schematic level only; reference-drawn needs an illustrator's pass.";
 
+const DESIGNER =
+  "Soilytix designer illustration pack (team vault assets/soilytix/, received 2026-10-11, owned outright), recoloured from the vault's design tokens onto the world register by tools/designer-assets.ts on 2026-10-11; shapes unchanged.";
+/** Cast sprites taken from the designer pack instead of hand-written paths. */
+const DESIGNER_ORGANISMS = new Set(["amoeba", "ciliate", "flagellate", "testate", "streptomyces", "mite", "springtail", "enchytraeid"]);
+const PROPS = ["farmhouse", "village", "tree-rounded", "tree-broadleaf", "conifer", "cow", "tractor"] as const;
+
 const AMBIENCE =
   "Field recording, CC0 1.0, background bed only (never a note in the music). Freesound HQ preview MP3 fetched on 2026-10-10; a 40 s window cut, mixed to mono, loudness-normalised to −20 LUFS and re-encoded as 80 kb/s MP3 with ffmpeg; the engine loops it with a 3 s crossfade.";
 
@@ -96,7 +102,7 @@ export const ASSETS: Asset[] = [
       publicOk: true,
       attribution: "Drawing © Soilytix",
       referenceUrl: o.referenceUrl,
-      provenance: SPRITE,
+      provenance: DESIGNER_ORGANISMS.has(o.id) ? DESIGNER : SPRITE,
     }),
   ),
   ...BADGE_SHAPES.map(
@@ -110,6 +116,19 @@ export const ASSETS: Asset[] = [
       publicOk: true,
       attribution: "Group badge © Soilytix",
       provenance: SPRITE,
+    }),
+  ),
+  ...PROPS.map(
+    (p): Asset => ({
+      id: `prop-${p}`,
+      path: `props/${p}.svg`,
+      source: "img-soilytix-authored",
+      licence: "soilytix",
+      owner: "Soilytix",
+      truthStatus: "decorative",
+      publicOk: true,
+      attribution: "Illustration © Soilytix",
+      provenance: DESIGNER,
     }),
   ),
   {

@@ -1,8 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 56" width="64" height="56">
-<title>Oribatid mite</title>
-<g fill="none" stroke-linecap="round" stroke-linejoin="round">
-<path d="M18,28A18,14 0 1,0 54,28A18,14 0 1,0 18,28ZM10,28A5,4.5 0 1,0 20,28A5,4.5 0 1,0 10,28Z" fill="#29332e" stroke="#29332e" stroke-width="3"/>
-<path d="M18,28A18,14 0 1,0 54,28A18,14 0 1,0 18,28ZM10,28A5,4.5 0 1,0 20,28A5,4.5 0 1,0 10,28Z" fill="#64461e"/>
-<path d="M24,18L16,8L10,10M30,15L28,4L22,2M24,38L16,48L10,46M30,41L28,52L22,54M42,15L48,4L54,4M42,41L48,52L54,52M48,19L58,12L62,14M48,37L58,44L62,42" stroke="#29332e" stroke-width="1"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 88" width="88" height="88">
+<title>Mite</title>
+<g fill="none">
+<path d="M41.9897 45.8835C47.9351 51.8288 47.9351 61.4688 41.9897 67.4142C36.0444 73.3595 26.4044 73.3595 20.4591 67.4142C14.5137 61.4688 14.5137 51.8288 20.4591 45.8835C26.4044 39.9382 36.0444 39.9382 41.9897 45.8835Z" fill="#64461e" stroke="#29332e" stroke-width="1.86667" stroke-miterlimit="10"/>
+<path d="M81.1925 40.4398C68.8632 52.7691 51.3125 55.2064 41.9898 45.8838C32.6672 36.5611 35.1045 19.0091 47.4338 6.6811" stroke="#29332e" stroke-width="1.86667" stroke-miterlimit="10" stroke-linecap="round"/>
+<path d="M15.0516 86.9399C22.9649 83.5653 32.7129 76.6906 41.9902 67.4146" stroke="#29332e" stroke-width="1.86667" stroke-miterlimit="10" stroke-linecap="round"/>
+<path d="M20.4589 45.8835C11.1829 55.1595 4.30826 64.9089 0.933594 72.8222" stroke="#29332e" stroke-width="1.86667" stroke-miterlimit="10" stroke-linecap="round"/>
+<path d="M14.8662 40.2908C20.8115 34.3455 32.9555 36.8495 41.9902 45.8842C51.0235 54.9175 53.5275 67.0615 47.5822 73.0068" stroke="#29332e" stroke-width="1.86667" stroke-miterlimit="10" stroke-linecap="round"/>
+<path d="M57.2095 34.5495C57.7508 32.2149 55.6575 30.1229 53.3241 30.6642L45.7788 32.4242C44.4535 32.7429 43.1921 33.3949 42.1375 34.3962C38.9508 37.4242 38.8548 42.6842 41.9308 45.8242C45.0588 49.0149 50.1815 49.0349 53.3321 45.8829C54.4161 44.8002 55.1161 43.4829 55.4495 42.0949L57.2095 34.5495Z" fill="#f4ece2" stroke="#29332e" stroke-width="3.73333" stroke-miterlimit="10"/>
+<path d="M41.5195 33.7789L53.1555 22.1429L64.0101 0.933537" stroke="#29332e" stroke-width="1.86667" stroke-miterlimit="10" stroke-linecap="round"/>
+<path d="M54.0944 46.3536L65.7304 34.7176L86.9397 23.863" stroke="#29332e" stroke-width="1.86667" stroke-miterlimit="10" stroke-linecap="round"/>
 </g>
 </svg>

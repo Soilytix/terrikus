@@ -7,7 +7,8 @@ import { UI } from "../../styles/ui";
 import { mix } from "./color";
 import { blob, range } from "./brush";
 import type { Rng } from "./noise";
-import { Svg, smoothClosed, smoothOpen, type Pt } from "./svg";
+import { PROPS, type PropId } from "./props.gen";
+import { Svg, f, smoothClosed, smoothOpen, type Pt } from "./svg";
 import type { Motion, SpriteSpec } from "./types";
 
 const OUT = `stroke="${UI.ink}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"`;
@@ -202,5 +203,24 @@ export function bird(p: Place, span: number): SpriteSpec {
   );
   return sprite(s, p);
 }
+
+/** A designer prop (props.gen.ts) on a layer, standing on (x, y), `height` px tall; `flip` mirrors it. */
+export function prop(
+  s: Svg,
+  id: PropId,
+  x: number,
+  y: number,
+  height: number,
+  flip = false,
+  attrs = "",
+): Svg {
+  const p = PROPS[id];
+  const k = height / p.h;
+  const left = x + ((flip ? 1 : -1) * p.w * k) / 2;
+  return s.add(
+    `<g transform="translate(${f(left)},${f(y - height)}) scale(${f3(flip ? -k : k)},${f3(k)})" ${attrs}>${p.inner}</g>`,
+  );
+}
+const f3 = (n: number) => (Math.round(n * 1000) / 1000).toString();
 
 export type { Place };

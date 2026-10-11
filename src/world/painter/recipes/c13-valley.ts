@@ -8,6 +8,7 @@ import { W } from "../../../styles/scene";
 import { linear, range, ridge, strokes, type Ctx } from "../brush";
 import { mix } from "../color";
 import { rngFor } from "../noise";
+import { prop } from "../sprites";
 import { Svg, smoothOpen, type Pt } from "../svg";
 import type { RecipeOut } from "./index";
 
@@ -89,13 +90,26 @@ export function c13Valley(c: Ctx, scale: number): RecipeOut {
   );
   hill.close();
 
+  // Woodland on the summit, back to front, and a farm on the floodplain.
   const wood = new Svg(w, h);
-  for (let i = 0; i < 30; i++) {
-    const x = range(r, 0, 0.23) * w;
-    const y = gy(x / w) + u * 0.004;
-    const rad = u * range(r, 0.025, 0.045);
-    wood.circle(x, y - rad * 0.8, rad, `fill="${mix(W.foliage, W.dark, range(r, 0.15, 0.45))}"`);
+  const trees = Array.from({ length: 22 }, () => {
+    const x = range(r, -0.01, 0.24);
+    return { x, y: gy(x) + u * range(r, 0, 0.03), kind: r(), size: range(r, 0.07, 0.11), flip: r() < 0.5 };
+  }).sort((a, b) => a.y - b.y);
+  for (const t of trees) {
+    const id = t.kind < 0.45 ? "tree-rounded" : t.kind < 0.8 ? "tree-broadleaf" : "conifer";
+    prop(wood, id, t.x * w, t.y, u * t.size * (id === "conifer" ? 1.3 : 1), t.flip);
   }
+  const farm = 0.83 * h;
+  prop(wood, "tree-broadleaf", 0.72 * w, farm, u * 0.08);
+  prop(wood, "farmhouse", 0.78 * w, farm, u * 0.06);
+  prop(wood, "tree-rounded", 0.84 * w, farm, u * 0.065, true);
+  for (const [x, flip] of [
+    [0.87, false],
+    [0.9, true],
+    [0.94, false],
+  ] as const)
+    prop(wood, "cow", x * w, farm + u * 0.014, u * 0.024, flip);
 
   const river = new Svg(w, h);
   const bank: Pt[] = Array.from({ length: 13 }, (_, i) => {
