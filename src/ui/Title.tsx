@@ -4,7 +4,7 @@ import { targetHref } from "../app/router";
 import type { Save } from "../save/schema";
 import { assetUrl } from "../assets/urls";
 import { mixer, type BedScene } from "../audio/mixer";
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 
 /** A few far birds crossing the sky: CSS only, and not rendered at all under reduced motion. */
 function Birds() {
@@ -18,6 +18,14 @@ function Birds() {
     </div>
   );
 }
+
+/** Circles per row of the chapter strip (CSS `.title-chapters`). */
+const COLS = 8;
+const SPLASH_MS = 1500;
+/** Once per visit: coming back to the title skips the logo. */
+let splashed = false;
+/** Each letter of the title set a little askew, like letters cut out and pinned. */
+const TILT = [-4, 3, -2, 5, -3, 2, -5, 3];
 
 const label = (n: string) => (n === "P" ? "Prologue" : `Chapter ${n}`);
 
@@ -48,40 +56,31 @@ export function Title({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- keyed by the scene
   }, [want]);
-  // The logo holds the first paint until the music starts (a gesture's job); without sound, it steps aside at once.
-  const [started, setStarted] = useState(() => mixer.enabled());
-  useEffect(() => mixer.subscribe(() => mixer.enabled() && setStarted(true)), []);
-  const splash = !!sound && !(ready && started);
-  const chapters = CHAPTERS.filter((c) => c.playable);
+  // The logo holds the first paint of a visit for a beat, and until the music could play.
+  const [held, setHeld] = useState(!splashed);
+  useEffect(() => {
+    if (!held) return;
+    const t = window.setTimeout(() => setHeld(false), SPLASH_MS);
+    return () => window.clearTimeout(t);
+  }, [held]);
+  const splash = held || !ready;
+  useEffect(() => {
+    if (!splash) splashed = true;
+  }, [splash]);
+  const chapters = CHAPTERS;
   const state = (id: string) =>
     save.chaptersComplete.includes(id) ? "done" : save.chaptersUnlocked.includes(id) ? "open" : "locked";
   const next =
     chapters.find((c) => state(c.id) === "open") ?? chapters.findLast((c) => state(c.id) !== "locked");
   // The up-next card opens below the row that holds the next chapter's circle and points up at it.
-  const list = useRef<HTMLOListElement>(null);
+  // A fixed grid keeps every circle in its place, so the row is arithmetic, not measured.
   const nextIndex = chapters.findIndex((c) => c.id === next?.id);
-  const [slot, setSlot] = useState({ after: nextIndex, caret: 0 });
-  useLayoutEffect(() => {
-    const ol = list.current;
-    if (!ol || nextIndex < 0) return;
-    const place = () => {
-      // Measure the rows as they wrap without the card, which breaks the row it sits in.
-      const card = ol.querySelector<HTMLElement>(":scope > .title-next");
-      if (card) card.style.display = "none";
-      const dots = [...ol.querySelectorAll<HTMLElement>(":scope > li:not(.title-next)")];
-      const dot = dots[nextIndex]!;
-      let after = nextIndex;
-      while (dots[after + 1]?.offsetTop === dot.offsetTop) after++;
-      if (card) card.style.display = "";
-      setSlot({ after, caret: dot.offsetLeft + dot.offsetWidth / 2 });
-    };
-    place();
-    const ro = new ResizeObserver(place);
-    ro.observe(ol);
-    return () => ro.disconnect();
-  }, [nextIndex]);
+  const slot = {
+    after: Math.min(Math.floor(nextIndex / COLS) * COLS + COLS - 1, chapters.length),
+    col: nextIndex % COLS,
+  };
   const card = next && (
-    <li key="next" className="title-next" style={{ "--caret": `${slot.caret}px` } as CSSProperties}>
+    <li key="next" className="title-next" style={{ "--col": slot.col } as CSSProperties}>
       <p>
         <span className="sr-only">{begun ? "Up next: " : "First chapter: "}</span>
         <span className="mono">{label(next.number)}</span> {next.title}
@@ -93,22 +92,22 @@ export function Title({
     <>
       {birds && <Birds />}
       <img className="title-wordmark" data-splash={splash} src={assetUrl("brand-wordmark")} alt="Soilytix" />
-      {splash && (
-        <button type="button" className="title-splash" autoFocus onClick={() => mixer.enable()}>
+      {splash && sound && (
+        <p className="title-splash" role="status">
           <span className="title-splash-hint">
-            {started ? (
-              <>
-                <span className="spinner" aria-hidden="true" /> Loading the valley’s sound…
-              </>
-            ) : (
-              "Click or press a key to start, with sound"
-            )}
+            <span className="spinner" aria-hidden="true" /> Loading the valley’s sound…
           </span>
-        </button>
+        </p>
       )}
       {!splash && (
         <section className="title-card" aria-labelledby="title" aria-busy={!ready}>
-          <h1 id="title">Terrikus</h1>
+          <h1 id="title">
+            {[..."Terrikus"].map((ch, i) => (
+              <span key={i} style={{ "--tilt": `${TILT[i]}deg` } as CSSProperties}>
+                {ch}
+              </span>
+            ))}
+          </h1>
           <p className="title-lede">
             Take a handful of soil from one valley and follow it down through <mark>six scales</mark>, from
             the field to a single film of water. At each step you make a guess, run an experiment and explain
@@ -135,7 +134,7 @@ export function Title({
                 </>
               )}
             </p>
-            <ol className="title-chapters" aria-label="Chapters" ref={list}>
+            <ol className="title-chapters" aria-label="Chapters">
               {chapters.map((c, i) => [
                 <li key={c.id} data-state={state(c.id)} data-next={c.id === next?.id}>
                   {state(c.id) === "locked" ? (

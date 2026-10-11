@@ -11,11 +11,10 @@ const routes: [string, string][] = [
 for (const [name, url] of routes) {
   test(`axe: ${name}`, async ({ page }) => {
     await page.goto(url);
-    if (name === "title") await page.getByRole("button", { name: /press a key to start/ }).click();
     const ready = name.startsWith("notebook")
       ? page.getByRole("dialog", { name: "Field notebook" })
       : page.getByRole("heading", { name: name === "title" ? "Terrikus" : "A handful", exact: true });
-    await expect(ready).toBeVisible();
+    await expect(ready).toBeVisible({ timeout: 30_000 });
     await page.waitForTimeout(1000);
     const { violations } = await new AxeBuilder({ page }).analyze();
     const blocking = violations

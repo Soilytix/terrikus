@@ -17,8 +17,7 @@ test("play the prologue and the first chapter-2 mission", async ({ page }, info)
   page.on("pageerror", (e) => errors.push(`${String(e)} @ ${page.url()}\n${e.stack ?? ""}`));
 
   await page.goto("./");
-  await page.getByRole("button", { name: /press a key to start/ }).click();
-  await expect(page.getByRole("heading", { name: "Terrikus" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Terrikus" })).toBeVisible({ timeout: 30_000 });
   await settled(page);
   await shot(page, "01-title", p);
 
@@ -123,8 +122,7 @@ test("play the prologue and the first chapter-2 mission", async ({ page }, info)
 
   // Reload: progress survives.
   await page.goto("./");
-  await page.getByRole("button", { name: /press a key to start/ }).click();
-  await expect(page.getByRole("button", { name: /Continue:/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Continue:/ })).toBeVisible({ timeout: 30_000 });
 
   expect(errors).toEqual([]);
 });

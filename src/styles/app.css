@@ -1998,30 +1998,28 @@ input[type="range"] {
     right 1.2s var(--ease-chart),
     top 1.2s var(--ease-chart),
     height 1.2s var(--ease-chart),
-    transform 1.2s var(--ease-chart);
+    transform 1.2s var(--ease-chart),
+    filter 1.2s var(--ease-chart);
 }
 .title-wordmark[data-splash="true"] {
   right: 50%;
   top: 60%;
   height: clamp(48px, 10vw, 150px);
   transform: translate(50%, -50%);
+  filter: brightness(0) invert(1);
 }
-/* The whole picture is the start button: the click is the gesture the music waits for. */
+/* While the music loads: a quiet status under the logo. */
 .title-splash {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  bottom: 12vh;
   display: flex;
-  align-items: flex-end;
   justify-content: center;
-  gap: 8px;
-  padding-bottom: 12vh;
-  border: 0;
-  background: none;
-  font: inherit;
+  margin: 0;
   font-size: 15px;
   font-weight: 500;
   color: var(--color-ink);
-  cursor: pointer;
 }
 .title-splash-hint {
   display: inline-flex;
@@ -2037,8 +2035,13 @@ input[type="range"] {
   margin-top: 0;
   font-size: clamp(44px, 6.5vw, 66px);
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.1em;
   line-height: 1;
+}
+/* Each letter set a little askew, as on the old game boxes. */
+.title-card h1 > span {
+  display: inline-block;
+  transform: rotate(var(--tilt));
 }
 .title-lede {
   margin-top: 14px;
@@ -2083,7 +2086,8 @@ input[type="range"] {
 /* The up-next card sits in the list, below the row holding its circle, and points up at it. */
 .title-next {
   position: relative;
-  flex-basis: 100%;
+  grid-column: 1 / -1;
+  justify-self: stretch;
   display: grid;
   gap: 4px;
   margin: 6px 0;
@@ -2096,7 +2100,8 @@ input[type="range"] {
   content: "";
   position: absolute;
   top: -7px;
-  left: calc(var(--caret) - 8px);
+  /* The centre of column --col in a grid of 8 with a 6px gap. */
+  left: calc(var(--col) * (100% + 6px) / 8 + (100% - 42px) / 16 - 8px);
   border: 8px solid transparent;
   border-top: 0;
   border-bottom: 8px solid var(--card-dark);
@@ -2122,22 +2127,24 @@ input[type="range"] {
   font-weight: 400;
   color: var(--color-text-on-dark-warm);
 }
+/* A fixed grid of 8 (Title.tsx COLS): every chapter keeps its place whether open or not. */
 .title-chapters {
   position: relative;
   list-style: none;
   margin: 14px 0 0;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
   gap: 6px;
+  justify-items: center;
 }
 .title-chapters li:not(.title-next) > * {
   display: grid;
   place-items: center;
   min-width: 34px;
   height: 34px;
-  padding: 0 8px;
-  border-radius: var(--radius-pill);
+  padding: 0 6px;
+  border-radius: 12px;
   border: 1px solid var(--color-border-default);
   background: var(--color-surface-card);
   font-family: var(--font-mono);
@@ -2163,6 +2170,7 @@ input[type="range"] {
   border-style: dashed;
   background: transparent;
   color: var(--color-ink-muted);
+  opacity: 0.4;
 }
 /* Far birds crossing the valley sky behind the title card. World register: they are illustration. */
 .title-birds {

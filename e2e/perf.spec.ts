@@ -25,9 +25,7 @@ test("first interactive on throttled fast 4G", async ({ page }, info) => {
   const interactive = await page
     .waitForFunction(
       () => {
-        const begin = [...document.querySelectorAll("button")].find((b) =>
-          /Begin|to start/.test(b.textContent ?? ""),
-        );
+        const begin = [...document.querySelectorAll("button")].find((b) => b.textContent?.includes("Begin"));
         return begin && !begin.disabled && begin.checkVisibility() ? performance.now() : false;
       },
       undefined,
