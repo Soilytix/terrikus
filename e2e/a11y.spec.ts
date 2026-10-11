@@ -11,6 +11,7 @@ const routes: [string, string][] = [
 for (const [name, url] of routes) {
   test(`axe: ${name}`, async ({ page }) => {
     await page.goto(url);
+    if (name === "title") await page.getByRole("button", { name: /press a key to start/ }).click();
     const ready = name.startsWith("notebook")
       ? page.getByRole("dialog", { name: "Field notebook" })
       : page.getByRole("heading", { name: name === "title" ? "Terrikus" : "A handful", exact: true });

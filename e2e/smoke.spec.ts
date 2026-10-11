@@ -123,6 +123,7 @@ test("play the prologue and the first chapter-2 mission", async ({ page }, info)
 
   // Reload: progress survives.
   await page.goto("./");
+  await page.getByRole("button", { name: /press a key to start/ }).click();
   await expect(page.getByRole("button", { name: /Continue:/ })).toBeVisible();
 
   expect(errors).toEqual([]);

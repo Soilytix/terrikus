@@ -283,8 +283,8 @@ button {
 }
 .review-pill {
   position: absolute;
-  right: calc(var(--hud-gap) + 52px);
-  bottom: calc(var(--hud-gap) + 12px);
+  right: calc(var(--hud-gap) + 44px);
+  bottom: calc(var(--hud-gap) + 6px);
   border: 0;
   font: inherit;
   font-size: 11px;
@@ -295,6 +295,7 @@ button {
   /* Clear of the mission sheet: in the HUD band, right of the ladder. */
   .review-pill {
     top: 124px;
+    right: var(--hud-gap);
     bottom: auto;
   }
 }
@@ -671,8 +672,6 @@ button {
   background: var(--hud-glass);
   right: var(--hud-gap);
   bottom: var(--hud-gap);
-  width: 44px;
-  height: 44px;
 }
 .hud-scene .hud-btn {
   height: 44px;
@@ -2019,10 +2018,20 @@ input[type="range"] {
   border: 0;
   background: none;
   font: inherit;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--color-ink);
   cursor: pointer;
+}
+.title-splash-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(calc(var(--blur-glass) / 2)) saturate(1.2);
+  backdrop-filter: blur(calc(var(--blur-glass) / 2)) saturate(1.2);
 }
 .title-card h1 {
   margin-top: 0;
@@ -2554,7 +2563,7 @@ input[type="range"] {
 .card-tray {
   position: absolute;
   right: var(--hud-gap);
-  bottom: calc(var(--hud-gap) + 56px);
+  bottom: calc(var(--hud-gap) + 44px);
   width: min(300px, calc(100% - 2 * var(--hud-gap)));
   animation: rise var(--duration-drawer) var(--ease-chart);
 }
@@ -2772,12 +2781,10 @@ input[type="range"] {
     padding: 0;
     justify-content: center;
   }
-  /* Clear of the mission sheet: beside the review pill in the HUD band. */
+  /* Clear of the mission sheet: under the review pill and the card tray. */
   .hud-about.icon-only {
-    top: 116px;
+    top: 212px;
     bottom: auto;
-    width: 36px;
-    height: 36px;
   }
   .scalebar {
     top: 160px;

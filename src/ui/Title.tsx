@@ -95,13 +95,15 @@ export function Title({
       <img className="title-wordmark" data-splash={splash} src={assetUrl("brand-wordmark")} alt="Soilytix" />
       {splash && (
         <button type="button" className="title-splash" autoFocus onClick={() => mixer.enable()}>
-          {started ? (
-            <>
-              <span className="spinner" aria-hidden="true" /> Loading the valley’s sound…
-            </>
-          ) : (
-            "Click or press a key to start, with sound"
-          )}
+          <span className="title-splash-hint">
+            {started ? (
+              <>
+                <span className="spinner" aria-hidden="true" /> Loading the valley’s sound…
+              </>
+            ) : (
+              "Click or press a key to start, with sound"
+            )}
+          </span>
         </button>
       )}
       {!splash && (
