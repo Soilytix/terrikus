@@ -24,11 +24,9 @@ export function SourceRef({ id }: { id: SourceId }) {
 export function FactItem({ fact }: { fact: Fact }) {
   return (
     <li className="fact">
-      <p>{fact.text}</p>
+      <p className="hand">{fact.text}</p>
       <div className="fact-meta">
-        <span className="confidence" data-c={fact.confidence}>
-          {CONFIDENCE[fact.confidence]}
-        </span>
+        <span className="sr-only">{CONFIDENCE[fact.confidence]}</span>
         {fact.evidence && (
           <span className="tier" data-tier={fact.evidence}>
             {fact.evidence}

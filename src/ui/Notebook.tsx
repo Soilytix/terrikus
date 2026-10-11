@@ -170,26 +170,31 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                       <span className="sr-only">{save.rumors[r.id]}: </span>
                       <blockquote className="rumor-quote">{r.text}</blockquote>
                       <div className="rumor-edges">
-                        {r.hintsAt.map((id) => {
+                        {r.hintsAt.map((id, i) => {
                           const c = chapterById(id);
-                          return (
-                            c && (
-                              <span key={id} className="edge" data-edge="hints">
-                                <span className="sr-only">hints at: </span>Ch. {c.number} · {c.title}
+                          if (!c) return null;
+                          const edge = (
+                            <span
+                              className="edge"
+                              data-edge="hints"
+                              tabIndex={i === 0 && hint ? 0 : undefined}
+                              aria-describedby={i === 0 && hint ? `tip-${r.id}` : undefined}
+                            >
+                              <span className="sr-only">hints at: </span>Ch. {c.number} · {c.title}
+                            </span>
+                          );
+                          // The where-to-look hint is about the first chapter, so it hangs off that badge.
+                          return i === 0 && hint ? (
+                            <span key={id} className="tip">
+                              {edge}
+                              <span role="tooltip" id={`tip-${r.id}`}>
+                                {hint}
                               </span>
-                            )
+                            </span>
+                          ) : (
+                            <span key={id}>{edge}</span>
                           );
                         })}
-                        {hint && (
-                          <span className="tip">
-                            <button type="button" aria-describedby={`tip-${r.id}`}>
-                              Where to look
-                            </button>
-                            <span role="tooltip" id={`tip-${r.id}`}>
-                              {hint}
-                            </span>
-                          </span>
-                        )}
                       </div>
                       {by && (
                         <p className="edge" data-edge="explains">
