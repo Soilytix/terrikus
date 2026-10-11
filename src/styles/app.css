@@ -13,7 +13,7 @@
   --glass: rgb(245 246 246 / 0.9);
   --glass-strong: rgb(245 246 246 / 0.97);
   --card-dark: var(--color-primary-slate);
-  --radius-soft: 22px;
+  --radius-soft: var(--radius-card);
   /* Headings set like a field guide or a journal: a text serif over the Inter body. */
   --font-display: "Source Serif 4 Variable", Georgia, serif;
   --glass-line: rgb(41 51 46 / 0.1);
@@ -127,7 +127,7 @@ button {
   white-space: nowrap;
   border: 0;
 }
-:focus-visible {
+:focus-visible:not([tabindex="-1"]) {
   outline: 2px solid var(--color-ink);
   outline-offset: 2px;
   box-shadow: 0 0 0 5px rgb(142 222 61 / 0.55);
@@ -564,8 +564,8 @@ button {
   background: var(--glass);
   -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(1.2);
   backdrop-filter: blur(var(--blur-glass)) saturate(1.2);
-  border: 1px solid rgb(255 255 255 / 0.7);
-  box-shadow: 0 12px 36px rgb(22 28 25 / 0.14);
+  border: 1px solid var(--glass-line);
+  box-shadow: var(--shadow-sm);
 }
 .hud-top {
   position: absolute;
@@ -579,7 +579,7 @@ button {
 }
 .hud-top > * {
   pointer-events: auto;
-  border-radius: 18px;
+  border-radius: var(--radius-card);
 }
 .brand {
   display: flex;
@@ -656,7 +656,7 @@ button {
   box-shadow: 0 0 0 2px var(--color-surface-card);
 }
 
-/* One card: where you are on the ladder, how long the bar is here, and the way up. */
+/* One card: where you are on the ladder and the way up. */
 .ladder {
   position: absolute;
   left: var(--hud-gap);
@@ -664,9 +664,8 @@ button {
   transform: translateY(-50%);
   min-width: 170px;
   padding: 14px 14px 12px 12px;
-  border-radius: var(
-    --radius-soft
-  ); /* Muted rung labels need the near-opaque fill to keep their contrast over any plate. */
+  border-radius: var(--radius-soft);
+  /* Muted rung labels need the near-opaque fill to keep their contrast over any plate. */
   background: var(--glass-strong);
 }
 .ladder ol {
@@ -780,16 +779,22 @@ button {
   border-color: var(--color-ink-muted);
 }
 
+/* The map legend: set on the plate's corner like a figure's scale, not inside a card. */
 .scalebar {
+  position: absolute;
+  left: var(--hud-gap);
+  bottom: var(--hud-gap);
   display: grid;
   grid-template-columns: auto auto;
   justify-content: start;
   align-items: center;
   gap: 6px 10px;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--glass-line);
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  background: var(--glass);
   font-size: 12px;
+  pointer-events: none;
 }
 .scalebar-bar {
   display: block;
@@ -1176,20 +1181,10 @@ input[type="range"] {
   background: var(--glass-strong);
   animation: rise var(--duration-drawer) var(--ease-chart);
 }
-/* Placed beside its hotspot (ScanCard): a lime edge on the side that faces it. */
+/* Placed beside its hotspot (ScanCard). */
 .scan-card[data-side] {
   bottom: auto;
   overflow-y: auto;
-}
-.scan-card[data-side="right"] {
-  box-shadow:
-    -4px 0 0 var(--color-brand-primary),
-    0 12px 36px rgb(22 28 25 / 0.2);
-}
-.scan-card[data-side="left"] {
-  box-shadow:
-    4px 0 0 var(--color-brand-primary),
-    0 12px 36px rgb(22 28 25 / 0.2);
 }
 .hotspot[data-open="true"] .hotspot-ring {
   transform: scale(1.3);
@@ -2601,9 +2596,8 @@ input[type="range"] {
     padding: 6px;
   }
   .scalebar {
-    margin: 0 0 0 auto;
-    padding: 0;
-    border: 0;
+    top: 160px;
+    bottom: auto;
     grid-template-columns: auto auto auto;
   }
   .not-to-scale {

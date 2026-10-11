@@ -114,19 +114,6 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
         <p className="ladder-key" aria-hidden="true">
           <span className="rung" data-key="here" /> here <span className="rung" data-key="visited" /> visited
         </p>
-        <p className="scalebar">
-          <span className="scalebar-bar" aria-hidden="true" />
-          <span className="sr-only">Scale bar: </span>
-          <span className="scalebar-label">{scene.scaleBar.label}</span>
-          {scene.notToScale && (
-            <span
-              className="not-to-scale"
-              title="Some things are drawn bigger than true size so you can see them."
-            >
-              Cells drawn ×{scene.notToScale}
-            </span>
-          )}
-        </p>
         {onUp && (
           <button type="button" className="up-btn" onClick={onUp} aria-keyshortcuts="Escape">
             <Icon d={ICONS.up} />
@@ -134,6 +121,20 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
           </button>
         )}
       </nav>
+
+      <p className="scalebar">
+        <span className="scalebar-bar" aria-hidden="true" />
+        <span className="sr-only">Scale bar: </span>
+        <span className="scalebar-label">{scene.scaleBar.label}</span>
+        {scene.notToScale && (
+          <span
+            className="not-to-scale"
+            title="Some things are drawn bigger than true size so you can see them."
+          >
+            Cells drawn ×{scene.notToScale}
+          </span>
+        )}
+      </p>
     </>
   );
 }
