@@ -1,5 +1,6 @@
 /** What the painter hands to the renderer (Pixi) and to the static fallback alike. */
-export type Motion = "none" | "sway" | "drift" | "breathe" | "wiggle" | "shimmer";
+/** `fall`: straight down at `vx`/`vy`, back to the top past `floor` (rain). */
+export type Motion = "none" | "sway" | "drift" | "breathe" | "wiggle" | "shimmer" | "fall";
 
 export interface PlateLayer {
   id: string;
@@ -31,6 +32,8 @@ export interface SpriteSpec {
   /** Drift velocity in px/s for `drift` sprites (wraps around the plate). */
   vx?: number;
   vy?: number;
+  /** `fall` sprites wrap back to the top once they pass this y (px); default the plate bottom. */
+  floor?: number;
 }
 
 /** Ambient particles: motes, bubbles, colloids, falling leaves. Never information. */

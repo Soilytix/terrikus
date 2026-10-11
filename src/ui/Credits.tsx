@@ -18,11 +18,12 @@ const FONTS: [string, string][] = [
   ["Inter", "Rasmus Andersson, via @fontsource-variable/inter"],
   ["IBM Plex Mono", "IBM, via @fontsource/ibm-plex-mono"],
   ["Source Serif 4", "Adobe, via @fontsource-variable/source-serif-4"],
+  ["Kalam", "Indian Type Foundry, via @fontsource/kalam"],
 ];
 
 export function Credits() {
   return (
-    <section aria-labelledby="credits-title">
+    <section className="credits-section" aria-labelledby="credits-title">
       <h3 id="credits-title" className="settings-group">
         Credits
       </h3>
@@ -30,7 +31,7 @@ export function Credits() {
         <tbody>
           {bundledAssets(__SW_PROFILE__).map((a) => (
             <tr key={a.id}>
-              <th scope="row" className="mono small">
+              <th scope="row" className="mono" title={a.path}>
                 {a.path}
               </th>
               <td>
@@ -42,14 +43,14 @@ export function Credits() {
                   a.attribution
                 )}
               </td>
-              <td className="small muted">{LICENCE[a.licence]}</td>
+              <td>{LICENCE[a.licence]}</td>
             </tr>
           ))}
           {FONTS.map(([name, by]) => (
             <tr key={name}>
               <th scope="row">{name}</th>
               <td>{by}</td>
-              <td className="small muted">{LICENCE.ofl}</td>
+              <td>{LICENCE.ofl}</td>
             </tr>
           ))}
         </tbody>

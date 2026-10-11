@@ -106,6 +106,7 @@ const c5Scenes: Scene[] = [
     chapter: "c5",
     title: "A charged landscape",
     scale: "cell",
+    tone: "light",
     recipe: "c5-platelet",
     seed: 53,
     scaleBar: { metres: 100e-9, label: "100 nm" },

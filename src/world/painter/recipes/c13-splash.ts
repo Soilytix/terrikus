@@ -8,6 +8,8 @@ import { blob, linear, range, stipple, type Ctx } from "../brush";
 import { mix } from "../color";
 import { rngFor } from "../noise";
 import { Svg } from "../svg";
+import { raindrop } from "../sprites";
+import type { SpriteSpec } from "../types";
 import type { RecipeOut } from "./index";
 
 /** Where the ground starts, and the line between the bare and the covered plot, plate units. */
@@ -74,13 +76,24 @@ export function c13Splash(c: Ctx, scale: number): RecipeOut {
 
   // Raindrops in mid-fall over both halves; crowns only where they strike bare soil.
   const rain = new Svg(w, h);
+  // Falling streaks (still where motion is off); the crowns below stay painted.
+  const drops: SpriteSpec[] = [];
   for (let i = 0; i < 46; i++) {
     const x = range(r, 0, 1) * w;
     const y = range(r, 0.02, 0.9) * h;
-    rain.path(
-      `M${x},${y}l${-u * 0.004},${u * 0.03}`,
-      `stroke="${W.film}" stroke-width="${u * 0.003}" stroke-linecap="round" opacity="0.7"`,
-    );
+    const vy = u * (0.7 + (0.3 * ((i * 7) % 5)) / 5);
+    const place = {
+      id: `drop-${i}`,
+      x,
+      y,
+      motion: "fall" as const,
+      phase: 0,
+      parallax: 0.6,
+      scale,
+      vx: -vy * 0.13,
+      vy,
+    };
+    drops.push(raindrop(place, u * 0.03, 0.9 * h));
   }
   for (let i = 0; i < 9; i++) {
     const x = range(r, 0.05, SPLASH_SPLIT - 0.05) * w;
@@ -103,7 +116,7 @@ export function c13Splash(c: Ctx, scale: number): RecipeOut {
       { id: "straw", svg: straw.toString(scale), parallax: 0.45, motion: "none" },
       { id: "rain", svg: rain.toString(scale), parallax: 0.6, motion: "none" },
     ],
-    sprites: [],
+    sprites: drops,
     particles: [],
   };
 }

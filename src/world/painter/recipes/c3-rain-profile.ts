@@ -9,6 +9,8 @@ import { blurDef, linear, range, stipple, type Ctx } from "../brush";
 import { mix } from "../color";
 import { rngFor } from "../noise";
 import { Svg, smoothOpen, type Pt } from "../svg";
+import { raindrop } from "../sprites";
+import type { SpriteSpec } from "../types";
 import type { RecipeOut } from "./index";
 
 /** The surface line, plate units; the profile below it is `PROFILE_CM` deep. */
@@ -95,13 +97,24 @@ export function c3RainProfile(c: Ctx, scale: number): RecipeOut {
       `fill="none" stroke="${W.foliage}" stroke-width="${u * 0.008}" stroke-linecap="round"`,
     );
   }
+  // Rain: falling streaks that stop at the surface; still where motion is off.
+  const drops: SpriteSpec[] = [];
   for (let i = 0; i < 70; i++) {
     const x = range(r, 0, 1) * w;
     const y = range(r, 0, SURFACE - 0.02) * h;
-    top.path(
-      `M${x},${y}l${-u * 0.006},${u * 0.03}`,
-      `stroke="${W.film}" stroke-width="${u * 0.0025}" stroke-linecap="round" opacity="0.6"`,
-    );
+    const vy = u * (0.7 + (0.3 * ((i * 7) % 5)) / 5);
+    const place = {
+      id: `drop-${i}`,
+      x,
+      y,
+      motion: "fall" as const,
+      phase: 0,
+      parallax: 0.6,
+      scale,
+      vx: -vy * 0.2,
+      vy,
+    };
+    drops.push(raindrop(place, u * 0.03, (SURFACE - 0.01) * h));
   }
 
   return {
@@ -112,20 +125,7 @@ export function c3RainProfile(c: Ctx, scale: number): RecipeOut {
       { id: "wet", svg: wet.toString(scale), parallax: 0.5, motion: "none" },
       { id: "top", svg: top.toString(scale), parallax: 0.55, motion: "sway" },
     ],
-    sprites: [],
-    particles: [
-      {
-        id: "rain",
-        kind: "glint",
-        count: 30,
-        colour: W.film,
-        region: { x0: 0, y0: 0, x1: 1, y1: SURFACE },
-        size: [1, 2],
-        alpha: [0.3, 0.6],
-        vx: -10,
-        vy: 160,
-        parallax: 0.6,
-      },
-    ],
+    sprites: drops,
+    particles: [],
   };
 }

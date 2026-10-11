@@ -747,6 +747,15 @@ export class Stage {
         case "sway":
           sprite.rotation = (spec.rotation ?? 0) + 0.025 * Math.sin(t * 0.5 + ph);
           break;
+        case "fall": {
+          s.x += (spec.vx ?? 0) * step;
+          s.y += (spec.vy ?? 0) * step;
+          if (s.y > (spec.floor ?? h)) s.y = -spec.h;
+          if (s.x < -spec.w) s.x = w + spec.w;
+          if (s.x > w + spec.w) s.x = -spec.w;
+          sprite.position.set(s.x, s.y);
+          break;
+        }
         case "drift": {
           s.x += (spec.vx ?? 0) * step;
           s.y += (spec.vy ?? 0) * step;

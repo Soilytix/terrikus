@@ -138,3 +138,19 @@ export function title(p: Press): string {
   if (p.row === 1) return ACTIONS[p.col]![1];
   return `${p.row < 4 ? "hat" : p.row < 6 ? "snare" : "kick"} step ${(p.row % 2 ? 8 : 0) + p.col + 1}`;
 }
+
+const TOP_GLYPHS = ["♩+", "♩−", "~−", "~+", "▶", "·−", "·+", "↻"];
+const MUTE_GLYPHS = ["K", "S", "H", "k", "b", "l", "tx", "tp"];
+const ACTION_GLYPHS = ["dr", "mo", "4th", "bd", "☼", "☂", "solo", "ev"];
+
+/** A short glyph printed on the pad; step pads stay blank. */
+export function glyph(p: Press, playing: boolean): string {
+  if (p.kind === "top") return p.col === 4 && playing ? "❚❚" : TOP_GLYPHS[p.col]!;
+  if (p.kind === "side") {
+    const f = CUTOFFS[7 - p.row]!;
+    return f >= 1000 ? `${f / 1000}k` : `${f}`;
+  }
+  if (p.row === 0) return MUTE_GLYPHS[p.col]!;
+  if (p.row === 1) return ACTION_GLYPHS[p.col]!;
+  return "";
+}

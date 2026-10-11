@@ -2,6 +2,7 @@
 @import "../design-system/tokens.css";
 @import "../design-system/fonts.css";
 @import "@fontsource-variable/source-serif-4/opsz.css";
+@import "@fontsource/kalam/latin-400.css";
 @import "./scene.css";
 
 /*
@@ -14,8 +15,10 @@
   --glass-strong: rgb(245 246 246 / 0.97);
   --card-dark: var(--color-primary-slate);
   --radius-soft: var(--radius-card);
-  /* Headings set like a field guide or a journal: a text serif over the Inter body. */
-  --font-display: "Source Serif 4 Variable", Georgia, serif;
+  /* Headings in Inter for now; the serif import stays for a later return. */
+  --font-display: var(--font-sans);
+  /* The notebook's hand: quotes and evidence, written as if in pencil. */
+  --font-hand: "Kalam", "Comic Sans MS", cursive;
   --glass-line: rgb(41 51 46 / 0.1);
   --ink-veil: rgb(22 28 25 / 0.55);
   --hud-gap: 16px;
@@ -555,17 +558,18 @@ button {
 }
 
 /* ---------- HUD ---------- */
+/* Flat glass: half the blur, no edge, no shadow. */
 .glass,
-.hud-top > *,
-.ladder,
+.hud-actions,
+.hud-scene .hud-btn,
 .mission,
 .scan-card,
 .title-card {
   background: var(--glass);
-  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(1.2);
-  backdrop-filter: blur(var(--blur-glass)) saturate(1.2);
-  border: 1px solid var(--glass-line);
-  box-shadow: var(--shadow-sm);
+  -webkit-backdrop-filter: blur(calc(var(--blur-glass) / 2)) saturate(1.2);
+  backdrop-filter: blur(calc(var(--blur-glass) / 2)) saturate(1.2);
+  border: 0;
+  box-shadow: none;
 }
 .hud-top {
   position: absolute;
@@ -581,25 +585,41 @@ button {
   pointer-events: auto;
   border-radius: var(--radius-card);
 }
+/* The brand and the scene's names sit on the plate with no card; their ink follows the
+   scene's tone. The HUD controls keep a faint glass of the plate's own hue. */
+.app {
+  --hud-ink: var(--color-ink);
+  --hud-ink-muted: var(--color-ink-muted);
+  --hud-glass: rgb(245 246 246 / 0.55);
+  --hud-glass-hover: rgb(245 246 246 / 0.8);
+  --hud-halo: rgb(245 246 246 / 0.75);
+}
+.app[data-tone="dark"] {
+  --hud-ink: var(--color-text-on-dark);
+  --hud-ink-muted: rgb(255 255 255 / 0.72);
+  --hud-glass: rgb(22 28 25 / 0.35);
+  --hud-glass-hover: rgb(22 28 25 / 0.55);
+  --hud-halo: rgb(22 28 25 / 0.7);
+}
+.app[data-tone="dark"] .brand-wordmark,
+.app[data-tone="dark"] .title-wordmark {
+  filter: brightness(0) invert(1);
+}
 .brand {
   display: flex;
   align-items: center;
-  gap: 14px;
   min-width: 0;
   min-height: 46px;
-  padding: 7px 18px 7px 14px;
-  color: var(--color-ink);
+  padding: 7px 4px;
+  color: var(--hud-ink);
   text-decoration: none;
-  transition: background var(--duration-instant) var(--ease-control);
-}
-.brand:hover {
-  background: var(--glass-strong);
 }
 .brand-names {
   display: grid;
   gap: 3px;
   padding-right: 14px;
-  border-right: 1px solid var(--glass-line);
+  border-right: 1px solid currentColor;
+  border-right-color: color-mix(in srgb, currentColor 25%, transparent);
 }
 .brand-wordmark {
   display: block;
@@ -612,16 +632,56 @@ button {
   font-weight: 650;
   line-height: 1;
 }
+/* Two lines like the brand beside it: the chapter small on top, the scene below. */
+.scene-names {
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  min-width: 0;
+  min-height: 46px;
+  color: var(--hud-ink);
+}
+.scene-chapter {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hud-ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .scene-title {
   font-family: var(--font-sans);
-  font-size: 14.5px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+.hud-scene,
 .hud-actions {
-  margin-left: auto;
   display: flex;
   gap: 2px;
   padding: 4px;
+}
+.hud-scene {
+  gap: 6px;
+}
+.hud-actions,
+.hud-scene .hud-btn {
+  background: var(--hud-glass);
+  color: var(--hud-ink);
+}
+.hud-scene .hud-btn {
+  height: 44px;
+}
+.hud-scene .hud-btn.icon-only {
+  width: 44px;
+}
+.hud-actions {
+  margin-left: auto;
 }
 .hud-btn {
   position: relative;
@@ -643,7 +703,10 @@ button {
   justify-content: center;
 }
 .hud-btn:hover {
-  background: rgb(41 51 46 / 0.07);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+.hud-scene .hud-btn:hover {
+  background: var(--hud-glass-hover);
 }
 .new-dot {
   position: absolute;
@@ -656,130 +719,110 @@ button {
   box-shadow: 0 0 0 2px var(--color-surface-card);
 }
 
-/* One card: where you are on the ladder and the way up. */
+/* Where you are on the ladder and the way up: no card, so the plate shows through.
+   Each rung carries its own small dark tag; the current one is the lime tag.
+   It lets clicks through and, like a dock, slides aside while the pointer is over it. */
 .ladder {
   position: absolute;
   left: var(--hud-gap);
   top: 50%;
   transform: translateY(-50%);
-  min-width: 170px;
+  min-width: 200px;
   padding: 14px 14px 12px 12px;
-  border-radius: var(--radius-soft);
-  /* Muted rung labels need the near-opaque fill to keep their contrast over any plate. */
-  background: var(--glass-strong);
+  pointer-events: none;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+.ladder[data-recede="true"] {
+  transform: translate(-70%, -50%);
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ladder {
+    transition: none;
+  }
 }
 .ladder ol {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 2px;
+  gap: 50px;
   position: relative;
 }
 .ladder ol::before {
   content: "";
   position: absolute;
-  left: 6px;
-  top: 8px;
-  bottom: 8px;
+  left: 7px;
+  top: 10px;
+  bottom: 10px;
   width: 2px;
-  background: var(--color-border-default);
+  background: var(--hud-ink);
+  opacity: 0.45;
 }
 .ladder li {
   position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 4px 0;
-  font-size: 12.5px;
-  color: var(--color-ink-muted);
+  padding: 2px 0;
+  font-size: 13px;
 }
 .rung {
   position: relative;
   z-index: 1;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  border: 2px solid var(--color-border-default);
-  background: var(--color-surface-card);
+  border: 2px solid var(--hud-ink);
+  background: var(--hud-glass);
   flex: none;
-}
-.ladder li[data-stamped="true"] .rung {
-  border-color: var(--color-ink);
 }
 .ladder li[data-stamped="true"] .rung::after {
   content: "";
   position: absolute;
   inset: 2px;
   border-radius: 50%;
-  background: var(--color-ink);
+  background: var(--hud-ink);
+}
+/* Other rungs are plain text in the scene's ink; only the current one is a tag. */
+.rung-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  color: var(--hud-ink);
+  text-shadow:
+    0 0 4px var(--hud-halo),
+    0 0 8px var(--hud-halo);
+}
+.rung-span {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 400;
+}
+.ladder li:not([data-here="true"]) .rung-span {
+  display: none;
 }
 .ladder li[data-here="true"] {
-  color: var(--color-ink);
+  font-size: 15px;
   font-weight: 600;
 }
 .ladder li[data-here="true"] .rung {
   border-color: var(--color-ink);
   background: var(--color-brand-primary);
-  box-shadow: 0 0 0 4px rgb(142 222 61 / 0.35);
 }
 .ladder li[data-here="true"] .rung::after {
   display: none;
 }
-.ladder-key {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin: 8px 0 0;
-  font-size: 11px;
-  color: var(--color-ink-muted);
-}
-.ladder-key .rung {
-  position: relative;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-ink);
-}
-.ladder-key .rung[data-key="here"] {
+.ladder li[data-here="true"] .rung-label {
+  text-shadow: none;
+  padding: 6px 12px;
+  border-radius: 12px;
   background: var(--color-brand-primary);
-  margin-left: 0;
+  color: var(--color-ink);
 }
-.ladder-key .rung[data-key="visited"] {
-  background: var(--color-ink);
-  margin-left: 8px;
-}
-.rung-label {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-.rung-span {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 400;
-  color: var(--color-ink-muted);
-}
-.up-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 10px;
-  width: 100%;
-  justify-content: center;
-  padding: 7px 10px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--color-border-default);
-  background: var(--color-surface-card);
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.up-btn:hover {
-  border-color: var(--color-ink-muted);
-}
-
-/* The map legend: set on the plate's corner like a figure's scale, not inside a card. */
+/* The map legend: set on the plate's corner like a figure's scale, no card. Its tags sit on top. */
 .scalebar {
   position: absolute;
   left: var(--hud-gap);
@@ -788,20 +831,20 @@ button {
   grid-template-columns: auto auto;
   justify-content: start;
   align-items: center;
-  gap: 6px 10px;
+  gap: 6px 8px;
   margin: 0;
-  padding: 6px 10px;
-  border-radius: var(--radius-md);
-  background: var(--glass);
-  font-size: 12px;
+  font-size: 11.5px;
+  color: var(--hud-ink);
+  opacity: 0.85;
+  filter: drop-shadow(0 0 2px var(--hud-halo)) drop-shadow(0 0 4px var(--hud-halo));
   pointer-events: none;
 }
 .scalebar-bar {
   display: block;
   width: calc(min(var(--vw, 100vw), var(--vh, 100vh)) * 0.18 * var(--vs, 1));
   max-width: 40vw;
-  height: 8px;
-  border: 2px solid var(--color-ink);
+  height: 6px;
+  border: 1.5px solid currentColor;
   border-top: 0;
 }
 .scalebar-label {
@@ -813,10 +856,9 @@ button {
   justify-self: start;
   padding: 2px 8px;
   border-radius: var(--radius-pill);
-  border: 1px dashed var(--color-ink-muted);
+  background: var(--hud-glass);
   font-size: 11px;
   font-weight: 600;
-  color: var(--color-ink-muted);
 }
 
 /* ---------- Mission panel ---------- */
@@ -900,9 +942,8 @@ button {
 }
 .scenario {
   padding: 10px 12px;
-  border-left: 3px solid var(--color-ink);
   background: var(--color-surface-page);
-  border-radius: 0 8px 8px 0;
+  border-radius: 8px;
   font-weight: 500;
 }
 .hint {
@@ -977,10 +1018,8 @@ button {
   padding: 8px 10px 8px 12px;
   border-radius: 8px;
   background: var(--color-surface-page);
-  border-left: 3px solid var(--color-ink);
 }
 .feedback li[data-ok="false"] {
-  border-left-color: var(--color-status-warning);
   background: var(--color-status-warning-bg);
 }
 .slider-row {
@@ -1210,9 +1249,17 @@ input[type="range"] {
 .scan-card > p {
   font-size: 14.5px;
 }
+.hand,
 .rumor-quote {
-  font-size: 17px;
-  font-weight: 500;
+  font-family: var(--font-hand);
+}
+/* A quote written into the notebook: the open mark hangs in the margin. */
+.rumor-quote {
+  position: relative;
+  margin: 0 0 6px;
+  padding-left: 26px;
+  font-size: 21px;
+  font-weight: 400;
   line-height: 1.4;
   margin-bottom: 6px;
 }
@@ -1487,13 +1534,13 @@ input[type="range"] {
   border-radius: 10px;
   background: var(--color-surface-page);
   font-size: 13.5px;
-  border-left: 4px solid var(--color-ink-muted);
+  border: 1px solid var(--color-ink-muted);
 }
 .verdict[data-verdict="supported"] {
-  border-left-color: var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
 }
 .verdict[data-verdict="contradicted"] {
-  border-left-color: var(--color-status-warning);
+  border-color: var(--color-status-warning);
   background: var(--color-status-warning-bg);
 }
 .verdict p {
@@ -1510,9 +1557,11 @@ input[type="range"] {
   border: 1px solid currentColor;
 }
 
-/* notebook */
+/* notebook: ruled paper under the entries */
 .notebook .dialog-body {
   padding-top: 0;
+  background: repeating-linear-gradient(to bottom, transparent 0 31px, var(--color-table-rule) 31px 32px);
+  background-attachment: local;
 }
 .tabs {
   position: sticky;
@@ -1557,9 +1606,16 @@ input[type="range"] {
   gap: 8px;
 }
 .rumors li {
-  padding: 14px 16px;
-  border-radius: 16px;
-  background: var(--color-surface-page);
+  padding: 6px 4px 10px;
+}
+.rumor-quote::before {
+  content: "“";
+  position: absolute;
+  left: 0;
+  top: -6px;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--color-ink-muted);
 }
 .rumors li[data-state="explained"] .rumor-quote {
   color: var(--color-ink-muted);
@@ -1598,6 +1654,7 @@ input[type="range"] {
   gap: 12px;
 }
 .field-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   border-radius: 16px;
@@ -1609,7 +1666,15 @@ input[type="range"] {
   height: 140px;
   display: grid;
   place-items: center;
-  background: var(--color-surface-hero-dark);
+  background: var(--color-surface-card);
+}
+/* Status tags sit on the card's corner, over the picture or the paper. */
+.field-card .review-badge,
+.lab-book li > .tier {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  margin: 0;
 }
 .fc-art img {
   max-height: 120px;
@@ -1620,7 +1685,7 @@ input[type="range"] {
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-on-dark-muted);
+  color: var(--color-ink-muted);
 }
 .fc-body {
   padding: 12px 14px 14px;
@@ -1674,9 +1739,11 @@ input[type="range"] {
   color: var(--color-ink-faint);
 }
 .lab-book li {
-  padding: 12px 14px;
+  position: relative;
+  padding: 34px 14px 12px;
   border-radius: 12px;
   border: 1px solid var(--color-border-default);
+  background: var(--color-surface-card);
   display: grid;
   gap: 4px;
   font-size: 14px;
@@ -1684,9 +1751,21 @@ input[type="range"] {
 .lab-book li[data-tier="would-do"] {
   border-style: dashed;
 }
+.lab-book .tier {
+  background: var(--color-surface-card);
+}
+.lab-book .hand {
+  font-size: 17px;
+}
+.codex-list {
+  display: grid;
+  gap: 12px;
+}
 .codex-entry {
-  padding: 16px 0;
-  border-bottom: 1px solid var(--color-table-rule);
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-surface-card);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1780,12 +1859,28 @@ input[type="range"] {
   font-weight: 400;
   white-space: nowrap;
 }
+/* Credits: small print, one line per item; long paths end in an ellipsis (full path on hover). */
+.credits-section {
+  margin-top: 28px;
+}
 .credits {
   width: 100%;
+  table-layout: fixed;
+  font-size: 11.5px;
+  color: var(--color-ink-muted);
+}
+.credits th,
+.credits td {
+  padding: 3px 8px 3px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .credits th {
-  white-space: normal;
-  overflow-wrap: anywhere;
+  width: 42%;
+}
+.credits td:last-child {
+  width: 18%;
 }
 .segmented {
   display: flex;
@@ -1855,13 +1950,16 @@ input[type="range"] {
   border-radius: 28px;
   animation: rise 0.9s var(--ease-chart);
 }
+/* The company mark sits on the picture's corner, not in the card. */
 .title-wordmark {
-  display: block;
-  height: 14px;
+  position: absolute;
+  right: clamp(16px, 5vw, 72px);
+  top: clamp(16px, 4vh, 40px);
+  height: clamp(24px, 3.4vw, 60px);
   width: auto;
 }
 .title-card h1 {
-  margin-top: 14px;
+  margin-top: 0;
   font-size: clamp(44px, 6.5vw, 66px);
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -1927,6 +2025,10 @@ input[type="range"] {
   font-family: var(--font-display);
   font-size: 18px;
   font-weight: 600;
+}
+.title-next .hand {
+  font-family: var(--font-hand);
+  font-weight: 400;
 }
 .title-next .mono {
   font-size: 12px;
@@ -2060,15 +2162,6 @@ input[type="range"] {
   .title-birds {
     display: none;
   }
-}
-.title-foot {
-  margin-top: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  font-size: 12px;
-  color: var(--color-ink-muted);
 }
 
 /* ---------- Bench ---------- */
@@ -2461,15 +2554,26 @@ input[type="range"] {
   text-transform: uppercase;
   color: var(--color-ink-muted);
 }
+/* One card per topic; its settings are rows inside it. */
+.settings-card {
+  display: grid;
+  padding: 6px 16px 4px;
+  border-radius: 16px;
+  background: var(--color-neutral-lightest-green);
+}
+.settings-card .settings-group {
+  margin: 8px 0 2px;
+}
 .setting {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 10px 16px;
-  padding: 14px 16px;
-  border-radius: 16px;
-  background: var(--color-neutral-lightest-green);
+  padding: 12px 0;
+}
+.setting + .setting {
+  border-top: 1px solid var(--color-table-rule);
 }
 .setting-text {
   flex: 1 1 220px;
@@ -2526,8 +2630,7 @@ input[type="range"] {
   :root {
     --hud-gap: 10px;
   }
-  .hud-btn-label,
-  .ladder-key {
+  .hud-btn-label {
     display: none;
   }
   /* Five tabs do not fit a phone row: wrap rather than hide one off-screen. */
@@ -2540,12 +2643,13 @@ input[type="range"] {
     font-size: 13px;
   }
   .brand {
-    flex: 1;
-    gap: 10px;
-    padding: 6px 12px 6px 10px;
+    padding: 6px 2px;
   }
   .brand-names {
     padding-right: 10px;
+  }
+  .scene-names {
+    flex: 1;
   }
   .scene-title {
     font-size: 13.5px;
@@ -2556,10 +2660,12 @@ input[type="range"] {
     justify-content: center;
   }
   /* On a phone the card is one row: the current rung, the bar, the way up. */
-  .ladder {
+  .ladder,
+  .ladder[data-recede="true"] {
     top: 74px;
     right: var(--hud-gap);
     transform: none;
+    opacity: 1;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -2589,11 +2695,9 @@ input[type="range"] {
     font-size: 11px;
   }
   .up-btn {
-    width: auto;
-    margin: 0;
-    font-size: 0;
-    gap: 0;
-    padding: 6px;
+    width: 36px;
+    padding: 0;
+    justify-content: center;
   }
   .scalebar {
     top: 160px;
@@ -3396,7 +3500,7 @@ input[type="range"] {
   font-size: 13px;
   font-weight: 600;
   padding: 6px 10px;
-  border-left: 3px solid var(--color-ink);
+  border-radius: 8px;
   background: var(--color-functional-light-yellow);
 }
 /* Chapter 7: exudation band, root inputs, bare versus planted (T21) */
@@ -3630,9 +3734,8 @@ input[type="range"] {
 }
 .explain-card {
   padding: 10px 12px;
-  border-left: 3px solid var(--color-status-warning);
   background: var(--color-status-warning-bg);
-  border-radius: 0 8px 8px 0;
+  border-radius: 8px;
   font-size: 14px;
 }
 .gene-table {
@@ -3690,13 +3793,14 @@ input[type="range"] {
 }
 .ladder-rungs li {
   padding: 6px 8px;
-  border-left: 3px solid var(--color-table-rule);
+  border-radius: 8px;
+  border: 1px solid var(--color-table-rule);
 }
 .ladder-rungs li[data-held="true"] {
-  border-left-color: var(--color-ink);
+  border-color: var(--color-ink);
 }
 .ladder-rungs li[data-tier="would-measure"][data-held="true"] {
-  border-left-style: dashed;
+  border-style: dashed;
 }
 .ladder-rungs p {
   margin: 4px 0 0;
@@ -3740,8 +3844,7 @@ input[type="range"] {
   padding: 10px 12px;
   border-radius: 10px;
   background: var(--color-surface-card);
-  border: 1px solid var(--color-border-default);
-  border-left: 4px solid var(--field);
+  border: 2px solid var(--field);
 }
 .season-wheel,
 .zone-plot {
@@ -3922,10 +4025,66 @@ input[type="range"] {
   border: 0;
   border-radius: 4px;
   cursor: pointer;
+  display: grid;
+  place-items: center;
+  font: 600 9px/1 var(--font-mono);
+  color: var(--color-text-on-dark);
+  text-shadow: 0 0 2px var(--color-ink);
+  overflow: hidden;
 }
 .beats-dev-surface .round {
   border-radius: 50%;
-  transform: scale(0.7);
+  transform: scale(0.85);
+  outline: 1px solid var(--color-border-default);
+}
+.beats-dev-hint {
+  margin: 6px 0 0;
+  min-height: 1.4em;
+  font-weight: 600;
+}
+.beats-dev-tabs {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+.beats-dev-tabs button {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-pill);
+  background: none;
+  font: inherit;
+  color: var(--color-ink-muted);
+  padding: 0 8px;
+  cursor: pointer;
+}
+.beats-dev-tabs button[aria-selected="true"] {
+  background: var(--color-ink);
+  color: var(--color-text-on-dark);
+}
+.beats-dev-synth {
+  display: grid;
+  gap: 2px;
+  max-height: 60vh;
+  overflow: auto;
+}
+.beats-dev-synth fieldset {
+  margin: 6px 0 0;
+  padding: 2px 6px 4px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 4px;
+}
+.beats-dev-slider {
+  display: grid;
+  grid-template-columns: 6em 1fr 4em;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-ink-muted);
+}
+.beats-dev-slider[data-own="true"] {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.beats-dev-slider span:last-child {
+  text-align: right;
 }
 .beats-dev-status {
   margin: 8px 0 4px;

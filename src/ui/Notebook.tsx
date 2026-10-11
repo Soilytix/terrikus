@@ -1,29 +1,28 @@
 /** The field notebook: the only reward. Everything in it is the player's own. */
 import { useEffect, useRef } from "react";
 import {
-  CHAPTERS,
   CODEX,
   DISCOVERIES,
   FIELD_CARDS,
   RUMORS,
   chapter as chapterById,
   codex as codexById,
+  mission as missionById,
+  scene as sceneById,
   type FieldCard,
 } from "../content";
 import type { GroupBadge } from "../content/schema";
 import type { Save } from "../save/schema";
 import { assetUrl } from "../assets/urls";
-import { NOTEBOOK_TABS, type NotebookTab } from "../app/router";
-import { chapterState, whereToLook, type ChapterState } from "../app/progress";
-import { LADDER } from "./Hud";
+import { NOTEBOOK_TABS, href, type NotebookTab } from "../app/router";
+import { whereToLook } from "../app/progress";
 import { Dialog, Facts, ReviewBadge, SourceRef } from "./common";
 
 const TAB_LABEL: Record<NotebookTab, string> = {
   rumors: "Rumors",
   cards: "Field cards",
   lab: "Lab book",
-  codex: "Codex",
-  contents: "Contents",
+  codex: "Explanations",
 };
 
 /** Predator has no shape yet (art-direction §6.2): its badge is text only. */
@@ -35,14 +34,6 @@ const GROUP_SHAPE: Partial<Record<GroupBadge, string>> = {
   pathogen: "M8 1l2 5h5l-4 3 2 6-5-4-5 4 2-6-4-3h5z",
   engineer: "M4 1h8l3 7-3 7H4L1 8z",
   shredder: "M1 1h14v14H1z",
-};
-
-const STATE_LABEL: Record<ChapterState, string> = {
-  complete: "complete",
-  open: "open",
-  ready: "opened by its rumor; not built yet",
-  locked: "locked",
-  planned: "planned",
 };
 
 function sizeLabel(m: number): string {
@@ -177,7 +168,7 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                   return (
                     <li key={r.id} data-state={save.rumors[r.id]}>
                       <span className="sr-only">{save.rumors[r.id]}: </span>
-                      <p className="rumor-quote">“{r.text}”</p>
+                      <blockquote className="rumor-quote">{r.text}</blockquote>
                       <ul className="rumor-edges">
                         {r.hintsAt.map((id) => {
                           const c = chapterById(id);
@@ -233,18 +224,32 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
             <p className="lede">Your runs and reasoning, kept apart by evidence tier.</p>
             {save.labBook.length ? (
               <ol className="lab-book">
-                {[...save.labBook].reverse().map((e) => (
-                  <li key={e.id + e.at} data-tier={e.tier}>
-                    <span className="tier" data-tier={e.tier === "would-do" ? "would-do" : "measured"}>
-                      {e.tier === "would-do" ? "would measure" : e.tier}
-                    </span>
-                    <p>{e.result}</p>
-                    {e.prediction && <p className="small muted">Predicted: {e.prediction}</p>}
-                    <p className="small muted mono">
-                      {e.ruleset} · {new Date(e.at).toLocaleString()}
-                    </p>
-                  </li>
-                ))}
+                {[...save.labBook].reverse().map((e) => {
+                  // Where the entry was written: its mission's scene, else its bench. The place may have changed since.
+                  const at = e.mission ? sceneById(missionById(e.mission)?.scene ?? "") : undefined;
+                  return (
+                    <li key={e.id + e.at} data-tier={e.tier}>
+                      <span className="tier" data-tier={e.tier === "would-do" ? "would-do" : "measured"}>
+                        {e.tier === "would-do" ? "would measure" : e.tier}
+                      </span>
+                      <p className="hand">{e.result}</p>
+                      {e.prediction && <p className="small muted">Predicted: {e.prediction}</p>}
+                      <p className="small muted">
+                        From{" "}
+                        <a
+                          href={
+                            at
+                              ? href({ name: "scene", scene: at.id })
+                              : href({ name: "bench", bench: e.bench })
+                          }
+                        >
+                          {at ? at.title : "the lab bench"}
+                        </a>{" "}
+                        · <span className="mono">{e.ruleset}</span> · {new Date(e.at).toLocaleString()}
+                      </p>
+                    </li>
+                  );
+                })}
               </ol>
             ) : (
               <p className="empty">Nothing run yet. The lab bench opens in chapter 2.</p>
@@ -270,97 +275,64 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
         )}
         {tab === "codex" && (
           <>
-            <p className="lede">What you have learned, with the sources behind it.</p>
+            <p className="lede">What explained your questions, with the sources behind it.</p>
             {entries.length ? (
-              entries.map((c) => (
-                <article key={c.id} className="codex-entry">
-                  <h3>{c.title}</h3>
-                  <ReviewBadge status={c.reviewStatus} />
-                  {c.body.map((p) => (
-                    <p key={p.slice(0, 24)}>{p}</p>
-                  ))}
-                  {c.revised && (
-                    <div className="revised">
-                      <p>
-                        <s>{c.revised.old}</s>
-                      </p>
-                      <p>
-                        Now: {c.revised.now}{" "}
-                        {c.revised.sources.map((s) => (
-                          <SourceRef key={s} id={s} />
-                        ))}
-                      </p>
-                    </div>
-                  )}
-                  {c.openQuestion && (
-                    <div className="open-question">
-                      <p>
-                        <b>Open question: {c.openQuestion.claim}</b>
-                      </p>
-                      <ul>
-                        {c.openQuestion.sides.map((s) => (
-                          <li key={s}>{s}</li>
-                        ))}
-                      </ul>
-                      <p className="small">
-                        {c.openQuestion.sources.map((s) => (
-                          <SourceRef key={s} id={s} />
-                        ))}
-                      </p>
-                    </div>
-                  )}
-                  <Facts facts={c.facts} />
-                  {c.realWorld && (
-                    <>
-                      <p>
-                        <b>In the real world</b>
-                      </p>
-                      <Facts facts={c.realWorld} />
-                    </>
-                  )}
-                  {c.simplification && <p className="simplification">Simplified: {c.simplification}</p>}
-                </article>
-              ))
+              <div className="codex-list">
+                {entries.map((c) => (
+                  <article key={c.id} className="codex-entry">
+                    <h3>{c.title}</h3>
+                    <ReviewBadge status={c.reviewStatus} />
+                    {c.body.map((p) => (
+                      <p key={p.slice(0, 24)}>{p}</p>
+                    ))}
+                    {c.revised && (
+                      <div className="revised">
+                        <p>
+                          <s>{c.revised.old}</s>
+                        </p>
+                        <p>
+                          Now: {c.revised.now}{" "}
+                          {c.revised.sources.map((s) => (
+                            <SourceRef key={s} id={s} />
+                          ))}
+                        </p>
+                      </div>
+                    )}
+                    {c.openQuestion && (
+                      <div className="open-question">
+                        <p>
+                          <b>Open question: {c.openQuestion.claim}</b>
+                        </p>
+                        <ul>
+                          {c.openQuestion.sides.map((s) => (
+                            <li key={s}>{s}</li>
+                          ))}
+                        </ul>
+                        <p className="small">
+                          {c.openQuestion.sources.map((s) => (
+                            <SourceRef key={s} id={s} />
+                          ))}
+                        </p>
+                      </div>
+                    )}
+                    <Facts facts={c.facts} />
+                    {c.realWorld && (
+                      <>
+                        <p>
+                          <b>In the real world</b>
+                        </p>
+                        <Facts facts={c.realWorld} />
+                      </>
+                    )}
+                    {c.simplification && <p className="simplification">Simplified: {c.simplification}</p>}
+                  </article>
+                ))}
+              </div>
             ) : (
               <p className="empty">
-                The codex fills as you finish missions. {CODEX.length} entries wait in this book.
+                Explanations fill in as you finish missions. {CODEX.length} wait in this book.
               </p>
             )}
-          </>
-        )}
-        {tab === "contents" && (
-          <>
-            <h3>Scale stamps</h3>
-            <ol className="stamps">
-              {LADDER.map((l) => (
-                <li key={l.scale} data-stamped={save.stamps.includes(l.scale)}>
-                  <span className="stamp" aria-hidden="true" />
-                  {l.label}
-                  <span className="sr-only">{save.stamps.includes(l.scale) ? " visited" : " not yet"}</span>
-                </li>
-              ))}
-            </ol>
-            <h3>Discoveries</h3>
-            <ul className="discoveries">
-              {DISCOVERIES.filter((d) => save.discoveries.includes(d.id)).map((d) => (
-                <li key={d.id}>
-                  <span className="tier" data-tier={d.evidenceTier}>
-                    {d.evidenceTier}
-                  </span>
-                  {d.statement}
-                </li>
-              ))}
-              {!save.discoveries.length && <li className="empty">None yet.</li>}
-            </ul>
-            <h3>Chapters</h3>
-            <ol className="chapters">
-              {CHAPTERS.map((c) => (
-                <li key={c.id} data-state={chapterState(c, save)}>
-                  <span className="mono">{c.number}</span> {c.title}
-                  <span className="small muted">{STATE_LABEL[chapterState(c, save)]}</span>
-                </li>
-              ))}
-            </ol>
           </>
         )}
       </div>

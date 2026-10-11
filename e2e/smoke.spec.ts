@@ -117,7 +117,7 @@ test("play the prologue and the first chapter-2 mission", async ({ page }, info)
   await expect(nb).toBeVisible();
   await nb.getByRole("tab", { name: "Field cards" }).click();
   await shot(page, "12-notebook-cards", p);
-  await nb.getByRole("tab", { name: "Codex" }).click();
+  await nb.getByRole("tab", { name: "Explanations" }).click();
   await shot(page, "13-notebook-codex", p);
 
   // Reload: progress survives.
@@ -142,7 +142,7 @@ test("settings credit every bundled asset", async ({ page }, info) => {
   await page.getByRole("button", { name: "Settings" }).click();
   const credits = page.getByRole("region", { name: "Credits" });
   await credits.scrollIntoViewIfNeeded();
-  await expect(credits.getByRole("row")).toHaveCount(bundledAssets("internal").length + 3); // assets + 3 fonts
+  await expect(credits.getByRole("row")).toHaveCount(bundledAssets("internal").length + 4); // assets + 4 fonts
   await shot(page, "15-credits", info.project.name);
 });
 

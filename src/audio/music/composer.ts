@@ -274,7 +274,7 @@ export class Composer {
   }
 
   get bpm() {
-    return clamp(this.mood.tempo + this.tempoNudge, 56, 104);
+    return clamp(this.mood.tempo + this.tempoNudge, 48, 104);
   }
 
   /** A new categorical shape: a mode change lands on the next chord, keeping the key. */

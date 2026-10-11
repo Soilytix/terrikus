@@ -1,4 +1,6 @@
 /** Heads-up display: where you are, how big things are, and the way out. */
+import { useEffect, useRef, useState } from "react";
+import { chapter, sceneChapter } from "../content";
 import type { Scale, Scene } from "../content/schema";
 import { assetUrl } from "../assets/urls";
 
@@ -40,7 +42,7 @@ function Icon({ d }: { d: string }) {
 
 const ICONS = {
   book: "M4 4.5C6 3.5 8 3.5 10 5c2 -1.5 4-1.5 6-.5V16c-2-1-4-1-6 .5C8 15 6 15 4 16z M10 5v11.5",
-  eye: "M2.5 10s3-5.5 7.5-5.5 7.5 5.5 7.5 5.5-3 5.5-7.5 5.5S2.5 10 2.5 10z M10 12.3a2.3 2.3 0 100-4.6 2.3 2.3 0 000 4.6z",
+  info: "M10 18a8 8 0 100-16 8 8 0 000 16z M10 9v5 M10 6.2v.3",
   sliders: "M3.5 6h13 M3.5 14h13 M7.5 3.8v4.4 M12.5 11.8v4.4",
   help: "M7.5 7.5a2.5 2.5 0 114 2c-.9.6-1.5 1.1-1.5 2.2 M10 14.5v.3 M10 18a8 8 0 100-16 8 8 0 000 16z",
   up: "M10 15.5v-11 M5.5 9L10 4.5 14.5 9",
@@ -49,6 +51,23 @@ const ICONS = {
 export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHelp, notebookDot }: Props) {
   const rung = LADDER.findIndex((l) => l.scale === scene.scale);
   const closeUp = scene.scaleBar.metres < (LADDER[rung]?.bar ?? 0) / 5;
+  const ch = chapter(sceneChapter(scene.id) ?? "");
+  // The ladder lets clicks through (CSS); like a dock, it steps aside while the pointer is over it.
+  const ladder = useRef<HTMLElement>(null);
+  const [recede, setRecede] = useState(false);
+  useEffect(() => {
+    // Measured at rest only, so the slid-aside card does not shrink its own hover zone.
+    let home: DOMRect | undefined;
+    const move = (e: PointerEvent) => {
+      const el = ladder.current;
+      if (el?.dataset.recede !== "true") home = el?.getBoundingClientRect();
+      const r = home;
+      const over = !!r && e.clientX <= r.right + 24 && e.clientY >= r.top - 24 && e.clientY <= r.bottom + 24;
+      setRecede(over);
+    };
+    window.addEventListener("pointermove", move);
+    return () => window.removeEventListener("pointermove", move);
+  }, []);
   return (
     <>
       <header className="hud-top">
@@ -57,9 +76,35 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
             <img className="brand-wordmark" src={assetUrl("brand-wordmark")} alt="Soilytix" />
             <span className="brand-name">Terrikus</span>
           </span>
-          <h1 className="scene-title">{scene.title}</h1>
           <span className="sr-only">, back to the title screen</span>
         </a>
+        <div className="scene-names">
+          <span className="scene-chapter">{ch ? ch.title : "The valley"}</span>
+          <h1 className="scene-title">{scene.title}</h1>
+        </div>
+        <nav className="hud-scene" aria-label="This scene">
+          {onUp && (
+            <button
+              type="button"
+              className="hud-btn up-btn"
+              onClick={onUp}
+              aria-label="Up a scale"
+              aria-keyshortcuts="Escape"
+            >
+              <Icon d={ICONS.up} />
+              <span className="hud-btn-label">Up a scale</span>
+            </button>
+          )}
+          <button
+            type="button"
+            className="hud-btn icon-only"
+            onClick={onTruth}
+            aria-label="About this picture"
+            title="About this picture: what is drawn from life, and what is not"
+          >
+            <Icon d={ICONS.info} />
+          </button>
+        </nav>
         <nav className="hud-actions" aria-label="Tools">
           <button
             type="button"
@@ -71,10 +116,6 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
             <Icon d={ICONS.book} />
             <span className="hud-btn-label">Notebook</span>
             {notebookDot && <span className="new-dot" aria-hidden="true" />}
-          </button>
-          <button type="button" className="hud-btn" onClick={onTruth} aria-label="What is real?">
-            <Icon d={ICONS.eye} />
-            <span className="hud-btn-label">What is real?</span>
           </button>
           <button type="button" className="hud-btn icon-only" onClick={onSettings} aria-label="Settings">
             <Icon d={ICONS.sliders} />
@@ -91,7 +132,7 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
         </nav>
       </header>
 
-      <nav className="ladder" aria-label="Scale ladder">
+      <nav className="ladder" aria-label="Scale ladder" ref={ladder} data-recede={recede}>
         <ol>
           {LADDER.map((l, i) => (
             <li
@@ -111,21 +152,9 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
             </li>
           ))}
         </ol>
-        <p className="ladder-key" aria-hidden="true">
-          <span className="rung" data-key="here" /> here <span className="rung" data-key="visited" /> visited
-        </p>
-        {onUp && (
-          <button type="button" className="up-btn" onClick={onUp} aria-keyshortcuts="Escape">
-            <Icon d={ICONS.up} />
-            Up a scale
-          </button>
-        )}
       </nav>
 
       <p className="scalebar">
-        <span className="scalebar-bar" aria-hidden="true" />
-        <span className="sr-only">Scale bar: </span>
-        <span className="scalebar-label">{scene.scaleBar.label}</span>
         {scene.notToScale && (
           <span
             className="not-to-scale"
@@ -134,6 +163,9 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
             Cells drawn ×{scene.notToScale}
           </span>
         )}
+        <span className="scalebar-bar" aria-hidden="true" />
+        <span className="sr-only">Scale bar: </span>
+        <span className="scalebar-label">{scene.scaleBar.label}</span>
       </p>
     </>
   );

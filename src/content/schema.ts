@@ -116,6 +116,8 @@ export interface Scene extends Reviewed {
   chapter: ChapterId | "valley";
   title: string;
   scale: Scale;
+  /** Plate brightness under the HUD: wordmark, titles and HUD glass take the opposite ink. */
+  tone: "light" | "dark";
   /** Painter recipe id (src/world/painter/recipes). */
   recipe: string;
   seed: number;

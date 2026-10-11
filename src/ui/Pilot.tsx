@@ -126,7 +126,7 @@ export function PilotSettings({ chaptersComplete }: { chaptersComplete: number }
   };
   const after = PILOT.thresholds.postAfterChapters;
   return (
-    <section className="pilot" aria-label="Learning study">
+    <section className="pilot settings-card" aria-label="Learning study">
       <h3 className="settings-group">Learning study</h3>
       <label className="setting">
         <span className="setting-text">

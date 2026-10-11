@@ -56,8 +56,8 @@ export function Title({
   return (
     <>
       {birds && <Birds />}
+      <img className="title-wordmark" src={assetUrl("brand-wordmark")} alt="Soilytix" />
       <section className="title-card" aria-labelledby="title" aria-busy={!ready}>
-        <img className="title-wordmark" src={assetUrl("brand-wordmark")} alt="Soilytix" />
         <h1 id="title">Terrikus</h1>
         <p className="title-lede">
           One valley, <mark>six scales</mark>. Pick up a handful of soil and follow it down, from the field to
@@ -76,9 +76,6 @@ export function Title({
                 →
               </span>
             </button>
-            <a className="btn btn-ghost" href="#/notebook/contents">
-              Notebook
-            </a>
           </div>
           <p className="title-loading" role="status">
             {!ready && (
@@ -93,7 +90,7 @@ export function Title({
               <p>
                 <span className="mono">{label(next.number)}</span> {next.title}
               </p>
-              <p className="muted">“{next.hook}”</p>
+              <p className="hand">“{next.hook}”</p>
             </div>
           )}
           <ol className="title-chapters" aria-label="Chapters">
@@ -126,13 +123,6 @@ export function Title({
             </li>
           </ol>
         </div>
-        <p className="title-foot">
-          <span className="review-badge">
-            <span className="dot" aria-hidden="true" />
-            Draft · scientific review pending
-          </span>
-          A teaching tool. Rates and pictures teach direction, not prediction.
-        </p>
       </section>
     </>
   );

@@ -5,10 +5,7 @@ import { expect, test } from "@playwright/test";
 const routes: [string, string][] = [
   ["title", "./"],
   ["scene", "./#/ch/prologue/p-handful"],
-  ...["rumors", "cards", "lab", "codex", "contents"].map((t): [string, string] => [
-    `notebook ${t}`,
-    `./#/notebook/${t}`,
-  ]),
+  ...["rumors", "cards", "lab", "codex"].map((t): [string, string] => [`notebook ${t}`, `./#/notebook/${t}`]),
 ];
 
 for (const [name, url] of routes) {

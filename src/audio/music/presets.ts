@@ -176,7 +176,7 @@ export const SCALE_LAYERS: Record<Scale, Layer> = {
     style: "close, clicking minimal",
     surface: 0.25,
     mood: {
-      tempo: 88,
+      tempo: 55,
       swing: 0.54,
       density: 0.85,
       drums: 0.7,
@@ -428,7 +428,7 @@ export function presetFor(
   m.drops += 0.5 * rain;
   m.cutoff *= 1 - 0.3 * rain;
   m.birds *= 1 - rain;
-  m.beds = add(m.beds, { rain: 0.9 * rain, drizzle: 0.3 * rain * (1 - s), birds: -rain }, 1);
+  m.beds = add(m.beds, { rain: 0.6 * rain, drizzle: 0.2 * rain * (1 - s), birds: -rain }, 1);
 
   m.beds = add(m.beds, sc.beds ?? {});
   const style = sc.style ?? layer.style;

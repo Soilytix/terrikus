@@ -338,8 +338,9 @@ export function hedgeEdge(c: Ctx, scale: number): RecipeOut {
     layers: [
       { id: "sky", svg: sky.toString(scale), parallax: 0, motion: "none" },
       { id: "far", svg: far.toString(scale), parallax: 0.15, motion: "none" },
-      { id: "hedge", svg: hedge.toString(scale), parallax: 0.3, motion: "sway" },
+      // The hedge stands on the field: drawn over the ground and moving with it, so the field never slides out from under it.
       { id: "ground", svg: ground.toString(scale), parallax: 0.6, motion: "none" },
+      { id: "hedge", svg: hedge.toString(scale), parallax: 0.6, motion: "sway" },
       { id: "crown", svg: crown.toString(scale), parallax: 0.6, motion: "none" },
       { id: "hero", svg: hero.toString(scale), parallax: 0.7, motion: "none" },
       { id: "air", svg: air.toString(scale), parallax: 0, motion: "drift", blend: "screen" },

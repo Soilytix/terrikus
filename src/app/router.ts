@@ -2,8 +2,8 @@
 import { sceneChapter } from "../content";
 import { isBenchId, type BenchId } from "../sim/benches";
 
-export type NotebookTab = "rumors" | "cards" | "lab" | "codex" | "contents";
-export const NOTEBOOK_TABS: NotebookTab[] = ["rumors", "cards", "lab", "codex", "contents"];
+export type NotebookTab = "rumors" | "cards" | "lab" | "codex";
+export const NOTEBOOK_TABS: NotebookTab[] = ["rumors", "cards", "lab", "codex"];
 
 export type Route =
   | { name: "title" }

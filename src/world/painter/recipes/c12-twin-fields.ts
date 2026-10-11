@@ -16,6 +16,8 @@ import { crumb, rosette } from "./plants";
 const SURFACE = 0.52;
 const CUT = 0.6;
 const PLOUGH = 0.76;
+/** Furrow spacing at the front edge, as a fraction of the plate width. */
+const FURROW = 0.045;
 
 export function c12TwinFields(c: Ctx, scale: number): RecipeOut {
   const { w, h, u } = c;
@@ -40,12 +42,17 @@ export function c12TwinFields(c: Ctx, scale: number): RecipeOut {
   const top = 0.38 * h;
   fields.rect(0, top, w, SURFACE * h - top + u * 0.02, `fill="${mix(W.loam, W.sand, 0.15)}"`);
   fields.rect(w / 2, top, w / 2, SURFACE * h - top + u * 0.02, `fill="${mix(W.loam, W.subsoil, 0.35)}"`);
-  // Furrows on the left: long dark ridges converging on the horizon.
-  for (let i = 0; i < 18; i++) {
-    const y = top + ((i + 1) / 19) ** 1.6 * (SURFACE * h - top);
+  // Furrows on the left run with the track toward its vanishing point, narrowing
+  // with distance; the ones nearest the middle slide under the track.
+  const front = SURFACE * h + u * 0.02;
+  const vp: Pt = [w / 2, front - 1.2 * (front - top)];
+  const far = (x: number) => x + (vp[0] - x) * ((front - top) / (front - vp[1]));
+  for (let x = -0.6 * w; x < 0.5 * w; x += FURROW * w) {
+    const a = u * 0.006;
+    const b = u * 0.0008;
     fields.path(
-      `M0,${y}L${w * 0.48},${y - u * 0.004}`,
-      `stroke="${mix(W.humus, W.loam, 0.4)}" stroke-width="${u * (0.002 + 0.006 * (i / 18))}" opacity="0.7"`,
+      `M${x - a},${front}L${far(x) - b},${top}L${far(x) + b},${top}L${x + a},${front}Z`,
+      `fill="${mix(W.humus, W.loam, 0.4)}" opacity="0.7"`,
     );
   }
   // Mulch on the right: brown stems lying every way, spinach coming through.
@@ -84,6 +91,16 @@ export function c12TwinFields(c: Ctx, scale: number): RecipeOut {
     ])})"`,
   );
   below.rect(0, (SURFACE + 0.02) * h, w, (CUT - SURFACE - 0.02) * h, `fill="${mix(W.topsoil, W.loam, 0.4)}"`);
+  // The ploughed ridges in section along the cut's top edge, a furrow between each pair.
+  const y0 = (SURFACE + 0.02) * h;
+  const x0 = (-0.6 + Math.ceil(0.6 / FURROW) * FURROW) * w;
+  let ridges = `M${x0},${y0}`;
+  for (let x = x0; x + FURROW * w <= 0.47 * w; x += FURROW * w)
+    ridges += `Q${x + (FURROW * w) / 2},${y0 - u * 0.016} ${x + FURROW * w},${y0}`;
+  below.path(
+    ridges,
+    `fill="${mix(W.loam, W.sand, 0.15)}" stroke="${mix(W.humus, W.loam, 0.4)}" stroke-width="${u * 0.003}"`,
+  );
   // Plough sole on the left: a sharp change where the slice stopped.
   below.path(
     `M0,${PLOUGH * h}L${w * 0.48},${PLOUGH * h}`,

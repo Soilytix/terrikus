@@ -45,9 +45,9 @@ import {
 import { href, parse, targetHref, type NotebookTab, type Route } from "./router";
 import { prefersReduced, useGame } from "./store";
 
-/** Dev-only beats surface, loaded only with `?beats` in the URL. */
+/** Dev-only beats surface: `?beats` in the URL, or the internal Settings switch. */
 const BeatsDev = lazy(() => import("../ui/BeatsDev"));
-const beats = new URLSearchParams(window.location.search).has("beats");
+const beatsParam = new URLSearchParams(window.location.search).has("beats");
 
 const subscribeHash = (cb: () => void) => {
   window.addEventListener("hashchange", cb);
@@ -136,6 +136,7 @@ function Shell({ hash }: { hash: string }) {
   const forceStatic = useMemo(() => new URLSearchParams(window.location.search).has("static"), []);
   const world = useRef<WorldHandle>(null);
   const [tooSlow, setTooSlow] = useState(false);
+  const [beats, setBeats] = useState(beatsParam);
   const [scanned, setScanned] = useState<SceneObject | null>(null);
   const [panel, setPanel] = useState<"truth" | "settings" | "help" | "glossary" | null>(null);
   const [focusCard, setFocusCard] = useState<string | undefined>(undefined);
@@ -344,7 +345,7 @@ function Shell({ hash }: { hash: string }) {
   const resumeScene = resume?.name === "scene" ? sceneById(resume.scene) : undefined;
 
   return (
-    <div className="app" data-route={route.name} data-tray={tray.length > 0}>
+    <div className="app" data-route={route.name} data-tray={tray.length > 0} data-tone={scene.tone}>
       <World
         ref={world}
         sceneId={scene.id}
@@ -452,6 +453,8 @@ function Shell({ hash }: { hash: string }) {
           onMotion={(m) => update((s) => ({ ...s, settings: { ...s.settings, motion: m } }))}
           onReplace={replace}
           onUnlockAll={__SW_PROFILE__ === "internal" ? () => update(unlockAll) : undefined}
+          beats={__SW_PROFILE__ === "internal" ? beats : undefined}
+          onBeats={setBeats}
           onReset={reset}
           onClose={() => setPanel(null)}
         />

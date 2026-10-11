@@ -37,6 +37,8 @@ export interface Overrides {
   cutoff: number | null;
   keys: KeysVoice | null;
   mutes: Record<Mute, boolean>;
+  /** The synth tab: mood fields set outright, over the preset. */
+  mood: Partial<Mood>;
 }
 
 /** Bars a scene change takes to glide in. */
@@ -207,6 +209,7 @@ export function createMusic(ctx: AudioContext, out: AudioNode, bedUrl: (b: Sampl
     cutoff: null,
     keys: null,
     mutes: Object.fromEntries(MUTES.map((m) => [m, false])) as Record<Mute, boolean>,
+    mood: {},
   };
   let scene: { id: string; scale: Scale } = { id: "valley", scale: "landscape" };
   let preset: Preset = presetFor(scene.id, scene.scale);
@@ -239,6 +242,7 @@ export function createMusic(ctx: AudioContext, out: AudioNode, bedUrl: (b: Sampl
     m.swing += over.swing;
     m.density *= over.density;
     if (over.cutoff) m.cutoff = over.cutoff;
+    Object.assign(m, over.mood);
     if (over.keys) m.keys = { [over.keys]: 1 };
     return m;
   }
@@ -268,7 +272,7 @@ export function createMusic(ctx: AudioContext, out: AudioNode, bedUrl: (b: Sampl
     for (const id of new Set([...beds.keys(), ...(Object.keys(m.beds) as BedId[])])) {
       const level = mute.texture ? 0 : (m.beds[id] ?? 0);
       if (level < 0.01 && !beds.has(id)) continue;
-      ramp(bed(id).gain.gain, level * 0.6, time, len);
+      ramp(bed(id).gain.gain, level * 0.35, time, len);
     }
     beds.get("drone")?.setKey?.(composer.chord.key, time);
 

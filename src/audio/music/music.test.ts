@@ -54,7 +54,7 @@ describe("music", () => {
           expect(e.step).toBeLessThan(16);
           expect(e.vel).toBeGreaterThan(0);
         }
-        expect(c.bpm).toBeGreaterThanOrEqual(56);
+        expect(c.bpm).toBeGreaterThanOrEqual(48);
       }
   });
 

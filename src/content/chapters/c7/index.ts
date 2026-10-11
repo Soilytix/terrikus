@@ -22,6 +22,7 @@ const c7Scenes: Scene[] = [
     chapter: "c7",
     title: "At the root tip",
     scale: "rhizosphere",
+    tone: "dark",
     recipe: "c7-root-tip",
     seed: 71,
     scaleBar: { metres: 1e-3, label: "1 mm" },

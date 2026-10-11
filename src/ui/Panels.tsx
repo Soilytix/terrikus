@@ -17,7 +17,7 @@ export function Truth({ scene, onClose }: { scene: Scene; onClose: () => void })
     ["Not simulated here", scene.truth.notSimulated],
   ];
   return (
-    <Dialog title="What is real here?" onClose={onClose}>
+    <Dialog title="About this picture" onClose={onClose}>
       <p className="lede">{scene.description}</p>
       <dl className="truth">
         {rows.map(([k, v]) => (
@@ -96,6 +96,8 @@ export function Settings({
   onReplace,
   onReset,
   onUnlockAll,
+  beats,
+  onBeats,
   onClose,
 }: {
   save: Save;
@@ -106,6 +108,9 @@ export function Settings({
   onReset: () => void;
   /** Internal profile only: the in-app twin of `?unlock`. */
   onUnlockAll?: (() => void) | undefined;
+  /** Internal profile only: the in-app twin of `?beats`; undefined hides the switch. */
+  beats?: boolean | undefined;
+  onBeats: (on: boolean) => void;
   onClose: () => void;
 }) {
   const file = useRef<HTMLInputElement>(null);
@@ -121,125 +126,152 @@ export function Settings({
   };
   return (
     <Dialog title="Settings" onClose={onClose}>
-      <h3 className="settings-group">Comfort</h3>
-      <div className="setting">
-        <span className="setting-text">
-          <b id="motion-title">Motion</b>
-          <small>How much the camera and the world move.</small>
-        </span>
-        <div className="segmented" role="radiogroup" aria-labelledby="motion-title">
-          {(
-            [
-              ["system", "Follow my system"],
-              ["reduced", "Reduced"],
-              ["full", "Full"],
-            ] as const
-          ).map(([v, label]) => (
-            <label key={v}>
-              <input
-                type="radio"
-                name="motion"
-                checked={save.settings.motion === v}
-                onChange={() => onMotion(v)}
-              />
-              <span>{label}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-      <AmbientToggle />
-      <SoundSettings />
-      {tooSlow && (
-        <p className="small muted">
-          Still pictures were chosen because this device drew the moving world too slowly.
-        </p>
-      )}
-      <h3 className="settings-group">Your notebook</h3>
-      <div className="setting">
-        <span className="setting-text">
-          <b>Keep a copy</b>
-          <small>
-            {persistent
-              ? "Progress is saved in this browser only. Export it to move it or keep a copy."
-              : "This browser is not keeping progress (private window or blocked storage). Export before you leave."}
-          </small>
-        </span>
-        <span className="setting-control">
-          <button type="button" className="btn" onClick={download}>
-            Export
-          </button>
-          <button type="button" className="btn" onClick={() => file.current?.click()}>
-            Import
-          </button>
-        </span>
-        <input
-          ref={file}
-          type="file"
-          accept="application/json,.json"
-          hidden
-          onChange={async (e) => {
-            const f = e.target.files?.[0];
-            if (!f) return;
-            try {
-              onReplace(importSave(await f.text()));
-              setMsg("Notebook imported.");
-            } catch {
-              setMsg("That file is not a Terrikus notebook.");
-            }
-          }}
-        />
-      </div>
-      {onUnlockAll && (
+      <section className="settings-card" aria-labelledby="settings-progress">
+        <h3 id="settings-progress" className="settings-group">
+          Progress
+        </h3>
         <div className="setting">
           <span className="setting-text">
-            <b>Review</b>
-            <small>Open every built chapter, for reviewers.</small>
+            <b>Keep a copy</b>
+            <small>
+              {persistent
+                ? "Progress is saved in this browser only. Export it to move it or keep a copy."
+                : "This browser is not keeping progress (private window or blocked storage). Export before you leave."}
+            </small>
           </span>
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
-              onUnlockAll();
-              setMsg("Every built chapter is open.");
-            }}
-          >
-            Open every chapter
-          </button>
-        </div>
-      )}
-      <div className="setting">
-        <span className="setting-text">
-          <b>Start over</b>
-          <small>{confirm ? "This clears your notebook in this browser." : "Erase all progress."}</small>
-        </span>
-        {!confirm ? (
-          <button type="button" className="btn" onClick={() => setConfirm(true)}>
-            Erase progress…
-          </button>
-        ) : (
           <span className="setting-control">
+            <button type="button" className="btn" onClick={download}>
+              Export
+            </button>
+            <button type="button" className="btn" onClick={() => file.current?.click()}>
+              Import
+            </button>
+          </span>
+          <input
+            ref={file}
+            type="file"
+            accept="application/json,.json"
+            hidden
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              if (!f) return;
+              try {
+                onReplace(importSave(await f.text()));
+                setMsg("Notebook imported.");
+              } catch {
+                setMsg("That file is not a Terrikus notebook.");
+              }
+            }}
+          />
+        </div>
+        {onUnlockAll && (
+          <div className="setting">
+            <span className="setting-text">
+              <b>Review</b>
+              <small>Open every built chapter, for reviewers.</small>
+            </span>
             <button
               type="button"
-              className="btn btn-danger"
+              className="btn"
               onClick={() => {
-                onReset();
-                setConfirm(false);
-                setMsg("Progress erased.");
+                onUnlockAll();
+                setMsg("Every built chapter is open.");
               }}
             >
-              Erase
+              Open every chapter
             </button>
-            <button type="button" className="btn" onClick={() => setConfirm(false)}>
-              Keep it
-            </button>
-          </span>
+          </div>
         )}
-      </div>
-      {msg && (
-        <p className="small" role="status">
-          {msg}
-        </p>
-      )}
+        <div className="setting">
+          <span className="setting-text">
+            <b>Start over</b>
+            <small>{confirm ? "This clears your notebook in this browser." : "Erase all progress."}</small>
+          </span>
+          {!confirm ? (
+            <button type="button" className="btn" onClick={() => setConfirm(true)}>
+              Erase progress…
+            </button>
+          ) : (
+            <span className="setting-control">
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={() => {
+                  onReset();
+                  setConfirm(false);
+                  setMsg("Progress erased.");
+                }}
+              >
+                Erase
+              </button>
+              <button type="button" className="btn" onClick={() => setConfirm(false)}>
+                Keep it
+              </button>
+            </span>
+          )}
+        </div>
+        {msg && (
+          <p className="small" role="status">
+            {msg}
+          </p>
+        )}
+      </section>
+      <section className="settings-card" aria-labelledby="settings-motion">
+        <h3 id="settings-motion" className="settings-group">
+          Motion
+        </h3>
+        <div className="setting">
+          <span className="setting-text">
+            <b id="motion-title">Motion</b>
+            <small>How much the camera and the world move.</small>
+          </span>
+          <div className="segmented" role="radiogroup" aria-labelledby="motion-title">
+            {(
+              [
+                ["system", "Follow my system"],
+                ["reduced", "Reduced"],
+                ["full", "Full"],
+              ] as const
+            ).map(([v, label]) => (
+              <label key={v}>
+                <input
+                  type="radio"
+                  name="motion"
+                  checked={save.settings.motion === v}
+                  onChange={() => onMotion(v)}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+        <AmbientToggle />
+        {tooSlow && (
+          <p className="small muted">
+            Still pictures were chosen because this device drew the moving world too slowly.
+          </p>
+        )}
+      </section>
+      <section className="settings-card" aria-labelledby="settings-audio">
+        <h3 id="settings-audio" className="settings-group">
+          Audio
+        </h3>
+        <SoundSettings />
+        {beats !== undefined && (
+          <label className="setting">
+            <span className="setting-text">
+              <b>Music pads</b>
+              <small>Show the beats overlay and its Launchpad connection.</small>
+            </span>
+            <input
+              type="checkbox"
+              className="switch"
+              checked={beats}
+              onChange={(e) => onBeats(e.target.checked)}
+            />
+          </label>
+        )}
+      </section>
       <PilotSettings chaptersComplete={save.chaptersComplete.length} />
       <Credits />
     </Dialog>

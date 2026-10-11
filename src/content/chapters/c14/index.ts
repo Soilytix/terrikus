@@ -116,6 +116,7 @@ const c14Scenes: Scene[] = [
     chapter: "c14",
     title: "The lab bench",
     scale: "field",
+    tone: "light",
     recipe: "c14-bench",
     seed: 141,
     scaleBar: { metres: 0.5, label: "50 cm" },

@@ -153,6 +153,20 @@ export function fallingLeaf(p: Place, r: Rng, len: number, tint: number): Sprite
   return sprite(s, p);
 }
 
+/** A raindrop streak `len` px long, leaning with its fall; `motion: "fall"` animates it. */
+export function raindrop(p: Place, len: number, floor?: number): SpriteSpec {
+  const lean = len * (p.vy ? (p.vx ?? 0) / p.vy : 0);
+  const s = new Svg(Math.abs(lean) + 4, len + 4);
+  const x0 = lean < 0 ? s.w - 2 : 2;
+  s.path(
+    `M${x0},2L${x0 + lean},${len + 2}`,
+    `stroke="${W.film}" stroke-width="1.6" stroke-linecap="round" opacity="0.75"`,
+  );
+  const spec = sprite(s, p);
+  if (floor !== undefined) spec.floor = floor;
+  return spec;
+}
+
 /** A soft cloud shadow, multiplied over the landscape. */
 export function cloudShadow(p: Place, r: Rng, w: number, h: number): SpriteSpec {
   const s = new Svg(w, h);
