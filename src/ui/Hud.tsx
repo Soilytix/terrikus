@@ -82,8 +82,8 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
           <span className="scene-chapter">{ch ? ch.title : "The valley"}</span>
           <h1 className="scene-title">{scene.title}</h1>
         </div>
-        <nav className="hud-scene" aria-label="This scene">
-          {onUp && (
+        {onUp && (
+          <nav className="hud-scene" aria-label="This scene">
             <button
               type="button"
               className="hud-btn up-btn"
@@ -94,17 +94,8 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
               <Icon d={ICONS.up} />
               <span className="hud-btn-label">Up a scale</span>
             </button>
-          )}
-          <button
-            type="button"
-            className="hud-btn icon-only"
-            onClick={onTruth}
-            aria-label="About this picture"
-            title="About this picture: what is drawn from life, and what is not"
-          >
-            <Icon d={ICONS.info} />
-          </button>
-        </nav>
+          </nav>
+        )}
         <nav className="hud-actions" aria-label="Tools">
           <button
             type="button"
@@ -170,6 +161,15 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
         <span className="sr-only">Scale bar: </span>
         <span className="scalebar-label">{scene.scaleBar.label}</span>
       </p>
+      <button
+        type="button"
+        className="hud-btn icon-only hud-about"
+        onClick={onTruth}
+        aria-label="About this picture"
+        title="About this picture: what is drawn from life, and what is not"
+      >
+        <Icon d={ICONS.info} />
+      </button>
     </>
   );
 }

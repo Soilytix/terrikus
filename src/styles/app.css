@@ -283,8 +283,8 @@ button {
 }
 .review-pill {
   position: absolute;
-  right: var(--hud-gap);
-  bottom: var(--hud-gap);
+  right: calc(var(--hud-gap) + 52px);
+  bottom: calc(var(--hud-gap) + 12px);
   border: 0;
   font: inherit;
   font-size: 11px;
@@ -553,6 +553,7 @@ button {
 .glass,
 .hud-actions,
 .hud-scene .hud-btn,
+.hud-about,
 .mission,
 .scan-card,
 .title-card {
@@ -583,14 +584,12 @@ button {
   --hud-ink-muted: var(--color-ink-muted);
   --hud-glass: rgb(245 246 246 / 0.55);
   --hud-glass-hover: rgb(245 246 246 / 0.8);
-  --hud-halo: rgb(245 246 246 / 0.75);
 }
 .app[data-tone="dark"] {
   --hud-ink: var(--color-text-on-dark);
   --hud-ink-muted: rgb(255 255 255 / 0.72);
   --hud-glass: rgb(22 28 25 / 0.35);
   --hud-glass-hover: rgb(22 28 25 / 0.55);
-  --hud-halo: rgb(22 28 25 / 0.7);
 }
 .app[data-tone="dark"] .brand-wordmark,
 .app[data-tone="dark"] .title-wordmark {
@@ -614,12 +613,12 @@ button {
 }
 .brand-wordmark {
   display: block;
-  height: 9px;
+  height: 18px;
   width: auto;
 }
 .brand-name {
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 650;
   line-height: 1;
 }
@@ -661,9 +660,19 @@ button {
   gap: 6px;
 }
 .hud-actions,
-.hud-scene .hud-btn {
+.hud-scene .hud-btn,
+.hud-about {
   background: var(--hud-glass);
   color: var(--hud-ink);
+}
+/* About this picture: a figure note, so it sits in the plate's bottom-right corner. */
+.hud-about.icon-only {
+  position: absolute;
+  background: var(--hud-glass);
+  right: var(--hud-gap);
+  bottom: var(--hud-gap);
+  width: 44px;
+  height: 44px;
 }
 .hud-scene .hud-btn {
   height: 44px;
@@ -696,7 +705,8 @@ button {
 .hud-btn:hover {
   background: color-mix(in srgb, currentColor 10%, transparent);
 }
-.hud-scene .hud-btn:hover {
+.hud-scene .hud-btn:hover,
+.hud-about.icon-only:hover {
   background: var(--hud-glass-hover);
 }
 .new-dot {
@@ -830,7 +840,6 @@ button {
   font-size: 11.5px;
   color: var(--hud-ink);
   opacity: 0.85;
-  filter: drop-shadow(0 0 2px var(--hud-halo)) drop-shadow(0 0 4px var(--hud-halo));
   pointer-events: none;
 }
 .scalebar-bar {
@@ -1978,13 +1987,42 @@ input[type="range"] {
   border-radius: 12px;
   animation: rise 0.9s var(--ease-chart);
 }
-/* The company mark sits on the picture's corner, not in the card. */
+/* The company mark sits on the picture's corner, not in the card. On first paint it stands
+   large over the valley's fields, then settles into the corner once the music starts. */
 .title-wordmark {
   position: absolute;
   right: clamp(16px, 5vw, 72px);
   top: clamp(16px, 4vh, 40px);
   height: clamp(24px, 3.4vw, 60px);
   width: auto;
+  transition:
+    right 1.2s var(--ease-chart),
+    top 1.2s var(--ease-chart),
+    height 1.2s var(--ease-chart),
+    transform 1.2s var(--ease-chart);
+}
+.title-wordmark[data-splash="true"] {
+  right: 50%;
+  top: 60%;
+  height: clamp(48px, 10vw, 150px);
+  transform: translate(50%, -50%);
+}
+/* The whole picture is the start button: the click is the gesture the music waits for. */
+.title-splash {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  padding-bottom: 12vh;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-ink);
+  cursor: pointer;
 }
 .title-card h1 {
   margin-top: 0;
@@ -2516,7 +2554,7 @@ input[type="range"] {
 .card-tray {
   position: absolute;
   right: var(--hud-gap);
-  bottom: calc(var(--hud-gap) + 40px);
+  bottom: calc(var(--hud-gap) + 56px);
   width: min(300px, calc(100% - 2 * var(--hud-gap)));
   animation: rise var(--duration-drawer) var(--ease-chart);
 }
@@ -2733,6 +2771,13 @@ input[type="range"] {
     width: 36px;
     padding: 0;
     justify-content: center;
+  }
+  /* Clear of the mission sheet: beside the review pill in the HUD band. */
+  .hud-about.icon-only {
+    top: 116px;
+    bottom: auto;
+    width: 36px;
+    height: 36px;
   }
   .scalebar {
     top: 160px;

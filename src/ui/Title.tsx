@@ -48,6 +48,10 @@ export function Title({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- keyed by the scene
   }, [want]);
+  // The logo holds the first paint until the music starts (a gesture's job); without sound, it steps aside at once.
+  const [started, setStarted] = useState(() => mixer.enabled());
+  useEffect(() => mixer.subscribe(() => mixer.enabled() && setStarted(true)), []);
+  const splash = !!sound && !(ready && started);
   const chapters = CHAPTERS.filter((c) => c.playable);
   const state = (id: string) =>
     save.chaptersComplete.includes(id) ? "done" : save.chaptersUnlocked.includes(id) ? "open" : "locked";
@@ -88,68 +92,81 @@ export function Title({
   return (
     <>
       {birds && <Birds />}
-      <img className="title-wordmark" src={assetUrl("brand-wordmark")} alt="Soilytix" />
-      <section className="title-card" aria-labelledby="title" aria-busy={!ready}>
-        <h1 id="title">Terrikus</h1>
-        <p className="title-lede">
-          Take a handful of soil from one valley and follow it down through <mark>six scales</mark>, from the
-          field to a single film of water. At each step you make a guess, run an experiment and explain what
-          you saw.
-        </p>
-        <div className="title-actions" inert={!ready}>
-          <div className="btn-row">
-            <button
-              type="button"
-              className="btn btn-primary btn-lg btn-go"
-              onClick={onStart}
-              disabled={!ready}
-            >
-              {begun ? `Continue: ${resumeLabel}` : "Begin in the spinach field"}
-              <span className="go-chip" aria-hidden="true">
-                →
-              </span>
-            </button>
-          </div>
-          <p className="title-loading" role="status">
-            {!ready && (
-              <>
-                <span className="spinner" aria-hidden="true" /> Loading the valley’s sound…
-              </>
-            )}
+      <img className="title-wordmark" data-splash={splash} src={assetUrl("brand-wordmark")} alt="Soilytix" />
+      {splash && (
+        <button type="button" className="title-splash" autoFocus onClick={() => mixer.enable()}>
+          {started ? (
+            <>
+              <span className="spinner" aria-hidden="true" /> Loading the valley’s sound…
+            </>
+          ) : (
+            "Click or press a key to start, with sound"
+          )}
+        </button>
+      )}
+      {!splash && (
+        <section className="title-card" aria-labelledby="title" aria-busy={!ready}>
+          <h1 id="title">Terrikus</h1>
+          <p className="title-lede">
+            Take a handful of soil from one valley and follow it down through <mark>six scales</mark>, from
+            the field to a single film of water. At each step you make a guess, run an experiment and explain
+            what you saw.
           </p>
-          <ol className="title-chapters" aria-label="Chapters" ref={list}>
-            {chapters.map((c, i) => [
-              <li key={c.id} data-state={state(c.id)} data-next={c.id === next?.id}>
-                {state(c.id) === "locked" ? (
-                  <span title={c.title}>
-                    {c.number}
-                    <span className="sr-only">
-                      {" "}
-                      {label(c.number)}: {c.title} (locked)
+          <div className="title-actions" inert={!ready}>
+            <div className="btn-row">
+              <button
+                type="button"
+                className="btn btn-primary btn-lg btn-go"
+                onClick={onStart}
+                disabled={!ready}
+              >
+                {begun ? `Continue: ${resumeLabel}` : "Begin in the spinach field"}
+                <span className="go-chip" aria-hidden="true">
+                  →
+                </span>
+              </button>
+            </div>
+            <p className="title-loading" role="status">
+              {!ready && (
+                <>
+                  <span className="spinner" aria-hidden="true" /> Loading the valley’s sound…
+                </>
+              )}
+            </p>
+            <ol className="title-chapters" aria-label="Chapters" ref={list}>
+              {chapters.map((c, i) => [
+                <li key={c.id} data-state={state(c.id)} data-next={c.id === next?.id}>
+                  {state(c.id) === "locked" ? (
+                    <span title={c.title}>
+                      {c.number}
+                      <span className="sr-only">
+                        {" "}
+                        {label(c.number)}: {c.title} (locked)
+                      </span>
                     </span>
-                  </span>
-                ) : (
-                  <a href={targetHref(c.scenes[0]!)} title={c.title}>
-                    {c.number}
-                    <span className="sr-only">
-                      {" "}
-                      {label(c.number)}: {c.title}
-                      {state(c.id) === "done" ? " (done)" : ""}
-                    </span>
-                  </a>
-                )}
-              </li>,
-              i === slot.after && card,
-            ])}
-            <li data-state="planned">
-              <span title="Glimpsed in the valley, still being written">
-                +12<span className="sr-only"> chapters still being written</span>
-              </span>
-            </li>
-            {slot.after >= chapters.length && card}
-          </ol>
-        </div>
-      </section>
+                  ) : (
+                    <a href={targetHref(c.scenes[0]!)} title={c.title}>
+                      {c.number}
+                      <span className="sr-only">
+                        {" "}
+                        {label(c.number)}: {c.title}
+                        {state(c.id) === "done" ? " (done)" : ""}
+                      </span>
+                    </a>
+                  )}
+                </li>,
+                i === slot.after && card,
+              ])}
+              <li data-state="planned">
+                <span title="Glimpsed in the valley, still being written">
+                  +12<span className="sr-only"> chapters still being written</span>
+                </span>
+              </li>
+              {slot.after >= chapters.length && card}
+            </ol>
+          </div>
+        </section>
+      )}
     </>
   );
 }
