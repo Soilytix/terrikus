@@ -3,29 +3,32 @@ import { chapter } from "../content";
 import { unlockedTerms } from "../content/glossary";
 import type { Save } from "../save/schema";
 import { Dialog, FactItem, ReviewBadge } from "./common";
+import { t } from "../i18n";
 
 export function Glossary({ save, onClose }: { save: Save; onClose: () => void }) {
   const terms = unlockedTerms(save.discoveries);
   return (
-    <Dialog title="Glossary" onClose={onClose}>
+    <Dialog title={t("Glossary")} onClose={onClose}>
       {terms.length === 0 ? (
-        <p className="lede">Words arrive here after you have seen what they name. Go and look first.</p>
+        <p className="lede">
+          {t("Words arrive here after you have seen what they name. Go and look first.")}
+        </p>
       ) : (
         <dl className="truth">
-          {terms.map((t) => {
-            const ch = chapter(t.chapter);
+          {terms.map((term) => {
+            const ch = chapter(term.chapter);
             return (
-              <div key={t.id} id={t.id}>
+              <div key={term.id} id={term.id}>
                 <dt>
-                  {t.term} <ReviewBadge status={t.reviewStatus} />
+                  {term.term} <ReviewBadge status={term.reviewStatus} />
                 </dt>
                 <dd>
                   <ul className="facts">
-                    <FactItem fact={t.definition} />
+                    <FactItem fact={term.definition} />
                   </ul>
                   {ch && (
                     <p className="small muted">
-                      Seen in chapter {ch.number}: {ch.title}
+                      {t("Seen in chapter {n}: {title}", { n: ch.number, title: ch.title })}
                     </p>
                   )}
                 </dd>

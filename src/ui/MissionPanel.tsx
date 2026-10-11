@@ -16,7 +16,8 @@ import { Composition } from "./Composition";
 import { FeelTest } from "./FeelTest";
 import { HandDecompose } from "./HandDecompose";
 import { WaterAir } from "./WaterAir";
-import { Facts } from "./common";
+import { Facts, tierLabel, tr } from "./common";
+import { lang, t } from "../i18n";
 import type { SceneEvent } from "../world/stage";
 
 // Chapter benches load on demand, off the initial bundle (spec §8.2); StepBody sits in one Suspense.
@@ -50,6 +51,9 @@ const EvidenceLadder = lazy(() => import("./Disease").then((m) => ({ default: m.
 const Fields = lazy(() => import("./Fields").then((m) => ({ default: m.Fields })));
 const HillslopeRiver = lazy(() => import("./HillslopeRiver").then((m) => ({ default: m.HillslopeRiver })));
 const Sample = lazy(() => import("./Sample").then((m) => ({ default: m.Sample })));
+
+/** English lowercases a title inside a sentence; German nouns keep their capitals. */
+const lower = (s: string) => (lang() === "en" ? s.toLowerCase() : s);
 
 interface Props {
   mission: Mission | undefined;
@@ -170,7 +174,7 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           <button type="button" className="btn btn-primary" onClick={next}>
-            {step.cta ?? "Continue"}
+            {step.cta ?? t("Continue")}
           </button>
         </>
       );
@@ -181,11 +185,11 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           {here ? (
-            <p className="hint">The portal is pulsing in the scene.</p>
+            <p className="hint">{t("The portal is pulsing in the scene.")}</p>
           ) : (
             at && (
               <button type="button" className="btn" onClick={() => go(targetHref(at.id))}>
-                Go to {at.title}
+                {t("Go to {title}", { title: at.title })}
               </button>
             )
           )}
@@ -204,7 +208,7 @@ function StepBody({
                 <li key={id} data-done={done}>
                   <span className="check" aria-hidden="true" />
                   {o?.label ?? id}
-                  <span className="sr-only">{done ? " (done)" : " (not yet)"}</span>
+                  <span className="sr-only">{done ? t(" (done)") : t(" (not yet)")}</span>
                 </li>
               );
             })}
@@ -215,7 +219,7 @@ function StepBody({
       return (
         <>
           <p className="step-text">{step.question}</p>
-          <p className="prediction-tag">Your prediction</p>
+          <p className="prediction-tag">{t("Your prediction")}</p>
           <label className="slider-row big">
             <input
               type="range"
@@ -235,10 +239,10 @@ function StepBody({
             className="btn btn-primary"
             onClick={() => {
               update((s) => advance({ ...s, predictions: { ...s.predictions, [step.id]: value } }, m.id));
-              narrate(`Prediction committed: ${value} ${step.unit}.`);
+              narrate(t("Prediction committed: {value} {unit}.", { value, unit: step.unit }));
             }}
           >
-            Commit my prediction
+            {t("Commit my prediction")}
           </button>
         </>
       );
@@ -246,7 +250,7 @@ function StepBody({
       return (
         <>
           <p className="step-text">{step.question}</p>
-          <p className="prediction-tag">Your prediction</p>
+          <p className="prediction-tag">{t("Your prediction")}</p>
           <Choices
             choices={step.choices}
             multi={step.multi}
@@ -265,11 +269,11 @@ function StepBody({
                 update((s) => ({ ...s, predictions: { ...s.predictions, [step.id]: picked } }));
               }}
             >
-              Commit my prediction
+              {t("Commit my prediction")}
             </button>
           ) : (
             <button type="button" className="btn btn-primary" onClick={next}>
-              Continue
+              {t("Continue")}
             </button>
           )}
         </>
@@ -288,18 +292,18 @@ function StepBody({
                 sceneEvent?.("separate", 1);
               }}
             >
-              Separate the handful
+              {t("Separate the handful")}
             </button>
           ) : (
             <>
               <Composition guess={typeof guess === "number" ? guess : undefined} reveal />
               <p className="observation">
-                {typeof guess === "number" && <>You guessed {guess} % solid. </>}
+                {typeof guess === "number" && <>{t("You guessed {n} % solid.", { n: guess })} </>}
                 {step.resultText}
               </p>
               <Facts facts={step.facts} />
               <button type="button" className="btn btn-primary" onClick={next}>
-                Continue
+                {t("Continue")}
               </button>
             </>
           )}
@@ -321,10 +325,10 @@ function StepBody({
                 update((s) => advance({ ...s, predictions: { ...s.predictions, [step.id]: pick.id } }, m.id))
               }
             >
-              Continue
+              {t("Continue")}
             </button>
           )}
-          {pick && !pick.ok && <p className="hint">Look again, then choose another.</p>}
+          {pick && !pick.ok && <p className="hint">{t("Look again, then choose another.")}</p>}
         </>
       );
     }
@@ -339,9 +343,9 @@ function StepBody({
               if (!moved) update((s) => setFlag(s, step.flag));
             }}
           />
-          {!moved && <p className="muted small">Move the slider to continue.</p>}
+          {!moved && <p className="muted small">{t("Move the slider to continue.")}</p>}
           <button type="button" className="btn btn-primary" disabled={!moved} onClick={next}>
-            Continue
+            {t("Continue")}
           </button>
         </>
       );
@@ -351,7 +355,7 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           <button type="button" className="btn btn-primary" onClick={() => setOverlay(true)}>
-            Start eating
+            {t("Start eating")}
           </button>
           {overlay && (
             <HandDecompose
@@ -372,7 +376,7 @@ function StepBody({
             className="btn btn-primary"
             onClick={() => go(href({ name: "bench", bench: step.bench }))}
           >
-            Open the lab bench
+            {t("Open the lab bench")}
           </button>
         </>
       );
@@ -382,7 +386,11 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           <button type="button" className="btn btn-primary" onClick={() => setOverlay(true)}>
-            {done ? "Revisit the chain" : step.chains.length > 1 ? "Open your chains" : "Build the chain"}
+            {done
+              ? t("Revisit the chain")
+              : step.chains.length > 1
+                ? t("Open your chains")
+                : t("Build the chain")}
           </button>
           {overlay && (
             <ChainBuilder
@@ -407,7 +415,7 @@ function StepBody({
           <p className="scenario">{step.scenario}</p>
           <p className="step-text">{step.question}</p>
           <Choices choices={step.choices} picked={picked} setPicked={setPicked} locked={committed} />
-          <p className="step-text">What would you measure to find out?</p>
+          <p className="step-text">{t("What would you measure to find out?")}</p>
           <Choices choices={step.measure} multi picked={measure} setPicked={setMeasure} locked={committed} />
           {committed && (
             <>
@@ -434,21 +442,24 @@ function StepBody({
                     mission: m.id,
                     prediction: choice?.label ?? "",
                     a: DEFAULT_LEVERS,
-                    result: `If I measured ${measure
-                      .map((id) => step.measure.find((c) => c.id === id)?.label.toLowerCase())
-                      .join(
-                        " and ",
-                      )}, then I could tell whether the woody residue follows the leaf's chain, because each brake shows up in how fast mass and CO₂ change.`,
+                    result: t(
+                      "If I measured {what}, then I could tell whether the woody residue follows the leaf's chain, because each brake shows up in how fast mass and CO₂ change.",
+                      {
+                        what: measure
+                          .map((id) => lower(step.measure.find((c) => c.id === id)?.label ?? ""))
+                          .join(t(" and ")),
+                      },
+                    ),
                     tier: "would-do",
                   }),
                 }));
               }}
             >
-              Commit my reasoning
+              {t("Commit my reasoning")}
             </button>
           ) : (
             <button type="button" className="btn btn-primary" onClick={next}>
-              Continue
+              {t("Continue")}
             </button>
           )}
         </>
@@ -460,7 +471,7 @@ function StepBody({
         <>
           {step.recall && guess !== undefined && (
             <p className="observation">
-              You predicted{" "}
+              {t("You predicted")}{" "}
               <b className="mono">
                 {Array.isArray(guess) ? guess.join(", ") : guess} {step.recall.unit}
               </b>
@@ -473,7 +484,7 @@ function StepBody({
               return (
                 <li key={id}>
                   <span className="tier" data-tier={d?.evidenceTier}>
-                    {d?.evidenceTier}
+                    {d && tierLabel(d.evidenceTier)}
                   </span>
                   {d?.statement}
                 </li>
@@ -485,10 +496,10 @@ function StepBody({
             className="btn btn-primary"
             onClick={() => {
               next();
-              narrate("Added to your notebook.");
+              narrate(t("Added to your notebook."));
             }}
           >
-            Add to my notebook
+            {t("Add to my notebook")}
           </button>
         </>
       );
@@ -566,7 +577,7 @@ function StepBody({
       return (
         <>
           <p className="step-text">{step.text}</p>
-          <Suspense fallback={<p className="muted small">Loading…</p>}>
+          <Suspense fallback={<p className="muted small">{t("Loading…")}</p>}>
             <PitWalls step={step} reduced={reduced} onDone={next} />
           </Suspense>
         </>
@@ -575,7 +586,7 @@ function StepBody({
       return (
         <>
           <p className="step-text">{step.text}</p>
-          <Suspense fallback={<p className="muted small">Loading…</p>}>
+          <Suspense fallback={<p className="muted small">{t("Loading…")}</p>}>
             <Fields step={step} onDone={next} />
           </Suspense>
         </>
@@ -584,7 +595,7 @@ function StepBody({
       return (
         <>
           <p className="step-text">{step.text}</p>
-          <Suspense fallback={<p className="muted small">Loading…</p>}>
+          <Suspense fallback={<p className="muted small">{t("Loading…")}</p>}>
             <HillslopeRiver step={step} reduced={reduced} onDone={next} />
           </Suspense>
         </>
@@ -593,7 +604,7 @@ function StepBody({
       return (
         <>
           <p className="step-text">{step.text}</p>
-          <Suspense fallback={<p className="muted small">Loading…</p>}>
+          <Suspense fallback={<p className="muted small">{t("Loading…")}</p>}>
             <Sample step={step} onDone={next} />
           </Suspense>
         </>
@@ -611,11 +622,13 @@ function StepBody({
           />
           {missing.length > 0 && (
             <p className="muted small">
-              {missing.length} link{missing.length > 1 ? "s" : ""} still to see.
+              {missing.length > 1
+                ? t("{n} links still to see.", { n: missing.length })
+                : t("{n} link still to see.", { n: missing.length })}
             </p>
           )}
           <button type="button" className="btn btn-primary" disabled={missing.length > 0} onClick={next}>
-            Continue
+            {t("Continue")}
           </button>
         </>
       );
@@ -627,7 +640,7 @@ function StepBody({
           <p className="step-text">{step.text}</p>
           <Mobile seen={seen} removed={step.remove} />
           <p className="step-text">{step.question}</p>
-          <p className="prediction-tag">Your prediction</p>
+          <p className="prediction-tag">{t("Your prediction")}</p>
           <Choices choices={step.choices} picked={picked} setPicked={setPicked} locked={committed} />
           {committed && <Feedback choices={step.choices} picked={picked} />}
           {!committed ? (
@@ -640,17 +653,17 @@ function StepBody({
                 update((s) => ({ ...s, predictions: { ...s.predictions, [step.id]: picked } }));
               }}
             >
-              Commit my prediction
+              {t("Commit my prediction")}
             </button>
           ) : !overlay ? (
             <button type="button" className="btn btn-primary" onClick={() => setOverlay(true)}>
-              Run both webs
+              {t("Run both webs")}
             </button>
           ) : (
             <>
               <Ripple removed={step.remove} />
               <button type="button" className="btn btn-primary" onClick={next}>
-                Continue
+                {t("Continue")}
               </button>
             </>
           )}
@@ -674,10 +687,10 @@ function StepBody({
                 update((s) => advance({ ...s, predictions: { ...s.predictions, [step.id]: pick.id } }, m.id))
               }
             >
-              Continue
+              {t("Continue")}
             </button>
           )}
-          {pick && !pick.ok && <p className="hint">Look again, then choose another.</p>}
+          {pick && !pick.ok && <p className="hint">{t("Look again, then choose another.")}</p>}
         </>
       );
     }
@@ -687,7 +700,7 @@ function StepBody({
           <p className="step-text">{step.text}</p>
           <RootInputs facts={step.facts} />
           <button type="button" className="btn btn-primary" onClick={next}>
-            Continue
+            {t("Continue")}
           </button>
         </>
       );
@@ -696,7 +709,7 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           <p className="step-text">{step.question}</p>
-          <p className="prediction-tag">Your prediction</p>
+          <p className="prediction-tag">{t("Your prediction")}</p>
           <Choices choices={step.choices} picked={picked} setPicked={setPicked} locked={committed} />
           {committed && <Feedback choices={step.choices} picked={picked} />}
           {!committed ? (
@@ -709,17 +722,17 @@ function StepBody({
                 update((s) => ({ ...s, predictions: { ...s.predictions, [step.id]: picked } }));
               }}
             >
-              Commit my prediction
+              {t("Commit my prediction")}
             </button>
           ) : !overlay ? (
             <button type="button" className="btn btn-primary" onClick={() => setOverlay(true)}>
-              Run both plots
+              {t("Run both plots")}
             </button>
           ) : (
             <>
               <BarePlanted />
               <button type="button" className="btn btn-primary" onClick={next}>
-                Continue
+                {t("Continue")}
               </button>
             </>
           )}
@@ -742,10 +755,10 @@ function StepBody({
                 update((s) => advance({ ...s, predictions: { ...s.predictions, [step.id]: pick.id } }, m.id))
               }
             >
-              Continue
+              {t("Continue")}
             </button>
           )}
-          {pick && !pick.ok && <p className="hint">Look again, then choose another.</p>}
+          {pick && !pick.ok && <p className="hint">{t("Look again, then choose another.")}</p>}
         </>
       );
     }
@@ -781,7 +794,7 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           {measure.length > 0 && (
-            <ol className="baton" aria-label="Handoffs so far">
+            <ol className="baton" aria-label={t("Handoffs so far")}>
               {step.legs.slice(0, measure.length).map((l) => (
                 <li key={l.id}>
                   {l.from} → {l.to}: <b>{l.choices.find((c) => c.ok)?.label}</b>
@@ -792,12 +805,15 @@ function StepBody({
           {leg ? (
             <>
               <p className="step-text">
-                Who carries the baton from <b>{leg.from}</b> to <b>{leg.to}</b>?
+                {tr("Who carries the baton from {from} to {to}?", {
+                  from: <b>{leg.from}</b>,
+                  to: <b>{leg.to}</b>,
+                })}
               </p>
               <Choices choices={leg.choices} picked={picked} setPicked={setPicked} locked={pick?.ok} />
               {pick && !pick.ok && (
                 <div className="explain-card" role="note" aria-live="polite">
-                  <b>Misplaced handoff.</b> {pick.feedback}
+                  <b>{t("Misplaced handoff.")}</b> {pick.feedback}
                 </div>
               )}
               {pick?.ok && (
@@ -811,7 +827,7 @@ function StepBody({
                       setPicked([]);
                     }}
                   >
-                    Hand on the baton
+                    {t("Hand on the baton")}
                   </button>
                 </>
               )}
@@ -821,7 +837,7 @@ function StepBody({
               <RelaySeason />
               <Facts facts={step.facts} />
               <button type="button" className="btn btn-primary" onClick={next}>
-                Continue
+                {t("Continue")}
               </button>
             </>
           )}
@@ -834,7 +850,7 @@ function StepBody({
           <p className="step-text">{step.text}</p>
           <StrawRun facts={step.facts} />
           <button type="button" className="btn btn-primary" onClick={next}>
-            Continue
+            {t("Continue")}
           </button>
         </>
       );
@@ -852,14 +868,14 @@ function StepBody({
           />
           <Feedback choices={step.spots} picked={picked} />
           <p className="hint" aria-live="polite">
-            Leaks found: {found.length} of {leaks.length}
+            {t("Leaks found: {n} of {total}", { n: found.length, total: leaks.length })}
           </p>
           {found.length === leaks.length && (
             <>
               <LeakTable found={found} />
               <Facts facts={step.facts} />
               <button type="button" className="btn btn-primary" onClick={next}>
-                Continue
+                {t("Continue")}
               </button>
             </>
           )}
@@ -875,7 +891,7 @@ function StepBody({
           <p className="step-text">{step.text}</p>
           <AmoaReading />
           <Facts facts={step.facts} />
-          <p className="step-text">Choose a second measurement before you make a claim.</p>
+          <p className="step-text">{t("Choose a second measurement before you make a claim.")}</p>
           <div className="watch-row">
             {step.measurements.map((c) => (
               <button
@@ -892,7 +908,7 @@ function StepBody({
           <Feedback choices={step.measurements} picked={measure} />
           {rate && <IncubationReading />}
           <p className="step-text">{step.question}</p>
-          {!rate && <p className="hint">No claim yet: a gene count alone cannot say how fast.</p>}
+          {!rate && <p className="hint">{t("No claim yet: a gene count alone cannot say how fast.")}</p>}
           <Choices choices={step.claims} picked={picked} setPicked={setPicked} locked={!rate || pick?.ok} />
           {pick && <Feedback choices={step.claims} picked={picked} />}
           {pick?.ok && (
@@ -908,10 +924,10 @@ function StepBody({
                 )
               }
             >
-              Continue
+              {t("Continue")}
             </button>
           )}
-          {pick && !pick.ok && <p className="hint">Look again, then choose another.</p>}
+          {pick && !pick.ok && <p className="hint">{t("Look again, then choose another.")}</p>}
         </>
       );
     }
@@ -920,7 +936,7 @@ function StepBody({
         <>
           <p className="step-text">{step.text}</p>
           <button type="button" className="btn btn-primary" onClick={next}>
-            Keep the question
+            {t("Keep the question")}
           </button>
         </>
       );
@@ -975,24 +991,28 @@ export function MissionPanel(props: Props) {
     const next = CHAPTERS.find((c) => c.after.includes(ch.id) && save.chaptersUnlocked.includes(c.id));
     const entry = next && sceneById(next.entry);
     return (
-      <aside className="mission" aria-label="Chapter" data-open={open}>
+      <aside className="mission" aria-label={t("Chapter")} data-open={open}>
         <header className="mission-head">
-          <h2>{ch.title} · complete</h2>
+          <h2>{t("{title} · complete", { title: ch.title })}</h2>
         </header>
         <div className="mission-body">
           {next && entry ? (
             <>
               <p className="step-text">
-                A new question waits in the valley: “{next.hook}” Find {entry.title.toLowerCase()}.
+                {t("A new question waits in the valley: “{hook}” Find {place}.", {
+                  hook: next.hook,
+                  place: lower(entry.title),
+                })}
               </p>
               <button type="button" className="btn btn-primary" onClick={() => go(targetHref("valley"))}>
-                Back to the valley
+                {t("Back to the valley")}
               </button>
             </>
           ) : (
             <p className="step-text">
-              Everything in this chapter is in your notebook. The rest of the valley is still being written:
-              its questions wait as rumors.
+              {t(
+                "Everything in this chapter is in your notebook. The rest of the valley is still being written: its questions wait as rumors.",
+              )}
             </p>
           )}
         </div>
@@ -1010,13 +1030,13 @@ export function MissionPanel(props: Props) {
   const here = sceneById(sceneId);
   const portalInView = !!here && visibleObjects(here, save).some((o) => o.kind === "portal" && o.to === at);
   return (
-    <aside className="mission" aria-label={`Mission: ${m.title}`} data-open={open}>
+    <aside className="mission" aria-label={t("Mission: {title}", { title: m.title })} data-open={open}>
       <header className="mission-head">
         <button type="button" className="mission-toggle" aria-expanded={open} onClick={() => setOpen(!open)}>
           <h2>{m.title}</h2>
           <span className="chev" aria-hidden="true" />
         </button>
-        <ol className="steps-dots" aria-label={`Step ${i + 1} of ${m.steps.length}`}>
+        <ol className="steps-dots" aria-label={t("Step {n} of {total}", { n: i + 1, total: m.steps.length })}>
           {m.steps.map((s, k) => (
             <li key={k} data-state={k < i ? "done" : k === i ? "now" : "todo"} title={s.kind} />
           ))}
@@ -1027,19 +1047,21 @@ export function MissionPanel(props: Props) {
           {away && where ? (
             <>
               <p className="step-text">
-                This mission {i === 0 ? "starts" : "continues"} at {where.title.toLowerCase()}.
+                {i === 0
+                  ? t("This mission starts at {place}.", { place: lower(where.title) })
+                  : t("This mission continues at {place}.", { place: lower(where.title) })}
               </p>
               {portalInView ? (
-                <p className="hint">The portal is pulsing in the scene.</p>
+                <p className="hint">{t("The portal is pulsing in the scene.")}</p>
               ) : (
                 <button type="button" className="btn btn-primary" onClick={() => go(targetHref(where.id))}>
-                  Go there
+                  {t("Go there")}
                 </button>
               )}
             </>
           ) : (
             step && (
-              <Suspense fallback={<p className="hint">Setting up the bench…</p>}>
+              <Suspense fallback={<p className="hint">{t("Setting up the bench…")}</p>}>
                 <StepBody {...props} mission={m} step={step} />
               </Suspense>
             )

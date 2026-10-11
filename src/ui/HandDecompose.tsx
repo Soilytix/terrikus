@@ -4,7 +4,8 @@
  * a body costs energy, and the energy comes from burning food.
  */
 import { useMemo, useState } from "react";
-import { Dialog } from "./common";
+import { lang, t } from "../i18n";
+import { Dialog, tr } from "./common";
 
 const PARCELS = 10;
 
@@ -26,7 +27,7 @@ export function HandDecompose({
 }) {
   const plan = useMemo(() => splitTurns(turns), [turns]);
   const [choices, setChoices] = useState<("body" | "breath")[]>([]);
-  const [note, setNote] = useState<string>("Turn 1. Take the first parcel of leaf.");
+  const [note, setNote] = useState<string>(() => t("Turn 1. Take the first parcel of leaf."));
   const eaten = choices.length;
   const body = choices.filter((c) => c === "body").length;
   const breath = eaten - body;
@@ -41,37 +42,51 @@ export function HandDecompose({
     if (c === "body" && body + 1 > cap) {
       setNote(
         eaten === 0
-          ? "Not yet. Building a body costs energy, and the energy comes from burning food. Breathe this one out first."
-          : `Your cells cannot keep more: so far only ${cap} of ${eaten + 1} parcels can become body. The rest must be burned for energy.`,
+          ? t(
+              "Not yet. Building a body costs energy, and the energy comes from burning food. Breathe this one out first.",
+            )
+          : t(
+              "Your cells cannot keep more: so far only {cap} of {n} parcels can become body. The rest must be burned for energy.",
+              { cap, n: eaten + 1 },
+            ),
       );
       return;
     }
     const next = [...choices, c];
     setChoices(next);
     const n = next.length;
-    const t = ends.findIndex((e) => e === n);
-    if (n >= PARCELS) setNote("The leaf is gone. Look at where it went.");
-    else if (t >= 0) setNote(`Turn ${t + 2}. ${plan[t + 1]} more parcels.`);
+    const k = ends.findIndex((e) => e === n);
+    if (n >= PARCELS) setNote(t("The leaf is gone. Look at where it went."));
+    else if (k >= 0) setNote(t("Turn {turn}. {n} more parcels.", { turn: k + 2, n: plan[k + 1]! }));
     else
       setNote(
         c === "body"
-          ? "Into your body: carbon kept, as you."
-          : "Breathed out: carbon leaves as CO₂, its energy as heat.",
+          ? t("Into your body: carbon kept, as you.")
+          : t("Breathed out: carbon leaves as CO₂, its energy as heat."),
       );
   };
 
   return (
-    <Dialog title="Be the decomposer" onClose={onClose} wide className="decompose">
+    <Dialog title={t("Be the decomposer")} onClose={onClose} wide className="decompose">
       <p className="lede">
-        You are a microbe at the edge of a leaf. Each parcel you take up goes one of two ways. Turn{" "}
-        {Math.min(turn + 1, plan.length)} of {plan.length}.
+        {t(
+          "You are a microbe at the edge of a leaf. Each parcel you take up goes one of two ways. Turn {turn} of {n}.",
+          {
+            turn: Math.min(turn + 1, plan.length),
+            n: plan.length,
+          },
+        )}
       </p>
       <div className="dc-stage">
         <svg
           viewBox="0 0 520 220"
           className="dc-svg"
           role="img"
-          aria-label={`Leaf: ${PARCELS - eaten} parcels left. Your body: ${body}. Breathed out: ${breath}.`}
+          aria-label={t("Leaf: {left} parcels left. Your body: {body}. Breathed out: {breath}.", {
+            left: PARCELS - eaten,
+            body,
+            breath,
+          })}
         >
           <g transform="translate(20 30)">
             {Array.from({ length: PARCELS }, (_, i) => {
@@ -90,14 +105,14 @@ export function HandDecompose({
               );
             })}
             <text x={86} y={160} className="dc-cap" textAnchor="middle">
-              Leaf · {PARCELS - eaten} left
+              {t("Leaf · {n} left", { n: PARCELS - eaten })}
             </text>
           </g>
           <g transform="translate(250 40)">
             <circle cx={60} cy={60} r={18 + body * 7} className="dc-cell" />
             <circle cx={60 - 6} cy={60 - 4} r={5 + body} className="dc-nucleus" />
             <text x={60} y={170} className="dc-cap" textAnchor="middle">
-              Your body · {body}
+              {t("Your body · {n}", { n: body })}
             </text>
           </g>
           <g transform="translate(400 30)">
@@ -111,12 +126,12 @@ export function HandDecompose({
               />
             ))}
             <text x={56} y={180} className="dc-cap" textAnchor="middle">
-              Breathed out · {breath}
+              {t("Breathed out · {n}", { n: breath })}
             </text>
           </g>
         </svg>
-        <div className="dc-heat" aria-label={`Heat released: ${breath} units`}>
-          <span>Heat released</span>
+        <div className="dc-heat" aria-label={t("Heat released: {n} units", { n: breath })}>
+          <span>{t("Heat released")}</span>
           <div className="meter">
             <i style={{ width: `${(breath / PARCELS) * 100}%` }} />
           </div>
@@ -128,24 +143,32 @@ export function HandDecompose({
       {!finished ? (
         <div className="btn-row">
           <button type="button" className="btn btn-primary" onClick={() => choose("body")}>
-            Into my body
+            {t("Into my body")}
           </button>
           <button type="button" className="btn" onClick={() => choose("breath")}>
-            Breathe it out
+            {t("Breathe it out")}
           </button>
         </div>
       ) : (
         <div className="dc-result">
           <p>
-            <b className="mono">{body}</b> of {PARCELS} parcels became you; <b className="mono">{breath}</b>{" "}
-            left as CO₂.{" "}
+            {tr("{body} of {n} parcels became you; {breath} left as CO₂.", {
+              body: <b className="mono">{body}</b>,
+              n: PARCELS,
+              breath: <b className="mono">{breath}</b>,
+            })}{" "}
             {body === Math.round(cue * PARCELS)
-              ? `That is the most a decomposer with a carbon-use efficiency of ${cue} can keep.`
-              : `A decomposer with a carbon-use efficiency of ${cue} could have kept ${Math.round(cue * PARCELS)}.`}{" "}
-            Every parcel is still somewhere: none was destroyed.
+              ? t("That is the most a decomposer with a carbon-use efficiency of {cue} can keep.", {
+                  cue: cue.toLocaleString(lang()),
+                })
+              : t("A decomposer with a carbon-use efficiency of {cue} could have kept {n}.", {
+                  cue: cue.toLocaleString(lang()),
+                  n: Math.round(cue * PARCELS),
+                })}{" "}
+            {t("Every parcel is still somewhere: none was destroyed.")}
           </p>
           <button type="button" className="btn btn-primary" onClick={onDone}>
-            Now let the world do it
+            {t("Now let the world do it")}
           </button>
         </div>
       )}

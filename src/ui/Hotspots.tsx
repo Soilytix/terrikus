@@ -1,6 +1,7 @@
 /** The scene outline: every object is a real button, placed over the plate. */
 import { useEffect, useState, type CSSProperties } from "react";
 import type { SceneObject } from "../content/schema";
+import { t, tl } from "../i18n";
 
 interface Props {
   objects: SceneObject[];
@@ -17,10 +18,10 @@ interface Props {
 const IDLE_MS = 6000;
 
 const VERB: Record<SceneObject["kind"], string> = {
-  portal: "Go",
-  scan: "Look at",
-  action: "Use",
-  glimpse: "Glimpse",
+  portal: tl("Go"),
+  scan: tl("Look at"),
+  action: tl("Use"),
+  glimpse: tl("Glimpse"),
 };
 
 export function Hotspots({ objects, scanned, highlight, onActivate, fresh, reduced, open }: Props) {
@@ -43,7 +44,7 @@ export function Hotspots({ objects, scanned, highlight, onActivate, fresh, reduc
   return (
     <ul
       className="scene-outline"
-      aria-label="Things in this scene"
+      aria-label={t("Things in this scene")}
       data-fresh={fresh}
       data-idle={idle && !reduced}
     >
@@ -70,7 +71,7 @@ export function Hotspots({ objects, scanned, highlight, onActivate, fresh, reduc
               data-open={o.id === open}
               data-object={o.id}
               onClick={() => onActivate(o)}
-              aria-label={`${VERB[o.kind]}: ${o.label}${done ? " (looked at)" : ""}`}
+              aria-label={`${t(VERB[o.kind])}: ${o.label}${done ? t(" (looked at)") : ""}`}
             >
               <span className="hotspot-ring" aria-hidden="true" />
               <span className="hotspot-label" aria-hidden="true">

@@ -33,7 +33,8 @@ import {
   type Valley,
   type Watering,
 } from "../sim/hillslope";
-import { Facts } from "./common";
+import { lang, t, tl } from "../i18n";
+import { Facts, tr } from "./common";
 import { STORM, STORM_MS, phaseAt, washAt, type StormPhase } from "./storm";
 
 type HillStep = Extract<Step, { kind: "hill" }>;
@@ -43,7 +44,7 @@ function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -54,7 +55,7 @@ function Result({ step, onDone }: { step: HillStep; onDone: () => void }) {
       <p className="observation">{step.resultText}</p>
       <Facts facts={step.facts} />
       <button type="button" className="btn btn-primary" onClick={onDone}>
-        Continue
+        {t("Continue")}
       </button>
     </>
   );
@@ -79,7 +80,7 @@ function Segmented<T extends string>({
       {(Object.keys(options) as T[]).map((o) => (
         <label key={o}>
           <input type="radio" name={name} checked={value === o} onChange={() => onChange(o)} />
-          <span>{options[o]}</span>
+          <span>{t(options[o])}</span>
         </label>
       ))}
     </fieldset>
@@ -88,17 +89,22 @@ function Segmented<T extends string>({
 
 const Derived = () => (
   <span className="tier" data-tier="derived">
-    derived
+    {t("derived")}
   </span>
 );
 const pct = (n: number, of: number) => Math.round((n / of) * 100);
+const num = (n: number) => n.toLocaleString(lang());
+/** A label inside a sentence: lower case in English; in German only the first letter, so nouns keep their capital. */
+const lower = (s: string) =>
+  lang() === "en" ? s.toLowerCase() : t(s).charAt(0).toLowerCase() + t(s).slice(1);
 
 const COVER_LABEL: Record<Cover, string> = {
-  bare: "Bare soil",
-  thin: "Thin straw, 30 %",
-  full: "Full straw, 70 %",
+  bare: tl("Bare soil"),
+  thin: tl("Thin straw, 30 %"),
+  full: tl("Full straw, 70 %"),
 };
-const RAIN_LABEL: Record<Rain, string> = { gentle: "Gentle", intense: "Intense" };
+const RAIN_LABEL: Record<Rain, string> = { gentle: tl("Gentle"), intense: tl("Intense") };
+const RAIN_PHRASE: Record<Rain, string> = { gentle: tl("gentle rain"), intense: tl("intense rain") };
 
 /** c13-m1: one storm on a hundred surface crumbs; loose ones jump out of the grid. */
 function Splash({ step, onDone }: Props) {
@@ -115,10 +121,16 @@ function Splash({ step, onDone }: Props) {
   return (
     <>
       <Banner />
-      <Segmented legend="Cover" name="c13-cover" options={COVER_LABEL} value={cover} onChange={setCover} />
-      <Segmented legend="Rain" name="c13-rain" options={RAIN_LABEL} value={rain} onChange={setRain} />
+      <Segmented
+        legend={t("Cover")}
+        name="c13-cover"
+        options={COVER_LABEL}
+        value={cover}
+        onChange={setCover}
+      />
+      <Segmented legend={t("Rain")} name="c13-rain" options={RAIN_LABEL} value={rain} onChange={setRain} />
       <button type="button" className="btn btn-primary" onClick={run}>
-        Let the storm fall
+        {t("Let the storm fall")}
       </button>
       {s && ran && (
         <>
@@ -126,7 +138,7 @@ function Splash({ step, onDone }: Props) {
             className="c13-crumbs"
             viewBox="0 0 110 70"
             role="img"
-            aria-label={`${s.loose} of ${CRUMBS} crumbs broke loose`}
+            aria-label={t("{loose} of {all} crumbs broke loose", { loose: s.loose, all: CRUMBS })}
           >
             {Array.from({ length: CRUMBS }, (_, i) => {
               // Seeded order, so the loose crumbs are scattered, not the first row.
@@ -156,12 +168,17 @@ function Splash({ step, onDone }: Props) {
               ))}
           </svg>
           <p className="observation" aria-live="polite">
-            <Derived /> {COVER_LABEL[ran.cover]}, {RAIN_LABEL[ran.rain].toLowerCase()} rain:{" "}
-            <b className="mono">
-              {s.loose} of {CRUMBS}
-            </b>{" "}
-            crumbs broke loose; about <b className="mono">{s.tPerHa} t per hectare</b> carried off, lowering
-            the surface <b className="mono">{s.mm} mm</b>.{" "}
+            <Derived />{" "}
+            {tr(
+              "{cover}, {rain}: {count} crumbs broke loose; about {mass} carried off, lowering the surface {mm}.",
+              {
+                cover: t(COVER_LABEL[ran.cover]),
+                rain: t(RAIN_PHRASE[ran.rain]),
+                count: <b className="mono">{t("{loose} of {all}", { loose: s.loose, all: CRUMBS })}</b>,
+                mass: <b className="mono">{t("{n} t per hectare", { n: num(s.tPerHa) })}</b>,
+                mm: <b className="mono">{num(s.mm)} mm</b>,
+              },
+            )}{" "}
             <span className="mono small">mm = t ÷ (1.3 t/m³ × 10,000 m²) × 1,000</span>
           </p>
         </>
@@ -169,13 +186,30 @@ function Splash({ step, onDone }: Props) {
       {done ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="muted small">Run bare soil in intense rain, then a cover, to continue.</p>
+        <p className="muted small">{t("Run bare soil in intense rain, then a cover, to continue.")}</p>
       )}
     </>
   );
 }
 
-const STRIP_LABEL: Record<Strip, string> = { none: "No grass strip", strip: "Grass strip at the foot" };
+const STRIP_LABEL: Record<Strip, string> = {
+  none: tl("No grass strip"),
+  strip: tl("Grass strip at the foot"),
+};
+const PHASE: Record<StormPhase, string> = {
+  calm: tl("calm"),
+  darkening: tl("darkening"),
+  raining: tl("raining"),
+  clearing: tl("clearing"),
+  after: tl("after"),
+};
+const SKY: Record<StormPhase, string> = {
+  calm: tl("calm"),
+  darkening: tl("the sky darkening"),
+  raining: tl("the sky raining"),
+  clearing: tl("the sky clearing"),
+  after: tl("the storm has passed"),
+};
 const RAIN_LINES = Array.from({ length: 24 }, (_, k) => ({
   x: 8 + ((k * 41) % 190),
   y: 6 + ((k * 17) % 40),
@@ -183,7 +217,7 @@ const RAIN_LINES = Array.from({ length: 24 }, (_, k) => ({
 
 /** The valley in section: sky under the storm wash, the slope, the foot and the river. */
 function StormView({
-  t,
+  t: ms,
   phase,
   v,
   later,
@@ -197,7 +231,7 @@ function StormView({
 }) {
   // Rain fades in and out over 600 ms at the edges of its phase.
   const [rainFrom, rainTo] = [STORM[0]!.ms, STORM[0]!.ms + STORM[1]!.ms];
-  const rain = phase === "raining" ? 0.7 * Math.min(1, (t - rainFrom) / 600, (rainTo - t) / 600) : 0;
+  const rain = phase === "raining" ? 0.7 * Math.min(1, (ms - rainFrom) / 600, (rainTo - ms) / 600) : 0;
   const plume = v ? Math.min(0.85, v.soil.river / 3_000) : 0;
   const deposit = v ? Math.min(0.9, v.soil.foot / 3_000) : 0;
   return (
@@ -205,7 +239,7 @@ function StormView({
       className="c13-storm"
       viewBox="0 0 200 110"
       role="img"
-      aria-label={`The hill in section during the storm: ${phase === "calm" ? "calm" : phase === "after" ? "the storm has passed" : `the sky ${phase}`}`}
+      aria-label={t("The hill in section during the storm: {state}", { state: t(SKY[phase]) })}
     >
       <rect className="sky" x="0" y="0" width="200" height="110" />
       <path className="hill" d="M0,20 C40,22 70,40 100,72 C112,84 120,86 130,88 L200,90 L200,110 L0,110 Z" />
@@ -230,7 +264,7 @@ function StormView({
           <line key={k} x1={l.x} y1={l.y} x2={l.x - 2} y2={l.y + 8} />
         ))}
       </g>
-      <rect className="wash" x="0" y="0" width="200" height="110" style={{ opacity: washAt(t) }} />
+      <rect className="wash" x="0" y="0" width="200" height="110" style={{ opacity: washAt(ms) }} />
     </svg>
   );
 }
@@ -240,7 +274,7 @@ function StormBench({ step, reduced, onDone }: Props) {
   const [cover, setCover] = useState<Cover>("bare");
   const [strip, setStrip] = useState<Strip>("none");
   // Milliseconds since the storm was summoned, while it runs; the wash follows `washAt` frame by frame.
-  const [t, setT] = useState<number | null>(null);
+  const [ms, setMs] = useState<number | null>(null);
   const [v, setV] = useState<Valley | null>(null);
   const [later, setLater] = useState<Valley | null>(null);
   const [seen, setSeen] = useState(false);
@@ -254,41 +288,41 @@ function StormBench({ step, reduced, onDone }: Props) {
     const t0 = performance.now();
     const tick = (now: number) => {
       if (now - t0 >= STORM_MS) {
-        setT(null);
+        setMs(null);
         setV(after);
       } else {
-        setT(Math.max(0, now - t0));
+        setMs(Math.max(0, now - t0));
         frame.current = requestAnimationFrame(tick);
       }
     };
     frame.current = requestAnimationFrame(tick);
   };
-  const phase: StormPhase = t === null ? (v ? "after" : "calm") : phaseAt(Math.max(1, t));
-  const busy = t !== null;
+  const phase: StormPhase = ms === null ? (v ? "after" : "calm") : phaseAt(Math.max(1, ms));
+  const busy = ms !== null;
   return (
     <>
       <Banner />
       <Segmented
-        legend="Slope fields"
+        legend={t("Slope fields")}
         name="c13-slope"
         options={COVER_LABEL}
         value={cover}
         onChange={setCover}
       />
       <Segmented
-        legend="Foot of the slope"
+        legend={t("Foot of the slope")}
         name="c13-strip"
         options={STRIP_LABEL}
         value={strip}
         onChange={setStrip}
       />
-      <StormView t={t ?? 0} phase={phase} v={v} later={later} strip={strip} />
+      <StormView t={ms ?? 0} phase={phase} v={v} later={later} strip={strip} />
       <p className="muted small">
-        The storm darkens the sky slowly and clears slowly: no lightning, no flashing.
+        {t("The storm darkens the sky slowly and clears slowly: no lightning, no flashing.")}
       </p>
       <div className="pit-row">
         <button type="button" className="btn btn-primary" onClick={summon} disabled={busy}>
-          {v ? "Summon another storm" : "Summon the storm"}
+          {v ? t("Summon another storm") : t("Summon the storm")}
         </button>
         {v && !later && (
           <button
@@ -299,36 +333,44 @@ function StormBench({ step, reduced, onDone }: Props) {
               setSeen(true);
             }}
           >
-            Weeks later
+            {t("Weeks later")}
           </button>
         )}
       </div>
       <p className="mono small" aria-live="polite">
-        {busy ? `The storm: ${phase}` : ""}
+        {busy ? t("The storm: {phase}", { phase: t(PHASE[phase]) }) : ""}
       </p>
       {v && (
         <p className="observation" aria-live="polite">
-          <Derived /> Of the tagged soil, <b className="mono">{pct(v.soil.slope, TAGGED)} %</b> stayed on the
-          slope, <b className="mono">{pct(v.soil.foot, TAGGED)} %</b> stopped at the foot and{" "}
-          <b className="mono">{pct(v.soil.river, TAGGED)} %</b> reached the river. Of the phosphorus that left
-          the slope, <b className="mono">{boundShare(v)} %</b> rode on particles.
+          <Derived />{" "}
+          {tr(
+            "Of the tagged soil, {slope} stayed on the slope, {foot} stopped at the foot and {river} reached the river. Of the phosphorus that left the slope, {bound} rode on particles.",
+            {
+              slope: <b className="mono">{pct(v.soil.slope, TAGGED)} %</b>,
+              foot: <b className="mono">{pct(v.soil.foot, TAGGED)} %</b>,
+              river: <b className="mono">{pct(v.soil.river, TAGGED)} %</b>,
+              bound: <b className="mono">{boundShare(v)} %</b>,
+            },
+          )}
           {later &&
-            (bloomed(later)
-              ? " Weeks later, algae bloom where the muddy water entered the river."
-              : " Weeks later the river is clear: too little phosphorus arrived for a bloom.")}
+            ` ${
+              bloomed(later)
+                ? t("Weeks later, algae bloom where the muddy water entered the river.")
+                : t("Weeks later the river is clear: too little phosphorus arrived for a bloom.")
+            }`}
         </p>
       )}
       {seen && !busy ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="muted small">Summon a storm, then look again weeks later, to continue.</p>
+        <p className="muted small">{t("Summon a storm, then look again weeks later, to continue.")}</p>
       )}
     </>
   );
 }
 
-const DRAIN_LABEL: Record<Drainage, string> = { none: "No drains", drains: "Drains" };
-const WATER_LABEL: Record<Watering, string> = { normal: "Normal water", extra: "Extra water" };
+const DRAIN_LABEL: Record<Drainage, string> = { none: tl("No drains"), drains: tl("Drains") };
+const WATER_LABEL: Record<Watering, string> = { normal: tl("Normal water"), extra: tl("Extra water") };
 const EC_MAX = 40;
 
 /** EC over thirty years for every run so far, with the saline line. */
@@ -340,7 +382,7 @@ function SaltChart({ runs }: { runs: [string, SaltYear[]][] }) {
       className="c13-salt-chart"
       viewBox="0 0 300 160"
       role="img"
-      aria-label="Root-zone EC over thirty years"
+      aria-label={t("Root-zone EC over thirty years")}
     >
       <line className="axis" x1="30" x2="290" y1="140" y2="140" />
       <line className="axis" x1="30" x2="30" y1="10" y2="140" />
@@ -356,7 +398,7 @@ function SaltChart({ runs }: { runs: [string, SaltYear[]][] }) {
       ))}
       <line className="saline" x1="30" x2="290" y1={y(SALINE_EC)} y2={y(SALINE_EC)} />
       <text className="saline-label" x="288" y={y(SALINE_EC) - 2} textAnchor="end">
-        saline above 4 dS/m
+        {t("saline above {ec} dS/m", { ec: SALINE_EC })}
       </text>
       {runs.map(([key, run], k) => (
         <polyline
@@ -387,27 +429,27 @@ function Salt({ step, onDone }: Props) {
   const done = keys.some((k) => k.startsWith("none")) && keys.some((k) => k.startsWith("drains"));
   const label = (k: string) => {
     const [d, w] = k.split(":") as [Drainage, Watering];
-    return `${DRAIN_LABEL[d]}, ${WATER_LABEL[w].toLowerCase()}`;
+    return `${t(DRAIN_LABEL[d])}, ${lower(WATER_LABEL[w])}`;
   };
   return (
     <>
       <Banner />
       <Segmented
-        legend="Drainage"
+        legend={t("Drainage")}
         name="c13-drain"
         options={DRAIN_LABEL}
         value={drainage}
         onChange={setDrainage}
       />
       <Segmented
-        legend="Irrigation"
+        legend={t("Irrigation")}
         name="c13-water"
         options={WATER_LABEL}
         value={watering}
         onChange={setWatering}
       />
       <button type="button" className="btn btn-primary" onClick={run}>
-        Irrigate for {YEARS} years
+        {t("Irrigate for {n} years", { n: YEARS })}
       </button>
       {runs.size > 0 && (
         <>
@@ -423,18 +465,29 @@ function Salt({ step, onDone }: Props) {
       )}
       {end && last && (
         <p className="observation" aria-live="polite">
-          <Derived /> {label(last)}, year {YEARS}: EC<sub>e</sub> <b className="mono">{end.ec} dS/m</b>
-          {end.ec > SALINE_EC ? " (saline)" : ""}, ESP <b className="mono">{end.esp}</b>
-          {end.esp > SODIC_ESP ? " (sodic)" : ""}, water table at <b className="mono">{end.table} m</b>, yield{" "}
-          <b className="mono">{end.yield} %</b> and infiltration <b className="mono">{end.infiltration} %</b>{" "}
-          of the first year.
-          {end.esp > SODIC_ESP && " The ditch runs milky: the clay has dispersed."}
+          <Derived />{" "}
+          {tr(
+            "{run}, year {years}: EC{e} {ec}{saline}, ESP {esp}{sodic}, water table at {table}, yield {yield} and infiltration {infiltration} of the first year.",
+            {
+              run: label(last),
+              years: YEARS,
+              e: <sub>e</sub>,
+              ec: <b className="mono">{num(end.ec)} dS/m</b>,
+              saline: end.ec > SALINE_EC ? ` (${t("saline")})` : "",
+              esp: <b className="mono">{end.esp}</b>,
+              sodic: end.esp > SODIC_ESP ? ` (${t("sodic")})` : "",
+              table: <b className="mono">{num(end.table)} m</b>,
+              yield: <b className="mono">{end.yield} %</b>,
+              infiltration: <b className="mono">{end.infiltration} %</b>,
+            },
+          )}
+          {end.esp > SODIC_ESP && ` ${t("The ditch runs milky: the clay has dispersed.")}`}
         </p>
       )}
       {done ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="muted small">Run it with no drains and with drains to continue.</p>
+        <p className="muted small">{t("Run it with no drains and with drains to continue.")}</p>
       )}
     </>
   );
@@ -473,7 +526,7 @@ function Satellite({ step, onDone }: Props) {
           <div className="c13-image">
             <img
               src={assetUrl(s.asset)}
-              alt="Satellite image: green and brown gullied hills, a road along the top."
+              alt={t("Satellite image: green and brown gullied hills, a road along the top.")}
             />
             {s.probes.map((p) => (
               <button
@@ -484,7 +537,7 @@ function Satellite({ step, onDone }: Props) {
                 style={{ left: `${p.x * 100}%`, top: `${p.y * 100}%` }}
                 onClick={() => probe(p.id)}
               >
-                <span className="sr-only">Probe </span>
+                <span className="sr-only">{t("Probe")} </span>
                 {p.id}
               </button>
             ))}
@@ -495,22 +548,26 @@ function Satellite({ step, onDone }: Props) {
         </figure>
         <figure className="c13-inset">
           <p className="c13-tag" data-kind="illustration">
-            Illustration: painted, not measured
+            {t("Illustration: painted, not measured")}
           </p>
           <div className="c13-image">{painted && <img src={painted} alt="" />}</div>
           <figcaption className="small">
-            The valley of this chapter, drawn to teach. No pixel here was measured.
+            {t("The valley of this chapter, drawn to teach. No pixel here was measured.")}
           </figcaption>
         </figure>
       </div>
       {here && (
         <p className="observation" aria-live="polite">
           <span className="tier" data-tier="measured">
-            measured
+            {t("measured")}
           </span>{" "}
-          Probe {here.id}: red <b className="mono">{here.rgb[0]}</b>, green{" "}
-          <b className="mono">{here.rgb[1]}</b>, blue <b className="mono">{here.rgb[2]}</b> (display values,
-          0–255). <Derived /> Green share <b className="mono">{share(here.rgb)}</b>{" "}
+          {tr("Probe {id}: red {r}, green {g}, blue {b} (display values, 0–255).", {
+            id: here.id,
+            r: <b className="mono">{here.rgb[0]}</b>,
+            g: <b className="mono">{here.rgb[1]}</b>,
+            b: <b className="mono">{here.rgb[2]}</b>,
+          })}{" "}
+          <Derived /> {t("Green share")} <b className="mono">{num(share(here.rgb))}</b>{" "}
           <span className="mono small">
             = {here.rgb[1]} ÷ ({here.rgb.join(" + ")})
           </span>
@@ -519,7 +576,7 @@ function Satellite({ step, onDone }: Props) {
       {probed.size === s.probes.length ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="muted small">Probe all four patches to continue.</p>
+        <p className="muted small">{t("Probe all four patches to continue.")}</p>
       )}
     </>
   );

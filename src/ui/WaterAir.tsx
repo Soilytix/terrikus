@@ -1,5 +1,6 @@
 /** Reactive figure (p-m1): solids stay put; water and air trade the pore space. */
 import { useState } from "react";
+import { t } from "../i18n";
 
 export function WaterAir({ onMoved }: { onMoved: (water: number) => void }) {
   const [water, setWater] = useState(25);
@@ -16,18 +17,18 @@ export function WaterAir({ onMoved }: { onMoved: (water: number) => void }) {
   return (
     <div className="water-air">
       <div className="wa-bar">
-        {seg("Solids", 50, "wa-solid")}
-        {seg("Water", water, "wa-water")}
-        {seg("Air", air, "wa-air")}
+        {seg(t("Solids"), 50, "wa-solid")}
+        {seg(t("Water"), water, "wa-water")}
+        {seg(t("Air"), air, "wa-air")}
       </div>
       <label className="slider-row">
-        <span>Water share of the volume</span>
+        <span>{t("Water share of the volume")}</span>
         <input
           type="range"
           min={0}
           max={50}
           value={water}
-          aria-valuetext={`Water ${water} %, air ${air} %, solids 50 %`}
+          aria-valuetext={t("Water {water} %, air {air} %, solids 50 %", { water, air })}
           onChange={(e) => {
             setWater(Number(e.target.value));
             onMoved(Number(e.target.value));
@@ -37,10 +38,10 @@ export function WaterAir({ onMoved }: { onMoved: (water: number) => void }) {
       </label>
       <p className="muted small">
         {water >= 45
-          ? "Almost no air left: the pores are flooded."
+          ? t("Almost no air left: the pores are flooded.")
           : water <= 5
-            ? "Bone dry: the pores are all air."
-            : `Every percent of water you add is a percent of air gone.`}
+            ? t("Bone dry: the pores are all air.")
+            : t("Every percent of water you add is a percent of air gone.")}
       </p>
     </div>
   );

@@ -19,6 +19,7 @@ import {
   type Rung,
   type Triangle,
 } from "../sim/disease";
+import { t, tl } from "../i18n";
 import { Facts } from "./common";
 
 type DiseaseStep = Extract<Step, { kind: "disease" }>;
@@ -28,7 +29,7 @@ function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -39,7 +40,7 @@ function Result({ step, onDone }: { step: DiseaseStep; onDone: () => void }) {
       <p className="observation">{step.resultText}</p>
       <Facts facts={step.facts} />
       <button type="button" className="btn btn-primary" onClick={onDone}>
-        Continue
+        {t("Continue")}
       </button>
     </>
   );
@@ -81,50 +82,54 @@ function Bar({ v, max, text }: { v: number; max: number; text?: string }) {
 }
 
 const VERTEX: { key: keyof Omit<Triangle, "suppressive">; label: string }[] = [
-  { key: "host", label: "Host: peas sown" },
-  { key: "pathogen", label: "Pathogen: root rot in the soil" },
-  { key: "conducive", label: "Environment: wet spring" },
+  { key: "host", label: tl("Host: peas sown") },
+  { key: "pathogen", label: tl("Pathogen: root rot in the soil") },
+  { key: "conducive", label: tl("Environment: wet spring") },
 ];
 
 /** c10-m1: switch the vertices; DNA tracks the pathogen, disease needs all three. */
 function TriangleBench({ step, onDone }: { step: DiseaseStep; onDone: () => void }) {
-  const [t, setT] = useState<Triangle>({ host: true, pathogen: true, conducive: false });
+  const [tri, setTri] = useState<Triangle>({ host: true, pathogen: true, conducive: false });
   const [log, setLog] = useState<(Triangle & ReturnType<typeof triangle>)[]>([]);
-  const run = () => setLog([{ ...t, ...triangle(t) }, ...log]);
+  const run = () => setLog([{ ...tri, ...triangle(tri) }, ...log]);
   const presentNotSick = log.some((l) => l.detected && !l.disease);
   const sick = log.some((l) => l.disease);
   return (
     <figure className="ripple disease">
       <Banner />
       <fieldset className="toggles">
-        <legend>The three vertices</legend>
+        <legend>{t("The three vertices")}</legend>
         {VERTEX.map((v) => (
           <label key={v.key}>
-            <input type="checkbox" checked={t[v.key]} onChange={() => setT({ ...t, [v.key]: !t[v.key] })} />
-            <span>{v.label}</span>
+            <input
+              type="checkbox"
+              checked={tri[v.key]}
+              onChange={() => setTri({ ...tri, [v.key]: !tri[v.key] })}
+            />
+            <span>{t(v.label)}</span>
           </label>
         ))}
       </fieldset>
       <button type="button" className="btn" onClick={run}>
-        Grow a season
+        {t("Grow a season")}
       </button>
       {log.length > 0 && (
-        <table aria-label="Seasons grown">
+        <table aria-label={t("Seasons grown")}>
           <thead>
             <tr>
-              <th scope="col">Host · pathogen · wet</th>
-              <th scope="col">Pathogen DNA</th>
-              <th scope="col">Disease</th>
+              <th scope="col">{t("Host · pathogen · wet")}</th>
+              <th scope="col">{t("Pathogen DNA")}</th>
+              <th scope="col">{t("Disease")}</th>
             </tr>
           </thead>
           <tbody aria-live="polite">
             {log.map((l, i) => (
               <tr key={log.length - i} data-key={l.disease ? "plant" : undefined}>
                 <th scope="row">
-                  {[l.host, l.pathogen, l.conducive].map((x) => (x ? "on" : "off")).join(" · ")}
+                  {[l.host, l.pathogen, l.conducive].map((x) => (x ? t("on") : t("off"))).join(" · ")}
                 </th>
-                <td>{l.detected ? "detected" : "not detected"}</td>
-                <td>{l.disease ? "sick peas" : "healthy peas"}</td>
+                <td>{l.detected ? t("detected") : t("not detected")}</td>
+                <td>{l.disease ? t("sick peas") : t("healthy peas")}</td>
               </tr>
             ))}
           </tbody>
@@ -134,7 +139,7 @@ function TriangleBench({ step, onDone }: { step: DiseaseStep; onDone: () => void
         <Result step={step} onDone={onDone} />
       ) : (
         <p className="hint">
-          Find a season with the pathogen detected and the peas healthy, and one with sick peas.
+          {t("Find a season with the pathogen detected and the peas healthy, and one with sick peas.")}
         </p>
       )}
     </figure>
@@ -142,13 +147,20 @@ function TriangleBench({ step, onDone }: { step: DiseaseStep; onDone: () => void
 }
 
 const CROP_NAME: Record<Crop, string> = {
-  pea: "Pea",
-  bean: "Bean",
-  cereal: "Cereal",
-  sugarbeet: "Sugar beet",
+  pea: tl("Pea"),
+  bean: tl("Bean"),
+  cereal: tl("Cereal"),
+  sugarbeet: tl("Sugar beet"),
 };
-const ROTATION_NAME: Record<Rotation, string> = { short: "Pea–bean every year", long: "Six-year rotation" };
-const COVER_NAME: Record<Cover, string> = { none: "No cover", vetch: "Vetch cover", oat: "Oat cover" };
+const ROTATION_NAME: Record<Rotation, string> = {
+  short: tl("Pea–bean every year"),
+  long: tl("Six-year rotation"),
+};
+const COVER_NAME: Record<Cover, string> = {
+  none: tl("No cover"),
+  vetch: tl("Vetch cover"),
+  oat: tl("Oat cover"),
+};
 
 /** c10-m2: six seasons round the wheel; resting inoculum carried from each to the next. */
 function RotationWheel({ step, onDone }: { step: DiseaseStep; onDone: () => void }) {
@@ -168,63 +180,71 @@ function RotationWheel({ step, onDone }: { step: DiseaseStep; onDone: () => void
     <figure className="ripple disease">
       <Banner />
       <Seg
-        legend="Rotation"
+        legend={t("Rotation")}
         options={["short", "long"] as const}
         value={rotation}
         set={pick<Rotation>(setRotation)}
-        label={(r) => ROTATION_NAME[r]}
+        label={(r) => t(ROTATION_NAME[r])}
       />
       <Seg
-        legend="Winter cover"
+        legend={t("Winter cover")}
         options={["none", "vetch", "oat"] as const}
         value={cover}
         set={pick<Cover>(setCover)}
-        label={(c) => COVER_NAME[c]}
+        label={(c) => t(COVER_NAME[c])}
       />
-      <table aria-label="Six seasons">
+      <table aria-label={t("Six seasons")}>
         <thead>
           <tr>
-            <th scope="col">Season</th>
-            <th scope="col">Resting spores at sowing</th>
-            <th scope="col">Pathogen DNA · disease</th>
+            <th scope="col">{t("Season")}</th>
+            <th scope="col">{t("Resting spores at sowing")}</th>
+            <th scope="col">{t("Pathogen DNA · disease")}</th>
           </tr>
         </thead>
         <tbody aria-live="polite">
           {seasons.map((s) => (
             <tr key={s.season} data-key={s.disease ? "plant" : undefined}>
               <th scope="row">
-                {s.season}. {CROP_NAME[s.crop]}, {s.wet ? "wet" : "dry"} spring
+                {s.wet
+                  ? t("{n}. {crop}, wet spring", { n: s.season, crop: t(CROP_NAME[s.crop]) })
+                  : t("{n}. {crop}, dry spring", { n: s.season, crop: t(CROP_NAME[s.crop]) })}
               </th>
               <Bar v={s.inoculum} max={max} />
               <td>
-                {s.detected ? "detected" : "not detected"} · {s.disease ? "sick" : "healthy"}
+                {s.detected ? t("detected") : t("not detected")} · {s.disease ? t("sick") : t("healthy")}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
       <figcaption>
-        Resting spores in teaching units per gram. Disease needs a host, enough spores and a wet spring.
+        {t(
+          "Resting spores in teaching units per gram. Disease needs a host, enough spores and a wet spring.",
+        )}
       </figcaption>
       {done ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="hint">Run both rotations, and try a vetch and an oat cover.</p>
+        <p className="hint">{t("Run both rotations, and try a vetch and an oat cover.")}</p>
       )}
     </figure>
   );
 }
 
 const POTS: { id: string; label: string; pot: Pot }[] = [
-  { id: "conducive", label: "Conducive soil", pot: { soil: "conducive" } },
-  { id: "suppressive", label: "Suppressive soil", pot: { soil: "suppressive" } },
-  { id: "mix-0.1", label: "Conducive + 0.1 % suppressive", pot: { soil: "mix", percent: 0.1 } },
-  { id: "mix-1", label: "Conducive + 1 % suppressive", pot: { soil: "mix", percent: 1 } },
-  { id: "mix-10", label: "Conducive + 10 % suppressive", pot: { soil: "mix", percent: 10 } },
-  { id: "sterile-s", label: "Suppressive soil, sterilised", pot: { soil: "suppressive", sterilised: true } },
+  { id: "conducive", label: tl("Conducive soil"), pot: { soil: "conducive" } },
+  { id: "suppressive", label: tl("Suppressive soil"), pot: { soil: "suppressive" } },
+  { id: "mix-0.1", label: tl("Conducive + 0.1 % suppressive"), pot: { soil: "mix", percent: 0.1 } },
+  { id: "mix-1", label: tl("Conducive + 1 % suppressive"), pot: { soil: "mix", percent: 1 } },
+  { id: "mix-10", label: tl("Conducive + 10 % suppressive"), pot: { soil: "mix", percent: 10 } },
+  {
+    id: "sterile-s",
+    label: tl("Suppressive soil, sterilised"),
+    pot: { soil: "suppressive", sterilised: true },
+  },
   {
     id: "sterile-mix",
-    label: "Conducive + 10 % sterilised suppressive",
+    label: tl("Conducive + 10 % sterilised suppressive"),
     pot: { soil: "mix", percent: 10, sterilised: true },
   },
 ];
@@ -236,23 +256,23 @@ function TransferPots({ step, onDone }: { step: DiseaseStep; onDone: () => void 
   return (
     <figure className="ripple disease">
       <Banner />
-      <table aria-label="Pot test">
+      <table aria-label={t("Pot test")}>
         <thead>
           <tr>
-            <th scope="col">Pot (beet + fungus added)</th>
-            <th scope="col">Sick seedlings of 100</th>
+            <th scope="col">{t("Pot (beet + fungus added)")}</th>
+            <th scope="col">{t("Sick seedlings of 100")}</th>
           </tr>
         </thead>
         <tbody aria-live="polite">
           {POTS.map((p) => (
             <tr key={p.id}>
-              <th scope="row">{p.label}</th>
+              <th scope="row">{t(p.label)}</th>
               {ran.includes(p.id) ? (
                 <Bar v={sickSeedlings(p.pot)} max={100} />
               ) : (
                 <td>
                   <button type="button" className="chip-btn" onClick={() => setRan([...ran, p.id])}>
-                    Run this pot
+                    {t("Run this pot")}
                   </button>
                 </td>
               )}
@@ -260,11 +280,11 @@ function TransferPots({ step, onDone }: { step: DiseaseStep; onDone: () => void 
           ))}
         </tbody>
       </table>
-      <figcaption>Counts are the bench&apos;s teaching values, one pot per soil.</figcaption>
+      <figcaption>{t("Counts are the bench's teaching values, one pot per soil.")}</figcaption>
       {done ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="hint">Run a mix of at least 1 % and the sterilised suppressive soil.</p>
+        <p className="hint">{t("Run a mix of at least 1 % and the sterilised suppressive soil.")}</p>
       )}
     </figure>
   );
@@ -276,12 +296,12 @@ export function DiseaseBench({ step, onDone }: { step: DiseaseStep; onDone: () =
 }
 
 const RUNG_NAME: Record<Rung, string> = {
-  outcome: "Observed disease outcome",
-  hypothesis: "Suppression hypothesis",
-  candidate: "DNA or pathway candidate",
-  assay: "Compound or activity assay",
-  "plant-test": "Plant test",
-  field: "Field evidence across environments",
+  outcome: tl("Observed disease outcome"),
+  hypothesis: tl("Suppression hypothesis"),
+  candidate: tl("DNA or pathway candidate"),
+  assay: tl("Compound or activity assay"),
+  "plant-test": tl("Plant test"),
+  field: tl("Field evidence across environments"),
 };
 
 /** c10-m4: climb rung by rung; each claim opens only with its rung and those below. Overreach never opens. */
@@ -297,29 +317,29 @@ export function EvidenceLadder({ step, onDone }: { step: LadderStep; onDone: () 
           const open = claimable(id, held);
           return (
             <li key={id} data-held={open} data-tier={id === "field" ? "would-measure" : undefined}>
-              <b>{RUNG_NAME[id]}</b>
+              <b>{t(RUNG_NAME[id])}</b>
               {open ? (
                 <>
                   <p>{r.evidence}</p>
                   <p className="ladder-claim">
-                    <b>Claim unlocked</b> {r.claim}
+                    <b>{t("Claim unlocked")}</b> {r.claim}
                   </p>
                   <p className="ladder-not">
-                    <b>Not supported yet</b> {r.notYet}
+                    <b>{t("Not supported yet")}</b> {r.notYet}
                   </p>
                 </>
               ) : id === up ? (
                 <button type="button" className="btn" onClick={() => setHeld([...held, id])}>
-                  Collect the evidence
+                  {t("Collect the evidence")}
                 </button>
               ) : (
-                <p className="muted small">Locked: climb the rungs below first.</p>
+                <p className="muted small">{t("Locked: climb the rungs below first.")}</p>
               )}
             </li>
           );
         })}
       </ol>
-      <p className="step-text">Some claims no rung opens. Try one:</p>
+      <p className="step-text">{t("Some claims no rung opens. Try one:")}</p>
       <div className="watch-row">
         {step.overreach.map((c) => (
           <button
@@ -337,14 +357,14 @@ export function EvidenceLadder({ step, onDone }: { step: LadderStep; onDone: () 
         .filter((c) => tried.includes(c.id))
         .map((c) => (
           <div key={c.id} className="explain-card" role="note" aria-live="polite">
-            <b>Not supported by any rung.</b> {c.feedback}
+            <b>{t("Not supported by any rung.")}</b> {c.feedback}
           </div>
         ))}
       {!up && (
         <>
           <Facts facts={step.facts} />
           <button type="button" className="btn btn-primary" onClick={onDone}>
-            Continue
+            {t("Continue")}
           </button>
         </>
       )}

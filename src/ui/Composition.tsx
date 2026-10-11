@@ -2,11 +2,13 @@
  * The handful separated by volume (p-m1 observe step), drawn as a graduated
  * cylinder. An idealised moist loam, with the real range beside it.
  */
+import { t, tl } from "../i18n";
+
 const LAYERS = [
-  { id: "mineral", label: "Mineral grains", pct: 45, fill: "comp-mineral" },
-  { id: "organic", label: "Organic matter", pct: 5, fill: "comp-organic" },
-  { id: "water", label: "Water", pct: 25, fill: "comp-water" },
-  { id: "air", label: "Air", pct: 25, fill: "comp-air" },
+  { id: "mineral", label: tl("Mineral grains"), pct: 45, fill: "comp-mineral" },
+  { id: "organic", label: tl("Organic matter"), pct: 5, fill: "comp-organic" },
+  { id: "water", label: tl("Water"), pct: 25, fill: "comp-water" },
+  { id: "air", label: tl("Air"), pct: 25, fill: "comp-air" },
 ];
 
 export function Composition({ guess, reveal }: { guess: number | undefined; reveal: boolean }) {
@@ -21,7 +23,9 @@ export function Composition({ guess, reveal }: { guess: number | undefined; reve
       <svg
         viewBox="0 -16 470 326"
         role="img"
-        aria-label="A graduated cylinder: 45 % mineral, 5 % organic matter, 25 % water, 25 % air. The solid share in typical topsoil ranges from about 40 to 60 %."
+        aria-label={t(
+          "A graduated cylinder: 45 % mineral, 5 % organic matter, 25 % water, 25 % air. The solid share in typical topsoil ranges from about 40 to 60 %.",
+        )}
       >
         {/* scale */}
         {[0, 25, 50, 75, 100].map((p) => (
@@ -47,7 +51,7 @@ export function Composition({ guess, reveal }: { guess: number | undefined; reve
                 className="leader"
               />
               <text x={x0 + cw + 24} y={y((from + acc) / 2) + 4} className="layer-label">
-                {l.label} <tspan className="mono">{l.pct} %</tspan>
+                {t(l.label)} <tspan className="mono">{l.pct} %</tspan>
               </text>
             </g>
           );
@@ -61,7 +65,7 @@ export function Composition({ guess, reveal }: { guess: number | undefined; reve
             <line x1={56} x2={x0 + cw + 6} y1={y(guess)} y2={y(guess)} />
             <circle cx={56} cy={y(guess)} r={5} />
             <text x={56} y={y(guess) - 30} textAnchor="middle">
-              Your guess
+              {t("Your guess")}
             </text>
             <text x={56} y={y(guess) - 12} textAnchor="middle" className="mono">
               {guess} %
@@ -69,7 +73,7 @@ export function Composition({ guess, reveal }: { guess: number | undefined; reve
           </g>
         )}
       </svg>
-      <figcaption>An idealised moist loam. The bar on the scale marks the real range.</figcaption>
+      <figcaption>{t("An idealised moist loam. The bar on the scale marks the real range.")}</figcaption>
     </figure>
   );
 }

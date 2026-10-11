@@ -6,6 +6,7 @@
 import { useState } from "react";
 import type { Fact } from "../content/schema";
 import { CHARGE, add, heldCharge, rain, surface, type Cation, type Ion, type Surface } from "../sim/exchange";
+import { t } from "../i18n";
 import { Facts } from "./common";
 
 const SITES = 8;
@@ -22,7 +23,7 @@ function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -79,10 +80,10 @@ function Table({ s, ions }: { s: Surface; ions: Ion[] }) {
     <table className="run-table" aria-live="polite">
       <thead>
         <tr>
-          <th scope="col">Ion</th>
-          <th scope="col">On the clay</th>
-          <th scope="col">In the soil water</th>
-          <th scope="col">Drained</th>
+          <th scope="col">{t("Ion")}</th>
+          <th scope="col">{t("On the clay")}</th>
+          <th scope="col">{t("In the soil water")}</th>
+          <th scope="col">{t("Drained")}</th>
         </tr>
       </thead>
       <tbody>
@@ -124,7 +125,7 @@ export function Exchange({
 
   const acid = () => {
     const next = add(s, "H", 2);
-    setLog([...log, `2 H⁺ in: ${left(s, next) || "nothing knocked off"}`]);
+    setLog([...log, t("2 H⁺ in: {out}", { out: left(s, next) || t("nothing knocked off") })]);
     setS(next);
   };
   const shower = () => {
@@ -144,7 +145,7 @@ export function Exchange({
       <Table s={s} ions={ions} />
       {mode === "chairs" ? (
         <>
-          <div className="btn-row" role="group" aria-label="Seat a cation">
+          <div className="btn-row" role="group" aria-label={t("Seat a cation")}>
             {SEATABLE.map((c) => (
               <button
                 key={c}
@@ -153,21 +154,24 @@ export function Exchange({
                 disabled={s.added.H > 0 || free < CHARGE[c]}
                 onClick={() => setS(add(s, c, 1))}
               >
-                Seat {ION_LABEL[c]}
+                {t("Seat {ion}", { ion: ION_LABEL[c] })}
               </button>
             ))}
           </div>
           <p className="muted small">
             {free > 0
-              ? `${free} of ${s.sites} negative charges still free. Calcium and magnesium take two each.`
-              : "Every charge is taken."}
+              ? t("{free} of {sites} negative charges still free. Calcium and magnesium take two each.", {
+                  free,
+                  sites: s.sites,
+                })
+              : t("Every charge is taken.")}
           </p>
           <div className="btn-row">
             <button type="button" className="btn btn-primary" disabled={free > 0} onClick={acid}>
-              Add acid (2 H⁺)
+              {t("Add acid (2 H⁺)")}
             </button>
             <button type="button" className="btn" disabled={free > 0} onClick={shower}>
-              Rain
+              {t("Rain")}
             </button>
           </div>
           {log.length > 0 && (
@@ -179,7 +183,7 @@ export function Exchange({
           )}
           {!done && log.length >= 2 && knocked < 2 && (
             <p className="hint">
-              Seat more than one kind of cation to see which leaves first.{" "}
+              {t("Seat more than one kind of cation to see which leaves first.")}{" "}
               <button
                 type="button"
                 className="btn"
@@ -188,7 +192,7 @@ export function Exchange({
                   setLog([]);
                 }}
               >
-                Start again
+                {t("Start again")}
               </button>
             </p>
           )}
@@ -196,10 +200,10 @@ export function Exchange({
       ) : (
         <div className="btn-row">
           <button type="button" className="btn btn-primary" onClick={fertilise}>
-            Add fertiliser (4 NH₄⁺, 4 NO₃⁻)
+            {t("Add fertiliser (4 NH₄⁺, 4 NO₃⁻)")}
           </button>
           <button type="button" className="btn" disabled={s.added.NO3 === 0} onClick={shower}>
-            Rain
+            {t("Rain")}
           </button>
         </div>
       )}
@@ -208,7 +212,7 @@ export function Exchange({
           <p className="observation">{resultText}</p>
           <Facts facts={facts} />
           <button type="button" className="btn btn-primary" onClick={onDone}>
-            Continue
+            {t("Continue")}
           </button>
         </>
       )}

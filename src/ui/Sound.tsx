@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useGame } from "../app/store";
 import { mixer, type BedScene, type CueId } from "../audio/mixer";
 import type { Save } from "../save/schema";
+import { t } from "../i18n";
 
 const CUE_MS = 4000;
 const count = (s: Save): Record<CueId, number> => ({
@@ -22,8 +23,8 @@ export function SoundSettings() {
     <>
       <label className="setting">
         <span className="setting-text">
-          <b>Play sounds</b>
-          <small>Music and short cues; each one is captioned for screen readers.</small>
+          <b>{t("Play sounds")}</b>
+          <small>{t("Music and short cues; each one is captioned for screen readers.")}</small>
         </span>
         <input
           type="checkbox"

@@ -23,16 +23,19 @@ import {
   type StrawLevers,
 } from "../sim/benches/straw-n";
 import { run } from "../sim/engine";
-import { Facts, SourceRef } from "./common";
+import { lang, t, tl } from "../i18n";
+import { Facts, SourceRef, tr } from "./common";
+
+const fix1 = (n: number) => n.toLocaleString(lang(), { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 const LEVER_TEXT: { [K in keyof StrawLevers]: { label: string; options: Record<StrawLevers[K], string> } } = {
   residue: {
-    label: "Residue ploughed in",
-    options: { "beet-tops": "beet tops (C:N ≈ 15)", straw: "cereal straw (C:N ≈ 80)" },
+    label: tl("Residue ploughed in"),
+    options: { "beet-tops": tl("beet tops (C:N ≈ 15)"), straw: tl("cereal straw (C:N ≈ 80)") },
   },
-  mineral: { label: "Mineral N added", options: { none: "none", some: "some ammonium" } },
-  rain: { label: "Rain", options: { dry: "none (moist soil)", wet: "heavy (waterlogged)" } },
-  cover: { label: "Crop", options: { crop: "sugar beet", bare: "bare soil" } },
+  mineral: { label: tl("Mineral N added"), options: { none: tl("none"), some: tl("some ammonium") } },
+  rain: { label: tl("Rain"), options: { dry: tl("none (moist soil)"), wet: tl("heavy (waterlogged)") } },
+  cover: { label: tl("Crop"), options: { crop: tl("sugar beet"), bare: tl("bare soil") } },
 };
 
 export const runStraw = (levers: Partial<StrawLevers>) => run(strawN({ ...DEFAULT_STRAW, ...levers }), DAYS);
@@ -41,7 +44,7 @@ function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -51,7 +54,7 @@ export function Account({ snaps, day }: { snaps: Snapshot[]; day: number }) {
   const n = accountedN(snaps[0]!.ledger, snaps[day]!.ledger);
   return (
     <p className="ledger-account mono" aria-live="polite">
-      N accounted for: {n.toFixed(1)} %
+      {t("N accounted for: {n} %", { n: fix1(n) })}
     </p>
   );
 }
@@ -59,14 +62,14 @@ export function Account({ snaps, day }: { snaps: Snapshot[]; day: number }) {
 function DaySlider({ day, setDay, max = DAYS }: { day: number; setDay: (d: number) => void; max?: number }) {
   return (
     <label className="slider-row">
-      <span>Day</span>
+      <span>{t("Day")}</span>
       <input
         type="range"
         min={0}
         max={max}
         value={day}
         onChange={(e) => setDay(Number(e.target.value))}
-        aria-label="Day"
+        aria-label={t("Day")}
       />
       <output className="mono">{day}</output>
     </label>
@@ -80,24 +83,30 @@ export function RelayStrip({ snaps, day }: { snaps: Snapshot[]; day: number }) {
   const l = snaps[day]!.ledger;
   const h = sumTo(snaps, day);
   const legs: { pool: string; amount: number; handoff?: Handoff; runner?: string }[] = [
-    { pool: "Organic N", amount: organicN(l) - l.N.B },
-    { pool: "Ammonium, NH₄⁺", amount: l.N.NH4, handoff: "mineralisation", runner: "decomposers" },
-    { pool: "Nitrate, NO₃⁻", amount: l.N.NO3, handoff: "nitrification", runner: "nitrifiers (via NO₂⁻)" },
-    { pool: "Sugar beet", amount: l.N.plant, handoff: "plant-uptake", runner: "roots" },
+    { pool: t("Organic N"), amount: organicN(l) - l.N.B },
+    { pool: t("Ammonium, NH₄⁺"), amount: l.N.NH4, handoff: "mineralisation", runner: t("decomposers") },
+    {
+      pool: t("Nitrate, NO₃⁻"),
+      amount: l.N.NO3,
+      handoff: "nitrification",
+      runner: t("nitrifiers (via NO₂⁻)"),
+    },
+    { pool: t("Sugar beet"), amount: l.N.plant, handoff: "plant-uptake", runner: t("roots") },
   ];
   const exits: { label: string; amount: number; handoff: Handoff }[] = [
-    { label: "N₂O and N₂ from a wet crumb", amount: l.N.n2oOut + l.N.n2Out, handoff: "denitrification" },
-    { label: "Nitrate to the drain", amount: l.N.drainage, handoff: "leaching" },
-    { label: "NH₃ from the surface", amount: l.N.nh3Out, handoff: "volatilisation" },
+    { label: t("N₂O and N₂ from a wet crumb"), amount: l.N.n2oOut + l.N.n2Out, handoff: "denitrification" },
+    { label: t("Nitrate to the drain"), amount: l.N.drainage, handoff: "leaching" },
+    { label: t("NH₃ from the surface"), amount: l.N.nh3Out, handoff: "volatilisation" },
   ];
   return (
     <div className="relay">
-      <ol className="relay-legs" aria-label={`The nitrogen relay on day ${day}`}>
+      <ol className="relay-legs" aria-label={t("The nitrogen relay on day {day}", { day })}>
         {legs.map((g) => (
           <li key={g.pool} className="relay-leg">
             {g.handoff && (
               <span className="relay-handoff">
-                <span aria-hidden="true">→</span> {g.runner}: <b className="mono">{h[g.handoff]}</b> so far
+                <span aria-hidden="true">→</span>{" "}
+                {tr("{runner}: {n} so far", { runner: g.runner, n: <b className="mono">{h[g.handoff]}</b> })}
               </span>
             )}
             <span className="relay-pool">
@@ -107,10 +116,12 @@ export function RelayStrip({ snaps, day }: { snaps: Snapshot[]; day: number }) {
         ))}
       </ol>
       <p className="relay-borrowed small">
-        Held by microbes (borrowed): <b className="mono">{l.N.B}</b> · taken in so far{" "}
-        <b className="mono">{h.immobilisation}</b>
+        {tr("Held by microbes (borrowed): {held} · taken in so far {taken}", {
+          held: <b className="mono">{l.N.B}</b>,
+          taken: <b className="mono">{h.immobilisation}</b>,
+        })}
       </p>
-      <ul className="relay-exits" aria-label="Exits">
+      <ul className="relay-exits" aria-label={t("Exits")}>
         {exits.map((x) => (
           <li key={x.handoff}>
             {x.label}: <b className="mono">{x.amount}</b>
@@ -124,9 +135,9 @@ export function RelayStrip({ snaps, day }: { snaps: Snapshot[]; day: number }) {
 const SERIES = [
   { id: "nh4", label: "NH₄⁺", get: (s: Snapshot) => s.ledger.N.NH4 },
   { id: "no3", label: "NO₃⁻", get: (s: Snapshot) => s.ledger.N.NO3 },
-  { id: "microbes", label: "Microbial N", get: (s: Snapshot) => s.ledger.N.B },
-  { id: "plant", label: "Beet N", get: (s: Snapshot) => s.ledger.N.plant },
-  { id: "lost", label: "Lost", get: (s: Snapshot) => lostN(s.ledger) },
+  { id: "microbes", label: tl("Microbial N"), get: (s: Snapshot) => s.ledger.N.B },
+  { id: "plant", label: tl("Beet N"), get: (s: Snapshot) => s.ledger.N.plant },
+  { id: "lost", label: tl("Lost"), get: (s: Snapshot) => lostN(s.ledger) },
 ] as const;
 
 /** NH₄⁺, NO₃⁻, microbial N, plant N and losses over the season, up to `day`. */
@@ -144,7 +155,11 @@ export function NGraph({ snaps, day, title }: { snaps: Snapshot[]; day: number; 
         viewBox={`-30 -8 ${W + 40} ${H + 30}`}
         className="chart"
         role="img"
-        aria-label={`${title}, day ${day}: ${SERIES.map((s) => `${s.label} ${s.get(now)}`).join(", ")}.`}
+        aria-label={t("{title}, day {day}: {values}.", {
+          title,
+          day,
+          values: SERIES.map((s) => `${t(s.label)} ${s.get(now)}`).join(", "),
+        })}
       >
         {[0, 0.5, 1].map((t) => (
           <g key={t}>
@@ -176,7 +191,7 @@ export function NGraph({ snaps, day, title }: { snaps: Snapshot[]; day: number; 
               <svg width="22" height="8" aria-hidden="true">
                 <line x1="1" x2="21" y1="4" y2="4" className={`n-line n-${s.id}`} />
               </svg>
-              <span className="legend-label">{s.label}</span>
+              <span className="legend-label">{t(s.label)}</span>
               <span className="mono">{s.get(now)}</span>
             </li>
           ))}
@@ -201,10 +216,14 @@ export function RelaySeason() {
 }
 
 const COMPARE = [
-  { id: "mineral", label: "Mineral N (NH₄⁺ + NO₃⁻)", get: (s: Snapshot) => s.ledger.N.NH4 + s.ledger.N.NO3 },
-  { id: "microbes", label: "Microbial N", get: (s: Snapshot) => s.ledger.N.B },
-  { id: "plant", label: "Taken up by the beet", get: (s: Snapshot) => s.ledger.N.plant },
-  { id: "lost", label: "Lost to air and water", get: (s: Snapshot) => lostN(s.ledger) },
+  {
+    id: "mineral",
+    label: tl("Mineral N (NH₄⁺ + NO₃⁻)"),
+    get: (s: Snapshot) => s.ledger.N.NH4 + s.ledger.N.NO3,
+  },
+  { id: "microbes", label: tl("Microbial N"), get: (s: Snapshot) => s.ledger.N.B },
+  { id: "plant", label: tl("Taken up by the beet"), get: (s: Snapshot) => s.ledger.N.plant },
+  { id: "lost", label: tl("Lost to air and water"), get: (s: Snapshot) => lostN(s.ledger) },
 ];
 
 /** Mission c9-m2: straw beside beet tops over the season. */
@@ -218,19 +237,19 @@ export function StrawRun({ facts }: { facts: Fact[] }) {
     <figure className="ripple straw-run">
       <Banner />
       <DaySlider day={day} setDay={setDay} />
-      <NGraph snaps={straw} day={day} title="Straw ploughed in" />
+      <NGraph snaps={straw} day={day} title={t("Straw ploughed in")} />
       <table>
         <thead>
           <tr>
-            <th scope="col">Day {day}</th>
-            <th scope="col">Straw</th>
-            <th scope="col">Beet tops</th>
+            <th scope="col">{t("Day {day}", { day })}</th>
+            <th scope="col">{t("Straw")}</th>
+            <th scope="col">{t("Beet tops")}</th>
           </tr>
         </thead>
         <tbody>
           {COMPARE.map((r) => (
             <tr key={r.id} data-key={r.id}>
-              <th scope="row">{r.label}</th>
+              <th scope="row">{t(r.label)}</th>
               <td className="mono">{r.get(straw[day]!)}</td>
               <td className="mono">{r.get(tops[day]!)}</td>
             </tr>
@@ -259,9 +278,9 @@ export function LeakTable({ found }: { found: { id: string; label: string }[] })
       <table>
         <thead>
           <tr>
-            <th scope="col">After {DAYS} days of heavy rain</th>
-            <th scope="col">Bare soil</th>
-            <th scope="col">Under beet</th>
+            <th scope="col">{t("After {n} days of heavy rain", { n: DAYS })}</th>
+            <th scope="col">{t("Bare soil")}</th>
+            <th scope="col">{t("Under beet")}</th>
           </tr>
         </thead>
         <tbody>
@@ -281,31 +300,31 @@ export function LeakTable({ found }: { found: { id: string; label: string }[] })
 
 const sci = (v: number) => {
   const e = Math.floor(Math.log10(v));
-  return `${(v / 10 ** e).toFixed(1)} × 10${String(e)
+  return `${fix1(v / 10 ** e)} × 10${String(e)
     .split("")
     .map((c) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[Number(c)])
     .join("")}`;
 };
 const PLOTS = [
-  { id: "straw", label: "Straw plot" },
-  { id: "beet-tops", label: "Beet-tops plot" },
+  { id: "straw", label: tl("Straw plot") },
+  { id: "beet-tops", label: tl("Beet-tops plot") },
 ] as const;
 
 /** Mission c9-m4: the qPCR reading (measured, gene copies per gram). */
 export function AmoaReading() {
   return (
-    <table className="gene-table" aria-label="amoA qPCR, gene copies per gram of dry soil">
+    <table className="gene-table" aria-label={t("amoA qPCR, gene copies per gram of dry soil")}>
       <thead>
         <tr>
-          <th scope="col">amoA copies per g soil</th>
-          <th scope="col">Archaeal</th>
-          <th scope="col">Bacterial</th>
+          <th scope="col">{t("amoA copies per g soil")}</th>
+          <th scope="col">{t("Archaeal")}</th>
+          <th scope="col">{t("Bacterial")}</th>
         </tr>
       </thead>
       <tbody>
         {PLOTS.map((p) => (
           <tr key={p.id}>
-            <th scope="row">{p.label}</th>
+            <th scope="row">{t(p.label)}</th>
             {(["archaeal", "bacterial"] as const).map((k) => (
               <td key={k} className="mono">
                 {sci(AMOA_READING[p.id][k].value)} ± {sci(AMOA_READING[p.id][k].band)}
@@ -315,7 +334,8 @@ export function AmoaReading() {
         ))}
       </tbody>
       <caption className="small muted">
-        Measured: gene copies, not cells and not activity. Teaching values. <SourceRef id="leininger-2006" />
+        {t("Measured: gene copies, not cells and not activity. Teaching values.")}{" "}
+        <SourceRef id="leininger-2006" />
       </caption>
     </table>
   );
@@ -332,25 +352,27 @@ export function IncubationReading() {
     [],
   );
   return (
-    <table className="gene-table" aria-label="Nitrate production in a 7-day incubation">
+    <table className="gene-table" aria-label={t("Nitrate production in a 7-day incubation")}>
       <thead>
         <tr>
-          <th scope="col">7-day incubation</th>
-          <th scope="col">Net nitrate made, N per day</th>
+          <th scope="col">{t("7-day incubation")}</th>
+          <th scope="col">{t("Net nitrate made, N per day")}</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((r) => (
           <tr key={r.id}>
-            <th scope="row">{r.label}</th>
+            <th scope="row">{t(r.label)}</th>
             <td className="mono">
-              {r.m.value.toFixed(1)} ± {r.m.band.toFixed(1)}
+              {fix1(r.m.value)} ± {fix1(r.m.band)}
             </td>
           </tr>
         ))}
       </tbody>
       <caption className="small muted">
-        Measured on day {INCUBATION_DAY}: soil in a jar, no crop, no rain; instrument noise ±10 %.
+        {t("Measured on day {day}: soil in a jar, no crop, no rain; instrument noise ±10 %.", {
+          day: INCUBATION_DAY,
+        })}
       </caption>
     </table>
   );
@@ -365,21 +387,23 @@ export function StrawBench({ backHref }: { backHref: string }) {
     <main className="bench" aria-labelledby="bench-title">
       <header className="bench-head">
         <a className="back" href={backHref}>
-          ← Back to the field
+          {t("← Back to the field")}
         </a>
         <div>
-          <h1 id="bench-title">The nitrogen relay</h1>
+          <h1 id="bench-title">{t("The nitrogen relay")}</h1>
         </div>
         <Banner />
       </header>
       <p className="bench-brief">
-        A sugar beet field after a residue is ploughed in, over {DAYS} days. Change the levers and follow the
-        nitrogen. Rates are teaching values; the ledger keeps every unit.
+        {t(
+          "A sugar beet field after a residue is ploughed in, over {n} days. Change the levers and follow the nitrogen. Rates are teaching values; the ledger keeps every unit.",
+          { n: DAYS },
+        )}
       </p>
-      <section className="levers lab-levers" aria-label="Levers">
+      <section className="levers lab-levers" aria-label={t("Levers")}>
         {(Object.keys(LEVER_TEXT) as (keyof StrawLevers)[]).map((k) => (
           <fieldset key={k} className="segmented">
-            <legend>{LEVER_TEXT[k].label}</legend>
+            <legend>{t(LEVER_TEXT[k].label)}</legend>
             {Object.keys(LEVERS[k]).map((v) => (
               <label key={v}>
                 <input
@@ -388,7 +412,7 @@ export function StrawBench({ backHref }: { backHref: string }) {
                   checked={levers[k] === v}
                   onChange={() => setLevers({ ...levers, [k]: v })}
                 />
-                <span>{(LEVER_TEXT[k].options as Record<string, string>)[v]}</span>
+                <span>{t((LEVER_TEXT[k].options as Record<string, string>)[v]!)}</span>
               </label>
             ))}
           </fieldset>
@@ -397,12 +421,16 @@ export function StrawBench({ backHref }: { backHref: string }) {
       <DaySlider day={day} setDay={setDay} />
       <div className="straw-bench">
         <RelayStrip snaps={snaps} day={day} />
-        <NGraph snaps={snaps} day={day} title="Nitrogen pools" />
+        <NGraph snaps={snaps} day={day} title={t("Nitrogen pools")} />
       </div>
       <Account snaps={snaps} day={day} />
       <p className="muted small">
-        Residue C:N from <SourceRef id="nrcs-cn-ratios" /> (to be checked by hand). The bench skips nitrite
-        and runs one well-mixed field.
+        {tr(
+          "Residue C:N from {source} (to be checked by hand). The bench skips nitrite and runs one well-mixed field.",
+          {
+            source: <SourceRef id="nrcs-cn-ratios" />,
+          },
+        )}
       </p>
     </main>
   );

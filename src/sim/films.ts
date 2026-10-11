@@ -5,6 +5,8 @@
  * at least as wide as its body. Geometry and widths are teaching values
  * (or-2007, erktan-2020), not a pore-network model.
  */
+import { tl } from "../i18n";
+
 export type Moisture = "dry" | "moist" | "wet";
 export const MOISTURES: Moisture[] = ["dry", "moist", "wet"];
 const LEVEL: Record<Moisture, number> = { dry: 0, moist: 1, wet: 2 };
@@ -92,13 +94,13 @@ export function blockedBy(g: FilmGraph, from: string, to: string, m: Moisture, b
 /** The chapter 1 labyrinth (`c1-labyrinth`). The amoeba starts in `entry`. */
 export const LABYRINTH: FilmGraph = {
   sites: [
-    { id: "entry", label: "Entrance pore", x: 0.14, y: 0.56, width: 40 },
-    { id: "hall", label: "Wide hall", x: 0.34, y: 0.36, width: 60 },
-    { id: "colony", label: "Colony in a wide pore", x: 0.55, y: 0.24, width: 50, cells: 100, food: 30 },
-    { id: "crack", label: "Crack between crumbs", x: 0.36, y: 0.74, width: 25 },
-    { id: "refuge", label: "Colony in a narrow pore", x: 0.56, y: 0.78, width: 3, cells: 100, food: 10 },
-    { id: "neck", label: "Narrow connection", x: 0.66, y: 0.5, width: 15 },
-    { id: "far", label: "Colony across the neck", x: 0.86, y: 0.44, width: 30, cells: 100, food: 8 },
+    { id: "entry", label: tl("Entrance pore"), x: 0.14, y: 0.56, width: 40 },
+    { id: "hall", label: tl("Wide hall"), x: 0.34, y: 0.36, width: 60 },
+    { id: "colony", label: tl("Colony in a wide pore"), x: 0.55, y: 0.24, width: 50, cells: 100, food: 30 },
+    { id: "crack", label: tl("Crack between crumbs"), x: 0.36, y: 0.74, width: 25 },
+    { id: "refuge", label: tl("Colony in a narrow pore"), x: 0.56, y: 0.78, width: 3, cells: 100, food: 10 },
+    { id: "neck", label: tl("Narrow connection"), x: 0.66, y: 0.5, width: 15 },
+    { id: "far", label: tl("Colony across the neck"), x: 0.86, y: 0.44, width: 30, cells: 100, food: 8 },
   ],
   necks: [
     { a: "entry", b: "hall", holds: "dry" },

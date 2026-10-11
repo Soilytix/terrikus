@@ -112,9 +112,13 @@ export const NOT_TEXT = new Set([
   "shares",
 ]);
 const ENUM_EVIDENCE = new Set(["measured", "derived", "inferred"]);
+/** A chain's evidence is matched as a key by `observed()`: shown through `t`, never rewritten. */
+const CHAIN_EVIDENCE = /^(\w+ vs \w+|your .+)$/;
 
 const skip = (key: string, v: string) =>
-  NOT_TEXT.has(key) || key.startsWith("r-") || (key === "evidence" && ENUM_EVIDENCE.has(v));
+  NOT_TEXT.has(key) ||
+  key.startsWith("r-") ||
+  (key === "evidence" && (ENUM_EVIDENCE.has(v) || CHAIN_EVIDENCE.test(v)));
 
 /** Visit every learner-facing string in a content value; `edit` may return a replacement. */
 export function walkText(

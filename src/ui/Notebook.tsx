@@ -11,18 +11,57 @@ import {
   scene as sceneById,
   type FieldCard,
 } from "../content";
-import type { GroupBadge } from "../content/schema";
+import type { GroupBadge, HowWeKnow } from "../content/schema";
 import type { Save } from "../save/schema";
 import { assetUrl } from "../assets/urls";
 import { NOTEBOOK_TABS, href, type NotebookTab } from "../app/router";
 import { whereToLook } from "../app/progress";
-import { Dialog, Facts, ReviewBadge, SourceRef } from "./common";
+import { Dialog, Facts, ReviewBadge, SourceRef, tierLabel } from "./common";
+import { t, tl } from "../i18n";
 
 const TAB_LABEL: Record<NotebookTab, string> = {
-  rumors: "Rumors",
-  cards: "Field cards",
-  lab: "Lab book",
-  codex: "Explanations",
+  rumors: tl("Rumors"),
+  cards: tl("Field cards"),
+  lab: tl("Lab book"),
+  codex: tl("Explanations"),
+};
+
+const GROUP: Record<GroupBadge, string> = {
+  decomposer: tl("decomposer"),
+  grazer: tl("grazer"),
+  transformer: tl("transformer"),
+  mutualist: tl("mutualist"),
+  pathogen: tl("pathogen"),
+  antagonist: tl("antagonist"),
+  engineer: tl("engineer"),
+  shredder: tl("shredder"),
+  predator: tl("predator"),
+};
+
+const HOW: Record<HowWeKnow, string> = {
+  microscopy: tl("microscopy"),
+  culture: tl("culture"),
+  dna: tl("dna"),
+  process: tl("process"),
+  "hand-sorting": tl("hand-sorting"),
+};
+
+const KIND: Record<FieldCard["kind"], string> = {
+  organism: tl("organism"),
+  process: tl("process"),
+  material: tl("material"),
+};
+
+const RUMOR_STATE: Record<Save["rumors"][string], string> = {
+  glimpsed: tl("glimpsed"),
+  investigated: tl("investigated"),
+  explained: tl("explained"),
+};
+
+const VERDICT: Record<string, string> = {
+  supported: tl("supported"),
+  plausible: tl("plausible"),
+  contradicted: tl("contradicted"),
 };
 
 /** Predator has no shape yet (art-direction §6.2): its badge is text only. */
@@ -48,7 +87,7 @@ function CardView({ card, state, guess }: { card: FieldCard; state: "partial" | 
   return (
     <article className="field-card" data-state={state} id={`card-${item.id}`}>
       <div className="fc-art" aria-hidden="true">
-        {art ? <img src={art} alt="" /> : <span className="fc-art-blank">{card.kind}</span>}
+        {art ? <img src={art} alt="" /> : <span className="fc-art-blank">{t(KIND[card.kind])}</span>}
       </div>
       <div className="fc-body">
         {card.kind === "organism" && (
@@ -58,16 +97,16 @@ function CardView({ card, state, guess }: { card: FieldCard; state: "partial" | 
                 <path d={GROUP_SHAPE[card.item.group]} />
               </svg>
             )}
-            {card.item.group}
+            {t(GROUP[card.item.group])}
           </p>
         )}
         <h3>{item.name}</h3>
         {card.kind === "organism" && <p className="fc-role">{card.item.role}</p>}
         {card.kind !== "organism" && <p className="fc-role">{card.item.summary}</p>}
-        {typeof guess === "number" && <p className="small">You guessed {guess} % solid.</p>}
+        {typeof guess === "number" && <p className="small">{t("You guessed {n} % solid.", { n: guess })}</p>}
         {card.kind === "organism" && (
           <p className="fc-size">
-            True size{" "}
+            {t("True size")}{" "}
             <b className="mono">
               {sizeLabel(card.item.sizeRange[0])}–{sizeLabel(card.item.sizeRange[1])}
             </b>
@@ -77,21 +116,21 @@ function CardView({ card, state, guess }: { card: FieldCard; state: "partial" | 
           <>
             {card.kind === "organism" && (
               <dl className="fc-facts">
-                <dt>Eats</dt>
+                <dt>{t("Eats")}</dt>
                 <dd>{card.item.eats.join("; ")}</dd>
-                <dt>Eaten by</dt>
+                <dt>{t("Eaten by")}</dt>
                 <dd>{card.item.eatenBy.join("; ")}</dd>
-                <dt>Needs</dt>
+                <dt>{t("Needs")}</dt>
                 <dd>{card.item.needs.join("; ")}</dd>
-                <dt>How we know</dt>
-                <dd>{card.item.howWeKnow.join(", ")}</dd>
+                <dt>{t("How we know")}</dt>
+                <dd>{card.item.howWeKnow.map((h) => t(HOW[h])).join(", ")}</dd>
               </dl>
             )}
             <Facts facts={item.facts} />
           </>
         ) : (
           <p className="muted small">
-            Partly filled in. Finish the mission that features it to complete the card.
+            {t("Partly filled in. Finish the mission that features it to complete the card.")}
           </p>
         )}
         <ReviewBadge status={item.reviewStatus} />
@@ -126,12 +165,12 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
   const entries = save.codex.map((id) => codexById(id)).filter((c) => !!c);
 
   return (
-    <Dialog title="Field notebook" onClose={onClose} wide className="notebook">
+    <Dialog title={t("Field notebook")} onClose={onClose} wide className="notebook">
       <div
         ref={tabs}
         className="tabs"
         role="tablist"
-        aria-label="Notebook sections"
+        aria-label={t("Notebook sections")}
         onKeyDown={(e) => {
           const i = NOTEBOOK_TABS.indexOf(tab);
           if (e.key === "ArrowRight") onTab(NOTEBOOK_TABS[(i + 1) % NOTEBOOK_TABS.length]!);
@@ -139,25 +178,26 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
             onTab(NOTEBOOK_TABS[(i - 1 + NOTEBOOK_TABS.length) % NOTEBOOK_TABS.length]!);
         }}
       >
-        {NOTEBOOK_TABS.map((t) => (
+        {NOTEBOOK_TABS.map((id) => (
           <button
-            key={t}
+            key={id}
             type="button"
             role="tab"
-            aria-selected={t === tab}
-            tabIndex={t === tab ? 0 : -1}
-            onClick={() => onTab(t)}
+            aria-selected={id === tab}
+            tabIndex={id === tab ? 0 : -1}
+            onClick={() => onTab(id)}
           >
-            {TAB_LABEL[t]}
+            {t(TAB_LABEL[id])}
           </button>
         ))}
       </div>
-      <div role="tabpanel" className="tab-panel" aria-label={TAB_LABEL[tab]}>
+      <div role="tabpanel" className="tab-panel" aria-label={t(TAB_LABEL[tab])}>
         {tab === "rumors" && (
           <>
             <p className="lede">
-              Questions you have met. A dashed tag names the chapter a question points to; a solid line gives
-              what explained it.
+              {t(
+                "Questions you have met. A dashed tag names the chapter a question points to; a solid line gives what explained it.",
+              )}
             </p>
             {rumors.length ? (
               <ul className="rumors rumor-map">
@@ -167,7 +207,7 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                   const hint = whereToLook(save, r);
                   return (
                     <li key={r.id} data-state={save.rumors[r.id]}>
-                      <span className="sr-only">{save.rumors[r.id]}: </span>
+                      <span className="sr-only">{t(RUMOR_STATE[save.rumors[r.id]!])}: </span>
                       <blockquote className="rumor-quote">{r.text}</blockquote>
                       <div className="rumor-edges">
                         {r.hintsAt.map((id, i) => {
@@ -180,7 +220,8 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                               tabIndex={i === 0 && hint ? 0 : undefined}
                               aria-describedby={i === 0 && hint ? `tip-${r.id}` : undefined}
                             >
-                              <span className="sr-only">hints at: </span>Ch. {c.number} · {c.title}
+                              <span className="sr-only">{t("hints at: ")}</span>
+                              {t("Ch. {n} · {title}", { n: c.number, title: c.title })}
                             </span>
                           );
                           // The where-to-look hint is about the first chapter, so it hangs off that badge.
@@ -198,7 +239,7 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                       </div>
                       {by && (
                         <p className="edge" data-edge="explains">
-                          <span className="sr-only">explained by: </span>
+                          <span className="sr-only">{t("explained by: ")}</span>
                           {by.statement}
                         </p>
                       )}
@@ -207,15 +248,20 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                 })}
               </ul>
             ) : (
-              <p className="empty">No rumors yet. Look around the valley.</p>
+              <p className="empty">{t("No rumors yet. Look around the valley.")}</p>
             )}
           </>
         )}
         {tab === "cards" && (
           <>
             <p className="lede">
-              {cards.length} of {FIELD_CARDS.length} cards. Organisms are described by what they do here,
-              never as good or bad.
+              {t(
+                "{n} of {total} cards. Organisms are described by what they do here, never as good or bad.",
+                {
+                  n: cards.length,
+                  total: FIELD_CARDS.length,
+                },
+              )}
             </p>
             <div className="card-grid">
               {cards.map((c) => (
@@ -236,7 +282,7 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
         )}
         {tab === "lab" && (
           <>
-            <p className="lede">Your runs and reasoning, kept apart by evidence tier.</p>
+            <p className="lede">{t("Your runs and reasoning, kept apart by evidence tier.")}</p>
             {save.labBook.length ? (
               <ol className="lab-book">
                 {[...save.labBook].reverse().map((e) => {
@@ -245,12 +291,14 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                   return (
                     <li key={e.id + e.at} data-tier={e.tier}>
                       <span className="tier" data-tier={e.tier === "would-do" ? "would-do" : "measured"}>
-                        {e.tier === "would-do" ? "would measure" : e.tier}
+                        {tierLabel(e.tier === "would-do" ? "would measure" : e.tier)}
                       </span>
                       <p className="hand">{e.result}</p>
-                      {e.prediction && <p className="small muted">Predicted: {e.prediction}</p>}
+                      {e.prediction && (
+                        <p className="small muted">{t("Predicted: {p}", { p: e.prediction })}</p>
+                      )}
                       <p className="small muted">
-                        From{" "}
+                        {t("From")}{" "}
                         <a
                           href={
                             at
@@ -258,7 +306,7 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                               : href({ name: "bench", bench: e.bench })
                           }
                         >
-                          {at ? at.title : "the lab bench"}
+                          {at ? at.title : t("the lab bench")}
                         </a>{" "}
                         · <span className="mono">{e.ruleset}</span> · {new Date(e.at).toLocaleString()}
                       </p>
@@ -267,18 +315,18 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                 })}
               </ol>
             ) : (
-              <p className="empty">Nothing run yet. The lab bench opens in chapter 2.</p>
+              <p className="empty">{t("Nothing run yet. The lab bench opens in chapter 2.")}</p>
             )}
             {Object.keys(save.chains).length > 0 && (
               <>
-                <h3>Cause chains</h3>
+                <h3>{t("Cause chains")}</h3>
                 <ul className="lab-chains">
                   {Object.entries(save.chains).map(([id, c]) => (
                     <li key={id}>
-                      <span className="mono small">{id}</span> · confidence {c.confidence}/3
+                      <span className="mono small">{id}</span> · {t("confidence {n}/3", { n: c.confidence })}
                       {c.verdict && (
                         <span className="verdict-tag" data-verdict={c.verdict}>
-                          {c.verdict}
+                          {t(VERDICT[c.verdict]!)}
                         </span>
                       )}
                     </li>
@@ -290,7 +338,7 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
         )}
         {tab === "codex" && (
           <>
-            <p className="lede">What explained your questions, with the sources behind it.</p>
+            <p className="lede">{t("What explained your questions, with the sources behind it.")}</p>
             {entries.length ? (
               <div className="codex-list">
                 {entries.map((c) => (
@@ -306,7 +354,7 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                           <s>{c.revised.old}</s>
                         </p>
                         <p>
-                          Now: {c.revised.now}{" "}
+                          {t("Now: {text}", { text: c.revised.now })}{" "}
                           {c.revised.sources.map((s) => (
                             <SourceRef key={s} id={s} />
                           ))}
@@ -316,7 +364,7 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                     {c.openQuestion && (
                       <div className="open-question">
                         <p>
-                          <b>Open question: {c.openQuestion.claim}</b>
+                          <b>{t("Open question: {claim}", { claim: c.openQuestion.claim })}</b>
                         </p>
                         <ul>
                           {c.openQuestion.sides.map((s) => (
@@ -334,18 +382,24 @@ export function Notebook({ tab, save, focusCard, onTab, onClose }: Props) {
                     {c.realWorld && (
                       <>
                         <p>
-                          <b>In the real world</b>
+                          <b>{t("In the real world")}</b>
                         </p>
                         <Facts facts={c.realWorld} />
                       </>
                     )}
-                    {c.simplification && <p className="simplification">Simplified: {c.simplification}</p>}
+                    {c.simplification && (
+                      <p className="simplification">
+                        {t("Simplified:")} {c.simplification}
+                      </p>
+                    )}
                   </article>
                 ))}
               </div>
             ) : (
               <p className="empty">
-                Explanations fill in as you finish missions. {CODEX.length} wait in this book.
+                {t("Explanations fill in as you finish missions. {n} wait in this book.", {
+                  n: CODEX.length,
+                })}
               </p>
             )}
           </>

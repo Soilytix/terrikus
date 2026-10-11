@@ -5,6 +5,7 @@
 import type { ChainTemplate, Connector, Verdict } from "../content/schema";
 import type { LabEntry, Save } from "../save/schema";
 import { RESIDUE, WATER } from "../sim/modifiers";
+import { tl } from "../i18n";
 
 export interface Answer {
   cards: string[];
@@ -76,7 +77,7 @@ export function judge(t: ChainTemplate, answer: Answer, save: Save): Judgement {
 }
 
 export const VERDICT_LABEL: Record<Verdict, string> = {
-  supported: "Supported by your run",
-  plausible: "Plausible but untested",
-  contradicted: "Contradicted by your run",
+  supported: tl("Supported by your run"),
+  plausible: tl("Plausible but untested"),
+  contradicted: tl("Contradicted by your run"),
 };

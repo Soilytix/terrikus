@@ -18,28 +18,41 @@ import {
 } from "../sim/nodules";
 import { BINDER, PH_STEPS, type Ph } from "../sim/sorption";
 import { AM_HOST, CROPS, runTrade, tradeAccount, type Crop, type SoilP, type Strategy } from "../sim/trade";
-import { Facts, SourceRef } from "./common";
+import { t, tl } from "../i18n";
+import { Facts, SourceRef, tr } from "./common";
 
 type PartnersStep = Extract<Step, { kind: "partners" }>;
 type ClaimStep = Extract<Step, { kind: "claim-sort" }>;
 
 const DAYS = 20;
+const BINDER_NAME = { "iron and aluminium": tl("iron and aluminium"), calcium: tl("calcium") };
 const CROP_NAME: Record<Crop, string> = {
-  pea: "Pea",
-  bean: "Bush bean",
-  spinach: "Spinach",
-  sugarbeet: "Sugar beet",
+  pea: tl("Pea"),
+  bean: tl("Bush bean"),
+  spinach: tl("Spinach"),
+  sugarbeet: tl("Sugar beet"),
+};
+/** The same names mid-sentence; German keeps its nouns capitalised. */
+const CROP_LOWER: Record<Crop, string> = {
+  pea: tl("pea"),
+  bean: tl("bush bean"),
+  spinach: tl("spinach"),
+  sugarbeet: tl("sugar beet"),
 };
 const RHIZOBIA_NAME: Record<Rhizobia, string> = {
-  "pea-rhizobia": "Pea rhizobia",
-  "bean-rhizobia": "Bean rhizobia",
+  "pea-rhizobia": tl("Pea rhizobia"),
+  "bean-rhizobia": tl("Bean rhizobia"),
+};
+const RHIZOBIA_LOWER: Record<Rhizobia, string> = {
+  "pea-rhizobia": tl("pea rhizobia"),
+  "bean-rhizobia": tl("bean rhizobia"),
 };
 
 function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -56,7 +69,7 @@ function Result({
       <p className="observation">{step.resultText}</p>
       <Facts facts={step.facts} />
       <button type="button" className="btn btn-primary" onClick={onDone}>
-        Continue
+        {t("Continue")}
       </button>
     </>
   );
@@ -99,6 +112,7 @@ function Bar({ v, max, text }: { v: number; max: number; text?: string }) {
 }
 
 const SOIL_P: SoilP[] = ["low", "medium", "high"];
+const SOIL_P_NAME: Record<SoilP, string> = { low: tl("Low"), medium: tl("Medium"), high: tl("High") };
 
 /** c8-m1: the pea with and without its fungus across soil P. */
 function Trade({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
@@ -120,52 +134,54 @@ function Trade({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
     <figure className="ripple partners">
       <Banner />
       <Seg
-        legend="Soil P"
+        legend={t("Soil P")}
         options={SOIL_P}
         value={soilP}
         set={(p) => {
           setSoilP(p);
           setTried((t) => (t.includes(p) ? t : [...t, p]));
         }}
-        label={(p) => p[0]!.toUpperCase() + p.slice(1)}
+        label={(p) => t(SOIL_P_NAME[p])}
       />
       <table>
         <thead>
           <tr>
-            <th scope="col">After {DAYS} days, pea</th>
-            <th scope="col">No fungus</th>
-            <th scope="col">With its fungus</th>
+            <th scope="col">{t("After {days} days, pea", { days: DAYS })}</th>
+            <th scope="col">{t("No fungus")}</th>
+            <th scope="col">{t("With its fungus")}</th>
           </tr>
         </thead>
         <tbody>
           <tr data-key="plant">
-            <th scope="row">P taken up by the plant</th>
+            <th scope="row">{t("P taken up by the plant")}</th>
             <Bar v={r.without} max={maxP} />
             <Bar v={r.with} max={maxP} />
           </tr>
           <tr>
-            <th scope="row">P handed over by the fungus</th>
+            <th scope="row">{t("P handed over by the fungus")}</th>
             <td className="mono">—</td>
             <Bar v={r.pReceived} max={maxP} />
           </tr>
           <tr>
-            <th scope="row">C paid to the fungus</th>
+            <th scope="row">{t("C paid to the fungus")}</th>
             <td className="mono">—</td>
             <Bar v={r.cPaid} max={maxC} />
           </tr>
         </tbody>
       </table>
       <p className="ledger-account mono" aria-live="polite">
-        Trade ratio (derived): {r.perHundredC.toFixed(1)} P per 100 C paid
+        {t("Trade ratio (derived): {n} P per 100 C paid", { n: r.perHundredC.toFixed(1) })}
       </p>
       <figcaption>
-        The trade ratio is the bench&apos;s derived number: P the fungus handed over divided by the carbon it
-        was paid. <SourceRef id="smith-2003" />
+        {tr(
+          "The trade ratio is the bench's derived number: P the fungus handed over divided by the carbon it was paid. {src}",
+          { src: <SourceRef id="smith-2003" /> },
+        )}
       </figcaption>
       {tried.length === SOIL_P.length ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="hint">Try all three soil P levels.</p>
+        <p className="hint">{t("Try all three soil P levels.")}</p>
       )}
     </figure>
   );
@@ -179,9 +195,9 @@ function Survey({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
       <table>
         <thead>
           <tr>
-            <th scope="col">Crop world</th>
-            <th scope="col">Arbuscules</th>
-            <th scope="col">Nodules</th>
+            <th scope="col">{t("Crop world")}</th>
+            <th scope="col">{t("Arbuscules")}</th>
+            <th scope="col">{t("Nodules")}</th>
           </tr>
         </thead>
         <tbody>
@@ -190,16 +206,18 @@ function Survey({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
             const nod = NODULE_PARTNER[c];
             return (
               <tr key={c} data-key={c}>
-                <th scope="row">{CROP_NAME[c]}</th>
+                <th scope="row">{t(CROP_NAME[c])}</th>
                 {seen ? (
                   <>
-                    <td>{AM_HOST[c] ? "Found" : "None found"}</td>
-                    <td>{nod ? `Found (${RHIZOBIA_NAME[nod].toLowerCase()})` : "None found"}</td>
+                    <td>{AM_HOST[c] ? t("Found") : t("None found")}</td>
+                    <td>
+                      {nod ? t("Found ({partner})", { partner: t(RHIZOBIA_LOWER[nod]) }) : t("None found")}
+                    </td>
                   </>
                 ) : (
                   <td colSpan={2}>
                     <button type="button" className="chip-btn" onClick={() => setLooked([...looked, c])}>
-                      Look inside the {CROP_NAME[c].toLowerCase()} root
+                      {t("Look inside the {crop} root", { crop: t(CROP_LOWER[c]) })}
                     </button>
                   </td>
                 )}
@@ -214,9 +232,9 @@ function Survey({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
 }
 
 const KNOCK_TEXT: Record<Knock, string> = {
-  nodule: "Let in: a nodule forms",
-  refused: "Refused: the root does not answer this signal",
-  "no-host": "No answer: this root forms no nodules",
+  nodule: tl("Let in: a nodule forms"),
+  refused: tl("Refused: the root does not answer this signal"),
+  "no-host": tl("No answer: this root forms no nodules"),
 };
 
 /** c8-m3: send rhizobia to roots; only matched partners nodulate. */
@@ -228,25 +246,29 @@ function KnockBench({ step, onDone }: { step: PartnersStep; onDone: () => void }
   return (
     <figure className="ripple partners">
       <Seg
-        legend="Rhizobia"
+        legend={t("Rhizobia")}
         options={["pea-rhizobia", "bean-rhizobia"] as const}
         value={r}
         set={setR}
-        label={(x) => RHIZOBIA_NAME[x]}
+        label={(x) => t(RHIZOBIA_NAME[x])}
       />
-      <Seg legend="Root" options={CROPS} value={crop} set={setCrop} label={(c) => CROP_NAME[c]} />
+      <Seg legend={t("Root")} options={CROPS} value={crop} set={setCrop} label={(c) => t(CROP_NAME[c])} />
       <button
         type="button"
         className="btn"
         onClick={() => setLog([{ r, crop, out: knock(r, crop) }, ...log])}
       >
-        Knock
+        {t("Knock")}
       </button>
       {log.length > 0 && (
         <ul className="knock-log" aria-live="polite">
           {log.map((l, i) => (
             <li key={log.length - i} data-out={l.out}>
-              {RHIZOBIA_NAME[l.r]} → {CROP_NAME[l.crop].toLowerCase()} root: {KNOCK_TEXT[l.out]}
+              {t("{rhizobia} → {crop} root: {result}", {
+                rhizobia: t(RHIZOBIA_NAME[l.r]),
+                crop: t(CROP_LOWER[l.crop]),
+                result: t(KNOCK_TEXT[l.out]),
+              })}
             </li>
           ))}
         </ul>
@@ -254,13 +276,14 @@ function KnockBench({ step, onDone }: { step: PartnersStep; onDone: () => void }
       {done ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="hint">Find one pairing that is let in and one that is refused.</p>
+        <p className="hint">{t("Find one pairing that is let in and one that is refused.")}</p>
       )}
     </figure>
   );
 }
 
-const O2_ZONES = ["Soil outside", "Outer cortex", "Nodule centre"] as const;
+const O2_ZONES = [tl("Soil outside"), tl("Outer cortex"), tl("Nodule centre")];
+const COLOUR_NAME = { pink: tl("pink"), white: tl("white") };
 
 /** c8-m4: slice two nodules on the same root; one has leghaemoglobin. */
 function Slice({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
@@ -278,17 +301,24 @@ function Slice({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
       <Banner />
       <div className="nodule-slices">
         {nodules.map((n, i) => (
-          <section key={n.colour} className="nodule-slice" aria-label={`Nodule ${"AB"[i]}`}>
+          <section key={n.colour} className="nodule-slice" aria-label={t("Nodule {x}", { x: "AB"[i]! })}>
             {cut[i] ? (
               <>
                 <span className="nodule-swatch" data-colour={n.colour} aria-hidden="true" />
                 <p>
-                  <b>Nodule {"AB"[i]}:</b> {n.colour} inside
+                  {tr("{nodule} {colour} inside", {
+                    nodule: <b>{t("Nodule {x}:", { x: "AB"[i]! })}</b>,
+                    colour: t(COLOUR_NAME[n.colour]),
+                  })}
                 </p>
                 <div
                   className="o2-meter"
                   role="img"
-                  aria-label={`Oxygen ${n.oxygen === "low" ? "falls to almost none at the centre" : "stays high to the centre"}`}
+                  aria-label={
+                    n.oxygen === "low"
+                      ? t("Oxygen falls to almost none at the centre")
+                      : t("Oxygen stays high to the centre")
+                  }
                 >
                   {O2_ZONES.map((z, k) => (
                     <span
@@ -296,12 +326,16 @@ function Slice({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
                       className="o2-zone"
                       data-level={k === 0 || n.oxygen === "high" ? "high" : k === 1 ? "mid" : "low"}
                     >
-                      {z}
+                      {t(z)}
                     </span>
                   ))}
                 </div>
                 <p className="mono small">
-                  Plant with {n.count} nodules like this: {n.fixed} N fixed in {DAYS} days
+                  {t("Plant with {count} nodules like this: {fixed} N fixed in {days} days", {
+                    count: n.count,
+                    fixed: n.fixed,
+                    days: DAYS,
+                  })}
                 </p>
               </>
             ) : (
@@ -310,7 +344,7 @@ function Slice({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
                 className="btn"
                 onClick={() => setCut(Object.assign([...cut], { [i]: true }))}
               >
-                Slice nodule {"AB"[i]}
+                {t("Slice nodule {x}", { x: "AB"[i]! })}
               </button>
             )}
           </section>
@@ -336,23 +370,23 @@ function Nitrate({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
   const r = runs[k]!;
   const max = (f: (x: (typeof runs)[number]) => number) => Math.max(...runs.map(f));
   const rows = [
-    { id: "nodules", label: "Nodules", v: r.nodules, m: max((x) => x.nodules) },
-    { id: "fixed", label: "N fixed from the air", v: r.fixed, m: max((x) => x.fixed + x.nitrate) },
-    { id: "nitrate", label: "N taken up as nitrate", v: r.nitrate, m: max((x) => x.fixed + x.nitrate) },
-    { id: "c", label: "C spent getting N", v: r.cFix + r.cUptake, m: max((x) => x.cFix + x.cUptake) },
+    { id: "nodules", label: t("Nodules"), v: r.nodules, m: max((x) => x.nodules) },
+    { id: "fixed", label: t("N fixed from the air"), v: r.fixed, m: max((x) => x.fixed + x.nitrate) },
+    { id: "nitrate", label: t("N taken up as nitrate"), v: r.nitrate, m: max((x) => x.fixed + x.nitrate) },
+    { id: "c", label: t("C spent getting N"), v: r.cFix + r.cUptake, m: max((x) => x.cFix + x.cUptake) },
   ];
   return (
     <figure className="ripple partners">
       <Banner />
       <label className="slider-row">
-        <span>Nitrate</span>
+        <span>{t("Nitrate")}</span>
         <input
           type="range"
           min={0}
           max={NITRATE_STEPS.length - 1}
           value={k}
-          aria-label="Nitrate in the root zone"
-          aria-valuetext={`${r.level} units`}
+          aria-label={t("Nitrate in the root zone")}
+          aria-valuetext={t("{n} units", { n: r.level })}
           onChange={(e) => {
             const v = Number(e.target.value);
             setK(v);
@@ -364,8 +398,8 @@ function Nitrate({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
       <table>
         <thead>
           <tr>
-            <th scope="col">Pea, {DAYS} days</th>
-            <th scope="col">Nitrate {r.level}</th>
+            <th scope="col">{t("Pea, {days} days", { days: DAYS })}</th>
+            <th scope="col">{t("Nitrate {level}", { level: r.level })}</th>
           </tr>
         </thead>
         <tbody>
@@ -380,17 +414,17 @@ function Nitrate({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
       {seen.includes(NITRATE_STEPS.length - 1) ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="hint">Turn the nitrate all the way up.</p>
+        <p className="hint">{t("Turn the nitrate all the way up.")}</p>
       )}
     </figure>
   );
 }
 
 const WAYS: { id: string; label: string; strategies: Strategy[] }[] = [
-  { id: "none", label: "Nothing extra", strategies: [] },
-  { id: "hairs", label: "Root hairs (reach)", strategies: ["hairs"] },
-  { id: "fungus", label: "Mycorrhiza (reach)", strategies: ["fungus"] },
-  { id: "acids", label: "Organic acids (release)", strategies: ["acids"] },
+  { id: "none", label: tl("Nothing extra"), strategies: [] },
+  { id: "hairs", label: tl("Root hairs (reach)"), strategies: ["hairs"] },
+  { id: "fungus", label: tl("Mycorrhiza (reach)"), strategies: ["fungus"] },
+  { id: "acids", label: tl("Organic acids (release)"), strategies: ["acids"] },
 ];
 
 /** c8-m6: crop × pH × way of getting P. */
@@ -420,9 +454,15 @@ function Reach({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
   return (
     <figure className="ripple partners">
       <Banner />
-      <Seg legend="Crop" options={CROPS} value={crop} set={(c) => pick(c, ph)} label={(c) => CROP_NAME[c]} />
       <Seg
-        legend="Soil pH"
+        legend={t("Crop")}
+        options={CROPS}
+        value={crop}
+        set={(c) => pick(c, ph)}
+        label={(c) => t(CROP_NAME[c])}
+      />
+      <Seg
+        legend={t("Soil pH")}
         options={PH_STEPS}
         value={ph}
         set={(p) => pick(crop, p)}
@@ -432,17 +472,21 @@ function Reach({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
         <thead>
           <tr>
             <th scope="col">
-              {CROP_NAME[crop]}, pH {ph.toFixed(1)}, low P
+              {t("{crop}, pH {ph}, low P", { crop: t(CROP_NAME[crop]), ph: ph.toFixed(1) })}
             </th>
-            <th scope="col">P taken up in {DAYS} days</th>
+            <th scope="col">{t("P taken up in {days} days", { days: DAYS })}</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((r) => (
             <tr key={r.id} data-key={r.id === "none" ? undefined : "plant"}>
-              <th scope="row">{r.label}</th>
+              <th scope="row">{t(r.label)}</th>
               {r.id === "fungus" && !AM_HOST[crop] ? (
-                <td>No fungus colonises: {CROP_NAME[crop].toLowerCase()} typically forms no mycorrhiza</td>
+                <td>
+                  {t("No fungus colonises: {crop} typically forms no mycorrhiza", {
+                    crop: t(CROP_LOWER[crop]),
+                  })}
+                </td>
               ) : (
                 <Bar v={r.p.plant} max={max} />
               )}
@@ -451,12 +495,19 @@ function Reach({ step, onDone }: { step: PartnersStep; onDone: () => void }) {
         </tbody>
       </table>
       <p className="ledger-account">
-        Binding P at pH {ph.toFixed(1)}: {BINDER[ph] === "little" ? "little" : `mostly ${BINDER[ph]}`}.
+        {BINDER[ph] === "little"
+          ? t("Binding P at pH {ph}: little.", { ph: ph.toFixed(1) })
+          : t("Binding P at pH {ph}: mostly {binder}.", {
+              ph: ph.toFixed(1),
+              binder: t(BINDER_NAME[BINDER[ph]]),
+            })}
       </p>
       {done ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="hint">Try a crop with a fungal partner and one without, and a pH other than 6.5.</p>
+        <p className="hint">
+          {t("Try a crop with a fungal partner and one without, and a pH other than 6.5.")}
+        </p>
       )}
     </figure>
   );
@@ -475,9 +526,9 @@ export function Partners({ step, onDone }: { step: PartnersStep; onDone: () => v
 }
 
 const VERDICTS: { id: Claim["verdict"]; label: string }[] = [
-  { id: "supported", label: "Supported" },
-  { id: "weak", label: "Weakly supported" },
-  { id: "unsupported", label: "Unsupported" },
+  { id: "supported", label: tl("Supported") },
+  { id: "weak", label: tl("Weakly supported") },
+  { id: "unsupported", label: tl("Unsupported") },
 ];
 
 /** c8-m7: sort claims against an open-question evidence card. */
@@ -488,7 +539,7 @@ export function ClaimSort({ step, onDone }: { step: ClaimStep; onDone: () => voi
     <figure className="partners claim-sort">
       <div className="open-question flicker">
         <p>
-          <b>Open question: {step.evidence.claim}</b>
+          <b>{t("Open question: {claim}", { claim: step.evidence.claim })}</b>
         </p>
         <ul>
           {step.evidence.sides.map((s) => (
@@ -505,7 +556,7 @@ export function ClaimSort({ step, onDone }: { step: ClaimStep; onDone: () => voi
         <section key={c.id} className="claim" aria-label={c.text}>
           <p>{c.text}</p>
           <fieldset className="segmented">
-            <legend>How well supported?</legend>
+            <legend>{t("How well supported?")}</legend>
             {VERDICTS.map((v) => (
               <label key={v.id}>
                 <input
@@ -514,19 +565,19 @@ export function ClaimSort({ step, onDone }: { step: ClaimStep; onDone: () => voi
                   checked={sorted[c.id] === v.id}
                   onChange={() => setSorted({ ...sorted, [c.id]: v.id })}
                 />
-                <span>{v.label}</span>
+                <span>{t(v.label)}</span>
               </label>
             ))}
           </fieldset>
           {sorted[c.id] && (
             <p className="hint">
-              {right(c) ? c.feedback : "Read the evidence card again: what did the field studies find?"}
+              {right(c) ? c.feedback : t("Read the evidence card again: what did the field studies find?")}
             </p>
           )}
         </section>
       ))}
       {step.claims.every(right) && (
-        <Result step={{ resultText: "Sorted by the evidence.", facts: step.facts }} onDone={onDone} />
+        <Result step={{ resultText: t("Sorted by the evidence."), facts: step.facts }} onDone={onDone} />
       )}
     </figure>
   );

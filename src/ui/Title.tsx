@@ -3,7 +3,8 @@ import { CHAPTERS } from "../content";
 import { targetHref } from "../app/router";
 import type { Save } from "../save/schema";
 import { assetUrl } from "../assets/urls";
-import { LangToggle } from "./common";
+import { LangToggle, tr } from "./common";
+import { t } from "../i18n";
 import { mixer, type BedScene } from "../audio/mixer";
 import { useEffect, useState, type CSSProperties } from "react";
 
@@ -28,7 +29,7 @@ let splashed = false;
 /** Each letter of the title set a little askew, like letters cut out and pinned. */
 const TILT = [-4, 3, -2, 5, -3, 2, -5, 3];
 
-const label = (n: string) => (n === "P" ? "Prologue" : `Chapter ${n}`);
+const label = (n: string) => (n === "P" ? t("Prologue") : t("Chapter {n}", { n }));
 
 export function Title({
   save,
@@ -61,8 +62,8 @@ export function Title({
   const [held, setHeld] = useState(!splashed);
   useEffect(() => {
     if (!held) return;
-    const t = window.setTimeout(() => setHeld(false), SPLASH_MS);
-    return () => window.clearTimeout(t);
+    const timer = window.setTimeout(() => setHeld(false), SPLASH_MS);
+    return () => window.clearTimeout(timer);
   }, [held]);
   const splash = held || !ready;
   useEffect(() => {
@@ -83,10 +84,10 @@ export function Title({
   const card = next && (
     <li key="next" className="title-next" style={{ "--col": slot.col } as CSSProperties}>
       <p>
-        <span className="sr-only">{begun ? "Up next: " : "First chapter: "}</span>
+        <span className="sr-only">{begun ? t("Up next: ") : t("First chapter: ")}</span>
         <span className="mono">{label(next.number)}</span> {next.title}
       </p>
-      <p className="hand">“{next.hook}”</p>
+      <p className="hand">{t("“{hook}”", { hook: next.hook })}</p>
     </li>
   );
   return (
@@ -96,14 +97,14 @@ export function Title({
       {splash && sound && (
         <p className="title-splash" role="status">
           <span className="title-splash-hint">
-            <span className="spinner" aria-hidden="true" /> Loading the valley’s sound…
+            <span className="spinner" aria-hidden="true" /> {t("Loading the valley’s sound…")}
           </span>
         </p>
       )}
       {!splash && (
         <section className="title-card" aria-labelledby="title" aria-busy={!ready}>
           <LangToggle className="title-lang" />
-          <h1 id="title">
+          <h1 id="title" aria-label="Terrikus">
             {[..."Terrikus"].map((ch, i) => (
               <span key={i} style={{ "--tilt": `${TILT[i]}deg` } as CSSProperties}>
                 {ch}
@@ -111,9 +112,10 @@ export function Title({
             ))}
           </h1>
           <p className="title-lede">
-            Take a handful of soil from one valley and follow it down through <mark>six scales</mark>, from
-            the field to a single film of water. At each step you make a guess, run an experiment and explain
-            what you saw.
+            {tr(
+              "Take a handful of soil from one valley and follow it down through {six}, from the field to a single film of water. At each step you make a guess, run an experiment and explain what you saw.",
+              { six: <mark>{t("six scales")}</mark> },
+            )}
           </p>
           <div className="title-actions" inert={!ready}>
             <div className="btn-row">
@@ -123,7 +125,7 @@ export function Title({
                 onClick={onStart}
                 disabled={!ready}
               >
-                {begun ? `Continue: ${resumeLabel}` : "Begin in the spinach field"}
+                {begun ? t("Continue: {label}", { label: resumeLabel }) : t("Begin in the spinach field")}
                 <span className="go-chip" aria-hidden="true">
                   →
                 </span>
@@ -132,11 +134,11 @@ export function Title({
             <p className="title-loading" role="status">
               {!ready && (
                 <>
-                  <span className="spinner" aria-hidden="true" /> Loading the valley’s sound…
+                  <span className="spinner" aria-hidden="true" /> {t("Loading the valley’s sound…")}
                 </>
               )}
             </p>
-            <ol className="title-chapters" aria-label="Chapters">
+            <ol className="title-chapters" aria-label={t("Chapters")}>
               {chapters.map((c, i) => [
                 <li key={c.id} data-state={state(c.id)} data-next={c.id === next?.id}>
                   {state(c.id) === "locked" ? (
@@ -144,7 +146,7 @@ export function Title({
                       {c.number}
                       <span className="sr-only">
                         {" "}
-                        {label(c.number)}: {c.title} (locked)
+                        {t("{label}: {title} (locked)", { label: label(c.number), title: c.title })}
                       </span>
                     </span>
                   ) : (
@@ -153,7 +155,7 @@ export function Title({
                       <span className="sr-only">
                         {" "}
                         {label(c.number)}: {c.title}
-                        {state(c.id) === "done" ? " (done)" : ""}
+                        {state(c.id) === "done" ? t(" (done)") : ""}
                       </span>
                     </a>
                   )}
@@ -161,8 +163,8 @@ export function Title({
                 i === slot.after && card,
               ])}
               <li data-state="planned">
-                <span title="Glimpsed in the valley, still being written">
-                  +12<span className="sr-only"> chapters still being written</span>
+                <span title={t("Glimpsed in the valley, still being written")}>
+                  +12<span className="sr-only">{t(" chapters still being written")}</span>
                 </span>
               </li>
               {slot.after >= chapters.length && card}

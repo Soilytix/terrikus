@@ -19,23 +19,24 @@ import {
 import { decompositionRate, measureCo2Flux } from "../sim/measure";
 import { RESIDUE, TEMPERATURE, WATER } from "../sim/modifiers";
 import { seededOrder } from "../sim/rng";
-import { Kbd } from "./common";
+import { t, tl } from "../i18n";
+import { Kbd, tr } from "./common";
 
 type BenchStep = Extract<Step, { kind: "bench" }>;
 const DAYS_PER_SECOND = 60;
 
 const LEVERS = {
-  water: { label: "Water", options: WATER },
-  temperature: { label: "Temperature", options: TEMPERATURE },
-  residue: { label: "Residue", options: RESIDUE },
+  water: { label: tl("Water"), options: WATER },
+  temperature: { label: tl("Temperature"), options: TEMPERATURE },
+  residue: { label: tl("Residue"), options: RESIDUE },
 } as const;
 
 const POOLS = [
-  { key: "L", label: "Litter", cls: "pool-L", note: "the leaf itself" },
-  { key: "D", label: "Dissolved C", cls: "pool-D", note: "cut free by enzymes" },
-  { key: "B", label: "Microbes", cls: "pool-B", note: "living biomass" },
-  { key: "M", label: "On minerals", cls: "pool-M", note: "held on clay" },
-  { key: "co2Out", label: "CO₂ out", cls: "pool-co2", note: "left the jar" },
+  { key: "L", label: tl("Litter"), cls: "pool-L", note: "the leaf itself" },
+  { key: "D", label: tl("Dissolved C"), cls: "pool-D", note: "cut free by enzymes" },
+  { key: "B", label: tl("Microbes"), cls: "pool-B", note: "living biomass" },
+  { key: "M", label: tl("On minerals"), cls: "pool-M", note: "held on clay" },
+  { key: "co2Out", label: tl("CO₂ out"), cls: "pool-co2", note: "left the jar" },
 ] as const;
 
 // Content lint checks a step's settings against the bench's levers (tests/content-lint.test.ts).
@@ -44,7 +45,7 @@ const same = (a: LeverSettings, b: LeverSettings) =>
   a.water === b.water && a.temperature === b.temperature && a.residue === b.residue;
 const pct = (n: number) => (n / INITIAL_LITTER) * 100;
 const describe = (l: LeverSettings) =>
-  `${WATER[l.water].label}, ${TEMPERATURE[l.temperature].label}, ${RESIDUE[l.residue].label}`;
+  `${t(WATER[l.water].label)}, ${t(TEMPERATURE[l.temperature].label)}, ${t(RESIDUE[l.residue].label)}`;
 
 function Chart({ snaps, day, frame }: { snaps: Snapshot[]; day: number; frame: "A" | "B" }) {
   const W = 360;
@@ -67,7 +68,11 @@ function Chart({ snaps, day, frame }: { snaps: Snapshot[]; day: number; frame: "
       className="chart"
       data-frame={frame}
       role="img"
-      aria-label={`Jar ${frame}: carbon pools over ${DAYS} days, now at day ${day}.`}
+      aria-label={t("Jar {frame}: carbon pools over {days} days, now at day {day}.", {
+        frame,
+        days: DAYS,
+        day,
+      })}
     >
       <defs>
         <pattern
@@ -159,7 +164,7 @@ function LeverRow({
     <div className="levers">
       {(Object.keys(LEVERS) as (keyof typeof LEVERS)[]).map((k) => (
         <fieldset key={k} className="segmented" disabled={locked}>
-          <legend>{LEVERS[k].label}</legend>
+          <legend>{t(LEVERS[k].label)}</legend>
           {Object.entries(LEVERS[k].options).map(([v, o]) => (
             <label key={v}>
               <input
@@ -168,7 +173,7 @@ function LeverRow({
                 checked={levers[k] === v}
                 onChange={() => set({ ...levers, [k]: v } as LeverSettings)}
               />
-              <span>{o.label}</span>
+              <span>{t(o.label)}</span>
             </label>
           ))}
         </fieldset>
@@ -201,16 +206,21 @@ function Readout({
         {POOLS.map((p) => (
           <li key={p.key}>
             <span className={`swatch ${p.cls}`} aria-hidden="true" />
-            <span className="legend-label">{p.label}</span>
+            <span className="legend-label">{t(p.label)}</span>
             <span className="mono">{pct(s.ledger.C[p.key]).toFixed(1)} %</span>
           </li>
         ))}
       </ul>
       <p className="ledger" data-frame={frame}>
-        Carbon accounted for: <b className="mono">{((total / INITIAL_LITTER) * 100).toFixed(1)} %</b>
+        {tr("Carbon accounted for: {value}", {
+          value: <b className="mono">{((total / INITIAL_LITTER) * 100).toFixed(1)} %</b>,
+        })}
       </p>
-      <div className="energy" aria-label={`Energy released as heat: ${(heat * 100).toFixed(0)} %`}>
-        <span>Energy released as heat</span>
+      <div
+        className="energy"
+        aria-label={t("Energy released as heat: {pct} %", { pct: (heat * 100).toFixed(0) })}
+      >
+        <span>{t("Energy released as heat")}</span>
         <div className="meter">
           <i style={{ width: `${heat * 100}%` }} />
         </div>
@@ -219,28 +229,31 @@ function Readout({
       {lens && (
         <dl className="lens">
           <div data-tier="measured">
-            <dt>Measured</dt>
+            <dt>{t("Measured")}</dt>
             <dd>
-              CO₂ flux{" "}
+              {t("CO₂ flux")}{" "}
               {flux ? (
                 <>
                   <b className="mono">
                     {flux.value.toFixed(1)} ± {flux.band.toFixed(1)}
                   </b>{" "}
-                  units/day
+                  {t("units/day")}
                 </>
               ) : (
-                <>first reading at day 7</>
+                <>{t("first reading at day 7")}</>
               )}
-              <small>weekly chamber reading, instrument noise ±10 %</small>
+              <small>{t("weekly chamber reading, instrument noise ±10 %")}</small>
             </dd>
           </div>
           <div data-tier="derived">
-            <dt>Derived</dt>
+            <dt>{t("Derived")}</dt>
             <dd>
-              Decomposition rate <b className="mono">{rate.toFixed(1)}</b> units/day
+              {tr("Decomposition rate {rate} units/day", { rate: <b className="mono">{rate.toFixed(1)}</b> })}
               <small>
-                = (litter at day 0 − litter at day {day}) ÷ {Math.max(1, day)} days
+                {t("= (litter at day 0 − litter at day {day}) ÷ {days} days", {
+                  day,
+                  days: Math.max(1, day),
+                })}
               </small>
             </dd>
           </div>
@@ -328,7 +341,11 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
     setLogged(true);
     const end = (s: Snapshot[]) => s[DAYS]!.ledger.C;
     const line = (n: string, s: Snapshot[]) =>
-      `Jar ${n}: ${pct(end(s).L).toFixed(0)} % of the litter left, ${pct(end(s).co2Out).toFixed(0)} % out as CO₂`;
+      t("Jar {n}: {left} % of the litter left, {out} % out as CO₂", {
+        n,
+        left: pct(end(s).L).toFixed(0),
+        out: pct(end(s).co2Out).toFixed(0),
+      });
     const choice = step?.predict?.choices.find((c: Choice) => c.id === picked);
     update((s) => ({
       ...s,
@@ -341,9 +358,10 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
         ...(choice ? { prediction: choice.label } : {}),
         a,
         ...(b ? { b } : {}),
-        result:
-          [line("A", snapsA), ...(b && snapsB ? [line("B", snapsB)] : [])].join("; ") +
-          ` after ${DAYS} days.`,
+        result: t("{runs} after {days} days.", {
+          runs: [line("A", snapsA), ...(b && snapsB ? [line("B", snapsB)] : [])].join("; "),
+          days: DAYS,
+        }),
         tier: "observed",
       }),
     }));
@@ -378,14 +396,15 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
   if (halted)
     return (
       <main className="bench" aria-labelledby="bench-title">
-        <h1 id="bench-title">The bench stopped</h1>
+        <h1 id="bench-title">{t("The bench stopped")}</h1>
         <p>
-          The teaching model lost track of its carbon, so it halted instead of showing a wrong year. Nothing
-          was logged. This is a bug in the model, not in your experiment.
+          {t(
+            "The teaching model lost track of its carbon, so it halted instead of showing a wrong year. Nothing was logged. This is a bug in the model, not in your experiment.",
+          )}
         </p>
         <p className="muted small mono">{halted.message}</p>
         <a className="btn" href={backHref}>
-          Back to the field
+          {t("Back to the field")}
         </a>
       </main>
     );
@@ -394,28 +413,36 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
     <main className="bench" aria-labelledby="bench-title">
       <header className="bench-head">
         <a className="back" href={backHref}>
-          ← Back to the field
+          ← {t("Back to the field")}
         </a>
         <div>
-          <h1 id="bench-title">Leaf in a jar</h1>
+          <h1 id="bench-title">{t("Leaf in a jar")}</h1>
         </div>
         <p className="teaching-banner" role="note">
           <span className="dot" aria-hidden="true" />
-          Teaching model: direction, not prediction.
+          {t("Teaching model: direction, not prediction.")}
         </p>
       </header>
 
       {step && <p className="bench-brief">{step.text}</p>}
       {step && !matches && (
         <p className="hint">
-          This experiment asks for jar A {describe(full(step.a))}
-          {step.b ? ` and jar B ${describe(full(step.b))}` : ""}. Other settings run, but are not logged for
-          the mission.
+          {step.b
+            ? t(
+                "This experiment asks for jar A {a} and jar B {b}. Other settings run, but are not logged for the mission.",
+                { a: describe(full(step.a)), b: describe(full(step.b)) },
+              )
+            : t(
+                "This experiment asks for jar A {a}. Other settings run, but are not logged for the mission.",
+                {
+                  a: describe(full(step.a)),
+                },
+              )}
         </p>
       )}
 
       {step?.predict && (
-        <section className="bench-predict" aria-label="Your prediction">
+        <section className="bench-predict" aria-label={t("Your prediction")}>
           <p className="step-text">{step.predict.question}</p>
           <div className="choices row" role="radiogroup">
             {seededOrder(step.predict.choices).map((c) => (
@@ -444,11 +471,13 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
                   update((s) => ({ ...s, predictions: { ...s.predictions, [step.predict!.id]: picked } }));
               }}
             >
-              Commit my prediction
+              {t("Commit my prediction")}
             </button>
           ) : (
             <p className="prediction-tag">
-              Committed: {step.predict.choices.find((c) => c.id === picked)?.label}
+              {t("Committed: {choice}", {
+                choice: step.predict.choices.find((c) => c.id === picked)?.label ?? "",
+              })}
             </p>
           )}
         </section>
@@ -456,11 +485,11 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
 
       <div className="jars" data-count={jars.length}>
         {jars.map(([name, levers, snaps, set]) => (
-          <section key={name} className="jar-card" data-frame={name} aria-label={`Jar ${name}`}>
+          <section key={name} className="jar-card" data-frame={name} aria-label={t("Jar {name}", { name })}>
             <header>
               <h2>
-                Jar {name}
-                <span className="frame-tag">{name === "A" ? "subject" : "comparison"}</span>
+                {t("Jar {name}", { name })}
+                <span className="frame-tag">{name === "A" ? t("subject") : t("comparison")}</span>
               </h2>
               <p className="muted small">{describe(levers)}</p>
             </header>
@@ -474,19 +503,17 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
         ))}
       </div>
 
-      <section className="bench-controls" aria-label="Run">
+      <section className="bench-controls" aria-label={t("Run")}>
         <button
           type="button"
           className="btn btn-primary"
           onClick={start}
           disabled={running || needPrediction}
         >
-          {finished ? "Run the year again" : "Run one year"}
+          {finished ? t("Run the year again") : t("Run one year")}
         </button>
         <label className="scrub">
-          <span>
-            Day <b className="mono">{day}</b> / {DAYS}
-          </span>
+          <span>{tr("Day {day} / {days}", { day: <b className="mono">{day}</b>, days: DAYS })}</span>
           <input
             type="range"
             min={0}
@@ -494,11 +521,11 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
             value={day}
             disabled={running}
             onChange={(e) => setDay(Number(e.target.value))}
-            aria-label="Scrub through the year"
+            aria-label={t("Scrub through the year")}
           />
         </label>
         {reduced && (
-          <div className="day-steps" role="group" aria-label="Jump to day">
+          <div className="day-steps" role="group" aria-label={t("Jump to day")}>
             {[0, 30, 90, 180, 365].map((d) => (
               <button key={d} type="button" className="chip-btn" onClick={() => setDay(d)}>
                 {d}
@@ -506,10 +533,12 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
             ))}
           </div>
         )}
-        <span className="muted small">{reduced ? "Steps instead of animation." : "1 s ≈ 60 days."}</span>
+        <span className="muted small">
+          {reduced ? t("Steps instead of animation.") : t("1 s ≈ 60 days.")}
+        </span>
         {!step && (
           <button type="button" className="btn" onClick={() => setB(b ? null : full({ water: "dry" }))}>
-            {b ? "Use one jar" : "Add a comparison jar"}
+            {b ? t("Use one jar") : t("Add a comparison jar")}
           </button>
         )}
         {lens && (
@@ -519,7 +548,7 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
             aria-pressed={lensOn}
             onClick={() => update((s) => ({ ...s, settings: { ...s.settings, lens: !s.settings.lens } }))}
           >
-            Scientist lens <Kbd>L</Kbd>
+            {t("Scientist lens")} <Kbd>L</Kbd>
           </button>
         )}
       </section>
@@ -528,16 +557,16 @@ export function Bench({ bench, save, update, go, reduced, backHref }: Props) {
         <section className="bench-done" role="status">
           <p>
             <span className="tier" data-tier="measured">
-              logged
+              {t("logged")}
             </span>{" "}
-            The year is in your lab book.
+            {t("The year is in your lab book.")}{" "}
             {snapsB
-              ? " Compare the litter bands of the two jars."
-              : " Follow each band: the carbon moved, it did not vanish."}
+              ? t("Compare the litter bands of the two jars.")
+              : t("Follow each band: the carbon moved, it did not vanish.")}
           </p>
           {matches && step && (
             <button type="button" className="btn btn-primary" onClick={returnTo}>
-              Take the result back to the field
+              {t("Take the result back to the field")}
             </button>
           )}
         </section>

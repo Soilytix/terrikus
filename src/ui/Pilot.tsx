@@ -16,6 +16,7 @@ import {
   type PilotLog,
 } from "../pilot/log";
 import { ReviewBadge } from "./common";
+import { t, tl } from "../i18n";
 
 const storage = () => {
   try {
@@ -26,14 +27,14 @@ const storage = () => {
 };
 
 const ANSWERS: [Answer, string][] = [
-  ["true", "True"],
-  ["false", "False"],
-  ["not-sure", "Not sure"],
+  ["true", tl("True")],
+  ["false", tl("False")],
+  ["not-sure", tl("Not sure")],
 ];
 const CONFIDENCE: [1 | 2 | 3, string][] = [
-  [1, "Guess"],
-  [2, "Fairly sure"],
-  [3, "Sure"],
+  [1, tl("Guess")],
+  [2, tl("Fairly sure")],
+  [3, tl("Sure")],
 ];
 
 type Answers = Partial<Record<MisconceptionId, { answer?: Answer; confidence?: 1 | 2 | 3 }>>;
@@ -60,8 +61,12 @@ function PilotQuestions({
       }}
     >
       <p className="small">
-        {phase === "pre" ? "Before you play" : "After you played"}: is each statement true or false? There are
-        no right answers shown and nothing is scored.
+        {t(
+          "{when}: is each statement true or false? There are no right answers shown and nothing is scored.",
+          {
+            when: phase === "pre" ? t("Before you play") : t("After you played"),
+          },
+        )}
       </p>
       {PILOT.items.map((id, n) => (
         <fieldset key={id} className="pilot-item">
@@ -77,11 +82,11 @@ function PilotQuestions({
                   checked={a[id]?.answer === v}
                   onChange={() => set(id, { answer: v })}
                 />
-                <span>{label}</span>
+                <span>{t(label)}</span>
               </label>
             ))}
           </div>
-          <div className="segmented" aria-label="How sure are you?">
+          <div className="segmented" aria-label={t("How sure are you?")}>
             {CONFIDENCE.map(([v, label]) => (
               <label key={v}>
                 <input
@@ -90,7 +95,7 @@ function PilotQuestions({
                   checked={a[id]?.confidence === v}
                   onChange={() => set(id, { confidence: v })}
                 />
-                <span>{label}</span>
+                <span>{t(label)}</span>
               </label>
             ))}
           </div>
@@ -98,10 +103,10 @@ function PilotQuestions({
       ))}
       <div className="btn-row">
         <button type="submit" className="btn btn-primary" disabled={!complete}>
-          Keep my answers
+          {t("Keep my answers")}
         </button>
         <button type="button" className="btn" onClick={onCancel}>
-          Not now
+          {t("Not now")}
         </button>
       </div>
     </form>
@@ -126,14 +131,15 @@ export function PilotSettings({ chaptersComplete }: { chaptersComplete: number }
   };
   const after = PILOT.thresholds.postAfterChapters;
   return (
-    <section className="pilot settings-card" aria-label="Learning study">
-      <h3 className="settings-group">Learning study</h3>
+    <section className="pilot settings-card" aria-label={t("Learning study")}>
+      <h3 className="settings-group">{t("Learning study")}</h3>
       <label className="setting">
         <span className="setting-text">
-          <b>Take part in a learning study on this device</b>
+          <b>{t("Take part in a learning study on this device")}</b>
           <small>
-            A few true-or-false statements before and after you play. Answers stay in this browser and are
-            never sent anywhere; you decide whether to export them.
+            {t(
+              "A few true-or-false statements before and after you play. Answers stay in this browser and are never sent anywhere; you decide whether to export them.",
+            )}
           </small>
         </span>
         <input
@@ -160,27 +166,29 @@ export function PilotSettings({ chaptersComplete }: { chaptersComplete: number }
             />
           ) : !phaseDone(log, "pre") ? (
             <button type="button" className="btn" onClick={() => setAsking("pre")}>
-              Answer the opening questions
+              {t("Answer the opening questions")}
             </button>
           ) : phaseDone(log, "post") ? (
-            <p className="small">Both sets are in. Thank you.</p>
+            <p className="small">{t("Both sets are in. Thank you.")}</p>
           ) : postOpen(log, PILOT, chaptersComplete) ? (
             <button type="button" className="btn" onClick={() => setAsking("post")}>
-              Answer the closing questions
+              {t("Answer the closing questions")}
             </button>
           ) : (
-            <p className="small">The closing questions open after {after} finished chapters.</p>
+            <p className="small">
+              {t("The closing questions open after {n} finished chapters.", { n: after ?? "" })}
+            </p>
           )}
         </>
       )}
       {log.responses.length > 0 && !asking && (
         <div className="btn-row">
           <button type="button" className="btn" onClick={download}>
-            Export study answers
+            {t("Export study answers")}
           </button>
           {!confirm ? (
             <button type="button" className="btn" onClick={() => setConfirm(true)}>
-              Erase study answers…
+              {t("Erase study answers…")}
             </button>
           ) : (
             <>
@@ -192,10 +200,10 @@ export function PilotSettings({ chaptersComplete }: { chaptersComplete: number }
                   setConfirm(false);
                 }}
               >
-                Erase
+                {t("Erase")}
               </button>
               <button type="button" className="btn" onClick={() => setConfirm(false)}>
-                Keep them
+                {t("Keep them")}
               </button>
             </>
           )}

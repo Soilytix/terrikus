@@ -18,6 +18,7 @@ import {
   type WebOrganism,
   type WebSettings,
 } from "../sim/food-web";
+import { lang, t, tl } from "../i18n";
 import { Facts, SourceRef } from "./common";
 
 /** Root sugar pulse, the same in every chapter-6 run. */
@@ -26,16 +27,19 @@ const WATCH_DAYS = 10;
 const RIPPLE_DAYS = 20;
 
 const SHORT: Record<WebOrganism | "food", string> = {
-  "bacteria-copio": "Bacteria",
-  "fungi-sap": "Fungi",
-  amoeba: "Amoebae",
-  "nematode-bact": "Bacteria-feeding nematodes",
-  "nematode-fung": "Fungus-feeding nematodes",
-  springtail: "Springtails",
-  "nematode-pred": "Predatory nematodes",
-  mite: "Predatory mites",
-  food: "Root sugars",
+  "bacteria-copio": tl("Bacteria"),
+  "fungi-sap": tl("Fungi"),
+  amoeba: tl("Amoebae"),
+  "nematode-bact": tl("Bacteria-feeding nematodes"),
+  "nematode-fung": tl("Fungus-feeding nematodes"),
+  springtail: tl("Springtails"),
+  "nematode-pred": tl("Predatory nematodes"),
+  mite: tl("Predatory mites"),
+  food: tl("Root sugars"),
 };
+/** An organism's short name; lower case inside a sentence in English only (German nouns keep their capital). */
+const short = (o: WebOrganism | "food") => t(SHORT[o]);
+const shortLower = (o: WebOrganism | "food") => (lang() === "en" ? SHORT[o].toLowerCase() : t(SHORT[o]));
 
 /** Mobile layout (viewBox units): predators on top, root sugars at the bottom; bacterial channel left, fungal right. */
 const AT: Record<WebOrganism | "food", [number, number]> = {
@@ -52,13 +56,15 @@ const AT: Record<WebOrganism | "food", [number, number]> = {
 
 const linkText = (id: string) => {
   const [eater, eaten] = id.split(">") as [WebOrganism, WebOrganism | "food"];
-  return `${SHORT[eater]} eat ${SHORT[eaten].toLowerCase()}`;
+  return t("{eater} eat {eaten}", { eater: short(eater), eaten: shortLower(eaten) });
 };
 
 function sizeText(o: WebOrganism): string {
   const [a, b] = organism(o)?.sizeRange ?? [0, 0];
   const fmt = (m: number) =>
-    m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : `${+(m * 1e6).toPrecision(2)} µm`;
+    m >= 1e-3
+      ? `${(+(m * 1e3).toPrecision(2)).toLocaleString(lang())} mm`
+      : `${(+(m * 1e6).toPrecision(2)).toLocaleString(lang())} µm`;
   return `${fmt(a)}–${fmt(b)}`;
 }
 
@@ -69,8 +75,8 @@ const barLength = (o: WebOrganism) =>
 export function Mobile({ seen, removed = [] }: { seen: string[]; removed?: WebOrganism[] }) {
   const lines = WEB_LINKS.filter((l) => seen.includes(linkId(l)));
   const label = seen.length
-    ? `The food-web mobile. Links seen so far: ${seen.map(linkText).join("; ")}.`
-    : "The food-web mobile. No feeding has been watched yet, so no links are drawn.";
+    ? t("The food-web mobile. Links seen so far: {links}.", { links: seen.map(linkText).join("; ") })
+    : t("The food-web mobile. No feeding has been watched yet, so no links are drawn.");
   return (
     <svg className="mobile" viewBox="0 0 640 480" role="img" aria-label={label}>
       {lines.map((l) => {
@@ -82,7 +88,7 @@ export function Mobile({ seen, removed = [] }: { seen: string[]; removed?: WebOr
             x1={x1}
             y1={y1 - 26}
             x2={x2}
-            y2={y2 + (SHORT[l.eater].includes(" ") ? 96 : 76)}
+            y2={y2 + (short(l.eater).includes(" ") ? 96 : 76)}
             className="mobile-link"
             data-channel={l.channel}
           />
@@ -91,14 +97,14 @@ export function Mobile({ seen, removed = [] }: { seen: string[]; removed?: WebOr
       <g className="mobile-node">
         <circle cx={AT.food[0]} cy={AT.food[1]} r={20} className="mobile-food" />
         <text x={AT.food[0]} y={AT.food[1] + 42} textAnchor="middle">
-          {SHORT.food}
+          {short("food")}
         </text>
       </g>
       {WEB_ORGANISMS.map((o) => {
         const [x, y] = AT[o];
         const art = assetUrl(`organism-${o}`);
         // Two-word names break after the first word so neighbours do not collide.
-        const [first, ...rest] = SHORT[o].split(" ");
+        const [first, ...rest] = short(o).split(" ");
         const dy = rest.length ? 20 : 0;
         return (
           <g key={o} className="mobile-node" data-removed={removed.includes(o)}>
@@ -146,9 +152,10 @@ export function FoodWebWatch({
       .flatMap((s) => s.transfers)
       .filter((t) => t.rule === `excretion:${o}`)
       .reduce((a, t) => a + t.amount, 0);
-    const meals = links.length ? links.map(linkText).join("; ") : "no meal seen";
+    const meals = links.length ? links.map(linkText).join("; ") : t("no meal seen");
     setLog((l) => [
-      `${SHORT[o]}, ${WATCH_DAYS} days: ${meals}.${nh4 ? ` Ammonium released: ${nh4} N units.` : ""}`,
+      t("{organism}, {days} days: {meals}.", { organism: short(o), days: WATCH_DAYS, meals }) +
+        (nh4 ? ` ${t("Ammonium released: {n} N units.", { n: nh4 })}` : ""),
       ...l,
     ]);
     onSeen(links);
@@ -156,10 +163,10 @@ export function FoodWebWatch({
   return (
     <div className="food-web">
       <Mobile seen={seen} />
-      <div className="watch-row" role="group" aria-label="Watch an organism">
+      <div className="watch-row" role="group" aria-label={t("Watch an organism")}>
         {watch.map((o) => (
           <button key={o} type="button" className="btn" onClick={() => look(o)}>
-            Watch: {SHORT[o]}
+            {t("Watch: {organism}", { organism: short(o) })}
           </button>
         ))}
       </div>
@@ -191,20 +198,22 @@ export function Ripple({ removed }: { removed: WebOrganism[] }) {
     <figure className="ripple">
       <p className="teaching-banner" role="note">
         <span className="dot" aria-hidden="true" />
-        Teaching model: direction, not prediction.
+        {t("Teaching model: direction, not prediction.")}
       </p>
       <table>
         <thead>
           <tr>
-            <th scope="col">After {RIPPLE_DAYS} days</th>
-            <th scope="col">Whole web</th>
-            <th scope="col">Without {removed.map((o) => SHORT[o].toLowerCase()).join(" and ")}</th>
+            <th scope="col">{t("After {n} days", { n: RIPPLE_DAYS })}</th>
+            <th scope="col">{t("Whole web")}</th>
+            <th scope="col">
+              {t("Without {organisms}", { organisms: removed.map(shortLower).join(` ${t("and")} `) })}
+            </th>
           </tr>
         </thead>
         <tbody>
           {ROWS.map((k) => (
             <tr key={k} data-key={k}>
-              <th scope="row">{k === "plant" ? "Nitrogen taken up by the root" : SHORT[k]}</th>
+              <th scope="row">{k === "plant" ? t("Nitrogen taken up by the root") : short(k)}</th>
               {[full, cut].map((l, i) => (
                 <td key={i}>
                   <span className="ripple-bar" style={{ width: `${(value(l, k) / max(k)) * 100}%` }} />
@@ -216,19 +225,19 @@ export function Ripple({ removed }: { removed: WebOrganism[] }) {
         </tbody>
       </table>
       <figcaption>
-        Biomass in carbon units; root uptake in nitrogen units. Same root sugar pulse in both.
+        {t("Biomass in carbon units; root uptake in nitrogen units. Same root sugar pulse in both.")}
       </figcaption>
     </figure>
   );
 }
 
 export const GROUPS = [
-  { id: "bacteria", label: "Bacteria", taxa: ["bacteria-copio"] },
-  { id: "fungi", label: "Fungi", taxa: ["fungi-sap"] },
-  { id: "protists", label: "Protists", taxa: ["amoeba"] },
+  { id: "bacteria", label: tl("Bacteria"), taxa: ["bacteria-copio"] },
+  { id: "fungi", label: tl("Fungi"), taxa: ["fungi-sap"] },
+  { id: "protists", label: tl("Protists"), taxa: ["amoeba"] },
   {
     id: "animals",
-    label: "Nematodes and arthropods",
+    label: tl("Nematodes and arthropods"),
     taxa: ["nematode-bact", "nematode-fung", "springtail", "nematode-pred", "mite"],
   },
 ] as const;
@@ -248,19 +257,19 @@ export function SqueezingJar({ facts }: { facts: Fact[] }) {
     });
   }, []);
   const maxAbs = Math.max(...cols.flat().map((g) => g.abs));
-  const names = ["Before the pulse", `Day ${JAR_DAYS}`];
+  const names = [t("Before the pulse"), t("Day {day}", { day: JAR_DAYS })];
   return (
     <figure className="jar">
       <div className="jar-panels">
-        <section aria-label="Sequencing readout, relative">
-          <h4>Sequencing readout (shares of reads)</h4>
+        <section aria-label={t("Sequencing readout, relative")}>
+          <h4>{t("Sequencing readout (shares of reads)")}</h4>
           {cols.map((col, i) => (
             <div key={i} className="jar-row">
               <span className="jar-when">{names[i]}</span>
               <span
                 className="jar-stack"
                 role="img"
-                aria-label={`${names[i]}: ${col.map((g) => `${g.label} ${Math.round(g.share * 100)} %`).join(", ")}`}
+                aria-label={`${names[i]}: ${col.map((g) => `${t(g.label)} ${Math.round(g.share * 100)} %`).join(", ")}`}
               >
                 {col.map((g) => (
                   <span key={g.id} className={`jar-seg jar-${g.id}`} style={{ width: `${g.share * 100}%` }}>
@@ -271,11 +280,11 @@ export function SqueezingJar({ facts }: { facts: Fact[] }) {
             </div>
           ))}
         </section>
-        <section aria-label="Teaching model, absolute">
-          <h4>Teaching model (absolute biomass; sequencing does not give this)</h4>
+        <section aria-label={t("Teaching model, absolute")}>
+          <h4>{t("Teaching model (absolute biomass; sequencing does not give this)")}</h4>
           {GROUPS.map((g, k) => (
             <div key={g.id} className="jar-row">
-              <span className="jar-when">{g.label}</span>
+              <span className="jar-when">{t(g.label)}</span>
               <span className="jar-abs">
                 {cols.map((col, i) => (
                   <span
@@ -295,12 +304,12 @@ export function SqueezingJar({ facts }: { facts: Fact[] }) {
         {GROUPS.map((g) => (
           <li key={g.id}>
             <span className={`jar-swatch jar-${g.id}`} />
-            {g.label}
+            {t(g.label)}
           </li>
         ))}
       </ul>
       <figcaption className="jar-caption">
-        Relative, not absolute; presence ≠ activity. <SourceRef id="gloor-2017" />
+        {t("Relative, not absolute; presence ≠ activity.")} <SourceRef id="gloor-2017" />
       </figcaption>
       <Facts facts={facts} />
     </figure>

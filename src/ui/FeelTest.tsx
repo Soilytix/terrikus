@@ -5,6 +5,7 @@
  */
 import { useState } from "react";
 import type { Step } from "../content/schema";
+import { t } from "../i18n";
 
 type Props = Pick<Extract<Step, { kind: "feel-test" }>, "diagram" | "sample"> & { onClass: () => void };
 
@@ -19,7 +20,7 @@ export function FeelTest({ diagram, sample, onClass }: Props) {
 
   const pick = (branch: string, to: string) => {
     if (branch !== obs?.branch) {
-      setMiss(`Your fingers found: ${obs?.felt} Which branch matches that?`);
+      setMiss(t("Your fingers found: {felt} Which branch matches that?", { felt: String(obs?.felt) }));
       return;
     }
     setMiss(null);
@@ -58,15 +59,15 @@ export function FeelTest({ diagram, sample, onClass }: Props) {
       {result && (
         <>
           <p className="observation" aria-live="polite">
-            Texture class: <b>{result}</b>.
+            {t("Texture class:")} <b>{result}</b>.
           </p>
           <button type="button" className="btn btn-primary" onClick={onClass}>
-            Continue
+            {t("Continue")}
           </button>
         </>
       )}
       <details className="flow-diagram" open={!!result}>
-        <summary>The flow diagram</summary>
+        <summary>{t("The flow diagram")}</summary>
         <ol>
           {diagram.map((n) => (
             <li key={n.id} data-on={path.includes(n.id)}>
@@ -74,7 +75,7 @@ export function FeelTest({ diagram, sample, onClass }: Props) {
               <ul>
                 {n.branches.map((b) => (
                   <li key={b.id} data-taken={path.includes(n.id) && path[path.indexOf(n.id) + 1] === b.to}>
-                    {b.label} → {b.to.startsWith("=") ? <b>{b.to.slice(1)}</b> : "next question"}
+                    {b.label} → {b.to.startsWith("=") ? <b>{b.to.slice(1)}</b> : t("next question")}
                   </li>
                 ))}
               </ul>

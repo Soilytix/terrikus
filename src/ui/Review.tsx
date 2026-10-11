@@ -7,17 +7,18 @@ import { useEffect, useState } from "react";
 import { CHAPTERS, scene as sceneById, chapter as chapterById } from "../content";
 import { loadChapters } from "../content/load";
 import { REVIEW_ROWS, REVIEW_STATUSES, refreshReviewRows, type ReviewRow } from "../content/review";
-import { Dialog } from "./common";
+import { Dialog, tr } from "./common";
+import { t } from "../i18n";
 
 function Rows({ rows }: { rows: ReviewRow[] }) {
   return (
     <table className="keys credits">
       <thead>
         <tr>
-          <th scope="col">Kind</th>
-          <th scope="col">Node</th>
-          <th scope="col">Status</th>
-          <th scope="col">Reviewer</th>
+          <th scope="col">{t("Kind")}</th>
+          <th scope="col">{t("Node")}</th>
+          <th scope="col">{t("Status")}</th>
+          <th scope="col">{t("Reviewer")}</th>
         </tr>
       </thead>
       <tbody>
@@ -28,7 +29,7 @@ function Rows({ rows }: { rows: ReviewRow[] }) {
               {r.title} <span className="mono muted">{r.id}</span>
             </td>
             <td>{r.reviewStatus}</td>
-            <td>{r.reviewer ?? "none named"}</td>
+            <td>{r.reviewer ?? t("none named")}</td>
           </tr>
         ))}
       </tbody>
@@ -44,12 +45,14 @@ export function ReviewPanel({ sceneId, onClose }: { sceneId: string; onClose: ()
     (r) => ["scene", "chapter", "mission"].includes(r.kind) && inView.has(r.id),
   );
   return (
-    <Dialog title="Scientific review" onClose={onClose} wide>
+    <Dialog title={t("Scientific review")} onClose={onClose} wide>
       <p className="small muted">
-        Read-only. A named reviewer approves a node in its content file; nothing here changes a status. Run{" "}
-        <span className="mono">mise run review-report</span> for the full list as Markdown.
+        {tr(
+          "Read-only. A named reviewer approves a node in its content file; nothing here changes a status. Run {cmd} for the full list as Markdown.",
+          { cmd: <span className="mono">mise run review-report</span> },
+        )}
       </p>
-      <h3>In view</h3>
+      <h3>{t("In view")}</h3>
       <Rows rows={here} />
       {REVIEW_STATUSES.map((status) => {
         const rows = REVIEW_ROWS.filter((r) => r.reviewStatus === status);
@@ -84,7 +87,7 @@ export function ReviewOverlay({ sceneId }: { sceneId: string }) {
     <>
       <button type="button" className="review-badge review-pill" onClick={() => setOpen(true)}>
         <span className="dot" aria-hidden="true" />
-        Review: {approved} of {REVIEW_ROWS.length} approved
+        {t("Review: {n} of {total} approved", { n: approved, total: REVIEW_ROWS.length })}
       </button>
       {open && <ReviewPanel sceneId={sceneId} onClose={() => setOpen(false)} />}
     </>

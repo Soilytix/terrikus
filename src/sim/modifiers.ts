@@ -2,6 +2,8 @@
  * Piecewise-linear rate modifiers (spec §6.3). Teaching values: they give the
  * right direction and rough shape, not a calibrated prediction.
  */
+import { tl } from "../i18n";
+
 function piecewise(points: [number, number][], x: number): number {
   const first = points[0] as [number, number];
   const last = points[points.length - 1] as [number, number];
@@ -43,18 +45,18 @@ export const fO2 = (wfps: number): number =>
   );
 
 export const RESIDUE = {
-  leaf: { quality: 1, cue: 0.45, label: "green leaf" },
-  straw: { quality: 0.5, cue: 0.35, label: "cereal straw" },
-  wood: { quality: 0.15, cue: 0.3, label: "woody twig" },
+  leaf: { quality: 1, cue: 0.45, label: tl("green leaf") },
+  straw: { quality: 0.5, cue: 0.35, label: tl("cereal straw") },
+  wood: { quality: 0.15, cue: 0.3, label: tl("woody twig") },
 } as const;
 
 export const WATER = {
-  dry: { wfps: 0.2, label: "dry" },
-  moist: { wfps: 0.6, label: "moist" },
-  waterlogged: { wfps: 0.95, label: "waterlogged" },
+  dry: { wfps: 0.2, label: tl("dry") },
+  moist: { wfps: 0.6, label: tl("moist") },
+  waterlogged: { wfps: 0.95, label: tl("waterlogged") },
 } as const;
 
 export const TEMPERATURE = {
-  cool: { celsius: 10, label: "cool, 10 °C" },
-  mild: { celsius: 20, label: "mild, 20 °C" },
+  cool: { celsius: 10, label: tl("cool, 10 °C") },
+  mild: { celsius: 20, label: tl("mild, 20 °C") },
 } as const;

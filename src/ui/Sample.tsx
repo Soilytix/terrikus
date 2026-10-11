@@ -18,6 +18,7 @@ import {
 import { REPORT_FIELDS, judge, placeable, strongest, type ReportField } from "../sim/claims";
 import { extract, labRun, sampleCores, sequence } from "../sim/measure";
 import { mulberry32 } from "../sim/rng";
+import { lang, t, tl } from "../i18n";
 import { Facts } from "./common";
 
 type SampleStep = Extract<Step, { kind: "sample" }>;
@@ -27,13 +28,16 @@ const TAXA = Object.keys(TAXA_LABELS) as TaxonId[];
 const SEED = 14;
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
 const pct = (permille: number) => `${(permille / 10).toFixed(1)} %`;
-const arrow = (d: number) => (d > 0 ? "↑ up" : d < 0 ? "↓ down" : "→ same");
+const arrow = (d: number) => (d > 0 ? t("↑ up") : d < 0 ? t("↓ down") : t("→ same"));
+/** Module-level option labels are marked with `tl`; translate them at render. */
+const opts = <T extends string>(os: readonly { id: T; label: string }[]) =>
+  os.map((o) => ({ id: o.id, label: t(o.label) }));
 
 function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -44,7 +48,7 @@ function Result({ step, onDone }: Props) {
       <p className="observation">{step.resultText}</p>
       <Facts facts={step.facts} />
       <button type="button" className="btn btn-primary" onClick={onDone}>
-        Continue
+        {t("Continue")}
       </button>
     </>
   );
@@ -78,16 +82,16 @@ function Segmented<T extends string>({
 
 const PIPE_LEVERS = {
   cores: [
-    { id: "one", label: "one core" },
-    { id: "five", label: "five cores" },
+    { id: "one", label: tl("one core") },
+    { id: "five", label: tl("five cores") },
   ],
   relic: [
-    { id: "keep", label: "amplified too" },
-    { id: "remove", label: "removed first" },
+    { id: "keep", label: tl("amplified too") },
+    { id: "remove", label: tl("removed first") },
   ],
   depth: [
-    { id: "shallow", label: "2,000 reads" },
-    { id: "deep", label: "20,000 reads" },
+    { id: "shallow", label: tl("2,000 reads") },
+    { id: "deep", label: tl("20,000 reads") },
   ],
 } as const;
 
@@ -115,21 +119,36 @@ function pass(levers: LabLevers): Run {
     richness,
     stages: [
       {
-        name: "Cores",
-        readout: `${p.cores === 1 ? "One core" : `${p.cores} cores pooled`}: ${Math.round(cells)} living cells and DNA of ${Math.round(relic)} dead ones (×10⁶ per g).`,
+        name: t("Cores"),
+        readout: t("{cores}: {cells} living cells and DNA of {relic} dead ones (×10⁶ per g).", {
+          cores: p.cores === 1 ? t("One core") : t("{n} cores pooled", { n: p.cores }),
+          cells: Math.round(cells),
+          relic: Math.round(relic),
+        }),
       },
-      { name: "Sieve", readout: "Stones and roots stay on the 2 mm mesh; the fine earth goes on." },
+      { name: t("Sieve"), readout: t("Stones and roots stay on the 2 mm mesh; the fine earth goes on.") },
       {
-        name: "Extraction",
-        readout: `${Math.round((opened / cells) * 100)} % of living cells broken open. Free DNA ${p.removeRelic ? "removed first" : "comes along"}.`,
+        name: t("Extraction"),
+        readout: p.removeRelic
+          ? t("{pct} % of living cells broken open. Free DNA removed first.", {
+              pct: Math.round((opened / cells) * 100),
+            })
+          : t("{pct} % of living cells broken open. Free DNA comes along.", {
+              pct: Math.round((opened / cells) * 100),
+            }),
       },
       {
-        name: "PCR",
-        readout: `${Math.round(sum(Object.values(copies)))} gene copies; one genome gives 1 to 10 of them in this model.`,
+        name: t("PCR"),
+        readout: t("{n} gene copies; one genome gives 1 to 10 of them in this model.", {
+          n: Math.round(sum(Object.values(copies))),
+        }),
       },
       {
-        name: "Sequencer",
-        readout: `${p.depth.toLocaleString("en")} reads, however much DNA went in. ${richness} groups detected.`,
+        name: t("Sequencer"),
+        readout: t("{n} reads, however much DNA went in. {groups} groups detected.", {
+          n: p.depth.toLocaleString(lang()),
+          groups: richness,
+        }),
       },
     ],
   };
@@ -145,32 +164,32 @@ function Pipeline({ step, onDone }: Props) {
     <figure className="ripple sample pipeline-bench">
       <Banner />
       <Segmented
-        legend="Cores per sample"
+        legend={t("Cores per sample")}
         name="pipe-cores"
-        options={PIPE_LEVERS.cores}
+        options={opts(PIPE_LEVERS.cores)}
         value={levers.cores}
         set={(cores) => setLevers({ ...levers, cores })}
       />
       <Segmented
-        legend="Free DNA"
+        legend={t("Free DNA")}
         name="pipe-relic"
-        options={PIPE_LEVERS.relic}
+        options={opts(PIPE_LEVERS.relic)}
         value={levers.relic}
         set={(relic) => setLevers({ ...levers, relic })}
       />
       <Segmented
-        legend="Sequencing depth"
+        legend={t("Sequencing depth")}
         name="pipe-depth"
-        options={PIPE_LEVERS.depth}
+        options={opts(PIPE_LEVERS.depth)}
         value={levers.depth}
         set={(depth) => setLevers({ ...levers, depth })}
       />
       <button type="button" className="btn" onClick={() => setRuns([...runs, pass(levers)])}>
-        Run the sample
+        {t("Run the sample")}
       </button>
       {last && (
         <>
-          <ol className="stages" aria-label="What happened at each step">
+          <ol className="stages" aria-label={t("What happened at each step")}>
             {last.stages.map((s) => (
               <li key={s.name}>
                 <b>{s.name}</b> {s.readout}
@@ -179,14 +198,14 @@ function Pipeline({ step, onDone }: Props) {
           </ol>
           <div className="table-scroll">
             <table>
-              <caption className="small">Runs so far (measured: reads per group)</caption>
+              <caption className="small">{t("Runs so far (measured: reads per group)")}</caption>
               <thead>
                 <tr>
-                  <th scope="col">Run</th>
-                  <th scope="col">Free DNA</th>
-                  {TAXA.map((t) => (
-                    <th key={t} scope="col">
-                      {TAXA_LABELS[t]}
+                  <th scope="col">{t("Run")}</th>
+                  <th scope="col">{t("Free DNA")}</th>
+                  {TAXA.map((x) => (
+                    <th key={x} scope="col">
+                      {t(TAXA_LABELS[x])}
                     </th>
                   ))}
                 </tr>
@@ -195,10 +214,10 @@ function Pipeline({ step, onDone }: Props) {
                 {runs.map((r, i) => (
                   <tr key={i} data-relic={r.levers.relic}>
                     <th scope="row">{i + 1}</th>
-                    <td>{r.levers.relic === "keep" ? "amplified" : "removed"}</td>
-                    {TAXA.map((t) => (
-                      <td key={t} className="mono">
-                        {r.reads[t] ? r.reads[t] : "not detected"}
+                    <td>{r.levers.relic === "keep" ? t("amplified") : t("removed")}</td>
+                    {TAXA.map((x) => (
+                      <td key={x} className="mono">
+                        {r.reads[x] ? r.reads[x] : t("not detected")}
                       </td>
                     ))}
                   </tr>
@@ -210,7 +229,9 @@ function Pipeline({ step, onDone }: Props) {
       )}
       {!done && runs.length > 0 && (
         <p className="hint">
-          Now run it with the free DNA {last?.levers.relic === "keep" ? "removed first" : "amplified too"}.
+          {last?.levers.relic === "keep"
+            ? t("Now run it with the free DNA removed first.")
+            : t("Now run it with the free DNA amplified too.")}
         </p>
       )}
       {done && <Result step={step} onDone={onDone} />}
@@ -227,17 +248,17 @@ const JAR_LAB: LabLevers = {
 };
 
 function JarBar({ label, permille }: { label: string; permille: Record<string, number> }) {
-  const parts = TAXA.filter((t) => permille[t]! > 0);
+  const parts = TAXA.filter((x) => permille[x]! > 0);
   return (
     <div className="jar-row">
       <span className="jar-when">{label}</span>
       <span
         className="jar-stack"
         role="img"
-        aria-label={`${label}: ${parts.map((t) => `${TAXA_LABELS[t]} ${pct(permille[t]!)}`).join(", ")}`}
+        aria-label={`${label}: ${parts.map((x) => `${t(TAXA_LABELS[x])} ${pct(permille[x]!)}`).join(", ")}`}
       >
-        {parts.map((t) => (
-          <span key={t} className={`jar-seg taxon-${t}`} style={{ width: `${permille[t]! / 10}%` }} />
+        {parts.map((x) => (
+          <span key={x} className={`jar-seg taxon-${x}`} style={{ width: `${permille[x]! / 10}%` }} />
         ))}
       </span>
     </div>
@@ -256,11 +277,11 @@ function Jar({ step, onDone }: Props) {
     <figure className="ripple sample jar">
       <Banner />
       <Segmented
-        legend="Spike-in"
+        legend={t("Spike-in")}
         name="jar-spike"
         options={[
-          { id: "none", label: "none" },
-          { id: "added", label: "known amount added" },
+          { id: "none", label: t("none") },
+          { id: "added", label: t("known amount added") },
         ]}
         value={spike}
         set={(v) => {
@@ -268,33 +289,33 @@ function Jar({ step, onDone }: Props) {
           if (v === "added") setSpiked(true);
         }}
       />
-      <section aria-label="The jar of reads">
-        <h4>The jar of reads: always 100 %</h4>
-        <JarBar label="Before the drought" permille={before.permille} />
-        <JarBar label="After the drought" permille={after.permille} />
+      <section aria-label={t("The jar of reads")}>
+        <h4>{t("The jar of reads: always 100 %")}</h4>
+        <JarBar label={t("Before the drought")} permille={before.permille} />
+        <JarBar label={t("After the drought")} permille={after.permille} />
       </section>
       <table>
         <thead>
           <tr>
-            <th scope="col">Group</th>
-            <th scope="col">Share of reads (measured)</th>
-            <th scope="col">Amount per gram (derived from the spike)</th>
+            <th scope="col">{t("Group")}</th>
+            <th scope="col">{t("Share of reads (measured)")}</th>
+            <th scope="col">{t("Amount per gram (derived from the spike)")}</th>
           </tr>
         </thead>
         <tbody>
-          {TAXA.map((t) => (
-            <tr key={t} data-taxon={t}>
+          {TAXA.map((x) => (
+            <tr key={x} data-taxon={x}>
               <th scope="row">
-                <span className={`swatch taxon-${t}`} aria-hidden="true" /> {TAXA_LABELS[t]}
+                <span className={`swatch taxon-${x}`} aria-hidden="true" /> {t(TAXA_LABELS[x])}
               </th>
               <td>
-                {pct(before.permille[t]!)} → {pct(after.permille[t]!)}{" "}
-                {arrow(after.permille[t]! - before.permille[t]!)}
+                {pct(before.permille[x]!)} → {pct(after.permille[x]!)}{" "}
+                {arrow(after.permille[x]! - before.permille[x]!)}
               </td>
               <td>
                 {before.absolute && after.absolute
-                  ? arrow(Math.round(after.absolute[t]!) - Math.round(before.absolute[t]!))
-                  : "cannot tell without a spike-in"}
+                  ? arrow(Math.round(after.absolute[x]!) - Math.round(before.absolute[x]!))
+                  : t("cannot tell without a spike-in")}
               </td>
             </tr>
           ))}
@@ -302,7 +323,7 @@ function Jar({ step, onDone }: Props) {
       </table>
       {before.absolute && (
         <p className="small muted">
-          Amount = group reads ÷ spike reads × spike added. The spike has its own bias.
+          {t("Amount = group reads ÷ spike reads × spike added. The spike has its own bias.")}
         </p>
       )}
       {spiked && <Result step={step} onDone={onDone} />}
@@ -311,11 +332,11 @@ function Jar({ step, onDone }: Props) {
 }
 
 const LAYERS: { id: ResultLayer; label: string }[] = [
-  { id: "measurement", label: "Measurement" },
-  { id: "derived", label: "Derived" },
-  { id: "interpretation", label: "Interpretation" },
-  { id: "prediction", label: "Prediction" },
-  { id: "recommendation", label: "Recommendation" },
+  { id: "measurement", label: tl("Measurement") },
+  { id: "derived", label: tl("Derived") },
+  { id: "interpretation", label: tl("Interpretation") },
+  { id: "prediction", label: tl("Prediction") },
+  { id: "recommendation", label: tl("Recommendation") },
 ];
 
 /** c14-m3: each statement into one of the five layers. */
@@ -329,9 +350,9 @@ function Layers({ step, onDone }: Props) {
         <section key={s.id} className="claim" aria-label={s.text}>
           <p>{s.text}</p>
           <Segmented
-            legend="Which layer?"
+            legend={t("Which layer?")}
             name={`layer-${s.id}`}
-            options={LAYERS}
+            options={opts(LAYERS)}
             value={sorted[s.id]}
             set={(v) => setSorted({ ...sorted, [s.id]: v })}
           />
@@ -339,7 +360,9 @@ function Layers({ step, onDone }: Props) {
             <p className="hint">
               {right(s.id, s.layer)
                 ? s.feedback
-                : "Read off an instrument, calculated by a formula, a reading of the evidence, a model's output, or something to do?"}
+                : t(
+                    "Read off an instrument, calculated by a formula, a reading of the evidence, a model's output, or something to do?",
+                  )}
             </p>
           )}
         </section>
@@ -362,7 +385,7 @@ function Budget({ step, onDone }: Props) {
   return (
     <figure className="claim-sort sample budget">
       <p>{here.scenario}</p>
-      <ul className="evidence-held" aria-label="Evidence in hand">
+      <ul className="evidence-held" aria-label={t("Evidence in hand")}>
         {ladder.map((r) => (
           <li key={r.id} data-held={here.held.includes(r.id)}>
             {here.held.includes(r.id) ? "✓ " : "— "}
@@ -371,7 +394,7 @@ function Budget({ step, onDone }: Props) {
         ))}
       </ul>
       <Segmented
-        legend="The strongest claim this evidence supports"
+        legend={t("The strongest claim this evidence supports")}
         name={`budget-${here.id}`}
         options={ladder.map((r) => ({ id: r.id, label: r.claim }))}
         value={pick}
@@ -379,14 +402,25 @@ function Budget({ step, onDone }: Props) {
       />
       {verdict?.kind === "over" && (
         <p className="hint overclaim">
-          {ladder.find((r) => r.id === pick)!.overclaim} Missing:{" "}
-          {verdict.missing.map((id) => ladder.find((r) => r.id === id)!.evidence.toLowerCase()).join("; ")}.
+          {ladder.find((r) => r.id === pick)!.overclaim}{" "}
+          {t("Missing: {list}.", {
+            list: verdict.missing
+              .map((id) => {
+                const e = ladder.find((r) => r.id === id)!.evidence;
+                return lang() === "en" ? e.toLowerCase() : e;
+              })
+              .join("; "),
+          })}
         </p>
       )}
-      {verdict?.kind === "under" && <p className="hint">True, and the evidence allows a stronger claim.</p>}
+      {verdict?.kind === "under" && (
+        <p className="hint">{t("True, and the evidence allows a stronger claim.")}</p>
+      )}
       {verdict?.kind === "fits" && (
         <>
-          <p className="observation">The strongest claim this evidence supports: {top?.claim}</p>
+          <p className="observation">
+            {t("The strongest claim this evidence supports: {claim}", { claim: top?.claim ?? "" })}
+          </p>
           <button
             type="button"
             className="btn"
@@ -395,7 +429,7 @@ function Budget({ step, onDone }: Props) {
               setPick(undefined);
             }}
           >
-            {at + 1 < cases.length ? "Next case" : "Done"}
+            {at + 1 < cases.length ? t("Next case") : t("Done")}
           </button>
         </>
       )}
@@ -423,7 +457,7 @@ function Reports({ step, onDone }: Props) {
               </ul>
             ) : (
               <button type="button" className="btn" onClick={() => setOpen([...open, r.id])}>
-                How was {r.title} measured?
+                {t("How was {title} measured?", { title: r.title })}
               </button>
             )}
           </section>
@@ -435,15 +469,15 @@ function Reports({ step, onDone }: Props) {
 }
 
 const FIELD_LABEL: Record<ReportField, string> = {
-  benchmark: "Benchmark",
-  confidence: "Confidence",
-  provenance: "Provenance",
+  benchmark: tl("Benchmark"),
+  confidence: tl("Confidence"),
+  provenance: tl("Provenance"),
 };
 const TIER_LABEL: Record<ReportBlock["tier"], string> = {
-  measured: "measured",
-  derived: "derived",
-  interpreted: "interpreted",
-  "would-measure": "would measure",
+  measured: tl("measured"),
+  derived: tl("derived"),
+  interpreted: tl("interpreted"),
+  "would-measure": tl("would measure"),
 };
 
 /** c14-m5: the honest report; a block is placed only with a benchmark, a confidence and a provenance. */
@@ -455,10 +489,10 @@ function Report({ step, onDone }: Props) {
   return (
     <figure className="sample report-builder">
       {here && (
-        <section className="report-draft" aria-label="Block to place">
+        <section className="report-draft" aria-label={t("Block to place")}>
           <p>
             <span className="tier" data-tier={here.tier === "would-measure" ? "would-do" : here.tier}>
-              {TIER_LABEL[here.tier]}
+              {t(TIER_LABEL[here.tier])}
             </span>{" "}
             {here.text}
           </p>
@@ -467,7 +501,7 @@ function Report({ step, onDone }: Props) {
             return (
               <div key={f}>
                 <Segmented
-                  legend={FIELD_LABEL[f]}
+                  legend={t(FIELD_LABEL[f])}
                   name={`report-${here.id}-${f}`}
                   options={here[f]}
                   value={picks[f]}
@@ -494,41 +528,41 @@ function Report({ step, onDone }: Props) {
               setPicks({});
             }}
           >
-            Place in the report
+            {t("Place in the report")}
           </button>
           {!placeable(here, picks) && (
             <p className="small muted">
-              A block goes in only with a benchmark, a confidence and a provenance.
+              {t("A block goes in only with a benchmark, a confidence and a provenance.")}
             </p>
           )}
         </section>
       )}
-      <article className="report-mock" aria-label="Teaching mock-up report">
+      <article className="report-mock" aria-label={t("Teaching mock-up report")}>
         <p className="report-stamp">
-          Teaching mock-up · not a real report, and not any company&apos;s product
+          {t("Teaching mock-up · not a real report, and not any company's product")}
         </p>
-        <h4>The field after the drought</h4>
+        <h4>{t("The field after the drought")}</h4>
         {blocks
           .filter((b) => placed[b.id])
           .map((b) => (
             <section key={b.id} className="report-block" data-tier={b.tier}>
               <p>
                 <span className="tier" data-tier={b.tier === "would-measure" ? "would-do" : b.tier}>
-                  {TIER_LABEL[b.tier]}
+                  {t(TIER_LABEL[b.tier])}
                 </span>{" "}
                 {b.text}
               </p>
               <dl>
                 {REPORT_FIELDS.map((f) => (
                   <div key={f}>
-                    <dt>{FIELD_LABEL[f]}</dt>
+                    <dt>{t(FIELD_LABEL[f])}</dt>
                     <dd>{placed[b.id]![f].label}</dd>
                   </div>
                 ))}
               </dl>
             </section>
           ))}
-        {Object.keys(placed).length === 0 && <p className="small muted">No blocks placed yet.</p>}
+        {Object.keys(placed).length === 0 && <p className="small muted">{t("No blocks placed yet.")}</p>}
       </article>
       {!here && <Result step={step} onDone={onDone} />}
     </figure>

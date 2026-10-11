@@ -4,6 +4,7 @@ import "./styles/app.css";
 import { App } from "./app/App";
 import { LEGACY_SAVE_KEYS, SAVE_KEY } from "./save/schema";
 import { bootLanguage } from "./i18n/boot";
+import { t } from "./i18n";
 
 const raw = () => {
   try {
@@ -26,8 +27,8 @@ class Crash extends Component<{ children: ReactNode }, { error: Error | null }> 
     const saved = raw();
     return (
       <main className="crash">
-        <h1>Something broke</h1>
-        <p>The book stopped on an error. Your notebook is still in this browser.</p>
+        <h1>{t("Something broke")}</h1>
+        <p>{t("The book stopped on an error. Your notebook is still in this browser.")}</p>
         <p className="muted small mono">{this.state.error.message}</p>
         <div className="btn-row">
           {saved && (
@@ -36,7 +37,7 @@ class Crash extends Component<{ children: ReactNode }, { error: Error | null }> 
               download="terrikus-notebook.json"
               href={URL.createObjectURL(new Blob([saved], { type: "application/json" }))}
             >
-              Export notebook
+              {t("Export notebook")}
             </a>
           )}
           <button
@@ -53,10 +54,10 @@ class Crash extends Component<{ children: ReactNode }, { error: Error | null }> 
               location.reload();
             }}
           >
-            Reset notebook
+            {t("Reset notebook")}
           </button>
           <button type="button" className="btn btn-primary" onClick={() => location.reload()}>
-            Reload
+            {t("Reload")}
           </button>
         </div>
       </main>

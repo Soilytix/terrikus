@@ -19,7 +19,8 @@ import {
   type RungId,
   type Wetness,
 } from "../sim/redox";
-import { Facts } from "./common";
+import { lang, t, tl } from "../i18n";
+import { Facts, tr } from "./common";
 
 type RedoxStep = Extract<Step, { kind: "redox" }>;
 
@@ -27,7 +28,7 @@ function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -38,7 +39,7 @@ function Result({ step, onDone }: { step: RedoxStep; onDone: () => void }) {
       <p className="observation">{step.resultText}</p>
       <Facts facts={step.facts} />
       <button type="button" className="btn btn-primary" onClick={onDone}>
-        Continue
+        {t("Continue")}
       </button>
     </>
   );
@@ -69,14 +70,14 @@ function Elevator({ step, onDone }: { step: RedoxStep; onDone: () => void }) {
   return (
     <>
       <Banner />
-      <ol className="elevator" aria-label="Floors visited">
+      <ol className="elevator" aria-label={t("Floors visited")}>
         {got.map((id) => (
           <li key={id}>
             <b>
-              {rung(id).acceptor} → {rung(id).product}
+              {rung(id).acceptor} → {t(rung(id).product)}
             </b>{" "}
             <span className="mono small">≈ {mv(rung(id).eh)}</span>
-            <span className="small"> {rung(id).process}. </span>
+            <span className="small"> {t(rung(id).process)}. </span>
             {step.floors?.[id] && <span className="small muted">{step.floors[id]}</span>}
           </li>
         ))}
@@ -85,8 +86,10 @@ function Elevator({ step, onDone }: { step: RedoxStep; onDone: () => void }) {
         <>
           <p className="step-text">
             {got.length === 0
-              ? "Top floor. What do the microbes here breathe?"
-              : `${rung(got.at(-1)!).acceptor} is used up. What do they breathe next?`}
+              ? t("Top floor. What do the microbes here breathe?")
+              : t("{acceptor} is used up. What do they breathe next?", {
+                  acceptor: rung(got.at(-1)!).acceptor,
+                })}
           </p>
           <div className="choices">
             {HAND.filter((id) => !got.includes(id)).map((id) => (
@@ -97,8 +100,13 @@ function Elevator({ step, onDone }: { step: RedoxStep; onDone: () => void }) {
           </div>
           {miss && (
             <p className="hint" aria-live="polite">
-              {rung(miss).acceptor} is down here too, but {rung(want).acceptor} is still left and yields more
-              energy. {rung(miss).acceptor} waits its turn.
+              {t(
+                "{miss} is down here too, but {want} is still left and yields more energy. {miss} waits its turn.",
+                {
+                  miss: rung(miss).acceptor,
+                  want: rung(want).acceptor,
+                },
+              )}
             </p>
           )}
         </>
@@ -110,13 +118,13 @@ function Elevator({ step, onDone }: { step: RedoxStep; onDone: () => void }) {
 }
 
 const WET: { id: Wetness; label: string }[] = [
-  { id: "moist", label: "Moist, drained" },
-  { id: "wet", label: "Wet" },
-  { id: "flooded", label: "Flooded" },
+  { id: "moist", label: tl("Moist, drained") },
+  { id: "wet", label: tl("Wet") },
+  { id: "flooded", label: tl("Flooded") },
 ];
-const SIZE: { id: AggregateSize; label: string }[] = [
-  { id: "small", label: `Small crumb, ${AGGREGATE.small * 2} mm` },
-  { id: "large", label: `Large crumb, ${AGGREGATE.large * 2} mm` },
+const SIZE: { id: AggregateSize; label: string; mm: number }[] = [
+  { id: "small", label: tl("Small crumb, {mm} mm"), mm: AGGREGATE.small * 2 },
+  { id: "large", label: tl("Large crumb, {mm} mm"), mm: AGGREGATE.large * 2 },
 ];
 
 /** c4-m2: an aggregate with its anoxic core, by wetness and size. */
@@ -127,7 +135,7 @@ function Microsites({ step, onDone }: { step: RedoxStep; onDone: () => void }) {
   const set = (w: Wetness, s: AggregateSize) => {
     setWater(w);
     setSize(s);
-    setTried((t) => (t.includes(`${w}:${s}`) ? t : [...t, `${w}:${s}`]));
+    setTried((x) => (x.includes(`${w}:${s}`) ? x : [...x, `${w}:${s}`]));
   };
   const share = anoxicShare(water, size);
   const core = 40 * Math.cbrt(share / 100);
@@ -136,20 +144,20 @@ function Microsites({ step, onDone }: { step: RedoxStep; onDone: () => void }) {
     <>
       <Banner />
       <fieldset className="segmented">
-        <legend>Soil water</legend>
+        <legend>{t("Soil water")}</legend>
         {WET.map((w) => (
           <label key={w.id}>
             <input type="radio" name="c4-water" checked={water === w.id} onChange={() => set(w.id, size)} />
-            <span>{w.label}</span>
+            <span>{t(w.label)}</span>
           </label>
         ))}
       </fieldset>
       <fieldset className="segmented">
-        <legend>Crumb size</legend>
+        <legend>{t("Crumb size")}</legend>
         {SIZE.map((s) => (
           <label key={s.id}>
             <input type="radio" name="c4-size" checked={size === s.id} onChange={() => set(water, s.id)} />
-            <span>{s.label}</span>
+            <span>{t(s.label, { mm: s.mm.toLocaleString(lang()) })}</span>
           </label>
         ))}
       </fieldset>
@@ -159,15 +167,19 @@ function Microsites({ step, onDone }: { step: RedoxStep; onDone: () => void }) {
       </svg>
       <p className="observation" aria-live="polite">
         <span className="tier" data-tier="derived">
-          derived
+          {t("derived")}
         </span>{" "}
-        Oxygen reaches about <b className="mono">{ANOXIC_WATER[water]} mm</b> in;{" "}
-        <b className="mono">{share} %</b> of this crumb has none.
+        {tr("Oxygen reaches about {depth} in; {share} of this crumb has none.", {
+          depth: <b className="mono">{ANOXIC_WATER[water].toLocaleString(lang())} mm</b>,
+          share: <b className="mono">{share.toLocaleString(lang())} %</b>,
+        })}
       </p>
       {done ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="muted small">Try at least three settings, including a large crumb in moist soil.</p>
+        <p className="muted small">
+          {t("Try at least three settings, including a large crumb in moist soil.")}
+        </p>
       )}
     </>
   );
@@ -196,14 +208,16 @@ function Trace({ gas, label, id }: { gas: "ch4" | "n2o"; label: string; id: stri
         <polyline points={line(all.flooded.days)} className="moist" />
         <polyline points={line(all.intermittent.days)} className="dried" />
         <text x="6" y="58" className="note">
-          day 1
+          {t("day {n}", { n: 1 })}
         </text>
         <text x="98" y="58" textAnchor="end" className="note">
-          day {PADDY_DAYS}
+          {t("day {n}", { n: PADDY_DAYS })}
         </text>
       </svg>
       <figcaption id={id} className="muted small">
-        {label} per day, teaching units. Solid: drained in spells (shaded). Dashed: kept flooded.
+        {t("{gas} per day, teaching units. Solid: drained in spells (shaded). Dashed: kept flooded.", {
+          gas: label,
+        })}
       </figcaption>
     </figure>
   );
@@ -219,29 +233,29 @@ function Drain({ step, onDone }: { step: RedoxStep; onDone: () => void }) {
       <Banner />
       {!ran ? (
         <button type="button" className="btn btn-primary" onClick={() => setRan(true)}>
-          Run the season both ways
+          {t("Run the season both ways")}
         </button>
       ) : (
         <>
-          <Trace gas="ch4" label="Methane made" id="c4-ch4-cap" />
-          <Trace gas="n2o" label="Nitrous oxide lost" id="c4-n2o-cap" />
+          <Trace gas="ch4" label={t("Methane made")} id="c4-ch4-cap" />
+          <Trace gas="n2o" label={t("Nitrous oxide lost")} id="c4-n2o-cap" />
           <table className="run-table">
             <caption className="muted small">
-              Season totals, teaching units. Each gas in its own units.
+              {t("Season totals, teaching units. Each gas in its own units.")}
             </caption>
             <thead>
               <tr>
-                <th scope="col">Season</th>
-                <th scope="col">Methane</th>
-                <th scope="col">Nitrous oxide</th>
+                <th scope="col">{t("Season")}</th>
+                <th scope="col">{t("Methane")}</th>
+                <th scope="col">{t("Nitrous oxide")}</th>
               </tr>
             </thead>
             <tbody>
               {(["flooded", "intermittent"] as const).map((r) => (
                 <tr key={r}>
-                  <th scope="row">{r === "flooded" ? "Kept flooded" : "Drained in spells"}</th>
-                  <td className="mono">{season(seasons()[r].days, "ch4").toLocaleString("en")}</td>
-                  <td className="mono">{season(seasons()[r].days, "n2o").toLocaleString("en")}</td>
+                  <th scope="row">{r === "flooded" ? t("Kept flooded") : t("Drained in spells")}</th>
+                  <td className="mono">{season(seasons()[r].days, "ch4").toLocaleString(lang())}</td>
+                  <td className="mono">{season(seasons()[r].days, "n2o").toLocaleString(lang())}</td>
                 </tr>
               ))}
             </tbody>

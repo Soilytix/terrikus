@@ -1,15 +1,29 @@
 /** Small shared pieces: facts with their sources, review badges, dialogs. */
 import { Fragment, useEffect, useRef, type ReactNode } from "react";
-import { LANGS, lang, t } from "../i18n";
+import { LANGS, lang, t, tl } from "../i18n";
 import { switchLang } from "../i18n/boot";
 import type { Confidence, Fact, ReviewStatus } from "../content/schema";
 import { SOURCES, type SourceId } from "../content/sources";
 
 const CONFIDENCE: Record<Confidence, string> = {
-  firm: "Firm",
-  estimate: "Estimate",
-  contested: "Contested",
+  firm: tl("Firm"),
+  estimate: tl("Estimate"),
+  contested: tl("Contested"),
 };
+
+const TIER: Record<string, string> = {
+  measured: tl("measured"),
+  derived: tl("derived"),
+  inferred: tl("inferred"),
+  observed: tl("observed"),
+  interpreted: tl("interpreted"),
+  reference: tl("reference"),
+  "would-do": tl("would-do"),
+  "would measure": tl("would measure"),
+};
+
+/** An evidence tier's word on screen; the tier itself stays English in data. */
+export const tierLabel = (tier: string) => (TIER[tier] ? t(TIER[tier]) : tier);
 
 /** Markdown-ish citation to plain text. */
 const plain = (s: string) => s.replace(/\*/g, "");
@@ -28,17 +42,21 @@ export function FactItem({ fact }: { fact: Fact }) {
     <li className="fact">
       <p className="hand">{fact.text}</p>
       <div className="fact-meta">
-        <span className="sr-only">{CONFIDENCE[fact.confidence]}</span>
+        <span className="sr-only">{t(CONFIDENCE[fact.confidence])}</span>
         {fact.evidence && (
           <span className="tier" data-tier={fact.evidence}>
-            {fact.evidence}
+            {tierLabel(fact.evidence)}
           </span>
         )}
         {fact.sources.map((s) => (
           <SourceRef key={s} id={s} />
         ))}
       </div>
-      {fact.simplification && <p className="simplification">Simplified: {fact.simplification}</p>}
+      {fact.simplification && (
+        <p className="simplification">
+          {t("Simplified:")} {fact.simplification}
+        </p>
+      )}
     </li>
   );
 }
@@ -57,9 +75,9 @@ export function Facts({ facts }: { facts: Fact[] }) {
 export function ReviewBadge({ status }: { status: ReviewStatus }) {
   if (status === "approved") return null;
   return (
-    <span className="review-badge" title="Content is a draft until a named scientist approves it.">
+    <span className="review-badge" title={t("Content is a draft until a named scientist approves it.")}>
       <span className="dot" aria-hidden="true" />
-      <span className="review-badge-text">Scientific review pending</span>
+      <span className="review-badge-text">{t("Scientific review pending")}</span>
     </span>
   );
 }
@@ -99,7 +117,7 @@ export function Dialog({
     >
       <header className="dialog-head">
         <h2>{title}</h2>
-        <button type="button" className="icon-btn" onClick={onClose} aria-label="Close">
+        <button type="button" className="icon-btn" onClick={onClose} aria-label={t("Close")}>
           <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
             <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
           </svg>

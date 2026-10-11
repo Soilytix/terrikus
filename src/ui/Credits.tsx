@@ -1,16 +1,17 @@
 /** Credits: every bundled asset in this profile with its attribution and licence (art-direction §7). */
 import type { Licence } from "../content/schema";
 import { bundledAssets } from "../assets/manifest";
+import { t, tl } from "../i18n";
 
 const LICENCE: Record<Licence, string> = {
   soilytix: "Soilytix",
-  pd: "Public domain",
+  pd: tl("Public domain"),
   cc0: "CC0",
   "cc-by": "CC BY",
   "cc-by-sa": "CC BY-SA",
   ofl: "SIL OFL",
-  copernicus: "Copernicus free and open data",
-  "internal-only": "Internal only",
+  copernicus: tl("Copernicus free and open data"),
+  "internal-only": tl("Internal only"),
 };
 
 // Fonts ship from @fontsource, outside src/assets/, so they are listed here.
@@ -25,7 +26,7 @@ export function Credits() {
   return (
     <section className="credits-section" aria-labelledby="credits-title">
       <h3 id="credits-title" className="settings-group">
-        Credits
+        {t("Credits")}
       </h3>
       <table className="keys credits">
         <tbody>
@@ -43,7 +44,7 @@ export function Credits() {
                   a.attribution
                 )}
               </td>
-              <td>{LICENCE[a.licence]}</td>
+              <td>{t(LICENCE[a.licence])}</td>
             </tr>
           ))}
           {FONTS.map(([name, by]) => (

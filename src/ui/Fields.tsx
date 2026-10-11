@@ -23,7 +23,8 @@ import {
   type Practices,
   type Year,
 } from "../sim/twin-fields";
-import { Facts } from "./common";
+import { t, tl } from "../i18n";
+import { Facts, tr } from "./common";
 
 type FieldsStep = Extract<Step, { kind: "fields" }>;
 type Props = { step: FieldsStep; onDone: () => void };
@@ -32,7 +33,7 @@ function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -43,11 +44,32 @@ function Result({ step, onDone }: Props) {
       <p className="observation">{step.resultText}</p>
       <Facts facts={step.facts} />
       <button type="button" className="btn btn-primary" onClick={onDone}>
-        Continue
+        {t("Continue")}
       </button>
     </>
   );
 }
+
+/** Learner-facing names for the levers and option values, which are ids in the sim. */
+const OPTION_NAME: Record<string, string> = {
+  tillage: tl("tillage"),
+  cover: tl("cover"),
+  rotation: tl("rotation"),
+  traffic: tl("traffic"),
+  plough: tl("plough"),
+  reduced: tl("reduced"),
+  none: tl("none"),
+  legume: tl("legume"),
+  grass: tl("grass"),
+  "2-year": tl("2-year"),
+  "4-year": tl("4-year"),
+  "dry-season": tl("dry-season"),
+  "wet-season": tl("wet-season"),
+  "top 10 cm": tl("top 10 cm"),
+  "whole profile to 60 cm": tl("whole profile to 60 cm"),
+  dry: tl("dry"),
+  wet: tl("wet"),
+};
 
 function Segmented<T extends string>({
   legend,
@@ -68,7 +90,7 @@ function Segmented<T extends string>({
       {options.map((o) => (
         <label key={o}>
           <input type="radio" name={name} checked={value === o} onChange={() => set(o)} />
-          <span>{o}</span>
+          <span>{t(OPTION_NAME[o] ?? o)}</span>
         </label>
       ))}
     </fieldset>
@@ -88,7 +110,7 @@ function Season({ step, onDone }: Props) {
         className="season-wheel"
         viewBox="-50 -50 100 100"
         role="img"
-        aria-label={`Season wheel: ${here.label}`}
+        aria-label={t("Season wheel: {label}", { label: here.label })}
       >
         <g style={{ transform: `rotate(${(-360 * at) / n}deg)` }} className="season-turn">
           {events.map((e, k) => {
@@ -109,7 +131,7 @@ function Season({ step, onDone }: Props) {
           <b>{here.label}</b>
         </p>
         <p>
-          <b>Below:</b> {here.below}
+          <b>{t("Below:")}</b> {here.below}
         </p>
       </div>
       {seen < n ? (
@@ -121,7 +143,7 @@ function Season({ step, onDone }: Props) {
             setSeen(seen + 1);
           }}
         >
-          Next: {events[(at + 1) % n]!.label}
+          {t("Next: {label}", { label: events[(at + 1) % n]!.label })}
         </button>
       ) : (
         <Result step={step} onDone={onDone} />
@@ -131,17 +153,17 @@ function Season({ step, onDone }: Props) {
 }
 
 const READOUTS: { id: keyof Year; label: string; unit: string; get: (y: Year) => number }[] = [
-  { id: "aggregates", label: "Aggregate index", unit: "0–100", get: (y) => y.aggregates },
-  { id: "nitrate", label: "Nitrate leached", unit: "kg N/ha this year", get: (y) => y.nitrate },
-  { id: "shallow", label: "Carbon, top 10 cm", unit: "t C/ha", get: (y) => y.shallow / 1000 },
+  { id: "aggregates", label: tl("Aggregate index"), unit: tl("0–100"), get: (y) => y.aggregates },
+  { id: "nitrate", label: tl("Nitrate leached"), unit: tl("kg N/ha this year"), get: (y) => y.nitrate },
+  { id: "shallow", label: tl("Carbon, top 10 cm"), unit: tl("t C/ha"), get: (y) => y.shallow / 1000 },
   {
     id: "deep",
-    label: "Carbon, whole profile to 60 cm",
-    unit: "t C/ha",
+    label: tl("Carbon, whole profile to 60 cm"),
+    unit: tl("t C/ha"),
     get: (y) => (y.shallow + y.deep) / 1000,
   },
-  { id: "disease", label: "Disease pressure index", unit: "0–100", get: (y) => y.disease },
-  { id: "yield", label: "Yield index", unit: "plough = 100", get: (y) => y.yield },
+  { id: "disease", label: tl("Disease pressure index"), unit: tl("0–100"), get: (y) => y.disease },
+  { id: "yield", label: tl("Yield index"), unit: tl("plough = 100"), get: (y) => y.yield },
 ];
 const fmt = (v: number) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
 const signed = (v: number) => (v > 0 ? `+${fmt(v)}` : v < 0 ? `−${fmt(-v)}` : "0");
@@ -157,14 +179,14 @@ function Twin({ step, onDone }: Props) {
     <figure className="ripple fields twin">
       <Banner />
       <div className="twin-levers">
-        <section className="field-subject" aria-label="Subject field">
+        <section className="field-subject" aria-label={t("Subject field")}>
           <h4>
-            <span className="swatch" aria-hidden="true" /> Subject field
+            <span className="swatch" aria-hidden="true" /> {t("Subject field")}
           </h4>
           {(Object.keys(PRACTICES) as (keyof Practices)[]).map((k) => (
             <Segmented
               key={k}
-              legend={k}
+              legend={t(OPTION_NAME[k]!)}
               name={`twin-${k}`}
               options={PRACTICES[k]}
               value={mine[k]}
@@ -172,50 +194,54 @@ function Twin({ step, onDone }: Props) {
             />
           ))}
         </section>
-        <section className="field-comparison" aria-label="Comparison field">
+        <section className="field-comparison" aria-label={t("Comparison field")}>
           <h4>
-            <span className="swatch" aria-hidden="true" /> Comparison field
+            <span className="swatch" aria-hidden="true" /> {t("Comparison field")}
           </h4>
           <p className="small">
-            {Object.values(DEFAULT_PRACTICES).join(" · ")}
+            {Object.values(DEFAULT_PRACTICES)
+              .map((v) => t(OPTION_NAME[v]!))
+              .join(" · ")}
             <br />
-            Context: humid climate, clay, well drained.
+            {t("Context: humid climate, clay, well drained.")}
           </p>
         </section>
       </div>
       {changed.length !== 1 && (
         <p className="hint">
-          {changed.length ? `${changed.length} practices differ: change only one.` : "Change one practice."}
+          {changed.length
+            ? t("{n} practices differ: change only one.", { n: changed.length })
+            : t("Change one practice.")}
         </p>
       )}
       <button type="button" className="btn" disabled={changed.length !== 1} onClick={() => setRan(mine)}>
-        Run ten years
+        {t("Run ten years")}
       </button>
       {runs && (
         <>
           <label className="slider-row">
-            <span>Year</span>
+            <span>{t("Year")}</span>
             <input
               type="range"
               min={1}
               max={YEARS}
               value={year}
               onChange={(e) => setYear(Number(e.target.value))}
-              aria-label="Year"
+              aria-label={t("Year")}
             />
             <output className="mono">{year}</output>
           </label>
           <table>
             <thead>
               <tr>
-                <th scope="col">Year {year}</th>
+                <th scope="col">{t("Year {year}", { year })}</th>
                 <th scope="col" className="field-subject">
-                  Subject
+                  {t("Subject")}
                 </th>
                 <th scope="col" className="field-comparison">
-                  Comparison
+                  {t("Comparison")}
                 </th>
-                <th scope="col">Difference</th>
+                <th scope="col">{t("Difference")}</th>
               </tr>
             </thead>
             <tbody>
@@ -224,7 +250,7 @@ function Twin({ step, onDone }: Props) {
                 return (
                   <tr key={r.id}>
                     <th scope="row">
-                      {r.label} <span className="muted small">({r.unit})</span>
+                      {t(r.label)} <span className="muted small">({t(r.unit)})</span>
                     </th>
                     <td className="mono">{fmt(a)}</td>
                     <td className="mono">{fmt(b)}</td>
@@ -242,10 +268,10 @@ function Twin({ step, onDone }: Props) {
 }
 
 const FLIP_CONTEXTS: { label: string; ctx: Context }[] = [
-  { label: "Dry, sand", ctx: { climate: "dry", texture: "sand", drainage: "good" } },
-  { label: "Dry, clay", ctx: { climate: "dry", texture: "clay", drainage: "good" } },
-  { label: "Humid, sand", ctx: { climate: "humid", texture: "sand", drainage: "good" } },
-  { label: "Humid, clay", ctx: { climate: "humid", texture: "clay", drainage: "good" } },
+  { label: tl("Dry, sand"), ctx: { climate: "dry", texture: "sand", drainage: "good" } },
+  { label: tl("Dry, clay"), ctx: { climate: "dry", texture: "clay", drainage: "good" } },
+  { label: tl("Humid, sand"), ctx: { climate: "humid", texture: "sand", drainage: "good" } },
+  { label: tl("Humid, clay"), ctx: { climate: "humid", texture: "clay", drainage: "good" } },
 ];
 
 /** c12-m2: plough → reduced tillage in four contexts; done once both signs have been seen. */
@@ -265,21 +291,21 @@ function Flip({ step, onDone }: Props) {
             aria-pressed={tried.includes(c.label)}
             onClick={() => setTried(tried.includes(c.label) ? tried : [...tried, c.label])}
           >
-            {c.label}
+            {t(c.label)}
           </button>
         ))}
       </div>
       <table>
         <thead>
           <tr>
-            <th scope="col">Plough → reduced tillage</th>
-            <th scope="col">Yield change, 10-year mean (index points)</th>
+            <th scope="col">{t("Plough → reduced tillage")}</th>
+            <th scope="col">{t("Yield change, 10-year mean (index points)")}</th>
           </tr>
         </thead>
         <tbody>
           {FLIP_CONTEXTS.map((c, k) => (
             <tr key={c.label} data-sign={tried.includes(c.label) ? Math.sign(effects[k]!) : undefined}>
-              <th scope="row">{c.label}</th>
+              <th scope="row">{t(c.label)}</th>
               <td className="mono">
                 {tried.includes(c.label) ? signed(Math.round(effects[k]! * 10) / 10) : "—"}
               </td>
@@ -290,7 +316,7 @@ function Flip({ step, onDone }: Props) {
       {seen.some((e) => e > 0) && seen.some((e) => e < 0) ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="hint">Try fields at both ends: a dry climate and a humid one.</p>
+        <p className="hint">{t("Try fields at both ends: a dry climate and a humid one.")}</p>
       )}
     </figure>
   );
@@ -312,7 +338,7 @@ function Depth({ step, onDone }: Props) {
     <figure className="ripple fields depth">
       <Banner />
       <Segmented
-        legend="Sample to"
+        legend={t("Sample to")}
         name="depth"
         options={["top 10 cm", "whole profile to 60 cm"] as const}
         value={depth}
@@ -325,23 +351,21 @@ function Depth({ step, onDone }: Props) {
         <table>
           <thead>
             <tr>
-              <th scope="col">
-                Year {YEARS}, {depth}
-              </th>
+              <th scope="col">{t("Year {year}, {depth}", { year: YEARS, depth: t(OPTION_NAME[depth]!) })}</th>
               <th scope="col">t C/ha</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th scope="row">Ploughed</th>
+              <th scope="row">{t("Ploughed")}</th>
               <td className="mono">{c(plough).toFixed(1)}</td>
             </tr>
             <tr>
-              <th scope="row">Reduced tillage</th>
+              <th scope="row">{t("Reduced tillage")}</th>
               <td className="mono">{c(reduced).toFixed(1)}</td>
             </tr>
             <tr>
-              <th scope="row">Reduced − ploughed</th>
+              <th scope="row">{t("Reduced − ploughed")}</th>
               <td className="mono">{signed(Math.round((c(reduced) - c(plough)) * 10) / 10)}</td>
             </tr>
           </tbody>
@@ -350,7 +374,7 @@ function Depth({ step, onDone }: Props) {
       {seen.length === 2 ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="hint">Sample at both depths.</p>
+        <p className="hint">{t("Sample at both depths.")}</p>
       )}
     </figure>
   );
@@ -366,7 +390,7 @@ function Wheel({ step, onDone }: Props) {
     <figure className="ripple fields wheel">
       <Banner />
       <Segmented
-        legend="Soil when the wheel crosses"
+        legend={t("Soil when the wheel crosses")}
         name="wet"
         options={["dry", "wet"] as const}
         value={wet}
@@ -378,31 +402,35 @@ function Wheel({ step, onDone }: Props) {
         disabled={!wet || driven.includes(wet)}
         onClick={() => wet && setDriven([...driven, wet])}
       >
-        Drive the wheel
+        {t("Drive the wheel")}
       </button>
       {pass && wet && (
         <>
           <table>
             <thead>
               <tr>
-                <th scope="col">{wet === "wet" ? "Wet" : "Dry"} soil</th>
-                <th scope="col">Before</th>
-                <th scope="col">After the wheel</th>
+                <th scope="col">{wet === "wet" ? t("Wet soil") : t("Dry soil")}</th>
+                <th scope="col">{t("Before")}</th>
+                <th scope="col">{t("After the wheel")}</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th scope="row">Big pores (% of volume)</th>
+                <th scope="row">{t("Big pores (% of volume)")}</th>
                 <td className="mono">{BEFORE.macropores}</td>
                 <td className="mono">{pass.macropores}</td>
               </tr>
               <tr data-over={pass.rootsBend}>
-                <th scope="row">Resistance in the pan (MPa; roots restricted above {ROOT_LIMIT_MPA})</th>
+                <th scope="row">
+                  {t("Resistance in the pan (MPa; roots restricted above {limit})", {
+                    limit: ROOT_LIMIT_MPA,
+                  })}
+                </th>
                 <td className="mono">{BEFORE.resistance}</td>
                 <td className="mono">{pass.resistance}</td>
               </tr>
               <tr>
-                <th scope="row">Water taken in (mm/h)</th>
+                <th scope="row">{t("Water taken in (mm/h)")}</th>
                 <td className="mono">{BEFORE.infiltration}</td>
                 <td className="mono">{pass.infiltration}</td>
               </tr>
@@ -410,15 +438,21 @@ function Wheel({ step, onDone }: Props) {
           </table>
           {rained.includes(wet) ? (
             <p className="observation" aria-live="polite">
-              A storm of {STORM_MM_H} mm/h:{" "}
-              {pass.ponds ? "the soil cannot take it in, and water ponds in the track." : "it soaks in."}{" "}
-              {pass.rootsBend ? "Roots reaching the pan turn sideways." : "Roots grow on down."} Recovery:
-              topsoil {pass.recovery.topsoil} years, subsoil{" "}
-              {pass.recovery.subsoil ? `about ${pass.recovery.subsoil} years` : "no damage"}.
+              {t("A storm of {mm} mm/h:", { mm: STORM_MM_H })}{" "}
+              {pass.ponds
+                ? t("the soil cannot take it in, and water ponds in the track.")
+                : t("it soaks in.")}{" "}
+              {pass.rootsBend ? t("Roots reaching the pan turn sideways.") : t("Roots grow on down.")}{" "}
+              {t("Recovery: topsoil {topsoil} years, subsoil {subsoil}.", {
+                topsoil: pass.recovery.topsoil,
+                subsoil: pass.recovery.subsoil
+                  ? t("about {n} years", { n: pass.recovery.subsoil })
+                  : t("no damage"),
+              })}
             </p>
           ) : (
             <button type="button" className="btn" onClick={() => setRained([...rained, wet])}>
-              Let it rain
+              {t("Let it rain")}
             </button>
           )}
         </>
@@ -426,7 +460,7 @@ function Wheel({ step, onDone }: Props) {
       {rained.length === 2 ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="hint">Drive and rain on both the dry soil and the wet.</p>
+        <p className="hint">{t("Drive and rain on both the dry soil and the wet.")}</p>
       )}
     </figure>
   );
@@ -447,15 +481,15 @@ function SameSeed({ step, onDone }: Props) {
         viewBox="0 0 100 100"
         className="zone-plot"
         role="img"
-        aria-label="Zones: microbial signal against yield"
+        aria-label={t("Zones: microbial signal against yield")}
       >
         <line x1="10" y1="90" x2="98" y2="90" className="axis" />
         <line x1="10" y1="90" x2="10" y2="4" className="axis" />
         <text x="54" y="99" textAnchor="middle">
-          signal (% of reads)
+          {t("signal (% of reads)")}
         </text>
         <text x="3" y="47" textAnchor="middle" transform="rotate(-90 3 47)">
-          yield (t/ha)
+          {t("yield (t/ha)")}
         </text>
         {zones.map((z) =>
           z.field === "north" ? (
@@ -481,18 +515,24 @@ function SameSeed({ step, onDone }: Props) {
         )}
       </svg>
       <p className="small">
-        <span className="swatch field-subject" aria-hidden="true" /> North (ploughed, circles) ·{" "}
-        <span className="swatch field-comparison" aria-hidden="true" /> South (reduced tillage, squares).
-        Measured: signal ± {SIGNAL_BAND} points, yield ± {YIELD_BAND} t/ha.
+        {tr(
+          "{north} North (ploughed, circles) · {south} South (reduced tillage, squares). Measured: signal ± {sb} points, yield ± {yb} t/ha.",
+          {
+            north: <span className="swatch field-subject" aria-hidden="true" />,
+            south: <span className="swatch field-comparison" aria-hidden="true" />,
+            sb: SIGNAL_BAND,
+            yb: YIELD_BAND,
+          },
+        )}
       </p>
       <table>
         <tbody>
           <tr>
-            <th scope="row">All zones: signal vs yield, r</th>
+            <th scope="row">{t("All zones: signal vs yield, r")}</th>
             <td className="mono">{r(zones)}</td>
           </tr>
           <tr>
-            <th scope="row">Mean yield, North / South (t/ha)</th>
+            <th scope="row">{t("Mean yield, North / South (t/ha)")}</th>
             <td className="mono">
               {mean(zones.filter((z) => z.field === "north")).toFixed(1)} /{" "}
               {mean(zones.filter((z) => z.field === "south")).toFixed(1)}
@@ -506,7 +546,9 @@ function SameSeed({ step, onDone }: Props) {
               return (
                 <tr key={d}>
                   <th scope="row">
-                    {d === "good" ? "Well" : "Poorly"} drained ({zs.length} zones): r, North / South yield
+                    {d === "good"
+                      ? t("Well drained ({n} zones): r, North / South yield", { n: zs.length })
+                      : t("Poorly drained ({n} zones): r, North / South yield", { n: zs.length })}
                   </th>
                   <td className="mono">
                     {r(zs)}; {mean(nf).toFixed(1)} / {mean(sf).toFixed(1)}
@@ -525,12 +567,12 @@ function SameSeed({ step, onDone }: Props) {
           setLooked(true);
         }}
       >
-        {grouped ? "Show all zones together" : "Group the zones by drainage"}
+        {grouped ? t("Show all zones together") : t("Group the zones by drainage")}
       </button>
       {looked ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="hint">Each zone also has a drainage record.</p>
+        <p className="hint">{t("Each zone also has a drainage record.")}</p>
       )}
     </figure>
   );

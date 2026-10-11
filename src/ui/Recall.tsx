@@ -1,7 +1,8 @@
 /** Recall on return (WB§7.4): try to remember first, then see what you found. Never scored. */
 import { useEffect, useRef, useState } from "react";
 import type { Discovery, RecallCard } from "../content/schema";
-import { Dialog } from "./common";
+import { Dialog, tierLabel } from "./common";
+import { t } from "../i18n";
 
 interface Props {
   cards: (RecallCard & { answer: Discovery })[];
@@ -17,13 +18,13 @@ export function Recall({ cards, onClose }: Props) {
   const card = cards[i]!;
   const last = i + 1 >= cards.length;
   return (
-    <Dialog title="Before you go on" onClose={onClose} className="recall">
+    <Dialog title={t("Before you go on")} onClose={onClose} className="recall">
       <h2>{card.prompt}</h2>
       {shown ? (
         <>
           <p className="recall-answer">
             <span className="tier" data-tier={card.answer.evidenceTier}>
-              {card.answer.evidenceTier}
+              {tierLabel(card.answer.evidenceTier)}
             </span>{" "}
             {card.answer.statement}
           </p>
@@ -37,14 +38,14 @@ export function Recall({ cards, onClose }: Props) {
               setShown(false);
             }}
           >
-            {last ? "Continue" : "Next question"}
+            {last ? t("Continue") : t("Next question")}
           </button>
         </>
       ) : (
         <>
-          <p className="muted">Think of your answer first. Nothing is checked or kept.</p>
+          <p className="muted">{t("Think of your answer first. Nothing is checked or kept.")}</p>
           <button type="button" className="btn btn-primary" ref={next} onClick={() => setShown(true)}>
-            Show what I found
+            {t("Show what I found")}
           </button>
         </>
       )}

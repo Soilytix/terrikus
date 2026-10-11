@@ -12,6 +12,7 @@
  * nitrate's rung is a fixed stock here, while the N₂O curve comes from the
  * nitrogen engine (`nitrogen.ts`) running beside it.
  */
+import { tl } from "../i18n";
 import { run } from "./engine";
 import { leafJar, type LeverSettings } from "./benches/leaf-jar";
 import type { Ledger } from "./ledger";
@@ -33,12 +34,12 @@ export interface Rung {
 
 /** In order of falling energy yield. Mn and Fe span +100 to −100 mV together. */
 export const LADDER: readonly Rung[] = [
-  { id: "O2", acceptor: "O₂", product: "H₂O", process: "aerobic respiration", eh: 350 },
-  { id: "NO3", acceptor: "NO₃⁻", product: "N₂O and N₂", process: "denitrification", eh: 250 },
-  { id: "Mn", acceptor: "Mn(IV)", product: "Mn²⁺", process: "manganese reduction", eh: 100 },
-  { id: "Fe", acceptor: "Fe(III)", product: "Fe²⁺", process: "iron reduction", eh: -100 },
-  { id: "SO4", acceptor: "SO₄²⁻", product: "H₂S", process: "sulfate reduction", eh: -150 },
-  { id: "CO2", acceptor: "CO₂", product: "CH₄", process: "methanogenesis", eh: -250 },
+  { id: "O2", acceptor: "O₂", product: "H₂O", process: tl("aerobic respiration"), eh: 350 },
+  { id: "NO3", acceptor: "NO₃⁻", product: tl("N₂O and N₂"), process: tl("denitrification"), eh: 250 },
+  { id: "Mn", acceptor: "Mn(IV)", product: "Mn²⁺", process: tl("manganese reduction"), eh: 100 },
+  { id: "Fe", acceptor: "Fe(III)", product: "Fe²⁺", process: tl("iron reduction"), eh: -100 },
+  { id: "SO4", acceptor: "SO₄²⁻", product: "H₂S", process: tl("sulfate reduction"), eh: -150 },
+  { id: "CO2", acceptor: "CO₂", product: "CH₄", process: tl("methanogenesis"), eh: -250 },
 ];
 const RUNGS = LADDER.map((r) => r.id);
 const ACCEPTORS = RUNGS.filter((id): id is Acceptor => id !== "CO2");

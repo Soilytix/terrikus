@@ -3,15 +3,16 @@ import { useEffect, useRef, useState } from "react";
 import { chapter, sceneChapter } from "../content";
 import type { Scale, Scene } from "../content/schema";
 import { assetUrl } from "../assets/urls";
+import { t, tl } from "../i18n";
 
 /** `bar`: a typical scale-bar length (m) at that rung; a much shorter bar marks a close-up. */
 export const LADDER: { scale: Scale; label: string; span: string; bar: number }[] = [
-  { scale: "landscape", label: "Landscape", span: "km", bar: 100 },
-  { scale: "field", label: "Field", span: "m", bar: 1 },
-  { scale: "profile", label: "Profile", span: "cm", bar: 0.01 },
-  { scale: "aggregate", label: "Aggregate & pore", span: "µm–mm", bar: 1e-4 },
-  { scale: "rhizosphere", label: "Rhizosphere", span: "µm", bar: 1e-5 },
-  { scale: "cell", label: "Cell", span: "nm–µm", bar: 1e-7 },
+  { scale: "landscape", label: tl("Landscape"), span: "km", bar: 100 },
+  { scale: "field", label: tl("Field"), span: "m", bar: 1 },
+  { scale: "profile", label: tl("Profile"), span: "cm", bar: 0.01 },
+  { scale: "aggregate", label: tl("Aggregate & pore"), span: "µm–mm", bar: 1e-4 },
+  { scale: "rhizosphere", label: tl("Rhizosphere"), span: "µm", bar: 1e-5 },
+  { scale: "cell", label: tl("Cell"), span: "nm–µm", bar: 1e-7 },
 ];
 
 interface Props {
@@ -76,46 +77,46 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
             <img className="brand-wordmark" src={assetUrl("brand-wordmark")} alt="Soilytix" />
             <span className="brand-name">Terrikus</span>
           </span>
-          <span className="sr-only">, back to the title screen</span>
+          <span className="sr-only">{t(", back to the title screen")}</span>
         </a>
         <div className="scene-names">
-          <span className="scene-chapter">{ch ? ch.title : "The valley"}</span>
+          <span className="scene-chapter">{ch ? ch.title : t("The valley")}</span>
           <h1 className="scene-title">{scene.title}</h1>
         </div>
         {onUp && (
-          <nav className="hud-scene" aria-label="This scene">
+          <nav className="hud-scene" aria-label={t("This scene")}>
             <button
               type="button"
               className="hud-btn up-btn"
               onClick={onUp}
-              aria-label="Up a scale"
+              aria-label={t("Up a scale")}
               aria-keyshortcuts="Escape"
             >
               <Icon d={ICONS.up} />
-              <span className="hud-btn-label">Up a scale</span>
+              <span className="hud-btn-label">{t("Up a scale")}</span>
             </button>
           </nav>
         )}
-        <nav className="hud-actions" aria-label="Tools">
+        <nav className="hud-actions" aria-label={t("Tools")}>
           <button
             type="button"
             className="hud-btn"
             onClick={onNotebook}
-            aria-label={notebookDot ? "Notebook, new entries" : "Notebook"}
+            aria-label={notebookDot ? t("Notebook, new entries") : t("Notebook")}
             aria-keyshortcuts="N"
           >
             <Icon d={ICONS.book} />
-            <span className="hud-btn-label">Notebook</span>
+            <span className="hud-btn-label">{t("Notebook")}</span>
             {notebookDot && <span className="new-dot" aria-hidden="true" />}
           </button>
-          <button type="button" className="hud-btn icon-only" onClick={onSettings} aria-label="Settings">
+          <button type="button" className="hud-btn icon-only" onClick={onSettings} aria-label={t("Settings")}>
             <Icon d={ICONS.sliders} />
           </button>
           <button
             type="button"
             className="hud-btn icon-only"
             onClick={onHelp}
-            aria-label="Help and keys"
+            aria-label={t("Help and keys")}
             aria-keyshortcuts="?"
           >
             <Icon d={ICONS.help} />
@@ -125,7 +126,7 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
 
       {/* The valley is the whole landscape; its map carries the ladder instead. */}
       {scene.id !== "valley" && (
-        <nav className="ladder" aria-label="Scale ladder" ref={ladder} data-recede={recede}>
+        <nav className="ladder" aria-label={t("Scale ladder")} ref={ladder} data-recede={recede}>
           <ol>
             {LADDER.map((l, i) => (
               <li
@@ -136,11 +137,15 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
               >
                 <span className="rung" aria-hidden="true" />
                 <span className="rung-label">
-                  {l.label}
+                  {t(l.label)}
                   <span className="rung-span">
-                    {i === rung && closeUp ? `close-up · ${scene.scaleBar.label}` : l.span}
+                    {i === rung && closeUp
+                      ? t("close-up · {label}", { label: scene.scaleBar.label })
+                      : l.span}
                   </span>
-                  {i !== rung && stamps.includes(l.scale) && <span className="sr-only"> (visited)</span>}
+                  {i !== rung && stamps.includes(l.scale) && (
+                    <span className="sr-only">{t(" (visited)")}</span>
+                  )}
                 </span>
               </li>
             ))}
@@ -152,21 +157,21 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
         {scene.notToScale && (
           <span
             className="not-to-scale"
-            title="Some things are drawn bigger than true size so you can see them."
+            title={t("Some things are drawn bigger than true size so you can see them.")}
           >
-            Cells drawn ×{scene.notToScale}
+            {t("Cells drawn ×{n}", { n: scene.notToScale })}
           </span>
         )}
         <span className="scalebar-bar" aria-hidden="true" />
-        <span className="sr-only">Scale bar: </span>
+        <span className="sr-only">{t("Scale bar: ")}</span>
         <span className="scalebar-label">{scene.scaleBar.label}</span>
       </p>
       <button
         type="button"
         className="hud-btn icon-only hud-about"
         onClick={onTruth}
-        aria-label="About this picture"
-        title="About this picture: what is drawn from life, and what is not"
+        aria-label={t("About this picture")}
+        title={t("About this picture: what is drawn from life, and what is not")}
       >
         <Icon d={ICONS.info} />
       </button>

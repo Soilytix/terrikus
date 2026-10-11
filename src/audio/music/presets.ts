@@ -5,6 +5,7 @@
  * glides between presets when the scene changes. Pure data: no audio here.
  */
 import type { Scale } from "../../content/schema";
+import { t, tl } from "../../i18n";
 
 export type TimeOfDay = "dawn" | "day" | "dusk" | "night";
 export const TIMES: TimeOfDay[] = ["dawn", "day", "dusk", "night"];
@@ -27,12 +28,28 @@ export type BedId = (typeof SYNTH_BEDS)[number] | SampleBed;
 
 /** What a field recording is, for the caption. */
 export const RECORDING: Record<SampleBed, string> = {
-  birds: "birdsong",
-  brook: "a brook",
-  rain: "rain",
-  crickets: "crickets",
-  frogs: "frogs",
-  wind: "wind in leaves",
+  birds: tl("birdsong"),
+  brook: tl("a brook"),
+  rain: tl("rain"),
+  crickets: tl("crickets"),
+  frogs: tl("frogs"),
+  wind: tl("wind in leaves"),
+};
+
+/** Caption words for the zoom level and the time of day. */
+const SCALE_WORD: Record<Scale, string> = {
+  landscape: tl("landscape"),
+  field: tl("field"),
+  profile: tl("profile"),
+  aggregate: tl("aggregate"),
+  rhizosphere: tl("rhizosphere"),
+  cell: tl("cell"),
+};
+const TIME_WORD: Record<TimeOfDay, string> = {
+  dawn: tl("dawn"),
+  day: tl("day"),
+  dusk: tl("dusk"),
+  night: tl("night"),
 };
 
 /** The numeric half of a preset: everything here glides. Weights crossfade instruments. */
@@ -92,7 +109,7 @@ interface Layer {
 /** Zoom level: the style. Going deeper slows the light, closes the filter and changes the instruments. */
 export const SCALE_LAYERS: Record<Scale, Layer> = {
   landscape: {
-    style: "wide, slow pastoral",
+    style: tl("wide, slow pastoral"),
     surface: 1,
     mood: {
       tempo: 64,
@@ -119,7 +136,7 @@ export const SCALE_LAYERS: Record<Scale, Layer> = {
     shape: { mode: "major", groove: "halftime", comp: [1, 3] },
   },
   field: {
-    style: "lo-fi beat",
+    style: tl("lo-fi beat"),
     surface: 1,
     mood: {
       tempo: 90,
@@ -146,7 +163,7 @@ export const SCALE_LAYERS: Record<Scale, Layer> = {
     shape: { mode: "major", groove: "boombap", comp: [0, 1, 2, 3] },
   },
   profile: {
-    style: "deep, dubby",
+    style: tl("deep, dubby"),
     surface: 0.6,
     mood: {
       tempo: 70,
@@ -173,7 +190,7 @@ export const SCALE_LAYERS: Record<Scale, Layer> = {
     shape: { mode: "minor", groove: "halftime", comp: [0, 3] },
   },
   aggregate: {
-    style: "close, clicking minimal",
+    style: tl("close, clicking minimal"),
     surface: 0.25,
     mood: {
       tempo: 100,
@@ -200,7 +217,7 @@ export const SCALE_LAYERS: Record<Scale, Layer> = {
     shape: { mode: "dorian", groove: "steady", comp: [4, 2] },
   },
   rhizosphere: {
-    style: "warm, bubbling",
+    style: tl("warm, bubbling"),
     surface: 0.2,
     mood: {
       tempo: 82,
@@ -227,7 +244,7 @@ export const SCALE_LAYERS: Record<Scale, Layer> = {
     shape: { mode: "major", groove: "broken", comp: [4, 1] },
   },
   cell: {
-    style: "glassy, floating",
+    style: tl("glassy, floating"),
     surface: 0,
     mood: {
       tempo: 58,
@@ -270,31 +287,31 @@ export interface SceneMusic {
 /** Every scene's preset (tests/music: one per scene). Times and rain follow the scene's description. */
 export const SCENE_MUSIC: Record<string, SceneMusic> = {
   valley: { time: "dawn", beds: { brook: 0.35 } },
-  "valley-map": { time: "day", style: "light, map-like", beds: { brook: 0.15 }, mood: { lead: 0.5 } },
+  "valley-map": { time: "day", style: tl("light, map-like"), beds: { brook: 0.15 }, mood: { lead: 0.5 } },
   "p-field-dawn": { time: "dawn", beds: { wind: 0.2 }, mood: { drums: 0.6 } },
   "p-handful": {
     time: "day",
-    style: "close lo-fi",
+    style: tl("close lo-fi"),
     mood: { cutoff: 3200, register: 2 },
     beds: { leaves: 0.2 },
   },
   "p-pore": { time: "day" },
   "c1-grain-ruler": {
     time: "day",
-    style: "tidy, counting",
+    style: tl("tidy, counting"),
     mood: { reverb: 0.12, crush: 0.1 },
     shape: { comp: [4] },
   },
   "c1-aggregate-cut": { time: "day", mood: { keys: { marimba: 0.6, pluck: 0.5 } } },
   "c1-labyrinth": {
     time: "night",
-    style: "dark cave",
+    style: tl("dark cave"),
     mood: { drops: 0.45, reverb: 0.45 },
     beds: { water: 0.25 },
   },
   "c2-hedge-edge": {
     time: "dusk",
-    style: "autumn lo-fi",
+    style: tl("autumn lo-fi"),
     beds: { wind: 0.5, leaves: 0.3 },
     mood: { keys: { felt: 0.6, kalimba: 0.4 } },
   },
@@ -306,53 +323,61 @@ export const SCENE_MUSIC: Record<string, SceneMusic> = {
   "c2-aggregate": { time: "dusk", mood: { keys: { pluck: 0.6, kalimba: 0.4 } } },
   "c3-drain": {
     time: "day",
-    style: "dry, cracking",
+    style: tl("dry, cracking"),
     mood: { drops: 0.05, crush: 0.3, clicks: 0.6 },
     beds: { water: -0.15 },
   },
-  "c3-rain-profile": { time: "day", rain: 1, style: "rain heard from below" },
+  "c3-rain-profile": { time: "day", rain: 1, style: tl("rain heard from below") },
   "c4-paddy": {
     time: "dusk",
-    style: "still water",
+    style: tl("still water"),
     beds: { frogs: 0.5, crickets: 0.2, water: 0.1 },
     shape: { mode: "lydian" },
   },
   "c4-elevator": {
     time: "night",
-    style: "sinking, waterlogged",
+    style: tl("sinking, waterlogged"),
     beds: { frogs: 0.15 },
     mood: { drops: 0.35, cutoff: 1300 },
   },
-  "c5-platelet": { time: "night", style: "charged, sparkling", mood: { clicks: 0.5 } },
+  "c5-platelet": { time: "night", style: tl("charged, sparkling"), mood: { clicks: 0.5 } },
   "c6-gallery": { time: "day", mood: { leads: { whistle: 0.4, flute: 0.3 } } },
-  "c6-geosmin": { time: "dusk", style: "after rain", mood: { drops: 0.3, keys: { moss: 0.5, pluck: 0.4 } } },
+  "c6-geosmin": {
+    time: "dusk",
+    style: tl("after rain"),
+    mood: { drops: 0.3, keys: { moss: 0.5, pluck: 0.4 } },
+  },
   "c7-root-tip": { time: "day" },
-  "c8-nodule": { time: "day", style: "bubbling trade", mood: { drops: 0.35 } },
-  "c8-arbuscule": { time: "day", style: "glowing, branching", mood: { keys: { glass: 0.7, kalimba: 0.4 } } },
-  "c9-relay": { time: "dawn", style: "spring relay", mood: { keys: { kalimba: 0.6, marimba: 0.4 } } },
-  "c10-triangle": { time: "day", rain: 0.5, style: "wet, uneasy", shape: { mode: "minor" } },
+  "c8-nodule": { time: "day", style: tl("bubbling trade"), mood: { drops: 0.35 } },
+  "c8-arbuscule": {
+    time: "day",
+    style: tl("glowing, branching"),
+    mood: { keys: { glass: 0.7, kalimba: 0.4 } },
+  },
+  "c9-relay": { time: "dawn", style: tl("spring relay"), mood: { keys: { kalimba: 0.6, marimba: 0.4 } } },
+  "c10-triangle": { time: "day", rain: 0.5, style: tl("wet, uneasy"), shape: { mode: "minor" } },
   "c10-shield": { time: "dusk", shape: { mode: "dorian" } },
-  "c11-pit": { time: "dusk", style: "woodland folk", beds: { wind: 0.4 }, shape: { mode: "dorian" } },
+  "c11-pit": { time: "dusk", style: tl("woodland folk"), beds: { wind: 0.4 }, shape: { mode: "dorian" } },
   "c11-catena": { time: "day", beds: { brook: 0.2, wind: 0.2 } },
   "c12-twin-fields": { time: "day", beds: { wind: 0.15 } },
   "c12-wheel": {
     time: "day",
-    style: "pressed, heavy",
+    style: tl("pressed, heavy"),
     mood: { tempo: 78, cutoff: 1800, crush: 0.3 },
     shape: { groove: "halftime" },
   },
   "c13-valley": { time: "day", rain: 0.7, beds: { brook: 0.45 } },
-  "c13-splash": { time: "day", rain: 1, style: "rain on bare soil" },
+  "c13-splash": { time: "day", rain: 1, style: tl("rain on bare soil") },
   "c13-salt": {
     time: "day",
-    style: "dry, hot",
+    style: tl("dry, hot"),
     mood: { birds: 0, reverb: 0.1 },
     beds: { wind: 0.3, leaves: -0.2 },
     shape: { mode: "dorian" },
   },
   "c14-bench": {
     time: "day",
-    style: "clean lab",
+    style: tl("clean lab"),
     mood: { birds: 0, keys: { rhodes: 0.6, felt: 0.3 }, crush: 0.04 },
     beds: { leaves: -0.2 },
     shape: { groove: "steady" },
@@ -437,12 +462,18 @@ export function presetFor(
 
 /** The caption that announces a preset (T32: every sound has a text equivalent). */
 export function musicCaption(p: Preset, scale: Scale): string {
-  const heard = SAMPLE_BEDS.filter((b) => (p.mood.beds[b] ?? 0) > 0.05).map((b) => RECORDING[b]);
-  const weather = p.rain > 0.6 ? ", rain" : p.rain > 0 ? ", light rain" : "";
-  const base = `Background music: ${p.style} (${scale} scale, ${p.time}${weather}); synthesised, not a recording`;
+  const heard = SAMPLE_BEDS.filter((b) => (p.mood.beds[b] ?? 0) > 0.05).map((b) => t(RECORDING[b]));
+  const weather = p.rain > 0.6 ? t(", rain") : p.rain > 0 ? t(", light rain") : "";
+  const base = t("Background music: {style} ({scale} scale, {time}{weather}); synthesised, not a recording", {
+    style: t(p.style),
+    scale: t(SCALE_WORD[scale]),
+    time: t(TIME_WORD[p.time]),
+    weather,
+  });
   if (!heard.length) return `${base}.`;
-  const list = heard.length > 1 ? `${heard.slice(0, -1).join(", ")} and ${heard.at(-1)}` : heard[0];
-  return `${base}. Behind it, field recordings of ${list} (CC0, Freesound).`;
+  const list =
+    heard.length > 1 ? t("{a} and {b}", { a: heard.slice(0, -1).join(", "), b: heard.at(-1)! }) : heard[0];
+  return t("{base}. Behind it, field recordings of {list} (CC0, Freesound).", { base, list: list! });
 }
 
 const lerpRec = <K extends string>(

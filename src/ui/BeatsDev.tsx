@@ -11,6 +11,7 @@ import { BASSES, KEYS, KITS, LEADS, type Mood } from "../audio/music/presets";
 import { Launchpad } from "../audio/music/launchpad";
 import { frame, glyph, press, title, type Press } from "../audio/music/surface";
 import { LAUNCHPAD } from "../styles/launchpad";
+import { t } from "../i18n";
 
 const PADS: Press[] = [
   ...Array.from({ length: 8 }, (_, col) => ({ kind: "top", col }) as const),
@@ -106,7 +107,7 @@ function Synth({ music, redraw }: { music: Music; redraw: () => void }) {
           redraw();
         }}
       >
-        Back to the preset
+        {t("Back to the preset")}
       </button>
     </div>
   );
@@ -125,8 +126,8 @@ export default function BeatsDev() {
 
   useEffect(() => {
     if (music) return;
-    const t = window.setInterval(() => setMusic(mixer.music()), 500);
-    return () => window.clearInterval(t);
+    const timer = window.setInterval(() => setMusic(mixer.music()), 500);
+    return () => window.clearInterval(timer);
   }, [music]);
 
   useEffect(() => {
@@ -169,16 +170,18 @@ export default function BeatsDev() {
       </button>
       {open && music && (
         <span className="beats-dev-tabs" role="tablist">
-          {(["pads", "synth"] as const).map((t) => (
-            <button key={t} type="button" role="tab" aria-selected={tab === t} onClick={() => setTab(t)}>
-              {t}
+          {(["pads", "synth"] as const).map((id) => (
+            <button key={id} type="button" role="tab" aria-selected={tab === id} onClick={() => setTab(id)}>
+              {id}
             </button>
           ))}
         </span>
       )}
       {open &&
         (!music ? (
-          <p>Music starts with sound: click anywhere, and check Settings → Sound and background motion.</p>
+          <p>
+            {t("Music starts with sound: click anywhere, and check Settings → Sound and background motion.")}
+          </p>
         ) : tab === "synth" ? (
           <Synth music={music} redraw={redraw} />
         ) : (
@@ -202,14 +205,14 @@ export default function BeatsDev() {
                 i === 7 && <span key="gap" />,
               ])}
             </div>
-            <p className="beats-dev-hint">{hover || "hover a pad"}</p>
+            <p className="beats-dev-hint">{hover || t("hover a pad")}</p>
             <p className="beats-dev-status">
               {music.scene.id} · {music.scene.scale} · {pr?.time}
               {pr?.rain ? ` · rain ${pr.rain}` : ""} · {pr?.style} · {pr?.shape.mode}/{pr?.shape.groove}
               <br />
               {info
                 ? `bar ${info.bar + 1} · ${info.key} · ${info.chord} · ${Math.round(info.bpm)} bpm${info.breakdown ? " · breakdown" : ""}`
-                : "waiting for the first bar"}
+                : t("waiting for the first bar")}
               {music.over.keys ? ` · keys solo: ${music.over.keys}` : ""} · seed {music.composer.seed}
             </p>
             <pre className="beats-dev-log">{music.composer.log.slice().reverse().join("\n")}</pre>
@@ -223,7 +226,7 @@ export default function BeatsDev() {
                 )
               }
             >
-              Connect Launchpad
+              {t("Connect Launchpad")}
             </button>{" "}
             <span className="small">{midi}</span>
           </>

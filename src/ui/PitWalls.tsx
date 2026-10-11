@@ -24,7 +24,8 @@ import {
   type HorizonId,
 } from "../sim/pedogenesis";
 import { loadManifest, plateUrl } from "../world/baked";
-import { Facts } from "./common";
+import { lang, t, tl } from "../i18n";
+import { Facts, tr } from "./common";
 
 type PitStep = Extract<Step, { kind: "pit" }>;
 type Props = { step: PitStep; reduced: boolean; onDone: () => void };
@@ -33,7 +34,7 @@ function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -44,7 +45,7 @@ function Result({ step, onDone }: { step: PitStep; onDone: () => void }) {
       <p className="observation">{step.resultText}</p>
       <Facts facts={step.facts} />
       <button type="button" className="btn btn-primary" onClick={onDone}>
-        Continue
+        {t("Continue")}
       </button>
     </>
   );
@@ -110,11 +111,11 @@ function Column({
 }
 
 const MASTER: { id: string; label: string }[] = [
-  { id: "O", label: "O: litter" },
-  { id: "A", label: "A: dark topsoil" },
-  { id: "E", label: "E: bleached" },
-  { id: "B", label: "B: accumulation or weathering" },
-  { id: "C", label: "C: parent material" },
+  { id: "O", label: tl("O: litter") },
+  { id: "A", label: tl("A: dark topsoil") },
+  { id: "E", label: tl("E: bleached") },
+  { id: "B", label: tl("B: accumulation or weathering") },
+  { id: "C", label: tl("C: parent material") },
 ];
 const master = (id: HorizonId) => id.charAt(0);
 
@@ -128,7 +129,7 @@ function ReadWall({ step, onDone }: Props) {
   return (
     <>
       <div className="pit-read">
-        <Column horizons={wall} label="The woodland pit wall, 0 to 120 cm" picked={at} />
+        <Column horizons={wall} label={t("The woodland pit wall, 0 to 120 cm")} picked={at} />
         <div className="choices">
           {wall.map((h) => (
             <button
@@ -138,7 +139,7 @@ function ReadWall({ step, onDone }: Props) {
               aria-pressed={at === h.id}
               onClick={() => setAt(h.id)}
             >
-              Layer at {range(h)}
+              {t("Layer at {range}", { range: range(h) })}
               {guesses[h.id] && <b>: {step.horizons?.[h.id]?.name}</b>}
             </button>
           ))}
@@ -146,7 +147,7 @@ function ReadWall({ step, onDone }: Props) {
       </div>
       {here && !guesses[here.id] && (
         <>
-          <p className="step-text">What is the layer at {range(here)}?</p>
+          <p className="step-text">{t("What is the layer at {range}?", { range: range(here) })}</p>
           <div className="choices">
             {MASTER.map((m) => (
               <button
@@ -155,7 +156,7 @@ function ReadWall({ step, onDone }: Props) {
                 className="choice"
                 onClick={() => setGuesses({ ...guesses, [here.id]: m.id })}
               >
-                {m.label}
+                {t(m.label)}
               </button>
             ))}
           </div>
@@ -163,15 +164,16 @@ function ReadWall({ step, onDone }: Props) {
       )}
       {here && guesses[here.id] && (
         <p className="observation" aria-live="polite">
-          You said {guesses[here.id]}
-          {guesses[here.id] === master(here.id) ? ", and it is." : "."}{" "}
+          {guesses[here.id] === master(here.id)
+            ? t("You said {h}, and it is.", { h: guesses[here.id]! })
+            : t("You said {h}.", { h: guesses[here.id]! })}{" "}
           <b>{step.horizons?.[here.id]?.name}.</b> {step.horizons?.[here.id]?.evidence}
         </p>
       )}
       {all ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="muted small">Read every layer to continue.</p>
+        <p className="muted small">{t("Read every layer to continue.")}</p>
       )}
     </>
   );
@@ -252,7 +254,7 @@ function TimelapseBench({ step, reduced, onDone }: Props) {
       <div className="pit-row">
         {!reduced && (
           <button type="button" className="btn" onClick={play} disabled={playing}>
-            {seen ? "Play again" : "Play"}
+            {seen ? t("Play again") : t("Play")}
           </button>
         )}
         <button
@@ -261,7 +263,7 @@ function TimelapseBench({ step, reduced, onDone }: Props) {
           onClick={() => show(frame - 1)}
           disabled={playing || frame === 0}
         >
-          Earlier
+          {t("Earlier")}
         </button>
         <button
           type="button"
@@ -269,7 +271,7 @@ function TimelapseBench({ step, reduced, onDone }: Props) {
           onClick={() => show(frame + 1)}
           disabled={playing || frame === last}
         >
-          Later
+          {t("Later")}
         </button>
       </div>
       {seen && !playing && <Result step={step} onDone={onDone} />}
@@ -277,9 +279,17 @@ function TimelapseBench({ step, reduced, onDone }: Props) {
   );
 }
 
-const CLIMATE_LABEL = { "cold-wet": "Cold and wet", temperate: "Temperate", "warm-dry": "Warm and dry" };
-const LITTER_LABEL = { conifer: "Conifer needles", broadleaf: "Broadleaf leaves", grass: "Grass" };
-const PARENT_LABEL = { sand: "Sand", loam: "Loam", clay: "Clay" };
+const CLIMATE_LABEL = {
+  "cold-wet": tl("Cold and wet"),
+  temperate: tl("Temperate"),
+  "warm-dry": tl("Warm and dry"),
+};
+const LITTER_LABEL = {
+  conifer: tl("Conifer needles"),
+  broadleaf: tl("Broadleaf leaves"),
+  grass: tl("Grass"),
+};
+const PARENT_LABEL = { sand: tl("Sand"), loam: tl("Loam"), clay: tl("Clay") };
 
 function Segmented<T extends string | number>({
   legend,
@@ -330,58 +340,65 @@ function Podzol({ step, onDone }: Props) {
     <>
       <Banner />
       <Segmented
-        legend="Climate"
+        legend={t("Climate")}
         name="c11-climate"
         options={CLIMATES}
         value={f.climate}
-        label={(v) => CLIMATE_LABEL[v]}
+        label={(v) => t(CLIMATE_LABEL[v])}
         onChange={(climate) => set({ climate })}
       />
       <Segmented
-        legend="Litter"
+        legend={t("Litter")}
         name="c11-litter"
         options={LITTERS}
         value={f.litter}
-        label={(v) => LITTER_LABEL[v]}
+        label={(v) => t(LITTER_LABEL[v])}
         onChange={(litter) => set({ litter })}
       />
       <Segmented
-        legend="Parent material"
+        legend={t("Parent material")}
         name="c11-parent"
         options={PARENTS}
         value={f.parent}
-        label={(v) => PARENT_LABEL[v]}
+        label={(v) => t(PARENT_LABEL[v])}
         onChange={(parent) => set({ parent })}
       />
       <Segmented
-        legend="Time"
+        legend={t("Time")}
         name="c11-years"
         options={TIMELAPSE_YEARS}
         value={f.years as (typeof TIMELAPSE_YEARS)[number]}
-        label={(v) => `${v.toLocaleString("en")} years`}
+        label={(v) => t("{n} years", { n: v.toLocaleString(lang()) })}
         onChange={(years) => set({ years })}
       />
       <div className="pit-read">
-        <Column horizons={p} label={`Profile: ${p.map((h) => `${h.id} ${range(h)}`).join(", ")}`} />
+        <Column
+          horizons={p}
+          label={t("Profile: {list}", { list: p.map((h) => `${h.id} ${range(h)}`).join(", ") })}
+        />
         <p className="observation" aria-live="polite">
           <span className="tier" data-tier="derived">
-            derived
+            {t("derived")}
           </span>{" "}
           {e > 0
-            ? `A pale E ${e} cm thick over a rusty B ${b} cm thick.`
-            : `No E: ${p.map((h) => h.id).join(", ")}.`}
+            ? t("A pale E {e} cm thick over a rusty B {b} cm thick.", { e, b })
+            : t("No E: {list}.", { list: p.map((h) => h.id).join(", ") })}
         </p>
       </div>
       {made ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="muted small">Make a pale E to continue.</p>
+        <p className="muted small">{t("Make a pale E to continue.")}</p>
       )}
     </>
   );
 }
 
-const POSITION = { summit: "Summit, woodland", midslope: "Mid-slope, field", toeslope: "Toeslope, paddy" };
+const POSITION = {
+  summit: tl("Summit, woodland"),
+  midslope: tl("Mid-slope, field"),
+  toeslope: tl("Toeslope, paddy"),
+};
 
 /** c11-m3: three pits down one hill under one climate. */
 function Catena({ step, onDone }: Props) {
@@ -397,20 +414,23 @@ function Catena({ step, onDone }: Props) {
                 horizons={p}
                 rx={redox(pit)}
                 waterTable={pit.waterTable}
-                label={`${POSITION[pit.id]}: ${p.map((h) => h.id).join(", ")}`}
+                label={`${t(POSITION[pit.id])}: ${p.map((h) => h.id).join(", ")}`}
               />
               <figcaption>
-                <b>{POSITION[pit.id]}</b>
+                <b>{t(POSITION[pit.id])}</b>
                 <br />
-                <span className="small">WRB example: {step.examples?.[pit.id]}</span>
+                <span className="small">
+                  {t("WRB example: {name}", { name: step.examples?.[pit.id] ?? "" })}
+                </span>
               </figcaption>
             </figure>
           );
         })}
       </div>
       <p className="muted small">
-        Blue lines: the water table in the wet and the dry season. Soil names are examples of what such pits
-        often resemble, not survey results.
+        {t(
+          "Blue lines: the water table in the wet and the dry season. Soil names are examples of what such pits often resemble, not survey results.",
+        )}
       </p>
       <Result step={step} onDone={onDone} />
     </>
@@ -425,18 +445,18 @@ function Detective({ step, onDone }: Props) {
         <Column
           horizons={profileAt(CATENA[1]!.factors)}
           rx={DETECTIVE}
-          label="The pit beside the ditch: rust mottles from 35 to 70 cm, grey below 70 cm"
+          label={t("The pit beside the ditch: rust mottles from 35 to 70 cm, grey below 70 cm")}
         />
         <p className="observation">
           <span className="tier" data-tier="measured">
-            measured
+            {t("measured")}
           </span>{" "}
           {step.resultText}
         </p>
       </div>
       <Facts facts={step.facts} />
       <button type="button" className="btn btn-primary" onClick={onDone}>
-        Continue
+        {t("Continue")}
       </button>
     </>
   );
@@ -453,15 +473,15 @@ function Rates({ step, onDone }: Props) {
     <>
       <Banner />
       <Segmented
-        legend="Formation, t per hectare a year"
+        legend={t("Formation, t per hectare a year")}
         name="c11-rate"
         options={FORMATION_RATES}
         value={rate as (typeof FORMATION_RATES)[number]}
-        label={(v) => `${v}`}
+        label={(v) => v.toLocaleString(lang())}
         onChange={setRate}
       />
       <Segmented
-        legend="Plough erosion, times faster"
+        legend={t("Plough erosion, times faster")}
         name="c11-erosion"
         options={EROSION_FACTORS}
         value={factor as (typeof EROSION_FACTORS)[number]}
@@ -470,17 +490,21 @@ function Rates({ step, onDone }: Props) {
       />
       {!ran ? (
         <button type="button" className="btn btn-primary" onClick={() => setRan(true)}>
-          Work it out
+          {t("Work it out")}
         </button>
       ) : (
         <>
           <p className="observation" aria-live="polite">
             <span className="tier" data-tier="derived">
-              derived
+              {t("derived")}
             </span>{" "}
-            One centimetre forms in about <b className="mono">{form.toLocaleString("en")} years</b>, and
-            plough erosion removes it in about <b className="mono">{lose.toLocaleString("en")} years</b>.{" "}
-            <span className="mono small">100 × 1.3 t ÷ {rate} t/yr</span>
+            {tr("One centimetre forms in about {form}, and plough erosion removes it in about {lose}.", {
+              form: <b className="mono">{t("{n} years", { n: form.toLocaleString(lang()) })}</b>,
+              lose: <b className="mono">{t("{n} years", { n: lose.toLocaleString(lang()) })}</b>,
+            })}{" "}
+            <span className="mono small">
+              {t("100 × 1.3 t ÷ {rate} t/yr", { rate: rate.toLocaleString(lang()) })}
+            </span>
           </p>
           <div className="rate-bars" aria-hidden="true">
             <span style={{ width: `${(form / yearsPerCm(FORMATION_RATES[0])) * 100}%` }} className="form" />

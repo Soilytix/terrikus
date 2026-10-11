@@ -44,6 +44,7 @@ import {
 } from "./progress";
 import { href, parse, targetHref, type NotebookTab, type Route } from "./router";
 import { prefersReduced, useGame } from "./store";
+import { t } from "../i18n";
 
 /** Dev-only beats surface: `?beats` in the URL, or the internal Settings switch. */
 const BeatsDev = lazy(() => import("../ui/BeatsDev"));
@@ -386,7 +387,7 @@ function Shell({ hash }: { hash: string }) {
       {route.name === "title" ? (
         <Title
           save={save}
-          resumeLabel={resumeScene?.title ?? "the spinach field"}
+          resumeLabel={resumeScene?.title ?? t("the spinach field")}
           birds={!reduced && !forceStatic && save.settings.ambient}
           sound={
             save.settings.sound && save.settings.ambient
@@ -470,7 +471,9 @@ function Shell({ hash }: { hash: string }) {
       )}
       {__SW_PROFILE__ === "internal" && route.name !== "title" && <ReviewOverlay sceneId={scene.id} />}
       {!persistent && (
-        <p className="persist-note">Progress is not being kept in this browser. Export it from Settings.</p>
+        <p className="persist-note">
+          {t("Progress is not being kept in this browser. Export it from Settings.")}
+        </p>
       )}
       <div className="sr-only" aria-live="polite">
         {narration}

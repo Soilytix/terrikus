@@ -7,6 +7,7 @@
  */
 import type { FilmGraph, Moisture } from "./films";
 import { hop } from "./films";
+import { tl } from "../i18n";
 import { assertConserved, cloneLedger, emptyLedger, total, transfer, type Ledger } from "./ledger";
 
 /** Matric potential, kPa: 0 is saturated, more negative is drier. */
@@ -33,13 +34,13 @@ export interface Pore {
 
 /** The pores of `c3-drain`, from a crack between crumbs down to the gaps between clay platelets. */
 export const DRAIN_PORES: Pore[] = [
-  { id: "crack", label: "Crack between crumbs", width: 500, x: 0.18, y: 0.3 },
-  { id: "macro", label: "Wide pore", width: 150, x: 0.42, y: 0.22 },
-  { id: "meso", label: "Middle pore", width: 50, x: 0.68, y: 0.3 },
-  { id: "small", label: "Small pore", width: 20, x: 0.8, y: 0.56 },
-  { id: "fine", label: "Fine pore", width: 5, x: 0.56, y: 0.68 },
-  { id: "micro", label: "Very fine pore", width: 2, x: 0.34, y: 0.62 },
-  { id: "clay", label: "Gap between clay platelets", width: 0.1, x: 0.2, y: 0.72 },
+  { id: "crack", label: tl("Crack between crumbs"), width: 500, x: 0.18, y: 0.3 },
+  { id: "macro", label: tl("Wide pore"), width: 150, x: 0.42, y: 0.22 },
+  { id: "meso", label: tl("Middle pore"), width: 50, x: 0.68, y: 0.3 },
+  { id: "small", label: tl("Small pore"), width: 20, x: 0.8, y: 0.56 },
+  { id: "fine", label: tl("Fine pore"), width: 5, x: 0.56, y: 0.68 },
+  { id: "micro", label: tl("Very fine pore"), width: 2, x: 0.34, y: 0.62 },
+  { id: "clay", label: tl("Gap between clay platelets"), width: 0.1, x: 0.2, y: 0.72 },
 ];
 
 /** Pores drained at ψ, widest first. */
@@ -68,11 +69,11 @@ export const DRYING: readonly Kpa[] = [-5, -20, -60, -300, -1500];
 /** The `c3-m2` network: a short road through wide pores and a longer one along films in the corners. */
 export const STRANDED: FilmGraph = {
   sites: [
-    { id: "start", label: "Where you start", x: 0.14, y: 0.5, width: 40 },
-    { id: "hall", label: "Wide pore", x: 0.46, y: 0.3, width: 80 },
-    { id: "food", label: "Bacteria to eat", x: 0.84, y: 0.46, width: 50, cells: 100, food: 20 },
-    { id: "corner-a", label: "Corner film, near", x: 0.34, y: 0.72, width: 15 },
-    { id: "corner-b", label: "Corner film, far", x: 0.62, y: 0.76, width: 15 },
+    { id: "start", label: tl("Where you start"), x: 0.14, y: 0.5, width: 40 },
+    { id: "hall", label: tl("Wide pore"), x: 0.46, y: 0.3, width: 80 },
+    { id: "food", label: tl("Bacteria to eat"), x: 0.84, y: 0.46, width: 50, cells: 100, food: 20 },
+    { id: "corner-a", label: tl("Corner film, near"), x: 0.34, y: 0.72, width: 15 },
+    { id: "corner-b", label: tl("Corner film, far"), x: 0.62, y: 0.76, width: 15 },
   ],
   necks: [
     { a: "start", b: "hall", holds: "wet" },

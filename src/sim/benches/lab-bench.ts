@@ -4,16 +4,17 @@
  * The community is a teaching set, not data: copy numbers sit inside the
  * 1–15 range (louca-2018) and relic DNA near the ~40 % average (carini-2016).
  */
+import { tl } from "../../i18n";
 import type { BenchDef } from ".";
 import type { Protocol, TrueTaxon } from "../measure";
 
 export const TAXA_LABELS = {
-  spore: "Spore formers",
-  fast: "Fast growers",
-  slow: "Slow growers",
-  ammonia: "Ammonia oxidisers",
-  ghost: "Last season's bloom",
-} as const;
+  spore: tl("Spore formers"),
+  fast: tl("Fast growers"),
+  slow: tl("Slow growers"),
+  ammonia: tl("Ammonia oxidisers"),
+  ghost: tl("Last season's bloom"),
+};
 export type TaxonId = keyof typeof TAXA_LABELS;
 
 type Community = (TrueTaxon & { id: TaxonId })[];

@@ -6,21 +6,28 @@
 import { useState } from "react";
 import { card } from "../content/chains";
 import { chainTemplate } from "../content/chains";
-import type { ChainTemplate, Connector } from "../content/schema";
+import type { CardKind, ChainTemplate, Connector } from "../content/schema";
 import type { ChainAnswer, Save } from "../save/schema";
 import { judge, VERDICT_LABEL, type Judgement } from "../app/verdict";
-import { Dialog } from "./common";
+import { t, tl } from "../i18n";
+import { Dialog, tr } from "./common";
 
 const CONNECTOR_LABEL: Record<Connector, string> = {
-  increases: "increases",
-  decreases: "decreases",
-  enables: "enables",
-  limits: "limits",
-  "only-if": "only if",
-  releases: "releases",
-  "is-associated-with": "is associated with",
+  increases: tl("increases"),
+  decreases: tl("decreases"),
+  enables: tl("enables"),
+  limits: tl("limits"),
+  "only-if": tl("only if"),
+  releases: tl("releases"),
+  "is-associated-with": tl("is associated with"),
 };
-const CONFIDENCE = ["", "A hunch", "Fairly sure", "Sure"] as const;
+const CONFIDENCE = ["", tl("A hunch"), tl("Fairly sure"), tl("Sure")] as const;
+const KIND_LABEL: Record<CardKind, string> = {
+  condition: tl("condition"),
+  actor: tl("actor"),
+  process: tl("process"),
+  outcome: tl("outcome"),
+};
 
 type Draft = { cards: string[]; connectors: (Connector | "")[]; confidence: 0 | 1 | 2 | 3 };
 
@@ -50,14 +57,18 @@ function CardSlot({
   if (options.length === 1 && c)
     return (
       <span className="cause-card" data-kind={c.kind}>
-        <span className="cause-kind">{c.kind}</span>
+        <span className="cause-kind">{t(KIND_LABEL[c.kind])}</span>
         {c.label}
       </span>
     );
   return (
     <label className="cause-card blank" data-kind={c?.kind ?? "blank"}>
-      <span className="cause-kind">{c?.kind ?? "choose a card"}</span>
-      <select value={value} onChange={(e) => onChange(e.target.value)} aria-label={`Card ${index + 1}`}>
+      <span className="cause-kind">{c ? t(KIND_LABEL[c.kind]) : t("choose a card")}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        aria-label={t("Card {n}", { n: index + 1 })}
+      >
         <option value="">…</option>
         {options.map((o) => (
           <option key={o} value={o}>
@@ -83,7 +94,7 @@ function ConnectorSlot({
   if (options.length === 1)
     return (
       <span className="connector connector-fixed">
-        {CONNECTOR_LABEL[value || options[0]!]}{" "}
+        {t(CONNECTOR_LABEL[value || options[0]!])}{" "}
         <span className="arrow" aria-hidden="true">
           →
         </span>
@@ -94,12 +105,12 @@ function ConnectorSlot({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as Connector)}
-        aria-label={`Link ${index + 1}`}
+        aria-label={t("Link {n}", { n: index + 1 })}
       >
         <option value="">…</option>
         {options.map((o) => (
           <option key={o} value={o}>
-            {CONNECTOR_LABEL[o]}
+            {t(CONNECTOR_LABEL[o])}
           </option>
         ))}
       </select>
@@ -156,7 +167,7 @@ export function ChainBuilder({ chains, judgeNow, save, onSave, onDone, onClose }
 
   return (
     <Dialog
-      title={templates.length > 1 ? "Your cause chains" : (templates[0]?.title ?? "Cause chain")}
+      title={templates.length > 1 ? t("Your cause chains") : (templates[0]?.title ?? t("Cause chain"))}
       onClose={onClose}
       wide={templates.length > 1}
       className="chains"
@@ -164,34 +175,36 @@ export function ChainBuilder({ chains, judgeNow, save, onSave, onDone, onClose }
       <p className="lede">
         {batch
           ? templates.length > 1
-            ? "Confirm your chains. Each is checked against your own runs, not against an answer key."
-            : "Pick the link and say how sure you are. It is checked against what you saw, not against an answer key."
-          : "Build the chain. It is kept in your notebook and checked with the others later."}
+            ? t("Confirm your chains. Each is checked against your own runs, not against an answer key.")
+            : t(
+                "Pick the link and say how sure you are. It is checked against what you saw, not against an answer key.",
+              )
+          : t("Build the chain. It is kept in your notebook and checked with the others later.")}
       </p>
-      {templates.map((t) => {
-        const d = drafts[t.id]!;
-        const r = results?.[t.id];
+      {templates.map((tpl) => {
+        const d = drafts[tpl.id]!;
+        const r = results?.[tpl.id];
         return (
-          <section key={t.id} className="chain" data-verdict={r?.verdict}>
-            <h3>{t.title}</h3>
+          <section key={tpl.id} className="chain" data-verdict={r?.verdict}>
+            <h3>{tpl.title}</h3>
             <div className="chain-row">
-              {t.cards.map((opts, i) => (
+              {tpl.cards.map((opts, i) => (
                 <div key={i} className="chain-step">
                   <CardSlot
                     index={i}
                     options={opts}
                     value={d.cards[i] ?? ""}
                     onChange={(v) =>
-                      set(t.id, (x) => ({ ...x, cards: x.cards.map((c, j) => (j === i ? v : c)) }))
+                      set(tpl.id, (x) => ({ ...x, cards: x.cards.map((c, j) => (j === i ? v : c)) }))
                     }
                   />
-                  {i < t.connectors.length && (
+                  {i < tpl.connectors.length && (
                     <ConnectorSlot
                       index={i}
-                      options={t.connectors[i]!}
+                      options={tpl.connectors[i]!}
                       value={d.connectors[i] ?? ""}
                       onChange={(v) =>
-                        set(t.id, (x) => ({
+                        set(tpl.id, (x) => ({
                           ...x,
                           connectors: x.connectors.map((c, j) => (j === i ? v : c)),
                         }))
@@ -202,30 +215,32 @@ export function ChainBuilder({ chains, judgeNow, save, onSave, onDone, onClose }
               ))}
             </div>
             <fieldset className="confidence-pick">
-              <legend>How sure are you?</legend>
+              <legend>{t("How sure are you?")}</legend>
               {([1, 2, 3] as const).map((n) => (
                 <label key={n}>
                   <input
                     type="radio"
-                    name={`conf-${t.id}`}
+                    name={`conf-${tpl.id}`}
                     checked={d.confidence === n}
-                    onChange={() => set(t.id, (x) => ({ ...x, confidence: n }))}
+                    onChange={() => set(tpl.id, (x) => ({ ...x, confidence: n }))}
                   />
-                  {CONFIDENCE[n]}
+                  {t(CONFIDENCE[n])}
                 </label>
               ))}
             </fieldset>
             {r && (
               <div className="verdict" data-verdict={r.verdict} role="status">
                 <span className="verdict-mark" aria-hidden="true" />
-                <b>{VERDICT_LABEL[r.verdict]}</b>
-                <span className="muted"> · evidence: {r.evidence}</span>
+                <b>{t(VERDICT_LABEL[r.verdict])}</b>
+                <span className="muted">{t(" · evidence: {evidence}", { evidence: t(r.evidence) })}</span>
                 {r.messages.map((m) => (
                   <p key={m}>{m}</p>
                 ))}
                 {r.verdict === "plausible" && !r.messages.length && (
                   <p>
-                    Not contradicted, but your runs do not back this exact chain yet. Which run would test it?
+                    {t(
+                      "Not contradicted, but your runs do not back this exact chain yet. Which run would test it?",
+                    )}
                   </p>
                 )}
               </div>
@@ -236,18 +251,23 @@ export function ChainBuilder({ chains, judgeNow, save, onSave, onDone, onClose }
       <div className="btn-row">
         {!results ? (
           <button type="button" className="btn btn-primary" disabled={!ready} onClick={confirm}>
-            {batch ? (templates.length > 1 ? "Confirm all chains" : "Confirm the chain") : "Keep this chain"}
+            {batch
+              ? templates.length > 1
+                ? t("Confirm all chains")
+                : t("Confirm the chain")
+              : t("Keep this chain")}
           </button>
         ) : (
           <>
             <p className="verdict-summary">
-              <b className="mono">
-                {supported} of {templates.length}
-              </b>{" "}
-              supported by your runs.
+              {tr("{count} supported by your runs.", {
+                count: (
+                  <b className="mono">{t("{n} of {total}", { n: supported, total: templates.length })}</b>
+                ),
+              })}
             </p>
             <button type="button" className="btn btn-primary" onClick={onDone}>
-              Continue
+              {t("Continue")}
             </button>
           </>
         )}

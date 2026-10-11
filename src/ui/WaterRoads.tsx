@@ -24,18 +24,22 @@ import {
   strandedHop,
   type Kpa,
 } from "../sim/water";
-import { Facts, SourceRef } from "./common";
+import { lang, t } from "../i18n";
+import { Facts, SourceRef, tr } from "./common";
 
 type WaterStep = Extract<Step, { kind: "water" }>;
 
-const kpa = (psi: Kpa) => `${psi < 0 ? "−" : ""}${Math.abs(psi).toLocaleString("en")} kPa`;
-const um = (d: number) => (d >= 1 ? `${Math.round(d)} µm` : `${d.toFixed(1)} µm`);
+const kpa = (psi: Kpa) => `${psi < 0 ? "−" : ""}${Math.abs(psi).toLocaleString(lang())} kPa`;
+const um = (d: number) =>
+  d >= 1
+    ? `${Math.round(d)} µm`
+    : `${d.toLocaleString(lang(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} µm`;
 
 function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -47,7 +51,7 @@ function Result({ step, onDone }: { step: WaterStep; onDone: () => void }) {
       {step.attribution && <AttributionNote a={step.attribution} />}
       <Facts facts={step.facts} />
       <button type="button" className="btn btn-primary" onClick={onDone}>
-        Continue
+        {t("Continue")}
       </button>
     </>
   );
@@ -57,7 +61,7 @@ function AttributionNote({ a }: { a: Attribution }) {
   return (
     <div className="attribution">
       <p>
-        <b>{a.effect}: candidate sources</b>
+        <b>{t("{effect}: candidate sources", { effect: a.effect })}</b>
       </p>
       <ul>
         {a.candidates.map((c) => (
@@ -69,7 +73,7 @@ function AttributionNote({ a }: { a: Attribution }) {
       </ul>
       {a.shares === "unresolved" && (
         <p className="small">
-          Relative contribution: <b>unresolved</b>.{" "}
+          {tr("Relative contribution: {unresolved}.", { unresolved: <b>{t("unresolved")}</b> })}{" "}
           {a.sources.map((s) => (
             <SourceRef key={s} id={s} />
           ))}
@@ -87,14 +91,17 @@ function Drain({ step, onDone }: { step: WaterStep; onDone: () => void }) {
   const gone = new Set(drained(DRAIN_PORES, psi));
   const convention =
     psi === FIELD_CAPACITY
-      ? " This is field capacity: a convention, not a constant."
+      ? ` ${t("This is field capacity: a convention, not a constant.")}`
       : psi === WILTING_POINT
-        ? " This is the wilting point: a convention, not a constant."
+        ? ` ${t("This is the wilting point: a convention, not a constant.")}`
         : "";
   const sentence =
     psi === 0
-      ? "At 0 kPa the soil is soaked: every pore is full."
-      : `At ${kpa(psi)}, pores wider than about ${um(drainedAbove(psi))} have drained.${convention}`;
+      ? t("At 0 kPa the soil is soaked: every pore is full.")
+      : t("At {psi}, pores wider than about {width} have drained.", {
+          psi: kpa(psi),
+          width: um(drainedAbove(psi)),
+        }) + convention;
   return (
     <>
       <Banner />
@@ -102,7 +109,11 @@ function Drain({ step, onDone }: { step: WaterStep; onDone: () => void }) {
         className="labyrinth-map"
         viewBox="0 0 100 60"
         role="img"
-        aria-label={`Pores at ${kpa(psi)}: ${gone.size} of ${DRAIN_PORES.length} have drained.`}
+        aria-label={t("Pores at {psi}: {gone} of {all} have drained.", {
+          psi: kpa(psi),
+          gone: gone.size,
+          all: DRAIN_PORES.length,
+        })}
       >
         {DRAIN_PORES.map((p) => (
           <g key={p.id}>
@@ -120,7 +131,7 @@ function Drain({ step, onDone }: { step: WaterStep; onDone: () => void }) {
         ))}
       </svg>
       <label className="slider-row big">
-        <span>Matric potential</span>
+        <span>{t("Matric potential")}</span>
         <input
           type="range"
           min={0}
@@ -137,27 +148,31 @@ function Drain({ step, onDone }: { step: WaterStep; onDone: () => void }) {
       </label>
       <p className="observation" aria-live="polite">
         <span className="tier" data-tier="derived">
-          derived
+          {t("derived")}
         </span>{" "}
         {sentence} <span className="mono small">d ≈ 300 / |ψ|</span>
       </p>
       {bottom ? (
         <Result step={step} onDone={onDone} />
       ) : (
-        <p className="muted small">Pull all the way to {kpa(WILTING_POINT)} to continue.</p>
+        <p className="muted small">
+          {t("Pull all the way to {psi} to continue.", { psi: kpa(WILTING_POINT) })}
+        </p>
       )}
     </>
   );
 }
 
 const sSite = (id: string) => STRANDED.sites.find((s) => s.id === id)!;
+/** A site's name inside a sentence: lower case in English, as written in German (nouns keep their capital). */
+const inline = (id: string) => (lang() === "en" ? sSite(id).label.toLowerCase() : t(sSite(id).label));
 
 /** c3-m2: every hop the soil dries a step; films break widest first. */
 function Stranded({ step, onDone }: { step: WaterStep; onDone: () => void }) {
   const [at, setAt] = useState("start");
   const [tick, setTick] = useState(0);
   const [reached, setReached] = useState(false);
-  const [status, setStatus] = useState("You are where you start. The soil is wet, for now.");
+  const [status, setStatus] = useState(() => t("You are where you start. The soil is wet, for now."));
   const psi = psiAtTick(tick);
   const m = moistureAt(psi);
   const stuck = !reached && neighbours(STRANDED, at, m).length === 0;
@@ -167,8 +182,11 @@ function Stranded({ step, onDone }: { step: WaterStep; onDone: () => void }) {
       const adjacent = STRANDED.necks.some((n) => (n.a === at && n.b === to) || (n.b === at && n.a === to));
       setStatus(
         adjacent
-          ? `The film to the ${sSite(to).label.toLowerCase()} has broken at ${kpa(psi)}. You stay where you are.`
-          : `The ${sSite(to).label.toLowerCase()} is not next to you. Flow one pore at a time.`,
+          ? t("The film to the {site} has broken at {psi}. You stay where you are.", {
+              site: inline(to),
+              psi: kpa(psi),
+            })
+          : t("The {site} is not next to you. Flow one pore at a time.", { site: inline(to) }),
       );
       return;
     }
@@ -176,13 +194,13 @@ function Stranded({ step, onDone }: { step: WaterStep; onDone: () => void }) {
     setTick(tick + 1);
     if (next === "food") {
       setReached(true);
-      setStatus("You reached the bacteria before the films broke.");
-    } else setStatus(`You flowed to the ${sSite(next).label.toLowerCase()}. The soil dries a step.`);
+      setStatus(t("You reached the bacteria before the films broke."));
+    } else setStatus(t("You flowed to the {site}. The soil dries a step.", { site: inline(next) }));
   };
   const reset = () => {
     setAt("start");
     setTick(0);
-    setStatus("Rain wetted the soil again. You are back where you start.");
+    setStatus(t("Rain wetted the soil again. You are back where you start."));
   };
   const here = sSite(at);
   return (
@@ -192,7 +210,7 @@ function Stranded({ step, onDone }: { step: WaterStep; onDone: () => void }) {
         className="labyrinth-map"
         viewBox="0 0 100 60"
         role="img"
-        aria-label={`Film map at ${kpa(psi)}. You are at the ${here.label.toLowerCase()}.`}
+        aria-label={t("Film map at {psi}. You are at the {site}.", { psi: kpa(psi), site: inline(at) })}
       >
         {STRANDED.necks.map((n) => {
           const a = sSite(n.a);
@@ -221,16 +239,16 @@ function Stranded({ step, onDone }: { step: WaterStep; onDone: () => void }) {
         ))}
         <circle cx={here.x * 100} cy={here.y * 60} r={2.4} className="amoeba-dot" />
       </svg>
-      <p className="mono small">Soil now: {kpa(psi)}</p>
+      <p className="mono small">{t("Soil now: {psi}", { psi: kpa(psi) })}</p>
       {!reached && (
         <>
-          <p className="step-text">Flow to a pore:</p>
+          <p className="step-text">{t("Flow to a pore:")}</p>
           <div className="choices">
             {STRANDED.sites
               .filter((s) => s.id !== at)
               .map((s) => (
                 <button key={s.id} type="button" className="choice" onClick={() => flow(s.id)}>
-                  {s.label}
+                  {t(s.label)}
                 </button>
               ))}
           </div>
@@ -238,11 +256,11 @@ function Stranded({ step, onDone }: { step: WaterStep; onDone: () => void }) {
       )}
       <p className="observation" aria-live="polite">
         {status}
-        {stuck && " No film connects you to anything: you are stranded."}
+        {stuck && ` ${t("No film connects you to anything: you are stranded.")}`}
       </p>
       {stuck && (
         <button type="button" className="btn" onClick={reset}>
-          Rewet and start again
+          {t("Rewet and start again")}
         </button>
       )}
       {reached && <Result step={step} onDone={onDone} />}
@@ -269,17 +287,17 @@ function Birch({ step, onDone }: { step: WaterStep; onDone: () => void }) {
     <>
       <Banner />
       <fieldset className="segmented">
-        <legend>Days without water before wetting</legend>
+        <legend>{t("Days without water before wetting")}</legend>
         {DROUGHTS.map((d) => (
           <label key={d}>
             <input type="radio" name="c3-drought" checked={days === d} onChange={() => setDays(d)} />
-            <span>{d} days</span>
+            <span>{t("{n} days", { n: d })}</span>
           </label>
         ))}
       </fieldset>
       {!ran ? (
         <button type="button" className="btn btn-primary" onClick={() => setRan(true)}>
-          Dry it, then wet it
+          {t("Dry it, then wet it")}
         </button>
       ) : (
         <>
@@ -293,26 +311,28 @@ function Birch({ step, onDone }: { step: WaterStep; onDone: () => void }) {
               className="rewet"
             />
             <text x={(days / (shown - 1)) * 92 + 7} y="10" className="note">
-              wetted
+              {t("wetted")}
             </text>
             <polyline points={line(moist.co2)} className="moist" />
             <polyline points={line(dry.co2)} className="dried" />
             <text x="6" y="58" className="note">
-              day 0
+              {t("day {n}", { n: 0 })}
             </text>
             <text x="98" y="58" textAnchor="end" className="note">
-              day {shown - 1}
+              {t("day {n}", { n: shown - 1 })}
             </text>
           </svg>
           <p id="c3-trace-cap" className="muted small">
-            CO₂ per day, teaching units. Solid: dried for {days} days, then wetted. Dashed: kept moist.
+            {t("CO₂ per day, teaching units. Solid: dried for {n} days, then wetted. Dashed: kept moist.", {
+              n: days,
+            })}
           </p>
           <table className="run-table">
             <thead>
               <tr>
-                <th scope="col">Day</th>
-                <th scope="col">Dried, then wetted</th>
-                <th scope="col">Kept moist</th>
+                <th scope="col">{t("Day")}</th>
+                <th scope="col">{t("Dried, then wetted")}</th>
+                <th scope="col">{t("Kept moist")}</th>
               </tr>
             </thead>
             <tbody>
@@ -320,7 +340,7 @@ function Birch({ step, onDone }: { step: WaterStep; onDone: () => void }) {
                 <tr key={d}>
                   <th scope="row">
                     {d}
-                    {d === days ? " (wetted)" : ""}
+                    {d === days ? ` ${t("(wetted)")}` : ""}
                   </th>
                   <td className="mono">{dry.co2[d]}</td>
                   <td className="mono">{moist.co2[d]}</td>
@@ -339,21 +359,21 @@ function Birch({ step, onDone }: { step: WaterStep; onDone: () => void }) {
 function FastLanes({ step, reduced, onDone }: { step: WaterStep; reduced: boolean; onDone: () => void }) {
   const runs = { burrows: infiltrate(BURROWS), none: infiltrate(0) };
   const last = runs.none.length - 1;
-  const [t, setT] = useState(-1);
+  const [shown, setShown] = useState(-1);
   const timer = useRef<number | undefined>(undefined);
   useEffect(() => () => window.clearTimeout(timer.current), []);
   const rain = () => {
-    if (reduced) return setT(last);
+    if (reduced) return setShown(last);
     const tick = (k: number) => {
-      setT(k);
+      setShown(k);
       if (k < last) timer.current = window.setTimeout(() => tick(k + 1), 450);
     };
     tick(0);
   };
-  const at = Math.max(t, 0);
+  const at = Math.max(shown, 0);
   const patches = [
-    { id: "burrows", label: "With burrows", s: runs.burrows[at]!, n: BURROWS },
-    { id: "none", label: "Without burrows", s: runs.none[at]!, n: 0 },
+    { id: "burrows", label: t("With burrows"), s: runs.burrows[at]!, n: BURROWS },
+    { id: "none", label: t("Without burrows"), s: runs.none[at]!, n: 0 },
   ];
   const y = (cm: number) => 4 + (cm / PROFILE_CM) * 52;
   return (
@@ -377,26 +397,28 @@ function FastLanes({ step, reduced, onDone }: { step: WaterStep; reduced: boolea
             </svg>
             <figcaption>
               {p.label}
-              {t >= 0 && (
+              {shown >= 0 && (
                 <>
-                  : front <b className="mono">{p.s.front} cm</b>, deepest wet{" "}
-                  <b className="mono">{p.s.deepest} cm</b>
+                  {tr(": front {front}, deepest wet {deepest}", {
+                    front: <b className="mono">{p.s.front} cm</b>,
+                    deepest: <b className="mono">{p.s.deepest} cm</b>,
+                  })}
                 </>
               )}
             </figcaption>
           </figure>
         ))}
       </div>
-      {t < 0 ? (
+      {shown < 0 ? (
         <button type="button" className="btn btn-primary" onClick={rain}>
-          Rain for an hour
+          {t("Rain for an hour")}
         </button>
       ) : (
         <p className="mono small" aria-live="polite">
-          {runs.none[at]!.minutes} min of rain
+          {t("{n} min of rain", { n: runs.none[at]!.minutes })}
         </p>
       )}
-      {t === last && <Result step={step} onDone={onDone} />}
+      {shown === last && <Result step={step} onDone={onDone} />}
     </>
   );
 }

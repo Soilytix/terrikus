@@ -1,5 +1,6 @@
 /** Living-backdrop toggle (OD-8 interim: ambient motion behind a setting; reduced motion still freezes it). */
 import { useGame } from "../app/store";
+import { t } from "../i18n";
 
 export function AmbientToggle() {
   const ambient = useGame((g) => g.save.settings.ambient);
@@ -7,8 +8,8 @@ export function AmbientToggle() {
   return (
     <label className="setting">
       <span className="setting-text">
-        <b>Gentle background motion</b>
-        <small>Clouds, water and birds drift; the scene’s music plays with it.</small>
+        <b>{t("Gentle background motion")}</b>
+        <small>{t("Clouds, water and birds drift; the scene’s music plays with it.")}</small>
       </span>
       <input
         type="checkbox"

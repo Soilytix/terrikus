@@ -6,12 +6,17 @@
 import { useEffect, useRef, useState } from "react";
 import type { Fact, Step } from "../content/schema";
 import { LABYRINTH, MOISTURES, blockedBy, grazerWeek, held, hop, route, type Moisture } from "../sim/films";
+import { lang, t, tl } from "../i18n";
 import { Facts } from "./common";
 
 type Goal = Extract<Step, { kind: "labyrinth" }>["goals"][number];
 
 const site = (id: string) => LABYRINTH.sites.find((s) => s.id === id)!;
-const label = (id: string) => site(id).label.toLowerCase();
+const name = (id: string) => t(site(id).label);
+/** Mid-sentence pore name: English lowercases it, German keeps its nouns capitalised. */
+const label = (id: string) => (lang() === "en" ? name(id).toLowerCase() : name(id));
+const MOISTURE_TEXT: Record<Moisture, string> = { dry: tl("dry"), moist: tl("moist"), wet: tl("wet") };
+const wetness = (m: Moisture) => t(MOISTURE_TEXT[m]);
 
 function FilmMap({ at, moisture }: { at: string; moisture: Moisture }) {
   const X = (x: number) => x * 100;
@@ -22,7 +27,10 @@ function FilmMap({ at, moisture }: { at: string; moisture: Moisture }) {
       className="labyrinth-map"
       viewBox="0 0 100 60"
       role="img"
-      aria-label={`Map of the pore network in ${moisture} soil. You are in the ${label(at)}.`}
+      aria-label={t("Map of the pore network in {moisture} soil. You are in the {pore}.", {
+        moisture: wetness(moisture),
+        pore: label(at),
+      })}
     >
       {LABYRINTH.necks.map((n) => {
         const a = site(n.a);
@@ -70,7 +78,7 @@ export function Labyrinth({
   const [at, setAt] = useState("entry");
   const [moisture, setMoisture] = useState<Moisture>("moist");
   const [met, setMet] = useState<boolean[]>(() => goals.map(() => false));
-  const [status, setStatus] = useState("You are in the entrance pore. Choose where to flow.");
+  const [status, setStatus] = useState(() => t("You are in the entrance pore. Choose where to flow."));
   const [moving, setMoving] = useState(false);
   const timer = useRef<number | undefined>(undefined);
   useEffect(() => () => window.clearTimeout(timer.current), []);
@@ -81,15 +89,21 @@ export function Labyrinth({
     );
 
   const swim = (to: string) => {
-    if (to === at) return setStatus(`You are already in the ${label(to)}.`);
+    if (to === at) return setStatus(t("You are already in the {pore}.", { pore: label(to) }));
     const path = route(LABYRINTH, at, to, moisture);
     if (!path) {
       const why = blockedBy(LABYRINTH, at, to, moisture);
       record(to, why ?? "no-film");
       setStatus(
         why === "too-narrow"
-          ? `Water reaches the ${label(to)}, but its opening is ${site(to).width} µm: narrower than your body.`
-          : `No connected water film leads to the ${label(to)} in ${moisture} soil. You stay where you are.`,
+          ? t("Water reaches the {pore}, but its opening is {width} µm: narrower than your body.", {
+              pore: label(to),
+              width: site(to).width,
+            })
+          : t("No connected water film leads to the {pore} in {moisture} soil. You stay where you are.", {
+              pore: label(to),
+              moisture: wetness(moisture),
+            }),
       );
       return;
     }
@@ -97,8 +111,8 @@ export function Labyrinth({
       record(to, "reach");
       setMoving(false);
       setStatus(
-        `You followed the films: ${path.map((p) => site(p).label).join(" → ")}.` +
-          (site(to).cells !== undefined ? " Bacteria here: you graze." : ""),
+        t("You followed the films: {path}.", { path: path.map(name).join(" → ") }) +
+          (site(to).cells !== undefined ? t(" Bacteria here: you graze.") : ""),
       );
     };
     if (reduced) {
@@ -124,21 +138,21 @@ export function Labyrinth({
     <div className="labyrinth">
       <FilmMap at={at} moisture={moisture} />
       <fieldset className="segmented" disabled={moving}>
-        <legend>Experiment bench: soil moisture (not something the amoeba does)</legend>
+        <legend>{t("Experiment bench: soil moisture (not something the amoeba does)")}</legend>
         {MOISTURES.map((m) => (
           <label key={m}>
             <input type="radio" name="c1-moisture" checked={moisture === m} onChange={() => setMoisture(m)} />
-            <span>{m[0]!.toUpperCase() + m.slice(1)}</span>
+            <span>{wetness(m)[0]!.toUpperCase() + wetness(m).slice(1)}</span>
           </label>
         ))}
       </fieldset>
-      <p className="step-text">Flow to a pore:</p>
+      <p className="step-text">{t("Flow to a pore:")}</p>
       <div className="choices">
         {LABYRINTH.sites
           .filter((s) => s.id !== at)
           .map((s) => (
             <button key={s.id} type="button" className="choice" disabled={moving} onClick={() => swim(s.id)}>
-              {s.label}
+              {t(s.label)}
             </button>
           ))}
       </div>
@@ -149,13 +163,21 @@ export function Labyrinth({
         {goals.map((g, i) => (
           <li key={i} data-done={met[i]}>
             <span className="check" aria-hidden="true" />
-            {g.outcome === "reach" ? "Reach" : "Try"} the {label(g.site)} in {g.moisture} soil
-            <span className="sr-only">{met[i] ? " (done)" : " (not yet)"}</span>
+            {g.outcome === "reach"
+              ? t("Reach the {pore} in {moisture} soil", {
+                  pore: label(g.site),
+                  moisture: wetness(g.moisture),
+                })
+              : t("Try the {pore} in {moisture} soil", {
+                  pore: label(g.site),
+                  moisture: wetness(g.moisture),
+                })}
+            <span className="sr-only">{met[i] ? t(" (done)") : t(" (not yet)")}</span>
           </li>
         ))}
       </ul>
       <button type="button" className="btn btn-primary" disabled={!done || moving} onClick={onDone}>
-        Continue
+        {t("Continue")}
       </button>
     </div>
   );
@@ -177,7 +199,7 @@ export function GrazerWeek({
     <>
       <p className="teaching-banner" role="note">
         <span className="dot" aria-hidden="true" />
-        Teaching model: direction, not prediction.
+        {t("Teaching model: direction, not prediction.")}
       </p>
       {!run ? (
         <button
@@ -185,25 +207,27 @@ export function GrazerWeek({
           className="btn btn-primary"
           onClick={() => setRun(grazerWeek(LABYRINTH, moisture))}
         >
-          Run the week
+          {t("Run the week")}
         </button>
       ) : (
         <>
           <table className="run-table">
-            <caption className="muted small">Bacterial cells, teaching units, {moisture} soil</caption>
+            <caption className="muted small">
+              {t("Bacterial cells, teaching units, {moisture} soil", { moisture: wetness(moisture) })}
+            </caption>
             <thead>
               <tr>
-                <th scope="col">Pore</th>
-                <th scope="col">Amoeba reaches it</th>
-                <th scope="col">Day 0</th>
-                <th scope="col">Day 7</th>
+                <th scope="col">{t("Pore")}</th>
+                <th scope="col">{t("Amoeba reaches it")}</th>
+                <th scope="col">{t("Day 0")}</th>
+                <th scope="col">{t("Day 7")}</th>
               </tr>
             </thead>
             <tbody>
               {Object.entries(run.series).map(([id, s]) => (
                 <tr key={id}>
-                  <th scope="row">{site(id).label}</th>
-                  <td>{run.hunted.has(id) ? "Yes" : "No"}</td>
+                  <th scope="row">{name(id)}</th>
+                  <td>{run.hunted.has(id) ? t("Yes") : t("No")}</td>
                   <td className="mono">{s[0]}</td>
                   <td className="mono">{s.at(-1)}</td>
                 </tr>
@@ -213,7 +237,7 @@ export function GrazerWeek({
           <p className="observation">{resultText}</p>
           <Facts facts={facts} />
           <button type="button" className="btn btn-primary" onClick={onDone}>
-            Continue
+            {t("Continue")}
           </button>
         </>
       )}

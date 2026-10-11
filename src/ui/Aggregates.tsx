@@ -6,18 +6,19 @@
 import { useEffect, useRef, useState } from "react";
 import type { Fact } from "../content/schema";
 import { AGENTS, SLAKE_TIMES, crumb, slake, type Agent, type Plot } from "../sim/aggregates";
-import { Facts } from "./common";
+import { lang, t, tl } from "../i18n";
+import { Facts, tr } from "./common";
 
 const PLOTS: { id: Plot; label: string }[] = [
-  { id: "grassland", label: "Grassland" },
-  { id: "ploughed", label: "Ploughed every year" },
+  { id: "grassland", label: tl("Grassland") },
+  { id: "ploughed", label: tl("Ploughed every year") },
 ];
 
 function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -60,32 +61,34 @@ export function Slake({
     };
     tick(0);
   };
-  const t = SLAKE_TIMES[Math.max(k, 0)]!;
+  const secs = SLAKE_TIMES[Math.max(k, 0)]!;
   return (
     <>
       <Banner />
       <div className="slake-row">
         {PLOTS.map((p) => (
           <figure key={p.id} className="slake">
-            <Beaker intact={k < 0 ? 100 : slake(p.id, t)} />
+            <Beaker intact={k < 0 ? 100 : slake(p.id, secs)} />
             <figcaption>
-              {p.label}
-              {k >= 0 && (
-                <>
-                  : <b className="mono">{slake(p.id, t)} %</b> still holding
-                </>
-              )}
+              {k >= 0
+                ? tr("{plot}: {pct} still holding", {
+                    plot: t(p.label),
+                    pct: <b className="mono">{slake(p.id, secs)} %</b>,
+                  })
+                : t(p.label)}
             </figcaption>
           </figure>
         ))}
       </div>
       {k < 0 ? (
         <button type="button" className="btn btn-primary" onClick={start}>
-          Lower both into water
+          {t("Lower both into water")}
         </button>
       ) : (
         <p className="muted small" aria-live="polite">
-          {t < 60 ? `${t} s` : `${t / 60} min`} in water
+          {t("{time} in water", {
+            time: secs < 60 ? `${secs} s` : `${(secs / 60).toLocaleString(lang())} min`,
+          })}
         </p>
       )}
       {k === last && (
@@ -93,7 +96,7 @@ export function Slake({
           <p className="observation">{resultText}</p>
           <Facts facts={facts} />
           <button type="button" className="btn btn-primary" onClick={onDone}>
-            Continue
+            {t("Continue")}
           </button>
         </>
       )}
@@ -102,11 +105,12 @@ export function Slake({
 }
 
 const AGENT_LABEL: Record<Agent, string> = {
-  roots: "Fine roots",
-  hyphae: "Fungal hyphae",
-  glue: "Microbial glue",
-  "clay-om": "Clay–organic bonds",
+  roots: tl("Fine roots"),
+  hyphae: tl("Fungal hyphae"),
+  glue: tl("Microbial glue"),
+  "clay-om": tl("Clay–organic bonds"),
 };
+const LASTS_LABEL = { transient: tl("transient"), temporary: tl("temporary"), persistent: tl("persistent") };
 const ALL = Object.keys(AGENTS) as Agent[];
 
 export function BuildCrumb({
@@ -122,12 +126,12 @@ export function BuildCrumb({
   const [stage, setStage] = useState<"choose" | "built" | "tilled">("choose");
   const [learnt, setLearnt] = useState(false);
   const state = crumb(agents, stage === "tilled", stage === "tilled" ? 12 : 0);
-  const holds = (b: boolean) => (b ? "holds together" : "falls apart");
+  const holds = (b: boolean) => (b ? t("holds together") : t("falls apart"));
   return (
     <>
       <Banner />
       <fieldset className="crumb-agents" disabled={stage !== "choose"}>
-        <legend>Binders in your crumb</legend>
+        <legend>{t("Binders in your crumb")}</legend>
         {ALL.map((a) => (
           <label key={a}>
             <input
@@ -135,18 +139,18 @@ export function BuildCrumb({
               checked={agents.includes(a)}
               onChange={() => setAgents(agents.includes(a) ? agents.filter((x) => x !== a) : [...agents, a])}
             />
-            {AGENT_LABEL[a]} <span className="muted small">({AGENTS[a].lasts})</span>
+            {t(AGENT_LABEL[a])} <span className="muted small">({t(LASTS_LABEL[AGENTS[a].lasts])})</span>
           </label>
         ))}
       </fieldset>
       {stage !== "choose" && (
         <dl className="crumb-state" aria-live="polite">
-          <dt>Large crumb</dt>
+          <dt>{t("Large crumb")}</dt>
           <dd data-ok={state.macro}>{holds(state.macro)}</dd>
-          <dt>Small clusters inside</dt>
+          <dt>{t("Small clusters inside")}</dt>
           <dd data-ok={state.micro}>{holds(state.micro)}</dd>
-          <dt>Still binding</dt>
-          <dd>{state.holding.map((a) => AGENT_LABEL[a]).join(", ") || "nothing"}</dd>
+          <dt>{t("Still binding")}</dt>
+          <dd>{state.holding.map((a) => t(AGENT_LABEL[a])).join(", ") || t("nothing")}</dd>
         </dl>
       )}
       <div className="btn-row">
@@ -157,7 +161,7 @@ export function BuildCrumb({
             disabled={!agents.length}
             onClick={() => setStage("built")}
           >
-            Build the crumb
+            {t("Build the crumb")}
           </button>
         )}
         {stage === "built" && (
@@ -169,24 +173,24 @@ export function BuildCrumb({
               if (agents.length === ALL.length) setLearnt(true);
             }}
           >
-            Till, then wait a season
+            {t("Till, then wait a season")}
           </button>
         )}
         {stage === "tilled" && (
           <button type="button" className="btn" onClick={() => setStage("choose")}>
-            Build another
+            {t("Build another")}
           </button>
         )}
       </div>
       {!learnt && stage === "tilled" && (
-        <p className="hint">Now try it with all four binders, to see which one lasts.</p>
+        <p className="hint">{t("Now try it with all four binders, to see which one lasts.")}</p>
       )}
       {learnt && (
         <>
           <p className="observation">{resultText}</p>
           <Facts facts={facts} />
           <button type="button" className="btn btn-primary" onClick={onDone}>
-            Continue
+            {t("Continue")}
           </button>
         </>
       )}

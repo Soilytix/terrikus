@@ -7,6 +7,7 @@
 import type { Scale } from "../content/schema";
 import type { Music } from "./music/engine";
 import { SAMPLE_BEDS, musicCaption, presetFor } from "./music/presets";
+import { t as tx, tl } from "../i18n";
 
 export type Ctx = Pick<
   AudioContext,
@@ -30,10 +31,10 @@ export interface Caption {
 }
 
 export const CUES: Record<CueId, { caption: string; notes: number[] }> = {
-  scan: { caption: "Soft click: you looked closely at something.", notes: [880] },
-  card: { caption: "Two rising tones: a card went into your notebook.", notes: [660, 880] },
-  stamp: { caption: "Low knock: a new scale stamped in your notebook.", notes: [196] },
-  chapter: { caption: "Three rising tones: chapter complete.", notes: [523, 659, 784] },
+  scan: { caption: tl("Soft click: you looked closely at something."), notes: [880] },
+  card: { caption: tl("Two rising tones: a card went into your notebook."), notes: [660, 880] },
+  stamp: { caption: tl("Low knock: a new scale stamped in your notebook."), notes: [196] },
+  chapter: { caption: tl("Three rising tones: chapter complete."), notes: [523, 659, 784] },
 };
 
 export interface BedScene {
@@ -140,7 +141,7 @@ export function createMixer(make: () => Ctx = () => new AudioContext(), load: Lo
         osc.start(t);
         osc.stop(t + 0.3);
       });
-      const caption = CUES[id].caption;
+      const caption = tx(CUES[id].caption);
       say({ kind: "cue", text: caption });
       return caption;
     },

@@ -7,19 +7,21 @@ import { useMemo, useState } from "react";
 import type { Fact } from "../content/schema";
 import { relative, WEB_ORGANISMS, type WebSnapshot } from "../sim/food-web";
 import { accounted, activeIndex, EXUDED_SHARE, exudedC, runBand, runRoot } from "../sim/rhizosphere";
+import { lang, t, tl } from "../i18n";
 import { Facts, SourceRef } from "./common";
 import { GROUPS } from "./FoodWeb";
 
 const DAYS = 20;
 const COMPARE_DAY = 10;
 const pct = (x: number) => `${Math.round(x * 100)} %`;
+const fix1 = (n: number) => n.toLocaleString(lang(), { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const BAND_TEXT = `${Math.round(EXUDED_SHARE.low * 100)}–${pct(EXUDED_SHARE.high)}`;
 
 function Banner() {
   return (
     <p className="teaching-banner" role="note">
       <span className="dot" aria-hidden="true" />
-      Teaching model: direction, not prediction.
+      {t("Teaching model: direction, not prediction.")}
     </p>
   );
 }
@@ -32,7 +34,9 @@ export function ShareBand() {
       <div
         className="share-band-scale"
         role="img"
-        aria-label={`Share of fixed carbon exuded by roots: somewhere in ${BAND_TEXT}, contested.`}
+        aria-label={t("Share of fixed carbon exuded by roots: somewhere in {band}, contested.", {
+          band: BAND_TEXT,
+        })}
       >
         <span
           className="share-band-fill"
@@ -50,7 +54,9 @@ export function ShareBand() {
         ))}
       </div>
       <figcaption>
-        Share of fixed carbon a root exudes: {BAND_TEXT}, contested and method-dependent.{" "}
+        {t("Share of fixed carbon a root exudes: {band}, contested and method-dependent.", {
+          band: BAND_TEXT,
+        })}{" "}
         <SourceRef id="bais-2006" /> <SourceRef id="pausch-kuzyakov-2018" />
       </figcaption>
     </figure>
@@ -78,12 +84,12 @@ function RangeCell({ r, max }: { r: readonly [number, number]; max: number }) {
 
 type Row = { id: string; label: string; get: (snaps: WebSnapshot[], day: number) => number };
 const CHAIN: Row[] = [
-  { id: "exudate", label: "Exudate released so far (C)", get: exudedC },
-  { id: "food", label: "Dissolved food (C)", get: (s, d) => s[d]!.ledger.C.food },
-  { id: "bacteria", label: "Bacteria (C)", get: (s, d) => s[d]!.ledger.C["bacteria-copio"] },
-  { id: "amoeba", label: "Amoebae (C)", get: (s, d) => s[d]!.ledger.C.amoeba },
-  { id: "nh4", label: "Ammonium (N)", get: (s, d) => s[d]!.ledger.N.nh4 },
-  { id: "plant", label: "Taken up by the root (N)", get: (s, d) => s[d]!.ledger.N.plant },
+  { id: "exudate", label: tl("Exudate released so far (C)"), get: exudedC },
+  { id: "food", label: tl("Dissolved food (C)"), get: (s, d) => s[d]!.ledger.C.food },
+  { id: "bacteria", label: tl("Bacteria (C)"), get: (s, d) => s[d]!.ledger.C["bacteria-copio"] },
+  { id: "amoeba", label: tl("Amoebae (C)"), get: (s, d) => s[d]!.ledger.C.amoeba },
+  { id: "nh4", label: tl("Ammonium (N)"), get: (s, d) => s[d]!.ledger.N.nh4 },
+  { id: "plant", label: tl("Taken up by the root (N)"), get: (s, d) => s[d]!.ledger.N.plant },
 ];
 
 /** Day by day along exudate → bloom → grazing → uptake, with the ledger's account. */
@@ -99,35 +105,35 @@ export function RootInputs({ facts }: { facts: Fact[] }) {
       <Banner />
       <ShareBand />
       <label className="slider-row">
-        <span>Day</span>
+        <span>{t("Day")}</span>
         <input
           type="range"
           min={0}
           max={DAYS}
           value={day}
           onChange={(e) => setDay(Number(e.target.value))}
-          aria-label="Day"
+          aria-label={t("Day")}
         />
         <output className="mono">{day}</output>
       </label>
       <table>
         <thead>
           <tr>
-            <th scope="col">Day {day}</th>
-            <th scope="col">Planted, across the band</th>
+            <th scope="col">{t("Day {day}", { day })}</th>
+            <th scope="col">{t("Planted, across the band")}</th>
           </tr>
         </thead>
         <tbody>
           {CHAIN.map((r) => (
             <tr key={r.id} data-key={r.id}>
-              <th scope="row">{r.label}</th>
+              <th scope="row">{t(r.label)}</th>
               <RangeCell r={span(r.get(band.low, day), r.get(band.high, day))} max={max(r)} />
             </tr>
           ))}
         </tbody>
       </table>
       <p className="ledger-account mono" aria-live="polite">
-        C accounted for: {C.toFixed(1)} % · N accounted for: {N.toFixed(1)} %
+        {t("C accounted for: {c} % · N accounted for: {n} %", { c: fix1(C), n: fix1(N) })}
       </p>
       <Facts facts={facts} />
     </figure>
@@ -135,14 +141,14 @@ export function RootInputs({ facts }: { facts: Fact[] }) {
 }
 
 const COMPARE: Row[] = [
-  { id: "food", label: "Dissolved C", get: (s, d) => s[d]!.ledger.C.food },
+  { id: "food", label: tl("Dissolved C"), get: (s, d) => s[d]!.ledger.C.food },
   {
     id: "active",
-    label: "Active-microbe index (C breathed by bacteria and fungi that day)",
+    label: tl("Active-microbe index (C breathed by bacteria and fungi that day)"),
     get: (s, d) => activeIndex(s[d]!),
   },
-  { id: "bacteria", label: "Bacteria (C)", get: (s, d) => s[d]!.ledger.C["bacteria-copio"] },
-  { id: "plant", label: "Taken up by the root (N)", get: (s, d) => s[d]!.ledger.N.plant },
+  { id: "bacteria", label: tl("Bacteria (C)"), get: (s, d) => s[d]!.ledger.C["bacteria-copio"] },
+  { id: "plant", label: tl("Taken up by the root (N)"), get: (s, d) => s[d]!.ledger.N.plant },
 ];
 
 /** The bare plot beside the planted one after the same days. */
@@ -155,9 +161,9 @@ export function BarePlanted() {
       <table>
         <thead>
           <tr>
-            <th scope="col">After {d} days</th>
-            <th scope="col">Bare plot</th>
-            <th scope="col">Planted ({BAND_TEXT} exuded)</th>
+            <th scope="col">{t("After {n} days", { n: d })}</th>
+            <th scope="col">{t("Bare plot")}</th>
+            <th scope="col">{t("Planted ({band} exuded)", { band: BAND_TEXT })}</th>
           </tr>
         </thead>
         <tbody>
@@ -167,7 +173,7 @@ export function BarePlanted() {
             const max = Math.max(b, p[1]);
             return (
               <tr key={r.id} data-key={r.id}>
-                <th scope="row">{r.label}</th>
+                <th scope="row">{t(r.label)}</th>
                 <RangeCell r={[b, b]} max={max} />
                 <RangeCell r={p} max={max} />
               </tr>
@@ -176,8 +182,10 @@ export function BarePlanted() {
         </tbody>
       </table>
       <figcaption>
-        Same soil, same weather. The active-microbe index is derived by the bench: the carbon bacteria and
-        fungi breathed out on day {d}.
+        {t(
+          "Same soil, same weather. The active-microbe index is derived by the bench: the carbon bacteria and fungi breathed out on day {day}.",
+          { day: d },
+        )}
       </figcaption>
     </figure>
   );
@@ -189,9 +197,9 @@ export function HomeAway({ facts }: { facts: Fact[] }) {
     const d = COMPARE_DAY;
     const band = runBand(d);
     return [
-      { name: `Near the root (${pct(EXUDED_SHARE.low)} exuded)`, l: band.low[d]!.ledger },
-      { name: `Near the root (${pct(EXUDED_SHARE.high)} exuded)`, l: band.high[d]!.ledger },
-      { name: "Bulk soil", l: runRoot("bare", "low", d)[d]!.ledger },
+      { name: t("Near the root ({pct} exuded)", { pct: pct(EXUDED_SHARE.low) }), l: band.low[d]!.ledger },
+      { name: t("Near the root ({pct} exuded)", { pct: pct(EXUDED_SHARE.high) }), l: band.high[d]!.ledger },
+      { name: t("Bulk soil"), l: runRoot("bare", "low", d)[d]!.ledger },
     ].map(({ name, l }) => {
       const share = relative(l, WEB_ORGANISMS);
       return {
@@ -208,15 +216,15 @@ export function HomeAway({ facts }: { facts: Fact[] }) {
   const maxAbs = Math.max(...rows.flatMap((r) => r.groups.map((g) => g.abs)));
   return (
     <figure className="jar">
-      <section aria-label="Sequencing readout, relative">
-        <h4>Sequencing readout (shares of reads)</h4>
+      <section aria-label={t("Sequencing readout, relative")}>
+        <h4>{t("Sequencing readout (shares of reads)")}</h4>
         {rows.map((r) => (
           <div key={r.name} className="jar-row">
             <span className="jar-when">{r.name}</span>
             <span
               className="jar-stack"
               role="img"
-              aria-label={`${r.name}: ${r.groups.map((g) => `${g.label} ${pct(g.share)}`).join(", ")}`}
+              aria-label={`${r.name}: ${r.groups.map((g) => `${t(g.label)} ${pct(g.share)}`).join(", ")}`}
             >
               {r.groups.map((g) => (
                 <span key={g.id} className={`jar-seg jar-${g.id}`} style={{ width: `${g.share * 100}%` }}>
@@ -228,15 +236,15 @@ export function HomeAway({ facts }: { facts: Fact[] }) {
         ))}
       </section>
       {spiked ? (
-        <section aria-label="With a spike-in, absolute">
-          <h4>With a spike-in: absolute biomass (teaching model)</h4>
+        <section aria-label={t("With a spike-in, absolute")}>
+          <h4>{t("With a spike-in: absolute biomass (teaching model)")}</h4>
           {GROUPS.map((g, k) => (
             <div key={g.id} className="jar-row">
-              <span className="jar-when">{g.label}</span>
+              <span className="jar-when">{t(g.label)}</span>
               <span
                 className="jar-abs"
                 role="img"
-                aria-label={`${g.label}: ${rows.map((r) => `${r.name} ${r.groups[k]!.abs}`).join(", ")}`}
+                aria-label={`${t(g.label)}: ${rows.map((r) => `${r.name} ${r.groups[k]!.abs}`).join(", ")}`}
               >
                 {rows.map((r, i) => (
                   <span
@@ -250,24 +258,30 @@ export function HomeAway({ facts }: { facts: Fact[] }) {
             </div>
           ))}
           <p className="small muted">
-            Bars per group, top to bottom: {rows.map((r) => r.name.toLowerCase()).join("; ")}.
+            {t("Bars per group, top to bottom: {rows}.", {
+              rows: rows
+                .map((r) =>
+                  lang() === "en" ? r.name.toLowerCase() : r.name.charAt(0).toLowerCase() + r.name.slice(1),
+                )
+                .join("; "),
+            })}
           </p>
         </section>
       ) : (
         <button type="button" className="btn" onClick={() => setSpiked(true)}>
-          Add a spike-in (absolute count)
+          {t("Add a spike-in (absolute count)")}
         </button>
       )}
       <ul className="jar-key" aria-hidden="true">
         {GROUPS.map((g) => (
           <li key={g.id}>
             <span className={`jar-swatch jar-${g.id}`} />
-            {g.label}
+            {t(g.label)}
           </li>
         ))}
       </ul>
       <figcaption className="jar-caption">
-        Relative, not absolute; presence ≠ activity. <SourceRef id="gloor-2017" />
+        {t("Relative, not absolute; presence ≠ activity.")} <SourceRef id="gloor-2017" />
       </figcaption>
       <Facts facts={facts} />
     </figure>

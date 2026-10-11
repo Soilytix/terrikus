@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { fieldCard } from "../content";
 import type { SceneObject } from "../content/schema";
 import { Facts } from "./common";
+import { t } from "../i18n";
 
 interface Props {
   object: SceneObject;
@@ -72,7 +73,7 @@ export function ScanCard({ object, glimpse, onClose, onOpenCard }: Props) {
     >
       <header>
         <h2 id="scan-title">{glimpse ? glimpse.title : object.label}</h2>
-        <button type="button" className="icon-btn" onClick={onClose} aria-label="Close">
+        <button type="button" className="icon-btn" onClick={onClose} aria-label={t("Close")}>
           <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
             <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
           </svg>
@@ -84,8 +85,8 @@ export function ScanCard({ object, glimpse, onClose, onOpenCard }: Props) {
           <p className="muted">
             {object.label}.{" "}
             {glimpse.open
-              ? "The chapter is open: its way in is here on the map."
-              : "This part of the valley is planned; the question is kept in your notebook."}
+              ? t("The chapter is open: its way in is here on the map.")
+              : t("This part of the valley is planned; the question is kept in your notebook.")}
           </p>
         </>
       ) : (
@@ -94,7 +95,7 @@ export function ScanCard({ object, glimpse, onClose, onOpenCard }: Props) {
       {object.facts && <Facts facts={object.facts} />}
       {card && onOpenCard && (
         <button type="button" className="link-btn" onClick={() => onOpenCard(card.item.id)}>
-          Field card: {card.item.name} →
+          {t("Field card: {name} →", { name: card.item.name })}
         </button>
       )}
     </section>
@@ -107,7 +108,7 @@ export function CardTray({ ids, onOpen }: { ids: string[]; onOpen: (id: string) 
   const card = id ? fieldCard(id) : undefined;
   if (!id || !card) return null;
   return (
-    <aside className="card-tray" aria-label="New field cards" data-depth={Math.min(ids.length, 3)}>
+    <aside className="card-tray" aria-label={t("New field cards")} data-depth={Math.min(ids.length, 3)}>
       <button type="button" className="tray-card" onClick={() => onOpen(id)}>
         <span className="icon-chip" aria-hidden="true">
           <svg viewBox="0 0 20 20" width="18" height="18">
@@ -121,7 +122,9 @@ export function CardTray({ ids, onOpen }: { ids: string[]; onOpen: (id: string) 
           </svg>
         </span>
         <span className="tray-text">
-          <small>{ids.length > 1 ? `New field card · ${ids.length} waiting` : "New field card"}</small>
+          <small>
+            {ids.length > 1 ? t("New field card · {n} waiting", { n: ids.length }) : t("New field card")}
+          </small>
           <b>{card.item.name}</b>
         </span>
         <span className="go-chip" aria-hidden="true">

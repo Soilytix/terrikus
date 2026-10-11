@@ -11,6 +11,7 @@ import {
   mission,
   scene as sceneById,
 } from "../content";
+import { lang, t } from "../i18n";
 import type {
   Chapter,
   Discovery,
@@ -254,9 +255,20 @@ export function whereToLook(save: Save, r: Rumor): string | undefined {
   if (!state || state === "explained" || !v || v.state !== state || v.n < 3) return undefined;
   const c = chapterById(r.hintsAt[0] ?? r.chapter);
   if (!c) return undefined;
-  if (save.chaptersUnlocked.includes(c.id))
-    return `Go to ${sceneById(c.entry)?.title.toLowerCase() ?? "the valley"}: chapter ${c.number}, ${c.title}, starts there.`;
+  if (save.chaptersUnlocked.includes(c.id)) {
+    const title = sceneById(c.entry)?.title;
+    // German nouns keep their capitals inside a sentence.
+    const place = title ? (lang() === "en" ? title.toLowerCase() : title) : t("the valley");
+    return t("Go to {place}: chapter {n}, {title}, starts there.", { place, n: c.number, title: c.title });
+  }
   if (c.playable)
-    return `Chapter ${c.number}, ${c.title}, opens when you finish ${c.after.map((a) => chapterById(a)?.title).join(" and ")}.`;
-  return `Chapter ${c.number}, ${c.title}, is not built yet. The question stays open in your notebook.`;
+    return t("Chapter {n}, {title}, opens when you finish {after}.", {
+      n: c.number,
+      title: c.title,
+      after: c.after.map((a) => chapterById(a)?.title).join(t(" and ")),
+    });
+  return t("Chapter {n}, {title}, is not built yet. The question stays open in your notebook.", {
+    n: c.number,
+    title: c.title,
+  });
 }
