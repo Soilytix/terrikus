@@ -5,6 +5,7 @@
  */
 import { CODEX, MISSIONS, SCENES, VALLEY_SCENES } from "./index";
 import type { ChapterBundle } from "./schema";
+import { languageReady, localize } from "../i18n";
 
 /** Every built chapter, in the order its content joins the lists. */
 export const LOADERS: Record<string, () => Promise<ChapterBundle>> = {
@@ -35,8 +36,9 @@ function load(id: string): Promise<void> {
   if (isLoaded(id)) return Promise.resolve();
   let p = pending.get(id);
   if (!p) {
-    p = LOADERS[id]!().then((b) => {
-      loaded.set(id, b);
+    // A chunk can arrive before the dictionary; it is translated only once the language is in.
+    p = Promise.all([LOADERS[id]!(), languageReady]).then(([b]) => {
+      loaded.set(id, localize(b));
       const bundles = Object.keys(LOADERS).flatMap((k) => loaded.get(k) ?? []);
       SCENES.splice(0, SCENES.length, ...VALLEY_SCENES, ...bundles.flatMap((x) => x.scenes));
       MISSIONS.splice(0, MISSIONS.length, ...bundles.flatMap((x) => x.missions));

@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./styles/app.css";
 import { App } from "./app/App";
 import { LEGACY_SAVE_KEYS, SAVE_KEY } from "./save/schema";
+import { bootLanguage } from "./i18n/boot";
 
 const raw = () => {
   try {
@@ -65,10 +66,13 @@ class Crash extends Component<{ children: ReactNode }, { error: Error | null }> 
 
 const root = document.getElementById("root");
 if (!root) throw new Error("#root missing from index.html");
-createRoot(root).render(
-  <StrictMode>
-    <Crash>
-      <App />
-    </Crash>
-  </StrictMode>,
+// The language is settled before the first paint, so no string flips under the learner.
+void bootLanguage().then(() =>
+  createRoot(root).render(
+    <StrictMode>
+      <Crash>
+        <App />
+      </Crash>
+    </StrictMode>,
+  ),
 );

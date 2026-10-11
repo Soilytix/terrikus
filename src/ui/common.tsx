@@ -1,5 +1,7 @@
 /** Small shared pieces: facts with their sources, review badges, dialogs. */
-import { useEffect, useRef, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, type ReactNode } from "react";
+import { LANGS, lang, t } from "../i18n";
+import { switchLang } from "../i18n/boot";
 import type { Confidence, Fact, ReviewStatus } from "../content/schema";
 import { SOURCES, type SourceId } from "../content/sources";
 
@@ -110,4 +112,30 @@ export function Dialog({
 
 export function Kbd({ children }: { children: ReactNode }) {
   return <kbd className="kbd">{children}</kbd>;
+}
+
+/** `t` with React parts: `{name}` slots in the translated string are filled with nodes. */
+export function tr(s: string, parts: Record<string, ReactNode>): ReactNode {
+  return t(s)
+    .split(/\{(\w+)\}/)
+    .map((piece, i) => <Fragment key={i}>{i % 2 ? (parts[piece] ?? `{${piece}}`) : piece}</Fragment>);
+}
+
+/** English / Deutsch. Each language is named in itself; choosing one reloads the page. */
+export function LangToggle({ className }: { className?: string }) {
+  return (
+    <div className={`lang-toggle${className ? ` ${className}` : ""}`} role="group" aria-label={t("Language")}>
+      {LANGS.map((l) => (
+        <button
+          key={l.id}
+          type="button"
+          lang={l.id}
+          aria-pressed={lang() === l.id}
+          onClick={() => lang() !== l.id && switchLang(l.id)}
+        >
+          {l.name}
+        </button>
+      ))}
+    </div>
+  );
 }

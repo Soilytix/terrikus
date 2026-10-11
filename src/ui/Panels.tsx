@@ -3,10 +3,11 @@ import { useRef, useState } from "react";
 import type { Scene } from "../content/schema";
 import { exportSave, importSave } from "../save/storage";
 import type { Motion, Save } from "../save/schema";
-import { Dialog, Kbd } from "./common";
+import { Dialog, Kbd, LangToggle } from "./common";
 import { AmbientToggle } from "./Ambient";
 import { Credits } from "./Credits";
 import { PilotSettings } from "./Pilot";
+import { t } from "../i18n";
 import { SoundSettings } from "./Sound";
 
 export function Truth({ scene, onClose }: { scene: Scene; onClose: () => void }) {
@@ -126,6 +127,18 @@ export function Settings({
   };
   return (
     <Dialog title="Settings" onClose={onClose}>
+      <section className="settings-card" aria-labelledby="settings-language">
+        <h3 id="settings-language" className="settings-group">
+          {t("Language")}
+        </h3>
+        <div className="setting">
+          <span className="setting-text">
+            <b>{t("Language")}</b>
+            <small>{t("Switching reloads the page. Your notebook stays.")}</small>
+          </span>
+          <LangToggle />
+        </div>
+      </section>
       <section className="settings-card" aria-labelledby="settings-progress">
         <h3 id="settings-progress" className="settings-group">
           Progress

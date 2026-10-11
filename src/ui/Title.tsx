@@ -3,6 +3,7 @@ import { CHAPTERS } from "../content";
 import { targetHref } from "../app/router";
 import type { Save } from "../save/schema";
 import { assetUrl } from "../assets/urls";
+import { LangToggle } from "./common";
 import { mixer, type BedScene } from "../audio/mixer";
 import { useEffect, useState, type CSSProperties } from "react";
 
@@ -101,6 +102,7 @@ export function Title({
       )}
       {!splash && (
         <section className="title-card" aria-labelledby="title" aria-busy={!ready}>
+          <LangToggle className="title-lang" />
           <h1 id="title">
             {[..."Terrikus"].map((ch, i) => (
               <span key={i} style={{ "--tilt": `${TILT[i]}deg` } as CSSProperties}>

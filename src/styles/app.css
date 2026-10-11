@@ -2038,6 +2038,33 @@ input[type="range"] {
   letter-spacing: 0.1em;
   line-height: 1;
 }
+/* English / Deutsch: a small segmented switch. */
+.lang-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-page);
+}
+.lang-toggle button {
+  padding: 4px 10px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+}
+.lang-toggle button[aria-pressed="true"] {
+  background: var(--color-ink);
+  color: var(--color-text-on-dark);
+}
+.title-lang {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
 /* Each letter set a little askew, as on the old game boxes. */
 .title-card h1 > span {
   display: inline-block;
