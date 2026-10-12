@@ -86,7 +86,7 @@ test("play chapter 4: the redox elevator, airless crumbs and draining the paddy"
   await mission.getByRole("button", { name: "Add to my notebook" }).click();
 
   // c4-m3: back up to the paddy; both curves, no verdict.
-  await page.locator(".up-btn").click();
+  await page.getByRole("button", { name: "Up a scale", exact: true }).click();
   await expect(page.getByRole("heading", { name: "The rice paddy", exact: true })).toBeVisible();
   await settled(page);
   mission = await panel(page);

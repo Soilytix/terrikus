@@ -2743,7 +2743,23 @@ input[type="range"] {
 }
 
 /* ---------- Phone ---------- */
+.phone-only {
+  display: none !important;
+}
 @media (max-width: 760px) {
+  .phone-only {
+    display: inline-flex !important;
+  }
+  /* A phone shows the plate and one button group: no ladder, scale bar, review pill or help. */
+  .wide-only,
+  .hud-scene,
+  .hud-about.icon-only,
+  .ladder,
+  .ladder[data-recede="true"],
+  .scalebar,
+  .review-pill {
+    display: none !important;
+  }
   :root {
     --hud-gap: 10px;
   }

@@ -98,6 +98,17 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
           </nav>
         )}
         <nav className="hud-actions" aria-label={t("Tools")}>
+          {/* A phone keeps one button group: the way up joins it, and About replaces Help. */}
+          {onUp && (
+            <button
+              type="button"
+              className="hud-btn icon-only phone-only"
+              onClick={onUp}
+              aria-label={t("Up a scale")}
+            >
+              <Icon d={ICONS.up} />
+            </button>
+          )}
           <button
             type="button"
             className="hud-btn"
@@ -114,7 +125,15 @@ export function Hud({ scene, stamps, onUp, onNotebook, onTruth, onSettings, onHe
           </button>
           <button
             type="button"
-            className="hud-btn icon-only"
+            className="hud-btn icon-only phone-only"
+            onClick={onTruth}
+            aria-label={t("About this picture")}
+          >
+            <Icon d={ICONS.info} />
+          </button>
+          <button
+            type="button"
+            className="hud-btn icon-only wide-only"
             onClick={onHelp}
             aria-label={t("Help and keys")}
             aria-keyshortcuts="?"
