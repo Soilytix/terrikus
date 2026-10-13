@@ -164,7 +164,7 @@ export function Title({
               ])}
               <li data-state="planned">
                 <span title={t("Glimpsed in the valley, still being written")}>
-                  +12<span className="sr-only">{t(" chapters still being written")}</span>
+                  +1<span className="sr-only">{t(" chapters still being written")}</span>
                 </span>
               </li>
               {slot.after >= chapters.length && card}
