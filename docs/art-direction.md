@@ -1,11 +1,11 @@
 ---
-title: "Terrikus — Art direction"
+title: "Terrikus Art direction"
 description: "Palette tokens, per-scale layer recipes, motion language, illustration style, asset sourcing and licences, reduced-motion behaviour."
-status: draft — new scene hexes and the zoom token need CTO sign-off (spec OD-1, OD-2)
+status: draft, new scene hexes and the zoom token need CTO sign-off (spec OD-1, OD-2)
 date: 2026-10-06
 ---
 
-# Terrikus — Art direction
+# Terrikus Art direction
 
 > **Painted places, honest diagrams.** Backdrops are lively, textured and beautiful. Anything that teaches stays crisp, labelled, scaled and sourced. Ambient motion is atmosphere; event motion is meaning.
 

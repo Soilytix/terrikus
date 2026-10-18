@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Installs the exact toolchain from mise.toml/mise.lock — same as local.
+      # Installs the exact toolchain from mise.toml/mise.lock
       - uses: jdx/mise-action@v2
         with:
           cache: true
