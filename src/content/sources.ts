@@ -1138,47 +1138,11 @@ export const SOURCES = {
     link: "https://doi.org/10.1207/s15326985ep4102_1",
     status: "",
   },
-  "img-nrcs-photo-gallery": {
-    short: "USDA NRCS Photo Gallery",
-    citation: "USDA NRCS Photo Gallery",
-    link: "US public domain; asks for no alteration and no implied endorsement",
-    status: "Unaltered reference photos in notebook cards",
-  },
-  "img-usda-ars": {
-    short: "USDA ARS Image Gallery",
-    citation: "USDA ARS Image Gallery",
-    link: "Mostly public domain; third-party credits per image",
-    status: "Micrographs as notebook references",
-  },
-  "img-bhl": {
-    short: "Biodiversity Heritage Library",
-    citation: "Biodiversity Heritage Library (e.g. Haeckel 1904; `darwin-1881` plates)",
-    link: "Per item; confirm public domain",
-    status: 'Engraving-style references; optional "naturalist plate" texture',
-  },
-  "img-wikimedia": {
-    short: "Wikimedia Commons micrographs and profile photos",
-    citation: "Wikimedia Commons micrographs and profile photos",
-    link: "Per file (PD, CC0, CC BY, CC BY-SA)",
-    status: "Profile photos and micrographs; CC BY-SA kept isolated",
-  },
   "img-sentinel-2": {
     short: "Copernicus Sentinel-2",
     citation: "Copernicus Sentinel-2",
     link: 'Free and open: "Contains modified Copernicus Sentinel data [year]"',
     status: "Landscape satellite inset, labelled as a measurement",
-  },
-  "img-jrc-gsba": {
-    short: "jrc-2016-gsba figures",
-    citation: "`jrc-2016-gsba` figures",
-    link: "CC BY 4.0, EU-owned only",
-    status: "Food-web and organism-group diagram references",
-  },
-  "img-soil-atlas": {
-    short: "soil-atlas-2015 graphics",
-    citation: "`soil-atlas-2015` graphics",
-    link: "CC BY-SA 3.0",
-    status: "Standalone adapted figures only",
   },
   "img-soilytix-authored": {
     short: "Soilytix-authored SVG and brand elements",
@@ -1190,27 +1154,8 @@ export const SOURCES = {
   "img-designer-infographics": {
     short: "Designer infographic set and hub harvest",
     citation: "Designer infographic set and hub harvest (2026-08-10 dump)",
-    link: "Designer work for Soilytix; derivative-use terms **unconfirmed**",
+    link: "Designer work for Soilytix; terms open (spec OD-6)",
     status: "`internal` profile only, until the terms are confirmed",
-  },
-  "img-biorender": {
-    short: "illustration-assets/src/biorender",
-    citation: "`illustration-assets/src/biorender`",
-    link: "BioRender terms forbid standalone extraction; plan tier unknown",
-    status: "**Drawing reference only. Never bundled.**",
-  },
-  "img-strangespecimens": {
-    short: "illustration-assets/src/strangespecimens",
-    citation: "`illustration-assets/src/strangespecimens`",
-    link: "Beta licence; no unauthenticated surface; decorative only",
-    status:
-      "**Not bundled by default.** Allowed only in a later, explicitly decided `internal` decorative layer.",
-  },
-  "img-isric-monoliths": {
-    short: "ISRIC World Soil Museum",
-    citation: "ISRIC World Soil Museum",
-    link: "No open licence found",
-    status: "Excluded until permission is obtained",
   },
   "snd-freesound-cc0": {
     short: "Freesound",

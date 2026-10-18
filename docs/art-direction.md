@@ -9,7 +9,7 @@ date: 2026-10-06
 
 > **Painted places, honest diagrams.** Backdrops are lively, textured and beautiful. Anything that teaches stays crisp, labelled, scaled and sourced. Ambient motion is atmosphere; event motion is meaning.
 
-Inputs: `docs/research/visual-direction.md` (D1–D8, shaders S1–S9), `docs/research/internal-assets.md` (token table, licence matrix), the Soilytix design system (platform `packages/design-system` v0.2.0), and stillwet.art as the reference for *quality of liveliness*. Nothing from stillwet.art is copied.
+Inputs: `docs/research/visual-direction.md` (D1–D8, shaders S1–S9), the Soilytix design system (platform `packages/design-system` v0.2.0), and stillwet.art as the reference for *quality of liveliness*. Nothing from stillwet.art is copied.
 
 Contents:
 
@@ -43,7 +43,7 @@ Contents:
 | **UI register** | Notebook, bench controls, cards, HUD, dialogs, charts | Vendored design-system tokens (`src/design-system/`, spec D-6) | Standard Soilytix rules unchanged: Inter, Plex Mono for numbers, Obsidian ink, page #F5F6F6, Lime single accent, green text #384C10 |
 | **World register** | Canvas plates, scene SVG, organism sprites | `src/styles/scene.css` (local, illustration-only) | Earth and water pigments bound to design-system primitives where one exists; new hexes are listed and need sign-off; never used for UI text or UI fills |
 
-The world register is the "option 3" in `internal-assets.md`: a local scene palette, documented and bounded, instead of extending the design system for one product.
+The world register is a local scene palette, documented and bounded, instead of extending the design system for one product.
 
 ---
 
@@ -235,14 +235,7 @@ type Asset = {
 |---|---|---|---|
 | `img-soilytix-authored` (2025 brand, stipple, icons) | Plate style, icons | yes | yes |
 | `img-designer-infographics` | Internal reference plates | internal profile only | **no** (contract terms open, OD-6) |
-| `img-nrcs-photo-gallery`, `img-usda-ars`, `usda-hb60` figures | Drawing reference; selected photos in codex | yes (PD, US government) | yes, with credit |
-| `img-bhl` | Historic plates for codex "museum" pages | yes (PD only) | yes |
-| `img-wikimedia` | Selected codex images | per file; CC BY-SA files isolated in `src/assets/cc-by-sa/` with per-file attribution, never merged into derived plates | yes, with attribution |
 | `img-sentinel-2` | Satellite inset (ch. 13) | yes (Copernicus licence, attribution) | yes |
-| `img-jrc-gsba`, `img-soil-atlas` | Drawing reference | no (reference only) | — |
-| `img-biorender` | **Never bundled**; reference only | no | — |
-| `img-strangespecimens` | Not bundled by default; reference only | no | — |
-| `img-isric-monoliths` | Excluded | no | — |
 | `font-inter`, `font-plex-mono` | Fonts via @fontsource | yes (OFL) | yes |
 
 **Rules**

@@ -26,7 +26,7 @@ This is the bibliography for Terrikus. Each source has a **stable id**. Content 
   - `verify`: the link or a detail is not yet checked. The source may be cited in `draft` content, but content citing it cannot reach `approved` until the row is checked.
   - `withdrawn`.
 - **Ch** column: chapter numbers as in `world-bible.md` (P = prologue, ★ = optional chapter, X = cross-cutting).
-- The internal vault notes listed in `docs/research/internal-assets.md` §5 are **maps, not citations**. They never appear here. Re-source each claim to a primary or textbook source.
+- Internal vault notes are **maps, not citations**. They never appear here. Re-source each claim to a primary or textbook source.
 
 ## 1. Textbooks, primers, agency references
 
@@ -231,17 +231,8 @@ These are sources of **images**, not facts. Each shipped file also gets a row in
 
 | id | Source | Licence / terms (as found 2026-10-06) | Alter? | Allowed use |
 |---|---|---|---|---|
-| `img-nrcs-photo-gallery` | USDA NRCS Photo Gallery | US public domain; asks for no alteration and no implied endorsement | no | Unaltered reference photos in notebook cards |
-| `img-usda-ars` | USDA ARS Image Gallery | Mostly public domain; third-party credits per image | per image | Micrographs as notebook references |
-| `img-bhl` | Biodiversity Heritage Library (e.g. Haeckel 1904; `darwin-1881` plates) | Per item; confirm public domain | if PD | Engraving-style references; optional "naturalist plate" texture |
-| `img-wikimedia` | Wikimedia Commons micrographs and profile photos | Per file (PD, CC0, CC BY, CC BY-SA) | per licence | Profile photos and micrographs; CC BY-SA kept isolated |
 | `img-sentinel-2` | Copernicus Sentinel-2 | Free and open: "Contains modified Copernicus Sentinel data [year]" | yes | Landscape satellite inset, labelled as a measurement |
-| `img-jrc-gsba` | `jrc-2016-gsba` figures | CC BY 4.0, EU-owned only | yes | Food-web and organism-group diagram references |
-| `img-soil-atlas` | `soil-atlas-2015` graphics | CC BY-SA 3.0 | yes, share-alike | Standalone adapted figures only |
 | `img-soilytix-authored` | Soilytix-authored SVG and brand elements (`Soil sample (Soilytix).svg`, 2025 biome vignettes, 2025 organism stipple drawings, 2026 Soilytix-palette SVGs) | Soilytix-owned | yes | Any profile |
-| `img-designer-infographics` | Designer infographic set and hub harvest (2026-08-10 dump) | Designer work for Soilytix; derivative-use terms **unconfirmed** | internal only | `internal` profile only, until the terms are confirmed |
-| `img-biorender` | `illustration-assets/src/biorender` | BioRender terms forbid standalone extraction; plan tier unknown | — | **Drawing reference only. Never bundled.** |
-| `img-strangespecimens` | `illustration-assets/src/strangespecimens` | Beta licence; no unauthenticated surface; decorative only | — | **Not bundled by default.** Allowed only in a later, explicitly decided `internal` decorative layer. |
-| `img-isric-monoliths` | ISRIC World Soil Museum | No open licence found | — | Excluded until permission is obtained |
+| `img-designer-infographics` | Designer infographic set and hub harvest (2026-08-10 dump) | Designer work for Soilytix; terms open (spec OD-6) | internal only | `internal` profile only, until the terms are confirmed |
 | `snd-freesound-cc0` | Freesound (freesound.org) field recordings marked CC0 1.0 | CC0 1.0 public domain dedication, checked per sound on its page 2026-10-10 | yes | Background ambience beds under the music, each listed in the manifest with its Freesound id |
 | `font-inter`, `font-plex-mono` | Inter; IBM Plex Mono | SIL OFL 1.1 | — | UI type, licence file in repo |

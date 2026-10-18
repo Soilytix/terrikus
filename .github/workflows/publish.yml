@@ -10,7 +10,8 @@ on:
 # OD-5 (founder, 2026-10-09): the same internal build also goes public at terrikus.com,
 # deployed by Vercel's Git integration (Soilytix team, vercel.json), not by this workflow.
 # Keyless: GitHub OIDC through Workload Identity Federation, as a service account that
-# can write artifacts/terrikus/ in the hub bucket and nothing else (core/static's publisher.tf in Soilytix/terraform).
+# can write artifacts/terrikus/ in the hub bucket and nothing else. The identifiers live in
+# repository variables (GCP_PROJECT, GCP_WIF_PROVIDER, GCP_PUBLISH_SA, HUB_BUCKET).
 permissions:
   contents: read
   id-token: write
@@ -35,12 +36,11 @@ jobs:
       # Relative base and hash routing (D-5), so dist/ works under any prefix.
       - run: pnpm build
 
-      # Both values are the `soil_worlds_publisher` output of core/static.
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
-          project_id: [gcp-project]
-          workload_identity_provider: projects/[project-number]/locations/global/workloadIdentityPools/artifacts-publish/providers/soil-worlds
-          service_account: [service-account]
+          project_id: ${{ vars.GCP_PROJECT }}
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_PUBLISH_SA }}
 
       # The prefix-only grant denies storage.objects.list, which even `gcloud storage cp`
       # needs, so upload object by object and leave stale hashed chunks behind until
@@ -48,7 +48,7 @@ jobs:
       - uses: google-github-actions/upload-cloud-storage@6397bd7208e18d13ba2619ee21b9873edc94427a # v3.0.0
         with:
           path: dist
-          destination: [hub-bucket]/artifacts/terrikus
+          destination: ${{ vars.HUB_BUCKET }}/artifacts/terrikus
           parent: false
           process_gcloudignore: false
           # The hub proxy serves the stored bytes without Content-Encoding, so store them plain.

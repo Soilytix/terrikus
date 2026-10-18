@@ -11,7 +11,7 @@ Research note, 2026-10-06. Written for the build loop of `soilytix/soil-worlds` 
 | D3 | **Nest six scales on one zoom axis**: landscape, field, profile, aggregate/pore, rhizosphere, cell/molecule. A persistent scale bar sits in IBM Plex Mono. | "Powers of Ten" and "The Scale of the Universe" continuity. The learner always knows where they are and how big things are. |
 | D4 | **Lime marks the learner's subject only**: the tagged parcel, the selected organism, the active path. **Gold marks the comparison world** in predict/compare. Everything else is earth, ink and neutral. | Maps the design system's chart roles (subject, comparison, context) onto a world. One accent with one meaning. |
 | D5 | **The earth palette is a separate "world register"**, bound to existing primitives wherever possible (`primary-soil`, `scale-gold-*`, the neutral ramp, `text-on-dark-warm`, `functional-dark-blue`). It applies only to illustration, never to UI or data. The 6 new hexes need CTO sign-off. | DESIGN.md says "don't introduce a colour that is not in the primitives block". This keeps the extension minimal and clearly marked. |
-| D6 | **Ship no BioRender SVGs or strangespecimens files in the app bundle.** Organisms are drawn in-house, with those archives used as drawing reference only. | BioRender terms forbid standalone extraction. strangespecimens is decorative-only and cannot appear on any unauthenticated surface. Details in section 8. |
+| D6 | **Ship no BioRender SVGs or strangespecimens files in the app bundle.** Organisms are drawn in-house, with those archives used as drawing reference only. | Neither archive is licensed for a shipped bundle. |
 | D7 | **Respect reduced motion fully**: no ambient motion, no animated zoom (crossfade instead), and simulations advance by step buttons. Sound is off by default. | DESIGN.md: "nothing slides, counts, pulses or reveals under it." |
 | D8 | **Keep a parallel DOM "scene outline" as the accessibility layer.** Every interactive world object is a real `<button>` in a spatially ordered list, and narration goes through `aria-live`. | Canvas content is invisible to assistive tech. PixiJS's built-in accessibility plugin only adds positioned divs, which is not enough for a learning tool. |
 
@@ -89,7 +89,7 @@ Between scales, a *portal* object such as a soil pit, a clod or a root tip is th
 | L4 interactive | 1 | Portals: "dig here" pits on 3 catena positions; weather vane (rain/drought toggle) | Hover lift 160 ms |
 | L5 weather | 1.1 | Rain streaks / heat shimmer particles, optional | Curl-noise particles (S4) |
 
-Teaches: why soils differ along a slope (topography, water, parent material). Optional satellite inset: a Sentinel-2 true-colour tile (section 8), clearly labelled as a *measurement*, next to the painted *illustration*.
+Teaches: why soils differ along a slope (topography, water, parent material). Optional satellite inset: a Sentinel-2 true-colour tile, clearly labelled as a *measurement*, next to the painted *illustration*.
 
 ### 5.2 Field (10–100 m)
 
@@ -226,7 +226,7 @@ The "watch it form" time-lapse records stroke batches as frames, encoded to a sh
 
 - Drawn **in-house as SVG**: monoline `ink` outline at 1.5 px (at 1× zoom), rounded caps and joins as in DESIGN.md, flat fill from the world register, one soft inner shade, and an optional single highlight.
 - No faces, no eyes on microbes, no mascots. Character comes from *morphology and movement*: nematode sinusoid, springtail jump, hyphal tip extension, ciliate beat.
-- Morphology is drawn from public-domain or CC references (BHL plates, NRCS and USDA photos, Wikimedia micrographs; section 8). Each sprite records `reference_url` and `truth_status` in `assets/manifest.json`, mirroring `illustration-assets/manifest.csv`.
+- Morphology is drawn from public-domain or CC references (BHL plates, NRCS and USDA photos, Wikimedia micrographs). Each sprite records `reference_url` and `truth_status` in `assets/manifest.json`, mirroring `illustration-assets/manifest.csv`.
 - Functional groups (decomposer, grazer, predator, mutualist) are shown by **shape badges plus text**, never by colour alone.
 - Rasterise SVGs at build time into atlases at 1×/2× (`@pixi/assetpack`). Lime and gold states are applied by tint and outline filters, not by duplicate art.
 
@@ -259,28 +259,7 @@ Rule: **ambient motion is atmosphere, event motion is meaning.** Anything that t
 
 ## 8. Image and asset sources, with licences
 
-"Alter?" means whether we may transform the image (e.g. paint over it or run it through shaders). Licence findings are from the sources' own statements found on 2026-10-06. Anything marked *verify* must be checked per item before use.
-
-| Source | Licence / terms | Attribution | Alter? | Planned use | Status |
-|---|---|---|---|---|---|
-| **NRCS Photo Gallery** (USDA) | US public domain (federal work) | Suggested: "Photo courtesy of USDA NRCS" | **No:** gallery terms ask that images not be distorted or altered, and not imply NRCS endorsement | Unaltered "real-world" reference photos in notebook cards (profiles, aggregates, erosion) next to painted scenes | Usable |
-| **USDA ARS Image Gallery** | Mostly public domain; some images credited to third parties | Credit ARS and photographer | Per image | Micrographs (nematodes, mycorrhizae) as notebook references | Verify per image |
-| **USDA Soil Biology Primer** (NRCS / SWCS) | Uncredited USDA text, graphics and photos are free to use with credit; **credited photos need permission** via SWCS (pubs@swcs.org) | "Soil Biology Primer, USDA NRCS" | Uncredited material only | Content reference; uncredited diagrams as drawing reference | Usable for uncredited only |
-| **Soil Atlas 2015** (Heinrich Böll Stiftung and IASS) | **CC BY-SA 3.0 Unported**, texts and graphics; graphics ZIP available | Credit the publishers, link licence | Yes, but **derivatives must be CC BY-SA** | Content reference; any adapted graphic kept as a standalone figure carrying CC BY-SA | Usable with share-alike isolation |
-| **Global Soil Biodiversity Atlas** (JRC, 2016) | CC BY 4.0 for EU-owned material; **third-party photos excluded** (permission needed) | "© European Union, JRC; Global Soil Biodiversity Atlas", and indicate changes | Yes, EU-owned material only | Organism group diagrams and food-web references | Usable, EU-owned material only |
-| **ESDAC datasets / maps** | Use granted on condition data are **not passed to third parties** | Cite source | — | Not shipped in the app | Excluded from bundle |
-| **Biodiversity Heritage Library** (e.g. Haeckel, *Kunstformen der Natur* 1904; Darwin, *Formation of Vegetable Mould through the Action of Worms* 1881) | Per item. Many are public domain. Flickr "No known copyright restrictions" ≠ confirmed public domain; some Flickr items are CC BY 2.0 | Recommended: title, author, year, BHL link | Public domain: yes | Engraving-style references for protists, nematodes and earthworms; an optional "naturalist plate" texture in the notebook | Verify per item |
-| **Wikimedia Commons** micrographs and profiles | Per file (PD, CC0, CC BY, CC BY-SA…) | As the file page requires (author, licence, link) | Per licence; prefer PD, CC0 and CC BY; keep CC BY-SA isolated | Soil profile photos by WRB group, micrographs (tardigrades, rotifers, fungal hyphae) | Verify per file; record in manifest |
-| **Copernicus Sentinel-2** | Free and open | "Contains modified Copernicus Sentinel data [year]" | Yes | Landscape-scale satellite inset, labelled as measurement | Usable |
-| **ISRIC World Soil Museum monoliths** | No open licence found; older publications are all rights reserved | — | — | Would be ideal for profiles | **Excluded until permission is obtained** |
-| **FAO soil publications** | Often CC BY-NC-SA 3.0 IGO (not verified per item). NC conflicts with a company tool | — | — | Content reference only | Verify; reference only |
-| **BioRender** (`illustration-assets/src/biorender`, internal) | Terms forbid using BioRender content outside BioRender in a way that extracts it or makes it available standalone. Designs outside BioRender need the Industry licence. Our plan tier is unknown | BioRender citation required on published figures | — | **Drawing reference only; no files in the bundle** | Excluded from bundle |
-| **strangespecimens** (`illustration-assets/src/strangespecimens`, internal) | Beta licence: internal design work, UI and marketing allowed; **no unauthenticated surface, no scientific claims**; the beta grant covers projects created during the beta | Appreciated, not required | Yes | At most decorative UI furniture on an IAP-gated internal build; **never** in the outsider build or near a claim | Avoid by default |
-| **Inter, IBM Plex Mono** | SIL OFL 1.1 | Licence file in repo | — | UI type | Usable |
-| **Freesound** | Per file; use **CC0 only** | None required; record anyway | Yes | Optional ambient layers (post-v1) | Optional |
-| **Kurzgesagt, Ciechanowski, Case, Agarwal, stillwet** | Copyrighted works | — | — | Style and interaction reference only | No assets |
-
-Every shipped external asset gets a row in `assets/ATTRIBUTION.md` and in `assets/manifest.json` with these fields: `source_url`, `licence`, `author`, `retrieved`, `altered`, `truth_status`. The in-app credits panel is generated from that manifest.
+Only shipped assets are tracked here: each has a row in `src/assets/manifest.ts` (source id, licence, attribution, `publicOk`) and its source in `docs/sources.md` §4. The in-app credits panel is generated from that manifest.
 
 ## 9. Shader sketches
 
@@ -403,23 +382,11 @@ color.rgb *= vignette(vUv, 0.75);
 1. **World register:** six new hexes (`world-gley`, `world-oxide`, `world-clay`, `world-foliage`, `world-sky-high`, `world-sky-low`). They need CTO sign-off as an *illustration-only* register in DESIGN.md, or replacement with existing primitives.
 2. **`functional-blue` and `functional-dark-blue` as water pigment:** this departs from "Info blue is not a data colour". It is defensible because water is not data, but it should be confirmed.
 3. **`duration-zoom` 1100 ms:** a new motion token outside the DESIGN.md set.
-4. **Audience surface:** an employee-only IAP-gated build vs a public build. This decides whether strangespecimens may appear at all. Default here: the public-safe asset set only.
-5. **BioRender plan tier:** if Soilytix holds an Industry licence, BioRender-derived figures might be usable in designs outside BioRender. Even then, shipping raw SVGs in a bundle is standalone extraction. The default is to exclude them.
-6. **ISRIC monolith photos:** worth requesting permission; they would be the best profile references.
-7. **Dark underground scenes vs "light is the only customer-facing theme":** this world is an illustration surface, not a product theme. Treat it like the open Pathogen Monitor question, and confirm.
-8. **Scientific review owner** for every scene's causal story, sprite morphology and simplification note (from the proposal). No such reviewer is assigned yet.
-9. **Bundle numbers for Pixi v8** are taken from third-party package indexes and are approximate. Measure in the first build and revisit D1 if the world chunk exceeds 350 KB gz.
+4. **Dark underground scenes vs "light is the only customer-facing theme":** this world is an illustration surface, not a product theme. Treat it like the open Pathogen Monitor question, and confirm.
+5. **Scientific review owner** for every scene's causal story, sprite morphology and simplification note (from the proposal). No such reviewer is assigned yet.
+6. **Bundle numbers for Pixi v8** are taken from third-party package indexes and are approximate. Measure in the first build and revisit D1 if the world chunk exceeds 350 KB gz.
 
 ## Sources
 
 - stillwet: https://stillwet.art/ (HTML inspected 2026-10-06)
-- Soilytix DESIGN.md: [DESIGN.md] (version 2026-09-25)
-- `soilytix/illustration-assets` README and `src/strangespecimens/LICENCE-AND-USE.md`
-- Soil Biology Primer, image permissions: https://www.nrcs.usda.gov/resources/education-and-teaching-materials/soil-biology-primer
-- NRCS Photo Gallery terms, as reproduced on Wikimedia Commons file pages, e.g. https://species-id.net/openmedia/File:NRCSAZ02010_-_Arizona_(303)(NRCS_Photo_Gallery).tif
-- Soil Atlas 2015 licence (CC BY-SA 3.0): https://www.boell.de/en/2015/01/05/bodenatlas-daten-und-fakten-ueber-acker-land-und-erde, https://th.boell.org/sites/default/files/soilatlas2015.pdf
-- Global Soil Biodiversity Atlas: https://esdac.jrc.ec.europa.eu/content/global-soil-biodiversity-atlas, https://publications.jrc.ec.europa.eu/repository/handle/JRC95584
-- BHL copyright guidance: https://about-new.biodiversitylibrary.org/?p=1027
-- BioRender licence terms: https://www.biorender.com/terms, https://biorender.com/basic-license, https://marketing.biorender.com/industry-license
 - PixiJS bundle figures: https://depscope.dev/pkg/npm/pixi.js; https://pixijs.io/customize/
-- ISRIC collections: https://www.isric.org/explore/ISRIC-collections

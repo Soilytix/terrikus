@@ -193,8 +193,8 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 
 ### R12 — Public-repo hygiene of `docs/research/` (S L14) · **done**
 
-- **Problem:** `docs/research/internal-assets.md` contained internal vault paths, the internal hub host, bucket names and notes on which items came from customer material.
-- **Direction:** redacted in place (no move): paths, hosts, buckets and customer-derived notes removed, licence conclusions kept; `tests/denylist-hashes.json` gains hashes for the bucket names and vault path prefixes.
+- **Problem:** an internal asset inventory in `docs/research/` named internal paths, hosts, buckets and customer-derived notes.
+- **Direction:** moved to the team vault (2026-10-18), with the licence notes on unshipped sources; publish identifiers moved to repository variables; history rewritten before the repo goes public.
 - **Acceptance:** a grep of `docs/` for bucket URLs, the internal hub host and the share bucket finds nothing; denylist test covers the new hashes; `mise run check` green.
 - **Depends on:** —. **Blocks:** making the GitHub repo public. No longer blocks OD-5, which stays open.
 
@@ -401,7 +401,7 @@ Each is one PR, green on `mise run check`; visual ones also run `mise run e2e` a
 - **Scope:** publish workflow per OD-4 (recommended IAP-gated hub artifacts path, keyless auth); public profile per OD-5.
 - **Acceptance:** blocked until OD-4 is decided; then a tagged build deploys and is reachable at the decided path.
 - **Depends on:** T10, OD-4
-- **Done:** `.github/workflows/publish.yml` builds the internal relative build on every push to main (and on dispatch) and copies `dist/` to `gs://[hub-bucket]/artifacts/terrikus/`, served behind IAP at `hub.<base_domain>/artifacts/terrikus/`, keyless via Workload Identity Federation as `static-soil-worlds-publish`. Goes live once the operator applies Soilytix/terraform#372 (the provider, service account and prefix grant). The grant denies listing, so stale hashed chunks are not pruned. OD-4 taken by the loop, founder to review; OD-5 (public profile and host) stays pending.
+- **Done:** `.github/workflows/publish.yml` builds the internal relative build on every push to main (and on dispatch) and copies `dist/` to the hub bucket under `artifacts/terrikus/`, served behind IAP at `hub.<base_domain>/artifacts/terrikus/`, keyless via Workload Identity Federation as a publish-only service account (identifiers in repository variables). The grant denies listing, so stale hashed chunks are not pruned. OD-4 taken by the loop, founder to review; OD-5 (public profile and host) stays pending.
 
 ---
 
