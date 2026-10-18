@@ -1,4 +1,4 @@
-# Normalize to LF regardless of OS — keeps scripts runnable, kills diff noise.
+# Normalize to LF regardless of OS
 * text=auto eol=lf
 *.sh text eol=lf
 *.png binary

@@ -8,8 +8,7 @@
 <img src="https://img.shields.io/badge/chapters-15%20playable-1AB172?style=flat-square&amp;labelColor=16211B" alt="15 playable chapters">
 <img src="https://img.shields.io/badge/languages-EN%20%C2%B7%20DE-1AB172?style=flat-square&amp;labelColor=16211B" alt="English and German">
 
-
-**A playable soil science textbook.** One river valley, six nested scales, fifteen chapters you play as experiments.
+**A playable soil science textbook.** Explore a living river valley across six nested scales and fifteen interactive experiment-driven chapters.
 
 <br>
 
@@ -21,40 +20,27 @@
 
 ---
 
-## What it does
+## Overview
 
-Terrikus is a web app that teaches soil science through exploration. The
-player stands in one generic river valley and zooms down a ladder of scales:
-landscape, field, profile, aggregate and pore, rhizosphere, cell. Each chapter
-is a place with experiments. The player predicts, runs, observes and explains,
-and keeps what they learn as their own entries in a field notebook.
+**Terrikus** is an interactive web application designed to teach soil science through active scientific inquiry and exploration. Set within a single representative river valley, players zoom seamlessly across six nested spatial scales:
 
-- **Painted, living world.** Every backdrop is painted at runtime by a seeded
-  brush painter in earth pigments and moves gently (wind, drifting light,
-  Brownian shimmer). Knowledge stays crisp: organisms, scale bars and labels
-  are drawn, never painted.
-- **Honest scale.** Every scene carries a true scale bar and a _not to scale_
-  badge when anything is enlarged; crossing a rung stamps the notebook.
-- **A mass-conserving teaching simulation.** The leaf-in-a-jar bench runs an
-  integer double-entry carbon ledger: "Carbon accounted for: 100.0 %", always.
-  Two jars compare one change at a time, and an energy bar only ever grows
-  toward heat.
-- **Explanations, not scores.** Cause-chain cards are confirmed in a batch and
-  answered with _supported_, _plausible but untested_ or _contradicted by your
-  run_. "Cannot tell yet; measure X" is a correct answer.
-- **Measurement versus inference.** The Scientist lens re-skins readouts into
-  measured (± band), derived (formula), interpreted (your confidence) tiers.
-- **Sourced and reviewable.** Every fact cites an id from `docs/sources.md` and
-  carries a confidence; every node shows its scientific review status.
+$$\text{Landscape} \longrightarrow \text{Field} \longrightarrow \text{Profile} \longrightarrow \text{Aggregate \& Pore} \longrightarrow \text{Rhizosphere} \longrightarrow \text{Cell}$$
 
-It never shows a Soilytix product, capability or result, never names a
-customer, and has no points, leaderboards or soil-health score.
+In each chapter, players formulate predictions, conduct controlled experiments, analyze observations, and build causal explanations, recording their discoveries directly into an interactive field notebook.
 
-## Chapters
+### Key Pillars
 
-The prologue opens chapters 1 and 2; chapters 3–13 open from the
-valley map once their rumour has been met. Every chapter is a draft awaiting
-scientific review; `docs/world-bible.md` is the content authority.
+- **Generative Earth-Pigment Aesthetics:** Canvas backdrops are painted live at runtime using seeded procedural brushwork in natural earth pigments, animated by ambient motion (light drift, wind, Brownian movement). Technical overlays, scale indicators, and organism diagrams remain crisp vector drawings.
+- **Honest Spatial Scale:** Every view displays an accurate physical scale bar, prominently highlighting _not-to-scale_ indicators whenever elements are magnified for clarity. Scale shifts are automatically stamped in the player's notebook.
+- **Mass-Conserving Simulation Engine:** Lab experiments operate under exact double-entry accounting (e.g., _Carbon accounted for: 100.0%_). Bench comparisons isolate single variables, maintaining strict thermodynamic directionality toward heat dissipation.
+- **Evidence-Based Explanations:** Hypotheses and cause-effect chains are evaluated in batches as _supported_, _plausible but untested_, or _contradicted by run data_. Recognizing insufficient evidence ("Cannot tell yet; measure X") is treated as a valid scientific conclusion.
+- **Differentiated Data Tiers:** The _Scientist Lens_ categorizes interface data into distinct evidence levels: _Measured_ ($\pm$ uncertainty interval), _Derived_ (explicit formula-based calculation), and _Interpreted_ (player confidence level).
+- **Fully Sourced & Peer-Reviewed:** Every scientific statement links to a specific source entry in `docs/sources.md` with explicit confidence ratings and transparent peer-review tracking status.
+- **Pure Scientific Focus:** Uncompromising pedagogical integrity: free from gamified points, competitive leaderboards, arbitrary soil scores, or commercial product placements.
+
+## Playable Chapters
+
+Chapters 1 and 2 open following the prologue; chapters 3–14 unlock from the valley map as players discover rumors. All chapters reflect ongoing scientific review guided by `docs/world-bible.md`.
 
 <table>
   <tr>
@@ -119,47 +105,36 @@ scientific review; `docs/world-bible.md` is the content authority.
   </tr>
 </table>
 
-## Controls
+## Controls & Accessibility
 
-| Key             | Does                                                     |
-| --------------- | -------------------------------------------------------- |
-| Tab / Shift-Tab | Move through the scene outline (every object and portal) |
-| Enter / Space   | Scan an object or take a portal                          |
-| `+` / `−`       | Zoom within the current scale                            |
-| Arrow keys      | Pan                                                      |
-| `[` / `]`       | Previous / next portal                                   |
-| `L`             | Scientist lens (after chapter 2 unlocks it)              |
-| `N`             | Field notebook                                           |
-| `?`             | Help                                                     |
-| Esc             | Close the open panel, or go up one scale                 |
+| Key                                                 | Function                                          |
+| :-------------------------------------------------- | :------------------------------------------------ |
+| <kbd>Tab</kbd> / <kbd>Shift</kbd> + <kbd>Tab</kbd>  | Navigate scene elements and interactive portals   |
+| <kbd>Enter</kbd> / <kbd>Space</kbd>                 | Inspect target object or traverse selected portal |
+| <kbd>+</kbd> / <kbd>−</kbd>                         | Adjust zoom level within active scale             |
+| <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> | Pan scene view                                    |
+| <kbd>[</kbd> / <kbd>]</kbd>                         | Select previous / next portal                     |
+| <kbd>L</kbd>                                        | Toggle Scientist Lens _(unlocked in Chapter 2)_   |
+| <kbd>N</kbd>                                        | Open Field Notebook                               |
+| <kbd>?</kbd>                                        | Display context help                              |
+| <kbd>Esc</kbd>                                      | Close active modal or navigate up one scale level |
 
-`?static=1` renders every scene as a static painted plate with the same
-buttons. The app follows `prefers-reduced-motion`, and Settings has its own
-motion switch.
+- **Static Fallback:** Appending `?static=1` to the URL renders static painted plates while preserving interactive controls.
+- **Reduced Motion:** Fully honors system-level `prefers-reduced-motion` settings and includes an explicit in-app motion toggle in Settings.
 
-## Development
+## Development & Deployment
 
-Needs [mise](https://mise.jdx.dev); everything else comes from `mise.toml`.
+### Prerequisites & Setup
+
+Terrikus relies on [mise](https://mise.jdx.dev) for toolchain management.
 
 ```sh
 git clone git@github.com:Soilytix/terrikus.git
 cd terrikus
-mise run setup      # tools, dependencies, git hooks, full check
-mise run dev        # http://localhost:5173
+
+mise run setup # Install tools, dependencies, setup git hooks, and run initial checks
+mise run dev # Start local development server (http://localhost:5173)
+mise run check # Run the full verification suite
+mise run e2e # End-to-end Playwright visual regression and smoke tests
+
 ```
-
-`mise run build` writes a static site to `dist/` with relative paths, no
-backend and no network calls; progress lives in the browser's `localStorage`
-(`terrikus:v1`) and exports as JSON from Settings. Every merge to main deploys
-to <https://terrikus.com> on Vercel and to the internal hub
-(`.github/workflows/publish.yml`). `SW_PROFILE=public` builds only approved
-content and public assets (default `internal`); `.env.example` lists the rest.
-
-`mise run check` is the definition of done: ESLint, Prettier, TypeScript,
-vitest, the build, the bundle scan and the size budget. The gates run on their
-own as `mise run lint`, `fmt-check`, `typecheck`, `test` and `build`.
-`mise run e2e` runs the Playwright smoke over the build and refreshes the
-screenshots in `docs/screens/`.
-
-`AGENTS.md` is the working agreement: content rules, colour registers, layout
-and the definition of done.
