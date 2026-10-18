@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "A playable soil science textbook: one valley, six scales, experiments instead of pages.",
+  "description": "A playable soil science textbook. Explore a living river valley across six nested scales and fifteen interactive experiment-driven chapters.",
   "packageManager": "pnpm@10.18.3",
   "engines": {
     "node": ">=22"

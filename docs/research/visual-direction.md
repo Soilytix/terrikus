@@ -1,6 +1,6 @@
 # Terrikus: visual and technical rendering direction
 
-Research note, 2026-10-06. Written for the build loop of `soilytix/soil-worlds` during a hands-off run. The founder could not be asked anything, so every choice below is a **decision recorded for review**, not an approved spec. Open questions are collected at the end.
+Research note, 2026-10-06. Written for the build loop of `soilytix/terrikus` during a hands-off run. The founder could not be asked anything, so every choice below is a **decision recorded for review**, not an approved spec. Open questions are collected at the end.
 
 ## 1. Decisions in one screen
 
