@@ -24,7 +24,7 @@
 
 **Terrikus** is an interactive web application designed to teach soil science through active scientific inquiry and exploration. Set within a single representative river valley, players zoom seamlessly across six nested spatial scales:
 
-$$\text{Landscape} \longrightarrow \text{Field} \longrightarrow \text{Profile} \longrightarrow \text{Aggregate \& Pore} \longrightarrow \text{Rhizosphere} \longrightarrow \text{Cell}$$
+$$\text{Landscape} \longrightarrow \text{Field} \longrightarrow \text{Profile} \longrightarrow \text{Aggregate and Pore} \longrightarrow \text{Rhizosphere} \longrightarrow \text{Cell}$$
 
 In each chapter, players formulate predictions, conduct controlled experiments, analyze observations, and build causal explanations, recording their discoveries directly into an interactive field notebook.
 
