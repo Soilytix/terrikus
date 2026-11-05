@@ -179,7 +179,7 @@ Instruments read true state through sampling (core count, depth), detection limi
 - Schema: `{ schemaVersion, createdAt, settings, chaptersUnlocked, rumors, cards, labBook[] (cap 200, oldest dropped), chains, predictions, lastSession, pilot? }`.
 - `migrate(vN → vN+1)` per version, tested with fixtures.
 - Export/import as JSON from settings; import validates and refuses unknown versions.
-- No network, no analytics. Pilot instrumentation (T33) stays local and exports by explicit user action.
+- No network except cookieless Umami page analytics (self-hosted, `index.html`, terrikus.com only); game state never leaves the browser. Pilot instrumentation (T33) stays local and exports by explicit user action.
 
 ## 8. Accessibility and performance
 
@@ -232,7 +232,7 @@ Quality governor: rolling frame time > 20 ms for 2 s drops a tier (shaders → p
 | D-12 | Generic crop worlds only; hashed customer denylist | Customer confidentiality; names never committed even in tests | Plain-text denylist; manual review only |
 | D-13 | WRB names as examples in ch. 11 (recommended, see OD-11) | International, matches European context | USDA Soil Taxonomy |
 | D-14 | Qualitative-direction rates with teaching values (recommended, see OD-12) | Avoids implying prediction | Calibrated quantitative rates |
-| D-15 | Save in localStorage with export/import; no network | Privacy, no backend, works offline | Accounts; server sync |
+| D-15 | Save in localStorage with export/import; no network beyond Umami page analytics | Privacy, no backend, works offline | Accounts; server sync |
 
 ## 11. Open decisions
 
